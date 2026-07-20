@@ -10,7 +10,7 @@ export default defineConfig({
   outDir: 'dist/bin',
   format: 'esm',
   platform: 'node',
-  target: 'node20',
+  target: 'node24',
   clean: true,
   dts: false,
   external: ['react', 'ink', '@inkjs/ui'],
