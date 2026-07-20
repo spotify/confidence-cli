@@ -1,9 +1,10 @@
-import { mkdtempSync, writeFileSync } from 'node:fs';
+import { mkdtempSync, readFileSync, writeFileSync } from 'node:fs';
 import { join } from 'node:path';
 import { tmpdir } from 'node:os';
 import { TerminalSession } from './pty.js';
-import { ENTER } from './keys.js';
+import { ENTER, ARROW_DOWN } from './keys.js';
 import { AUTH_CALLBACK_PORT } from './constants.js';
+import { ONBOARDING_INVOCATION_FILE } from './mock-binaries.js';
 
 export { TerminalSession } from './pty.js';
 export { stripAnsi } from './strip-ansi.js';
@@ -103,4 +104,42 @@ export async function navigateToOnboarding(session: TerminalSession): Promise<vo
   await session.waitForText('Connected successfully');
   await session.waitForText('Start onboarding?');
   session.checkpoint();
+}
+
+export type Invocation = {
+  command: string;
+  args: string[];
+  prompt: string;
+};
+
+export async function selectIdeAndOnboard(
+  session: TerminalSession,
+  downPresses: number,
+): Promise<void> {
+  for (let i = 0; i < downPresses; i++) {
+    await session.sendKey(ARROW_DOWN);
+  }
+  await session.sendKey(ENTER);
+  await session.waitForText('Plugin installed successfully');
+
+  // ConnectTools may auto-advance when MCP servers are already registered globally
+  const deadline = Date.now() + 15_000;
+  while (Date.now() < deadline) {
+    const screen = session.screen;
+    if (screen.includes('Start onboarding?')) break;
+    if (screen.includes('Connect Confidence tools?')) {
+      await session.sendKey(ENTER);
+      await session.waitForText('Connected successfully');
+      break;
+    }
+    await new Promise((r) => setTimeout(r, 100));
+  }
+
+  await session.waitForText('Start onboarding?');
+  await session.sendKey(ENTER);
+  await session.waitForText('onboarding complete', { timeout: 60_000 });
+}
+
+export function readInvocation(cwd: string): Invocation {
+  return JSON.parse(readFileSync(join(cwd, ONBOARDING_INVOCATION_FILE), 'utf-8')) as Invocation;
 }
