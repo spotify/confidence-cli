@@ -10,14 +10,23 @@ export { stripAnsi } from './strip-ansi.js';
 export { buildTestJwt } from './jwt.js';
 export { ARROW_DOWN, ARROW_UP, ENTER, ESCAPE } from './keys.js';
 export { AUTH_CALLBACK_PORT } from './constants.js';
-export { CHAT_PROMPT_FILE } from './mock-claude.js';
+export { CHAT_PROMPT_FILE, ONBOARDING_INVOCATION_FILE } from './mock-binaries.js';
 
 type ProjectType = 'react' | 'empty';
 
 export function createSession({
   project = 'react',
   extraArgs = [],
-}: { project?: ProjectType; extraArgs?: string[] } = {}): TerminalSession {
+  env = {},
+  token,
+  systemPath,
+}: {
+  project?: ProjectType;
+  extraArgs?: string[];
+  env?: Record<string, string>;
+  token?: string;
+  systemPath?: string;
+} = {}): TerminalSession {
   const mockBinDir = process.env.E2E_MOCK_BIN_DIR!;
   const projectDir = mkdtempSync(join(tmpdir(), 'e2e-project-'));
 
@@ -28,13 +37,25 @@ export function createSession({
     );
   }
 
-  return new TerminalSession({
+  const sessionEnv: Record<string, string> = {
+    PATH: `${mockBinDir}:${systemPath ?? process.env.PATH}`,
+    ...env,
+  };
+
+  if (token) {
+    const tokenDir = mkdtempSync(join(tmpdir(), 'e2e-tmp-'));
+    writeFileSync(join(tokenDir, 'confidence_token'), token, 'utf-8');
+    sessionEnv.TMPDIR = tokenDir;
+  }
+
+  const session = new TerminalSession({
     args: ['--debug', '--dir', projectDir, ...extraArgs],
-    env: {
-      PATH: `${mockBinDir}:${process.env.PATH}`,
-    },
+    env: sessionEnv,
     cwd: projectDir,
   });
+
+  session.addTempDir(projectDir);
+  return session;
 }
 
 export async function simulateAuthCallback(): Promise<void> {
@@ -65,6 +86,7 @@ export async function navigateToPlugins(session: TerminalSession): Promise<void>
   await session.waitForText('All checks passed');
   await navigatePastAuth(session);
   await session.waitForText('Which agent tool are you using?');
+  session.checkpoint();
 }
 
 export async function navigateToConnectTools(session: TerminalSession): Promise<void> {
@@ -72,6 +94,7 @@ export async function navigateToConnectTools(session: TerminalSession): Promise<
   await session.sendKey(ENTER);
   await session.waitForText('Plugin installed successfully');
   await session.waitForText('Connect Confidence tools?');
+  session.checkpoint();
 }
 
 export async function navigateToOnboarding(session: TerminalSession): Promise<void> {
@@ -79,4 +102,5 @@ export async function navigateToOnboarding(session: TerminalSession): Promise<vo
   await session.sendKey(ENTER);
   await session.waitForText('Connected successfully');
   await session.waitForText('Start onboarding?');
+  session.checkpoint();
 }

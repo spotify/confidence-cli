@@ -1,6 +1,6 @@
 import { spawn as ptySpawn, type IPty } from 'node-pty';
 import { resolve } from 'node:path';
-import { mkdtempSync } from 'node:fs';
+import { mkdtempSync, rmSync } from 'node:fs';
 import { tmpdir } from 'node:os';
 import { join } from 'node:path';
 import { stripAnsi } from './strip-ansi.js';
@@ -24,9 +24,13 @@ function delay(ms: number): Promise<void> {
 
 export class TerminalSession {
   private pty: IPty;
-  private output = '';
+  private rawOutput = '';
+  private cachedScreen = '';
+  private cachedRawLength = 0;
+  private markPosition = 0;
   private exitCode: number | null = null;
   private exitPromise: Promise<number>;
+  private tempDirs: string[] = [];
 
   readonly cwd: string;
 
@@ -35,6 +39,7 @@ export class TerminalSession {
 
     const isolatedTmpDir = env.TMPDIR ?? mkdtempSync(join(tmpdir(), 'e2e-'));
     this.cwd = cwd ?? process.cwd();
+    this.tempDirs.push(isolatedTmpDir);
 
     this.pty = ptySpawn(process.execPath, [CLI_PATH, ...args], {
       name: 'xterm-256color',
@@ -52,7 +57,7 @@ export class TerminalSession {
     });
 
     this.pty.onData((data) => {
-      this.output += data;
+      this.rawOutput += data;
     });
 
     this.exitPromise = new Promise<number>((resolve) => {
@@ -64,7 +69,23 @@ export class TerminalSession {
   }
 
   get screen(): string {
-    return stripAnsi(this.output);
+    if (this.rawOutput.length !== this.cachedRawLength) {
+      this.cachedScreen = stripAnsi(this.rawOutput);
+      this.cachedRawLength = this.rawOutput.length;
+    }
+    return this.cachedScreen;
+  }
+
+  get screenSinceCheckpoint(): string {
+    return this.screen.slice(this.markPosition);
+  }
+
+  addTempDir(dir: string): void {
+    this.tempDirs.push(dir);
+  }
+
+  checkpoint(): void {
+    this.markPosition = this.screen.length;
   }
 
   send(data: string): void {
@@ -78,13 +99,16 @@ export class TerminalSession {
 
   async waitForText(
     text: string,
-    { timeout = DEFAULT_TIMEOUT, interval = 100 } = {},
+    { timeout = DEFAULT_TIMEOUT, interval = 100, sinceCheckpoint = true } = {},
   ): Promise<void> {
     const deadline = Date.now() + timeout;
+
     while (Date.now() < deadline) {
-      if (this.screen.includes(text)) return;
+      const haystack = sinceCheckpoint ? this.screenSinceCheckpoint : this.screen;
+      if (haystack.includes(text)) return;
       await delay(interval);
     }
+
     throw new Error(
       `Timed out waiting for "${text}" after ${timeout}ms.\n\nLast output:\n${this.screen.slice(-2000)}`,
     );
@@ -108,5 +132,8 @@ export class TerminalSession {
 
   [Symbol.dispose](): void {
     this.kill();
+    for (const dir of this.tempDirs) {
+      rmSync(dir, { recursive: true, force: true });
+    }
   }
 }

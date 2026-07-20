@@ -1,30 +1,14 @@
-import { TerminalSession, ENTER, ARROW_DOWN } from './helpers/index.js';
-import { mkdtempSync, writeFileSync } from 'node:fs';
-import { join, dirname } from 'node:path';
-import { tmpdir } from 'node:os';
+import { createSession, ENTER, ARROW_DOWN } from './helpers/index.js';
+import { dirname } from 'node:path';
 
 // The CLI is spawned via process.execPath (absolute node path), so it runs
 // regardless of PATH. But the system check uses execFile('node'/'git'), which
 // resolves from PATH — so stripping a binary from PATH makes that check fail.
-function createSessionWithPath(customPath: string): TerminalSession {
-  const mockBinDir = process.env.E2E_MOCK_BIN_DIR!;
-  const projectDir = mkdtempSync(join(tmpdir(), 'e2e-project-'));
-  writeFileSync(
-    join(projectDir, 'package.json'),
-    JSON.stringify({ dependencies: { react: '^19.0.0' } }),
-  );
-
-  return new TerminalSession({
-    args: ['--debug', '--dir', projectDir],
-    env: { PATH: `${mockBinDir}:${customPath}` },
-    cwd: projectDir,
-  });
-}
 
 describe('when system check fails', () => {
   it('shows error when git is missing', async () => {
     // PATH with node but no git
-    using session = createSessionWithPath(dirname(process.execPath));
+    using session = createSession({ systemPath: dirname(process.execPath) });
 
     // Welcome
     await session.waitForText('Start setup');
@@ -39,7 +23,7 @@ describe('when system check fails', () => {
 
   it('shows error when node is not on PATH', async () => {
     // PATH with git but not node — CLI still runs via absolute path
-    using session = createSessionWithPath('/usr/bin');
+    using session = createSession({ systemPath: '/usr/bin' });
 
     await session.waitForText('Start setup');
     await session.sendKey(ENTER);
@@ -50,7 +34,7 @@ describe('when system check fails', () => {
   });
 
   it('exits with code 1 when user selects Quit', async () => {
-    using session = createSessionWithPath(dirname(process.execPath));
+    using session = createSession({ systemPath: dirname(process.execPath) });
 
     await session.waitForText('Start setup');
     await session.sendKey(ENTER);

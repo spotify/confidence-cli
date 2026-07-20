@@ -1,23 +1,19 @@
-export const CLAUDE_SCRIPT = `#!/usr/bin/env node
+export const CURSOR_SCRIPT = `#!/usr/bin/env node
 const fs = require('fs');
 const path = require('path');
 const args = process.argv.slice(2);
 
-if (args[0] === 'mcp') {
+if (args[0] === 'agent' && args[1] === '--version') {
+  process.stdout.write('1.0.0\\n');
   process.exit(0);
-}
-
-if (args.includes('--append-system-prompt')) {
-  const idx = args.indexOf('--append-system-prompt');
-  const prompt = args[idx + 1] || '';
-  fs.writeFileSync(path.join(process.cwd(), '.e2e-chat-prompt'), prompt, 'utf-8');
+} else if (args[0] === 'agent' && args[1] === 'status') {
   process.exit(0);
-}
-
-if (args.includes('--print')) {
+} else if (args[0] === 'agent' && args[1] === 'mcp') {
+  process.exit(0);
+} else if (args[0] === 'agent' && args.includes('--print')) {
   fs.writeFileSync(
     path.join(process.cwd(), '.e2e-onboarding-invocation'),
-    JSON.stringify({ command: 'claude', args, prompt: args[args.length - 1] }),
+    JSON.stringify({ command: 'cursor', args, prompt: args[args.length - 1] }),
     'utf-8'
   );
 
@@ -41,5 +37,9 @@ if (args.includes('--print')) {
       process.exit(0);
     }
   }, 200);
+} else if (args[0] === 'agent') {
+  const prompt = args[1] || '';
+  fs.writeFileSync(path.join(process.cwd(), '.e2e-chat-prompt'), prompt, 'utf-8');
+  process.exit(0);
 }
 `;
