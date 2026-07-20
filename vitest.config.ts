@@ -24,7 +24,7 @@ export default defineConfig({
     pool: 'forks',
     poolOptions: {
       forks: {
-        execArgv: ['--localstorage-file', 'node_modules/.cache/localstorage'],
+        execArgv: ['--import', './__tests__/msw/localstorage-fake.mjs'],
       },
     },
   },
