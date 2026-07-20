@@ -7,7 +7,6 @@ import {
   ARROW_DOWN,
   ESCAPE,
   waitFor,
-  delay,
 } from '../helpers/index.js';
 import { ScreenId } from '@lib/session.js';
 
