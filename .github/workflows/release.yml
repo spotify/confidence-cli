@@ -1,0 +1,53 @@
+name: Release
+
+on:
+  push:
+    branches: [main]
+
+permissions:
+  contents: write # create GitHub releases and push tags
+  pull-requests: write # open and update release PRs
+
+concurrency:
+  group: release
+  cancel-in-progress: false
+
+jobs:
+  release-stub:
+    name: Release Job Stub
+    runs-on: ubuntu-latest
+    steps:
+      - run: echo "Will be released soon!"
+
+  # release-please:
+  #   name: Release Please
+  #   runs-on: ubuntu-latest
+  #   outputs:
+  #     release_created: ${{ steps.release.outputs.release_created }}
+  #   steps:
+  #     - uses: googleapis/release-please-action@d1a8f221d7723166f48a584aebba00ef3f6febec # v4.1.4
+  #       id: release
+  #       with:
+  #         token: ${{ secrets.GITHUB_TOKEN }}
+
+  # publish:
+  #   name: Publish to npm
+  #   needs: release-please
+  #   if: ${{ needs.release-please.outputs.release_created }}
+  #   runs-on: ubuntu-latest
+  #   steps:
+  #     - uses: actions/checkout@34e114876b0b11c390a56381ad16ebd13914f8d5 # v4.3.1
+  #       with:
+  #         persist-credentials: false
+  #     - uses: pnpm/action-setup@a15d269cd4658e1107c09f1fabf4cbd7bd1f308a # v4.4.0
+  #     - uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020 # v4.4.0
+  #       with:
+  #         node-version-file: package.json
+  #         registry-url: https://registry.npmjs.org
+
+  #     - run: pnpm install --frozen-lockfile
+  #     - run: pnpm test
+  #     - run: pnpm build
+  #     - run: pnpm publish --no-git-checks
+  #       env:
+  #         NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
