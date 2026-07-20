@@ -6,6 +6,7 @@ import {
   ENTER,
   ARROW_DOWN,
   waitFor,
+  delay,
 } from '../helpers/index.js';
 import { ConnectToolsScreen } from '@ui/tui/screens/connect-tools/index.js';
 import { ScreenId } from '@lib/session.js';
@@ -59,6 +60,7 @@ describe('ConnectToolsScreen', () => {
         expect(sut.lastFrame()).toContain('Connect all tools');
       });
 
+      await delay(0);
       sut.stdin.write(ENTER);
 
       await waitFor(() => {
@@ -85,6 +87,7 @@ describe('ConnectToolsScreen', () => {
         expect(sut.lastFrame()).toContain('Connect all tools');
       });
 
+      await delay(0);
       sut.stdin.write(ENTER);
 
       await waitFor(() => {
@@ -106,6 +109,7 @@ describe('ConnectToolsScreen', () => {
         expect(sut.lastFrame()).toContain('Connect all tools');
       });
 
+      await delay(0);
       sut.stdin.write(ENTER);
 
       await waitFor(() => {
@@ -124,6 +128,7 @@ describe('ConnectToolsScreen', () => {
         expect(sut.lastFrame()).toContain('Skip for now');
       });
 
+      await delay(0);
       sut.stdin.write(ARROW_DOWN + ARROW_DOWN + ARROW_DOWN + ENTER);
 
       await waitFor(() => {
