@@ -48,6 +48,16 @@ export async function connectMcpServer(opts: McpConnectOpts): Promise<void> {
   }
 }
 
+export function refreshMcpAuth(opts: import('../types.js').McpRefreshOpts): void {
+  const headers: Record<string, string> = {
+    ...opts.serverHeaders,
+    Authorization: `Bearer ${opts.accessToken}`,
+  };
+  const entry = { type: opts.serverType, url: opts.serverUrl, headers };
+  writeMcpEntry(mcpConfigPath(opts.projectDir), opts.serverName, entry);
+  writeMcpEntry(globalConfigPath(), opts.serverName, entry);
+}
+
 function writeMcpEntry(configPath: string, serverName: string, entry: unknown): void {
   let config: Record<string, unknown> = {};
   if (existsSync(configPath)) {

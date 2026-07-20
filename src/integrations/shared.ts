@@ -17,10 +17,6 @@ export const PLUGIN_SKILLS = [
   'migrate-statsig',
 ] as const;
 
-export function hasConfidenceServers(servers: Record<string, unknown>): boolean {
-  return 'confidence-flags' in servers || 'confidence-docs' in servers;
-}
-
 export async function installSkills(skillsDir: string): Promise<void> {
   await Promise.all(
     PLUGIN_SKILLS.map(async (name) => {

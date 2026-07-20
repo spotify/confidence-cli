@@ -62,6 +62,14 @@ function getRegisteredMcpNames(projectDir: string): McpServerName[] {
   );
 }
 
+export function refreshMcpAuth(opts: import('../types.js').McpRefreshOpts): void {
+  const headers: Record<string, string> = {
+    ...opts.serverHeaders,
+    Authorization: `Bearer ${opts.accessToken}`,
+  };
+  patchHttpHeaders(opts.serverName, headers);
+}
+
 export function patchHttpHeaders(
   serverName: string,
   headers: Readonly<Record<string, string>>,

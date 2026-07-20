@@ -63,6 +63,29 @@ export async function connectMcpServer(opts: McpConnectOpts): Promise<void> {
   allowMcpToolsInSettings(opts.serverName, opts.projectDir);
 }
 
+export function refreshMcpAuth(opts: import('../types.js').McpRefreshOpts): void {
+  const configPath = projectConfigPath(opts.projectDir);
+  if (!existsSync(configPath)) return;
+
+  let config: Record<string, unknown> = {};
+  try {
+    config = JSON.parse(readFileSync(configPath, 'utf-8')) as Record<string, unknown>;
+  } catch {
+    return;
+  }
+
+  const mcpServers = (config.mcpServers ?? {}) as Record<string, Record<string, unknown>>;
+  const existing = mcpServers[opts.serverName];
+  if (!existing) return;
+
+  const headers: Record<string, string> = {
+    ...opts.serverHeaders,
+    Authorization: `Bearer ${opts.accessToken}`,
+  };
+  existing.headers = headers;
+  writeFileSync(configPath, JSON.stringify(config, null, 2) + '\n', 'utf-8');
+}
+
 function getRegisteredMcpNames(projectDir: string): string[] {
   try {
     const config = JSON.parse(readFileSync(projectConfigPath(projectDir), 'utf-8')) as Record<

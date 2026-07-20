@@ -13,7 +13,7 @@ import {
 import type { IdeId } from '@integrations/index.js';
 import { ScreenId } from '@lib/session.js';
 import { useLogger } from '../../hooks/useLog.js';
-import { mcpAuthRefreshed, mcpDetected, mcpRegistered, mcpVerified } from './log-messages.js';
+import { mcpDetected, mcpRegistered, mcpVerified } from './log-messages.js';
 import { useSession, $session, store } from '../../store.js';
 import { useInitialMcpDetection } from './useInitialMcpDetection.js';
 
@@ -121,14 +121,15 @@ export function useMcpConnect(): McpConnectState {
         }
         setServerStatuses(statuses);
 
+        const preference = loadMcpPreference();
         const allOk = allServersConnected(statuses);
-        if (allOk) {
-          await refreshMcpAuth(session.projectDir);
+
+        if (allOk && preference === 'connected') {
+          refreshRegisteredMcps(session.projectDir);
           setPhase('already-connected');
           return;
         }
 
-        const preference = loadMcpPreference();
         if (preference !== 'connected') {
           setPhase('ask-install');
           return;
@@ -158,27 +159,21 @@ export function useMcpConnect(): McpConnectState {
         setPhase(allServersConnected(merged) ? 'connected' : 'ask-install');
       }
 
-      async function refreshMcpAuth(projectDir: string) {
+      function refreshRegisteredMcps(projectDir: string) {
         const token = $session.get().authState.token;
         if (!token) return;
 
-        const names = available.map((s) => s.name as McpServerName);
-        for (const name of names) {
-          const server = MCP_SERVERS[name];
-          try {
-            await integration.connectMcpServer({
-              serverName: name,
-              serverUrl: server.url,
-              serverType: server.type,
-              serverHeaders: { ...server.headers },
-              projectDir,
-              accessToken: token,
-            });
-          } catch {
-            // Best effort — servers are already reachable
-          }
+        for (const s of available) {
+          const server = MCP_SERVERS[s.name as McpServerName];
+          integration.refreshMcpAuth({
+            serverName: s.name,
+            serverUrl: server.url,
+            serverType: server.type,
+            serverHeaders: { ...server.headers },
+            projectDir,
+            accessToken: token,
+          });
         }
-        log(mcpAuthRefreshed(names));
       }
 
       run();

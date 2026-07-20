@@ -12,6 +12,8 @@ export type McpConnectOpts = {
   accessToken?: string;
 };
 
+export type McpRefreshOpts = McpConnectOpts & { accessToken: string };
+
 export type OnboardingCallbacks = {
   onStatus: (text: string) => void;
   onStdout: (line: string) => void;
@@ -47,4 +49,5 @@ export type IdeIntegration = {
 
   detectMcpStatuses: (projectDir: string) => Promise<Record<McpServerName, McpServerStatus>>;
   connectMcpServer: (opts: McpConnectOpts) => Promise<void>;
+  refreshMcpAuth: (opts: McpRefreshOpts) => void;
 };

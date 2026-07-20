@@ -38,10 +38,3 @@ export function mcpVerified(url: string | undefined, reachable: boolean): LogMes
     output: reachable ? 'Reachable' : 'Not responding',
   };
 }
-
-export function mcpAuthRefreshed(names: string[]): LogMessage {
-  return {
-    input: `Refresh MCP auth (${names.join(', ')})`,
-    output: 'Token updated',
-  };
-}
