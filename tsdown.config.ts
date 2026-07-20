@@ -3,7 +3,7 @@ import { copyFileSync, mkdirSync, readdirSync } from 'node:fs';
 import { join } from 'node:path';
 
 const STEPS_SRC = 'src/lib/onboarding-prompt/steps';
-const STEPS_DIST = 'dist/bin/steps';
+const STEPS_DIST = 'dist/bin';
 
 export default defineConfig({
   entry: ['bin/cli.ts'],

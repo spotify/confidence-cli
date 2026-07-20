@@ -35,7 +35,7 @@ describe('InstallPluginsScreen', () => {
   it('renders title', async () => {
     using sut = renderScreen(<InstallPluginsScreen />, { screen: ScreenId.InstallPlugins });
     await waitFor(() => {
-      expect(sut.lastFrame()).toContain('Teach your AI about Confidence');
+      expect(sut.lastFrame()).toContain('Teach your AI Confidence');
     });
   });
 

@@ -15,7 +15,7 @@ import { welcomeMenuSelected } from './telemetry-events.js';
 
 const STEPS = [
   'Check your system',
-  'Teach your AI about Confidence',
+  'Teach your AI Confidence',
   'Sign in to Confidence',
   'Connect your AI to Confidence',
   'Integrate the SDK into your project',

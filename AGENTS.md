@@ -30,7 +30,8 @@ Supporting modules:
 ```bash
 pnpm install
 pnpm try          # Run the wizard locally via tsx
-pnpm test         # Run vitest
+pnpm test         # Run vitest (unit + integration)
+pnpm test:e2e     # Build + run e2e tests (node-pty)
 pnpm lint         # ESLint + Prettier check
 pnpm typecheck    # TypeScript type checking
 pnpm qa           # Run all checks: typecheck + lint + test
@@ -61,6 +62,10 @@ These are accessed via the Claude Code Skill, not directly from the TUI.
 ### E2E tests fail to install or build
 
 E2E tests use `node-pty` to drive the TUI in a real terminal. This native module requires platform-specific build tools. If `pnpm install` fails on `node-pty`, install the prerequisites listed at https://github.com/microsoft/node-pty#dependencies.
+
+### E2E tests fail with `posix_spawnp failed`
+
+The stable `node-pty` release (v1.1.0) doesn't ship prebuilt binaries for Node.js v26+. The project uses `node-pty@1.2.0-beta.14` which includes updated Node-API bindings for newer Node versions. If you hit this error on a newer Node version, ensure the beta is installed. On CI with Node 20, the stable release works fine.
 
 ## Conventions
 

@@ -1,0 +1,112 @@
+import { spawn as ptySpawn, type IPty } from 'node-pty';
+import { resolve } from 'node:path';
+import { mkdtempSync } from 'node:fs';
+import { tmpdir } from 'node:os';
+import { join } from 'node:path';
+import { stripAnsi } from './strip-ansi.js';
+
+const CLI_PATH = resolve(import.meta.dirname, '../../../dist/bin/cli.js');
+const DEFAULT_COLS = 100;
+const DEFAULT_ROWS = 40;
+const DEFAULT_TIMEOUT = 30_000;
+
+type SessionOptions = {
+  args?: string[];
+  env?: Record<string, string>;
+  cols?: number;
+  rows?: number;
+  cwd?: string;
+};
+
+function delay(ms: number): Promise<void> {
+  return new Promise((resolve) => setTimeout(resolve, ms));
+}
+
+export class TerminalSession {
+  private pty: IPty;
+  private output = '';
+  private exitCode: number | null = null;
+  private exitPromise: Promise<number>;
+
+  readonly cwd: string;
+
+  constructor(options: SessionOptions = {}) {
+    const { args = ['--debug'], env = {}, cols = DEFAULT_COLS, rows = DEFAULT_ROWS, cwd } = options;
+
+    const isolatedTmpDir = env.TMPDIR ?? mkdtempSync(join(tmpdir(), 'e2e-'));
+    this.cwd = cwd ?? process.cwd();
+
+    this.pty = ptySpawn(process.execPath, [CLI_PATH, ...args], {
+      name: 'xterm-256color',
+      cols,
+      rows,
+      cwd: this.cwd,
+      env: {
+        ...process.env,
+        ...env,
+        TERM: 'xterm-256color',
+        FORCE_COLOR: '1',
+        NODE_ENV: 'test',
+        TMPDIR: isolatedTmpDir,
+      },
+    });
+
+    this.pty.onData((data) => {
+      this.output += data;
+    });
+
+    this.exitPromise = new Promise<number>((resolve) => {
+      this.pty.onExit(({ exitCode }) => {
+        this.exitCode = exitCode;
+        resolve(exitCode);
+      });
+    });
+  }
+
+  get screen(): string {
+    return stripAnsi(this.output);
+  }
+
+  send(data: string): void {
+    this.pty.write(data);
+  }
+
+  async sendKey(key: string, settleMs = 100): Promise<void> {
+    this.pty.write(key);
+    await delay(settleMs);
+  }
+
+  async waitForText(
+    text: string,
+    { timeout = DEFAULT_TIMEOUT, interval = 100 } = {},
+  ): Promise<void> {
+    const deadline = Date.now() + timeout;
+    while (Date.now() < deadline) {
+      if (this.screen.includes(text)) return;
+      await delay(interval);
+    }
+    throw new Error(
+      `Timed out waiting for "${text}" after ${timeout}ms.\n\nLast output:\n${this.screen.slice(-2000)}`,
+    );
+  }
+
+  async waitForExit(timeout = DEFAULT_TIMEOUT): Promise<number> {
+    const timer = setTimeout(() => {
+      this.pty.kill();
+    }, timeout);
+
+    const code = await this.exitPromise;
+    clearTimeout(timer);
+    return code;
+  }
+
+  kill(): void {
+    if (this.exitCode === null) {
+      this.pty.kill();
+    }
+  }
+
+  [Symbol.dispose](): void {
+    this.kill();
+  }
+}
