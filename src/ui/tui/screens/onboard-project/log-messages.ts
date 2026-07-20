@@ -12,13 +12,13 @@ export function onboardingCompleted(
 
 export function onboardingDryRun(framework: string): LogMessage {
   return {
-    input: `claude --print "<onboarding prompt for ${framework}>" (dry-run)`,
+    input: `Agent prompt: "<onboarding prompt for ${framework}>" (dry-run)`,
     output: 'Simulating onboarding steps',
   };
 }
 
 export function onboardingStarted(framework: string, prompt: string): LogMessage {
-  return { input: `claude --print "<onboarding prompt for ${framework}>"`, output: prompt };
+  return { input: `Agent prompt "<onboarding prompt for ${framework}>"`, output: prompt };
 }
 
 export function onboardingStdout(line: string): LogMessage {

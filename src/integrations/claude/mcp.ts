@@ -63,29 +63,6 @@ export async function connectMcpServer(opts: McpConnectOpts): Promise<void> {
   allowMcpToolsInSettings(opts.serverName, opts.projectDir);
 }
 
-export function refreshMcpAuth(opts: import('../types.js').McpRefreshOpts): void {
-  const configPath = projectConfigPath(opts.projectDir);
-  if (!existsSync(configPath)) return;
-
-  let config: Record<string, unknown> = {};
-  try {
-    config = JSON.parse(readFileSync(configPath, 'utf-8')) as Record<string, unknown>;
-  } catch {
-    return;
-  }
-
-  const mcpServers = (config.mcpServers ?? {}) as Record<string, Record<string, unknown>>;
-  const existing = mcpServers[opts.serverName];
-  if (!existing) return;
-
-  const headers: Record<string, string> = {
-    ...opts.serverHeaders,
-    Authorization: `Bearer ${opts.accessToken}`,
-  };
-  existing.headers = headers;
-  writeFileSync(configPath, JSON.stringify(config, null, 2) + '\n', 'utf-8');
-}
-
 function getRegisteredMcpNames(projectDir: string): string[] {
   try {
     const config = JSON.parse(readFileSync(projectConfigPath(projectDir), 'utf-8')) as Record<
@@ -104,6 +81,7 @@ type ClaudeSettings = {
     allow?: string[];
     [key: string]: unknown;
   };
+  enabledMcpjsonServers?: string[];
   [key: string]: unknown;
 };
 
@@ -126,12 +104,17 @@ function allowMcpToolsInSettings(serverName: string, projectDir: string): void {
 
   const permissions = settings.permissions ?? {};
   const allow = permissions.allow ?? [];
-  const pattern = `mcp__${serverName}__*`;
-
-  if (!allow.includes(pattern)) {
-    allow.push(pattern);
+  const toolPattern = `mcp__${serverName}__*`;
+  if (!allow.includes(toolPattern)) {
+    allow.push(toolPattern);
   }
-
   settings.permissions = { ...permissions, allow };
+
+  const enabled = settings.enabledMcpjsonServers ?? [];
+  if (!enabled.includes(serverName)) {
+    enabled.push(serverName);
+  }
+  settings.enabledMcpjsonServers = enabled;
+
   writeFileSync(settingsPath, JSON.stringify(settings, null, 2) + '\n', 'utf-8');
 }

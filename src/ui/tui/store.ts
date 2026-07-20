@@ -50,7 +50,7 @@ export const store = {
     }),
 
   completeScreen: (screen: ScreenId): void => {
-    const completed = new Set($session.get().completedScreens);
+    const completed = new Set<ScreenId>($session.get().completedScreens);
     completed.add(screen);
     updateSession({ completedScreens: completed });
   },
@@ -125,4 +125,4 @@ export const store = {
     }),
 };
 
-export const useSession = () => useStore($session);
+export const useSession = (): WizardSession => useStore($session);

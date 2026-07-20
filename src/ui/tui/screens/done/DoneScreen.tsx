@@ -5,7 +5,7 @@ import { PromptPanel } from '../../components/PromptPanel.js';
 import { CONFIDENCE_DASHBOARD_URL, CONFIDENCE_DOCS_URL } from '@lib/constants.js';
 import { TerminalLink } from '../../components/TerminalLink.js';
 import { useIsNarrow } from '../../hooks/useIsNarrow.js';
-import { launchChatSession } from '@integrations/index.js';
+import { launchChatSession, getIntegration } from '@integrations/index.js';
 import { useSession, $session } from '../../store.js';
 import { track } from '@lib/telemetry.js';
 import { doneActionSelected } from './telemetry-events.js';
@@ -16,7 +16,7 @@ export function DoneScreen() {
   const session = useSession();
   const { exit } = useApp();
   const narrow = useIsNarrow();
-  const { reportFile, codeChanges, projectDir } = session;
+  const { reportFile, codeChanges, projectDir, ide } = session;
   const align = narrow ? HAlign.Left : HAlign.Center;
 
   return (
@@ -73,10 +73,9 @@ export function DoneScreen() {
         mode="select"
         status="What's next?"
         options={[
-          {
-            label: codeChanges.length > 0 ? 'Ask about the changes' : 'Chat about Confidence',
-            value: 'chat',
-          },
+          ...(ide
+            ? [{ label: `Continue work with ${getIntegration(ide).name}`, value: 'chat' as const }]
+            : []),
           { label: 'Exit', value: 'exit' },
         ]}
         onSelect={(value) => {

@@ -4,14 +4,14 @@ import { getIntegration } from './registry.js';
 
 function buildChatPrompt(session: WizardSession): string {
   const lines =
-    session.codeChanges.length > 0
-      ? [
-          `I just set up Confidence in this ${session.framework ?? 'Node.js'} project using the quickstart wizard.`,
+    session.codeChanges.length <= 0
+      ? [`I'd like to integrate Confidence into this project.`]
+      : [
+          `I just set up Confidence in this project using the quickstart wizard.`,
           '',
           'Changes made:',
           ...session.codeChanges.map((change) => `- ${change}`),
-        ]
-      : [`I'd like to integrate Confidence into this ${session.framework ?? 'Node.js'} project.`];
+        ];
 
   if (session.reportFile) {
     lines.push('', `A detailed report is in ${session.reportFile}.`);
@@ -24,10 +24,12 @@ function buildChatPrompt(session: WizardSession): string {
     );
   }
 
-  lines.push(
-    '',
-    "I'd like to continue working on my Confidence integration. Help me with next steps — creating feature flags, adding targeting rules, setting up experiments, or anything else I need.",
-  );
+  if (session.codeChanges.length > 0) {
+    lines.push(
+      '',
+      "I'd like to continue working on my Confidence integration. Help me with next steps — creating feature flags, adding targeting rules, setting up experiments, or anything else I need.",
+    );
+  }
 
   return lines.join('\n');
 }

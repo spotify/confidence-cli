@@ -15,6 +15,7 @@ export {
   verifyMcpServer,
   loadMcpPreference,
   persistMcpPreference,
+  clearMcpPreference,
 } from './mcp/index.js';
 export { launchChatSession } from './chat.js';
 export { detectInstalledPlugins, prepareIde, installPlugin } from './plugins.js';

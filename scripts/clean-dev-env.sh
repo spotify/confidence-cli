@@ -189,7 +189,7 @@ if $clean_mcp; then
 
   # --- MCP tool permissions from .claude/settings*.json ---
 
-  remove_mcp_permissions() {
+  remove_mcp_settings() {
     local settings_path="$1"
     [[ -f "$settings_path" ]] || return 0
 
@@ -198,14 +198,22 @@ if $clean_mcp; then
       const fs = require("fs");
       const path = process.argv[1];
       const config = JSON.parse(fs.readFileSync(path, "utf-8"));
+      let changed = false;
       const allow = config.permissions?.allow;
-      if (!Array.isArray(allow)) { process.exit(0); }
-      const before = allow.length;
-      const filtered = allow.filter(p => !p.startsWith("mcp__"));
-      if (filtered.length === before) { process.exit(0); }
-      config.permissions.allow = filtered;
-      if (filtered.length === 0) delete config.permissions.allow;
-      if (Object.keys(config.permissions).length === 0) delete config.permissions;
+      if (Array.isArray(allow)) {
+        const filtered = allow.filter(p => !p.startsWith("mcp__"));
+        if (filtered.length !== allow.length) {
+          config.permissions.allow = filtered;
+          if (filtered.length === 0) delete config.permissions.allow;
+          if (Object.keys(config.permissions).length === 0) delete config.permissions;
+          changed = true;
+        }
+      }
+      if (Array.isArray(config.enabledMcpjsonServers) && config.enabledMcpjsonServers.length > 0) {
+        delete config.enabledMcpjsonServers;
+        changed = true;
+      }
+      if (!changed) { process.exit(0); }
       if (Object.keys(config).length === 0) {
         fs.unlinkSync(path);
         console.log("deleted");
@@ -219,13 +227,13 @@ if $clean_mcp; then
       echo "Deleted $settings_path (empty after cleanup)"
       ((removed++))
     elif [[ "$settings_result" == "cleaned" ]]; then
-      echo "Removed MCP tool permissions from $settings_path"
+      echo "Removed MCP settings from $settings_path"
       ((removed++))
     fi
   }
 
-  remove_mcp_permissions "$PROJECT_DIR/.claude/settings.json"
-  remove_mcp_permissions "$PROJECT_DIR/.claude/settings.local.json"
+  remove_mcp_settings "$PROJECT_DIR/.claude/settings.json"
+  remove_mcp_settings "$PROJECT_DIR/.claude/settings.local.json"
 fi
 
 # --- Summary ---

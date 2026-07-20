@@ -1,8 +1,7 @@
 import { type ChildProcess, spawn } from 'node:child_process';
 import { createInterface } from 'node:readline';
 import type { OnboardingOpts, OnboardingCallbacks } from '../types.js';
-
-const STATUS_PREFIX = 'STATUS: ';
+import { STATUS_PREFIX } from '../constants.js';
 
 type CodexEvent = {
   type: string;

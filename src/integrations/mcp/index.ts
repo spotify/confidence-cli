@@ -6,4 +6,4 @@ export {
   getAvailableMcpServers,
   verifyMcpServer,
 } from './servers.js';
-export { loadMcpPreference, persistMcpPreference } from './preference.js';
+export { loadMcpPreference, persistMcpPreference, clearMcpPreference } from './preference.js';

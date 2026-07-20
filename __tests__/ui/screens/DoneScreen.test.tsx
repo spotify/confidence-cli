@@ -23,11 +23,18 @@ describe('DoneScreen', () => {
     });
   });
 
-  it('shows default exit options', async () => {
+  it('shows only Exit when no IDE is chosen', async () => {
     using sut = renderScreen(<DoneScreen />, { screen: ScreenId.Done });
     await waitFor(() => {
-      expect(sut.lastFrame()).toContain('Chat about Confidence');
       expect(sut.lastFrame()).toContain('Exit');
+      expect(sut.lastFrame()).not.toContain('Continue work with');
+    });
+  });
+
+  it('shows continue option with chosen IDE name', async () => {
+    using sut = renderScreen(<DoneScreen />, { screen: ScreenId.Done, ide: 'cursor' });
+    await waitFor(() => {
+      expect(sut.lastFrame()).toContain('Continue work with Cursor');
     });
   });
 
@@ -38,14 +45,6 @@ describe('DoneScreen', () => {
       await waitFor(() => {
         expect(sut.lastFrame()).toContain('What we set up');
         expect(sut.lastFrame()).toContain('confidence.config.ts');
-      });
-    });
-
-    it('shows "Ask about the changes" option', async () => {
-      using sut = renderScreen(<DoneScreen />, { screen: ScreenId.Done });
-      store.setCodeChanges(['Added SDK dependency']);
-      await waitFor(() => {
-        expect(sut.lastFrame()).toContain('Ask about the changes');
       });
     });
   });

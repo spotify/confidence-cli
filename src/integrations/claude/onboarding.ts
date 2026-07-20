@@ -1,8 +1,8 @@
 import { type ChildProcess, spawn } from 'node:child_process';
 import { createInterface } from 'node:readline';
 import type { OnboardingOpts, OnboardingCallbacks } from '../types.js';
-
-const STATUS_PREFIX = 'STATUS: ';
+import { STATUS_PREFIX } from '../constants.js';
+import { type StreamEvent, extractTextLines } from '../stream-json.js';
 
 export function runOnboarding(
   opts: OnboardingOpts,
@@ -12,12 +12,16 @@ export function runOnboarding(
     ? { ...globalThis.process.env, CONFIDENCE_ACCESS_TOKEN: opts.token }
     : undefined;
 
-  const child = spawn('claude', ['--print', opts.prompt], {
-    cwd: opts.projectDir,
-    timeout: 300000,
-    stdio: ['ignore', 'pipe', 'pipe'],
-    env,
-  });
+  const child = spawn(
+    'claude',
+    ['--print', '--output-format', 'stream-json', '--verbose', opts.prompt],
+    {
+      cwd: opts.projectDir,
+      timeout: 300000,
+      stdio: ['ignore', 'pipe', 'pipe'],
+      env,
+    },
+  );
 
   if (!child?.stdout) return null;
 
@@ -25,13 +29,25 @@ export function runOnboarding(
   let stderrBuf = '';
 
   const rl = createInterface({ input: child.stdout });
-  rl.on('line', (line: string) => {
-    allLines.push(line);
+  rl.on('line', function parseStreamEvent(line: string) {
     const trimmed = line.trim();
     if (!trimmed) return;
-    callbacks.onStdout(trimmed);
-    if (trimmed.startsWith(STATUS_PREFIX)) {
-      callbacks.onStatus(trimmed.slice(STATUS_PREFIX.length));
+
+    let event: StreamEvent;
+    try {
+      event = JSON.parse(trimmed) as StreamEvent;
+    } catch {
+      return;
+    }
+
+    for (const textLine of extractTextLines(event)) {
+      const stripped = textLine.trim();
+      if (!stripped) continue;
+      allLines.push(stripped);
+      callbacks.onStdout(stripped);
+      if (stripped.startsWith(STATUS_PREFIX)) {
+        callbacks.onStatus(stripped.slice(STATUS_PREFIX.length));
+      }
     }
   });
 

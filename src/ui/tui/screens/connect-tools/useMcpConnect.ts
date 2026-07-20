@@ -11,6 +11,7 @@ import {
   getIntegration,
 } from '@integrations/index.js';
 import type { IdeId } from '@integrations/index.js';
+import { validateToken } from '@lib/auth.js';
 import { ScreenId } from '@lib/session.js';
 import { useLogger } from '../../hooks/useLog.js';
 import { mcpDetected, mcpRegistered, mcpVerified } from './log-messages.js';
@@ -121,22 +122,20 @@ export function useMcpConnect(): McpConnectState {
         }
         setServerStatuses(statuses);
 
-        const preference = loadMcpPreference();
         const allOk = allServersConnected(statuses);
-
-        if (allOk && preference === 'connected') {
-          refreshRegisteredMcps(session.projectDir);
+        if (allOk) {
           setPhase('already-connected');
           return;
         }
 
+        const preference = loadMcpPreference();
         if (preference !== 'connected') {
           setPhase('ask-install');
           return;
         }
 
         const token = $session.get().authState.token;
-        if (!token) {
+        if (!token || !validateToken(token).valid) {
           setPhase('ask-install');
           return;
         }
@@ -157,23 +156,6 @@ export function useMcpConnect(): McpConnectState {
         setServerStatuses(merged);
 
         setPhase(allServersConnected(merged) ? 'connected' : 'ask-install');
-      }
-
-      function refreshRegisteredMcps(projectDir: string) {
-        const token = $session.get().authState.token;
-        if (!token) return;
-
-        for (const s of available) {
-          const server = MCP_SERVERS[s.name as McpServerName];
-          integration.refreshMcpAuth({
-            serverName: s.name,
-            serverUrl: server.url,
-            serverType: server.type,
-            serverHeaders: { ...server.headers },
-            projectDir,
-            accessToken: token,
-          });
-        }
       }
 
       run();
