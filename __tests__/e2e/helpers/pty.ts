@@ -156,6 +156,10 @@ export class TerminalSession {
 
   [Symbol.dispose](): void {
     this.kill();
+    this.cleanup();
+  }
+
+  private cleanup() {
     for (const dir of this.tempDirs) {
       rmSync(dir, { recursive: true, force: true });
     }
