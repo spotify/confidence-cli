@@ -8,7 +8,7 @@ Interactive CLI wizard for setting up and integrating [Confidence](https://confi
 npx @spotify/confidence-quickstart
 ```
 
-Requires Node.js 20+.
+Requires Node.js 24+.
 
 ## What It Does
 
