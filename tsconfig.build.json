@@ -1,0 +1,25 @@
+{
+  "compilerOptions": {
+    "target": "ES2024",
+    "module": "NodeNext",
+    "moduleResolution": "NodeNext",
+    "jsx": "react-jsx",
+    "strict": true,
+    "esModuleInterop": true,
+    "skipLibCheck": true,
+    "forceConsistentCasingInFileNames": true,
+    "resolveJsonModule": true,
+    "isolatedModules": true,
+    "declaration": true,
+    "outDir": "dist",
+    "rootDir": ".",
+    "paths": {
+      "@commands/*": ["./src/commands/*"],
+      "@frameworks/*": ["./src/frameworks/*"],
+      "@integrations/*": ["./src/integrations/*"],
+      "@providers/*": ["./src/providers/*"],
+      "@ui/*": ["./src/ui/*"],
+      "@lib/*": ["./src/lib/*"]
+    }
+  }
+}

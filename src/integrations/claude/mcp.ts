@@ -1,0 +1,114 @@
+import { execFile as execFileCb } from 'node:child_process';
+import { promisify } from 'node:util';
+import { existsSync, readFileSync, writeFileSync, mkdirSync } from 'node:fs';
+import { join } from 'node:path';
+import type { McpConnectOpts } from '../types.js';
+import {
+  MCP_SERVERS,
+  type McpServerName,
+  type McpServerStatus,
+  verifyMcpServer,
+} from '../mcp/servers.js';
+import { projectConfigPath } from './paths.js';
+
+const execFile = promisify(execFileCb);
+
+export async function detectMcpStatuses(
+  projectDir: string,
+): Promise<Record<McpServerName, McpServerStatus>> {
+  const registered = getRegisteredMcpNames(projectDir);
+  const names = Object.keys(MCP_SERVERS) as McpServerName[];
+
+  const statuses = await Promise.all(
+    names.map(async (name): Promise<[McpServerName, McpServerStatus]> => {
+      if (!registered.includes(name)) return [name, 'not-installed'];
+      const ok = await verifyMcpServer(name);
+      return [name, ok ? 'connected' : 'installed'];
+    }),
+  );
+
+  return Object.fromEntries(statuses) as Record<McpServerName, McpServerStatus>;
+}
+
+export async function connectMcpServer(opts: McpConnectOpts): Promise<void> {
+  try {
+    await execFile('claude', ['mcp', 'remove', '--scope', 'project', opts.serverName], {
+      cwd: opts.projectDir,
+    });
+  } catch {
+    // Not registered yet — that's fine
+  }
+
+  const headers: Record<string, string> = { ...opts.serverHeaders };
+  if (opts.accessToken) {
+    headers['Authorization'] = `Bearer ${opts.accessToken}`;
+  }
+
+  const args = [
+    'mcp',
+    'add',
+    '--transport',
+    'http',
+    '--scope',
+    'project',
+    opts.serverName,
+    opts.serverUrl,
+  ];
+  for (const [key, value] of Object.entries(headers)) {
+    args.push('--header', `${key}: ${value}`);
+  }
+
+  await execFile('claude', args, { cwd: opts.projectDir });
+
+  allowMcpToolsInSettings(opts.serverName, opts.projectDir);
+}
+
+function getRegisteredMcpNames(projectDir: string): string[] {
+  try {
+    const config = JSON.parse(readFileSync(projectConfigPath(projectDir), 'utf-8')) as Record<
+      string,
+      unknown
+    >;
+    const mcpServers = (config.mcpServers ?? {}) as Record<string, unknown>;
+    return (Object.keys(MCP_SERVERS) as McpServerName[]).filter((name) => name in mcpServers);
+  } catch {
+    return [];
+  }
+}
+
+type ClaudeSettings = {
+  permissions?: {
+    allow?: string[];
+    [key: string]: unknown;
+  };
+  [key: string]: unknown;
+};
+
+function allowMcpToolsInSettings(serverName: string, projectDir: string): void {
+  const settingsDir = join(projectDir, '.claude');
+  const settingsPath = join(settingsDir, 'settings.local.json');
+
+  if (!existsSync(settingsDir)) {
+    mkdirSync(settingsDir, { recursive: true });
+  }
+
+  let settings: ClaudeSettings = {};
+  if (existsSync(settingsPath)) {
+    try {
+      settings = JSON.parse(readFileSync(settingsPath, 'utf-8')) as ClaudeSettings;
+    } catch {
+      // overwrite
+    }
+  }
+
+  const permissions = settings.permissions ?? {};
+  const allow = permissions.allow ?? [];
+  const pattern = `mcp__${serverName}__*`;
+
+  if (!allow.includes(pattern)) {
+    allow.push(pattern);
+  }
+
+  settings.permissions = { ...permissions, allow };
+  writeFileSync(settingsPath, JSON.stringify(settings, null, 2) + '\n', 'utf-8');
+}
