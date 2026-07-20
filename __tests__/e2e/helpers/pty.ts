@@ -97,6 +97,12 @@ export class TerminalSession {
     await delay(settleMs);
   }
 
+  async sendKeyRepeat(key: string, count: number, settleMs = 100): Promise<void> {
+    for (let i = 0; i < count; i++) {
+      await this.sendKey(key, settleMs);
+    }
+  }
+
   async waitForText(
     text: string,
     { timeout = DEFAULT_TIMEOUT, interval = 100, sinceCheckpoint = true } = {},
@@ -111,6 +117,24 @@ export class TerminalSession {
 
     throw new Error(
       `Timed out waiting for "${text}" after ${timeout}ms.\n\nLast output:\n${this.screen.slice(-2000)}`,
+    );
+  }
+
+  async waitForAnyTextOf(
+    texts: string[],
+    { timeout = DEFAULT_TIMEOUT, interval = 100, sinceCheckpoint = true } = {},
+  ): Promise<string> {
+    const deadline = Date.now() + timeout;
+
+    while (Date.now() < deadline) {
+      const haystack = sinceCheckpoint ? this.screenSinceCheckpoint : this.screen;
+      const match = texts.find((t) => haystack.includes(t));
+      if (match) return match;
+      await delay(interval);
+    }
+
+    throw new Error(
+      `Timed out waiting for any of [${texts.map((t) => `"${t}"`).join(', ')}] after ${timeout}ms.\n\nLast output:\n${this.screen.slice(-2000)}`,
     );
   }
 

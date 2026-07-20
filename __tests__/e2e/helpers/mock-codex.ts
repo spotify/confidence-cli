@@ -1,3 +1,5 @@
+import { streamEventsSnippet } from './mock-streaming.js';
+
 export const CODEX_SCRIPT = `#!/usr/bin/env node
 const fs = require('fs');
 const path = require('path');
@@ -26,27 +28,7 @@ if (args[0] === 'exec') {
       JSON.stringify({ command: 'codex', args, prompt: input }),
       'utf-8'
     );
-
-    const events = [
-      { type: 'item.completed', item: { type: 'agent_message', text: 'STATUS: Analyzing project...' } },
-      { type: 'item.completed', item: { type: 'agent_message', text: 'STATUS: Installing @spotify-confidence/sdk...' } },
-      { type: 'item.completed', item: { type: 'agent_message', text: 'STATUS: Generating Confidence configuration...' } },
-      { type: 'item.completed', item: { type: 'agent_message', text: 'STATUS: Creating feature flag example...' } },
-      { type: 'item.completed', item: { type: 'agent_message', text: 'Created confidence.config.ts' } },
-      { type: 'item.completed', item: { type: 'agent_message', text: 'Added feature flag example' } },
-      { type: 'item.completed', item: { type: 'agent_message', text: 'STATUS: Generating CONFIDENCE_QUICKSTART.md report...' } },
-    ];
-
-    let i = 0;
-    const interval = setInterval(() => {
-      if (i < events.length) {
-        process.stdout.write(JSON.stringify(events[i]) + '\\n');
-        i++;
-      } else {
-        clearInterval(interval);
-        process.exit(0);
-      }
-    }, 200);
+${streamEventsSnippet('codex')}
   });
   return;
 }

@@ -1,3 +1,5 @@
+import { streamEventsSnippet } from './mock-streaming.js';
+
 export const CLAUDE_SCRIPT = `#!/usr/bin/env node
 const fs = require('fs');
 const path = require('path');
@@ -20,26 +22,6 @@ if (args.includes('--print')) {
     JSON.stringify({ command: 'claude', args, prompt: args[args.length - 1] }),
     'utf-8'
   );
-
-  const events = [
-    { type: 'assistant', message: { content: [{ type: 'text', text: 'STATUS: Analyzing project...' }] } },
-    { type: 'assistant', message: { content: [{ type: 'text', text: 'STATUS: Installing @spotify-confidence/sdk...' }] } },
-    { type: 'assistant', message: { content: [{ type: 'text', text: 'STATUS: Generating Confidence configuration...' }] } },
-    { type: 'assistant', message: { content: [{ type: 'text', text: 'STATUS: Creating feature flag example...' }] } },
-    { type: 'assistant', message: { content: [{ type: 'text', text: 'Created confidence.config.ts' }] } },
-    { type: 'assistant', message: { content: [{ type: 'text', text: 'Added feature flag example' }] } },
-    { type: 'result', result: 'STATUS: Generating CONFIDENCE_QUICKSTART.md report...' },
-  ];
-
-  let i = 0;
-  const interval = setInterval(() => {
-    if (i < events.length) {
-      process.stdout.write(JSON.stringify(events[i]) + '\\n');
-      i++;
-    } else {
-      clearInterval(interval);
-      process.exit(0);
-    }
-  }, 200);
+${streamEventsSnippet('claude')}
 }
 `;

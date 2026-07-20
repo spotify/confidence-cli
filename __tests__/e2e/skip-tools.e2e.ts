@@ -7,9 +7,7 @@ describe('when the user skips connecting tools', () => {
     await navigateToConnectTools(session);
 
     // Select "Skip for now" — 4th option (after "Connect all tools", 2 individual tools)
-    await session.sendKey(ARROW_DOWN);
-    await session.sendKey(ARROW_DOWN);
-    await session.sendKey(ARROW_DOWN);
+    await session.sendKeyRepeat(ARROW_DOWN, 3);
     await session.sendKey(ENTER);
 
     // Skip confirmation text

@@ -7,8 +7,7 @@ describe('welcome screen navigation', () => {
     await session.waitForText('Confidence Quickstart');
     await session.waitForText('Start setup');
 
-    await session.sendKey(ARROW_DOWN);
-    await session.sendKey(ARROW_DOWN);
+    await session.sendKeyRepeat(ARROW_DOWN, 2);
     await session.sendKey(ENTER);
 
     await session.waitForText('About Confidence');
@@ -32,9 +31,7 @@ describe('welcome screen navigation', () => {
     await session.waitForText('Confidence Quickstart');
     await session.waitForText('Start setup');
 
-    await session.sendKey(ARROW_DOWN);
-    await session.sendKey(ARROW_DOWN);
-    await session.sendKey(ARROW_DOWN);
+    await session.sendKeyRepeat(ARROW_DOWN, 3);
     await session.sendKey(ENTER);
 
     const exitCode = await session.waitForExit();

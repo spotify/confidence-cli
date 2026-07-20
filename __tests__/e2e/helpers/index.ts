@@ -72,6 +72,12 @@ export async function simulateAuthCallback(): Promise<void> {
   throw new Error(`Auth callback server not ready after ${maxAttempts * 100}ms`);
 }
 
+export async function navigatePastWelcome(session: TerminalSession): Promise<void> {
+  await session.waitForText('Start setup');
+  await session.sendKey(ENTER);
+  await session.waitForText('All checks passed');
+}
+
 export async function navigatePastAuth(session: TerminalSession): Promise<void> {
   await session.waitForText('Sign in to Confidence');
   await session.waitForText('Sign in to a Confidence account');
@@ -82,9 +88,7 @@ export async function navigatePastAuth(session: TerminalSession): Promise<void> 
 }
 
 export async function navigateToPlugins(session: TerminalSession): Promise<void> {
-  await session.waitForText('Start setup');
-  await session.sendKey(ENTER);
-  await session.waitForText('All checks passed');
+  await navigatePastWelcome(session);
   await navigatePastAuth(session);
   await session.waitForText('Which agent tool are you using?');
   session.checkpoint();
@@ -116,23 +120,18 @@ export async function selectIdeAndOnboard(
   session: TerminalSession,
   downPresses: number,
 ): Promise<void> {
-  for (let i = 0; i < downPresses; i++) {
-    await session.sendKey(ARROW_DOWN);
-  }
+  await session.sendKeyRepeat(ARROW_DOWN, downPresses);
   await session.sendKey(ENTER);
   await session.waitForText('Plugin installed successfully');
 
   // ConnectTools may auto-advance when MCP servers are already registered globally
-  const deadline = Date.now() + 15_000;
-  while (Date.now() < deadline) {
-    const screen = session.screen;
-    if (screen.includes('Start onboarding?')) break;
-    if (screen.includes('Connect Confidence tools?')) {
-      await session.sendKey(ENTER);
-      await session.waitForText('Connected successfully');
-      break;
-    }
-    await new Promise((r) => setTimeout(r, 100));
+  const matched = await session.waitForAnyTextOf([
+    'Start onboarding?',
+    'Connect Confidence tools?',
+  ]);
+  if (matched === 'Connect Confidence tools?') {
+    await session.sendKey(ENTER);
+    await session.waitForText('Connected successfully');
   }
 
   await session.waitForText('Start onboarding?');

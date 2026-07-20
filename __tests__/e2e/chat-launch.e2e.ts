@@ -58,9 +58,7 @@ describe('when the user starts chat after onboarding', () => {
 
     // Skip connecting tools
     await session.waitForText('Connect Confidence tools?');
-    await session.sendKey(ARROW_DOWN);
-    await session.sendKey(ARROW_DOWN);
-    await session.sendKey(ARROW_DOWN);
+    await session.sendKeyRepeat(ARROW_DOWN, 3);
     await session.sendKey(ENTER);
     await session.waitForText('Skipped');
 
