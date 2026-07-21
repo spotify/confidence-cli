@@ -4,6 +4,7 @@ import { join } from 'node:path';
 import { SKILLS_BASE_URL } from '@lib/constants.js';
 
 export const PLUGIN_SKILLS = [
+  'analyze-project',
   'onboard-confidence',
   'onboard-confidence-dry-run',
   'setup-warehouse',

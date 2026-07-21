@@ -1,6 +1,25 @@
 import { CONFIDENCE_DOCS_URL } from '../constants.js';
 import { loadStep } from './steps/load.js';
 
+export function integrateViaSkill(
+  framework: string,
+  step: number,
+  isEmptyProject: boolean,
+): string {
+  return loadStep('integrate-via-skill.md', {
+    STEP: step,
+    FRAMEWORK: framework,
+
+    DOMAIN_CONTEXT: isEmptyProject
+      ? "The project was just scaffolded — treat the sample app's features as the domain."
+      : 'The project is an existing codebase. Study its code to understand the domain, UI flows, and business logic.',
+
+    INSERTION_HINT: isEmptyProject
+      ? 'For fresh scaffolds, use the scaffold\'s default heading or welcome text as the insertion point — the "aha" moment works just as well on boilerplate. Demonstrate at least two use cases (e.g. a gradual rollout for a heading change and a kill switch for a feature section).'
+      : 'Read the top 2–3 candidate files and pick the best one: a single visible string or component, no complex conditionals already wrapping it, in a file the user will recognize.',
+  });
+}
+
 const REACT_GOTCHAS = `
 
 **React/Next.js gotchas:**
