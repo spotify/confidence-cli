@@ -140,9 +140,14 @@ if $clean_mcp; then
     ((removed++))
   fi
 
-  # Clean Cursor MCP configs and agent state
+  # Clean Cursor MCP configs, CLI permissions, and agent state
   remove_all_mcp_entries "$PROJECT_DIR/.cursor/mcp.json"
   remove_all_mcp_entries "$HOME/.cursor/mcp.json"
+  if [[ -f "$PROJECT_DIR/.cursor/cli.json" ]]; then
+    rm "$PROJECT_DIR/.cursor/cli.json"
+    echo "Removed $PROJECT_DIR/.cursor/cli.json"
+    ((removed++))
+  fi
   for server in confidence-flags confidence-docs; do
     if cursor agent mcp disable "$server" 2>/dev/null; then
       echo "Disabled Cursor agent MCP server $server"

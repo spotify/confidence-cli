@@ -9,7 +9,7 @@ import {
   detectMcpStatuses as detectShared,
 } from '../mcp/servers.js';
 import { getRegisteredMcpNames, getStoredAuthToken } from '../mcp/config.js';
-import { globalConfigPath, mcpConfigPath } from './paths.js';
+import { cliConfigPath, globalConfigPath, mcpConfigPath } from './paths.js';
 
 const execFile = promisify(execFileCb);
 
@@ -33,6 +33,7 @@ export async function connectMcpServer(opts: McpConnectOpts): Promise<void> {
 
   writeMcpEntry(mcpConfigPath(opts.projectDir), opts.serverName, entry);
   writeMcpEntry(globalConfigPath(), opts.serverName, entry);
+  writeCliPermission(cliConfigPath(opts.projectDir), opts.serverName);
 
   try {
     await execFile('cursor', ['agent', 'mcp', 'enable', opts.serverName]);
@@ -56,6 +57,32 @@ function writeMcpEntry(configPath: string, serverName: string, entry: unknown): 
   const mcpServers = (config.mcpServers ?? {}) as Record<string, unknown>;
   mcpServers[serverName] = entry;
   config.mcpServers = mcpServers;
+
+  writeFileSync(configPath, JSON.stringify(config, null, 2) + '\n', 'utf-8');
+}
+
+function writeCliPermission(configPath: string, serverName: string): void {
+  let config: Record<string, unknown> = {};
+  if (existsSync(configPath)) {
+    try {
+      config = JSON.parse(readFileSync(configPath, 'utf-8')) as Record<string, unknown>;
+    } catch {
+      // overwrite if corrupt
+    }
+  } else {
+    mkdirSync(join(configPath, '..'), { recursive: true });
+  }
+
+  const permissions = (config.permissions ?? {}) as Record<string, unknown>;
+  const allow = (permissions.allow ?? []) as string[];
+  const rule = `Mcp(${serverName}:*)`;
+
+  if (!allow.includes(rule)) {
+    allow.push(rule);
+  }
+
+  permissions.allow = allow;
+  config.permissions = permissions;
 
   writeFileSync(configPath, JSON.stringify(config, null, 2) + '\n', 'utf-8');
 }
