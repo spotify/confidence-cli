@@ -1,5 +1,5 @@
 import type { Command } from './types.js';
-import { APP_NAME } from '@lib/constants.js';
+import { APP_NAME, APP_VERSION } from '@lib/meta.js';
 
 export const helpCommand: Command = {
   name: 'help',
@@ -7,7 +7,7 @@ export const helpCommand: Command = {
   aliases: ['h'],
   handler: () => {
     const lines = [
-      `${APP_NAME}`,
+      `${APP_NAME} v${APP_VERSION}`,
       '',
       'Usage: confidence-wizard [command] [options]',
       '',

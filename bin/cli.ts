@@ -1,7 +1,7 @@
 import yargs from 'yargs';
 import { hideBin } from 'yargs/helpers';
 import { defaultCommand, helpCommand } from '../src/commands/index.js';
-import { APP_NAME } from '../src/lib/constants.js';
+import { APP_NAME } from '../src/lib/meta.js';
 
 const cli = yargs(hideBin(process.argv))
   .scriptName(APP_NAME)

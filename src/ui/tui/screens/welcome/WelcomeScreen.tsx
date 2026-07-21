@@ -14,10 +14,9 @@ import { welcomeMenuSelect } from './log-messages.js';
 import { welcomeMenuSelected } from './telemetry-events.js';
 
 const STEPS = [
-  'Check your system',
-  'Teach your AI Confidence',
-  'Sign in to Confidence',
-  'Connect your AI to Confidence',
+  'It will check your system',
+  'Sign you in to Confidence workspace',
+  'Teach your AI agent about Confidence',
   'Integrate the SDK into your project',
   'Show a working feature flag example',
 ] as const;
@@ -50,7 +49,6 @@ export function WelcomeScreen() {
 
   const narrow = useIsNarrow();
   const short = useIsShort();
-  const showSteps = !short;
   const align = narrow ? HAlign.Left : HAlign.Center;
 
   const telemetryOn = isTelemetryEnabled();
@@ -88,18 +86,18 @@ export function WelcomeScreen() {
 
         <Box marginBottom={1} flexDirection="column" alignItems={align}>
           <Text>Feature flags and experiments, set up with AI in minutes.</Text>
+          {!short && <Text>This wizard will help you get started with Confidence.</Text>}
         </Box>
 
-        {showSteps && (
-          <Box marginBottom={1} flexDirection="column" alignItems={align}>
-            <Text>This wizard will:</Text>
+        {!short && (
+          <Box marginBottom={2} flexDirection="column">
             {STEPS.map((step, i) => (
-              <Text key={step}>{` ${i + 1}. ${step}`}</Text>
+              <Text key={step}>{`${i + 1}. ${step}`}</Text>
             ))}
           </Box>
         )}
 
-        <Box flexDirection="column" marginTop={1}>
+        <Box flexDirection="column">
           <Text>
             <Text color={Colors.muted}>{'    Directory  '}</Text>
             <Text color={Colors.success}>{Icons.check}</Text>

@@ -1,6 +1,8 @@
 import { Box, Text, useInput } from 'ink';
 import { Select, TextInput } from '@inkjs/ui';
-import { Colors } from '../styles.js';
+import { APP_VERSION } from '@lib/meta.js';
+import { Colors, HAlign } from '../styles.js';
+import { useIsNarrow } from '../hooks/useIsNarrow.js';
 
 export type PromptOption = {
   label: string;
@@ -35,6 +37,8 @@ type PromptPanelProps = PromptPanelSelectProps | PromptPanelInputProps | PromptP
 const MAX_VISIBLE_OPTIONS = 8;
 
 export function PromptPanel(props: PromptPanelProps) {
+  const narrow = useIsNarrow();
+
   useInput((_input, key) => {
     if (key.escape && props.onCancel) {
       props.onCancel();
@@ -94,6 +98,12 @@ export function PromptPanel(props: PromptPanelProps) {
               esc
             </Text>
             <Text color={Colors.muted}>cancel</Text>
+          </Box>
+        )}
+
+        {!narrow && (
+          <Box flexGrow={1} justifyContent={HAlign.Right}>
+            <Text color={Colors.muted}>v{APP_VERSION}</Text>
           </Box>
         )}
       </Box>

@@ -28,19 +28,19 @@ export function SelectFrameworkScreen() {
         </Box>
         {short ? (
           <Box marginBottom={1} flexDirection="column" alignItems={align}>
-            <Text color={Colors.muted}>Choose your project's SDK.</Text>
+            <Text>Choose your project's SDK.</Text>
           </Box>
         ) : (
-          <Box marginBottom={1} flexDirection="column" alignItems={align}>
-            <Text color={Colors.muted}>Choose your project's SDK. The wizard will:</Text>
-            <Text color={Colors.muted}> 1. Install the matching Confidence SDK package</Text>
-            <Text color={Colors.muted}> 2. Generate framework-specific integration code</Text>
-            <Text color={Colors.muted}> 3. Guide you through a working feature flag example</Text>
+          <Box marginBottom={1} flexDirection="column">
+            <Text>Choose your project's SDK and the wizard will:</Text>
+            <Text>1. Install the matching Confidence SDK package</Text>
+            <Text>2. Generate framework-specific integration code</Text>
+            <Text>3. Guide you through a working feature flag example</Text>
           </Box>
         )}
         {current && (
           <Text>
-            Currently: <Text bold>{current}</Text>
+            <Text color={Colors.muted}>Currently:</Text> <Text bold>{current}</Text>
           </Text>
         )}
       </Box>
