@@ -31,11 +31,11 @@ export function AboutScreen() {
 
         <Box flexDirection="column" marginTop={1}>
           <Text>
-            <Text color={Colors.muted}>{'Docs:       '}</Text>
+            <Text color={Colors.muted}>{'     Docs: '}</Text>
             <Text color={Colors.primary}>{CONFIDENCE_DOCS_URL}</Text>
           </Text>
           <Text>
-            <Text color={Colors.muted}>{'Dashboard:  '}</Text>
+            <Text color={Colors.muted}>{'Dashboard: '}</Text>
             <Text color={Colors.primary}>{CONFIDENCE_DASHBOARD_URL}</Text>
           </Text>
         </Box>
