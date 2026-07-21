@@ -10,6 +10,8 @@
 #
 set -euo pipefail
 
+SCRIPT_DIR="$(cd "$(dirname "$0")" && pwd)"
+
 # --- Parse arguments ---
 
 clean_auth=false
@@ -96,21 +98,7 @@ if $clean_mcp; then
     [[ -f "$config_path" ]] || return 0
 
     local result
-    result=$(node -e '
-      const fs = require("fs");
-      const path = process.argv[1];
-      const config = JSON.parse(fs.readFileSync(path, "utf-8"));
-      if (!config.mcpServers || Object.keys(config.mcpServers).length === 0) { process.exit(0); }
-      const names = Object.keys(config.mcpServers);
-      delete config.mcpServers;
-      if (Object.keys(config).length === 0) {
-        fs.unlinkSync(path);
-        console.log("deleted:" + names.join(","));
-      } else {
-        fs.writeFileSync(path, JSON.stringify(config, null, 2) + "\n");
-        console.log("cleaned:" + names.join(","));
-      }
-    ' "$config_path" 2>/dev/null) || return 0
+    result=$(node "$SCRIPT_DIR/remove-mcp-entries.js" "$config_path" 2>/dev/null) || return 0
 
     local action="${result%%:*}"
     local names="${result#*:}"
@@ -194,34 +182,7 @@ if $clean_mcp; then
     [[ -f "$settings_path" ]] || return 0
 
     local settings_result
-    settings_result=$(node -e '
-      const fs = require("fs");
-      const path = process.argv[1];
-      const config = JSON.parse(fs.readFileSync(path, "utf-8"));
-      let changed = false;
-      const allow = config.permissions?.allow;
-      if (Array.isArray(allow)) {
-        const filtered = allow.filter(p => !p.startsWith("mcp__"));
-        if (filtered.length !== allow.length) {
-          config.permissions.allow = filtered;
-          if (filtered.length === 0) delete config.permissions.allow;
-          if (Object.keys(config.permissions).length === 0) delete config.permissions;
-          changed = true;
-        }
-      }
-      if (Array.isArray(config.enabledMcpjsonServers) && config.enabledMcpjsonServers.length > 0) {
-        delete config.enabledMcpjsonServers;
-        changed = true;
-      }
-      if (!changed) { process.exit(0); }
-      if (Object.keys(config).length === 0) {
-        fs.unlinkSync(path);
-        console.log("deleted");
-      } else {
-        fs.writeFileSync(path, JSON.stringify(config, null, 2) + "\n");
-        console.log("cleaned");
-      }
-    ' "$settings_path" 2>/dev/null) || return 0
+    settings_result=$(node "$SCRIPT_DIR/remove-mcp-settings.js" "$settings_path" 2>/dev/null) || return 0
 
     if [[ "$settings_result" == "deleted" ]]; then
       echo "Deleted $settings_path (empty after cleanup)"
