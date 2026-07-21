@@ -99,12 +99,12 @@ export function WelcomeScreen() {
 
         <Box flexDirection="column">
           <Text>
-            <Text color={Colors.muted}>{'    Directory  '}</Text>
+            <Text color={Colors.muted}>{'Directory  '}</Text>
             <Text color={Colors.success}>{Icons.check}</Text>
             <Text> {dir}</Text>
           </Text>
           <Text>
-            <Text color={Colors.muted}>{'    Framework  '}</Text>
+            <Text color={Colors.muted}>{'Framework  '}</Text>
             {detectionAttempted ? (
               <>
                 <Text color={frameworkColor}>{frameworkIcon}</Text>
@@ -116,7 +116,7 @@ export function WelcomeScreen() {
             )}
           </Text>
           <Text>
-            <Text color={Colors.muted}>{'    Telemetry  '}</Text>
+            <Text color={Colors.muted}>{'Telemetry  '}</Text>
             {telemetryOn ? (
               <>
                 <Text color={Colors.success}>{Icons.check}</Text>
