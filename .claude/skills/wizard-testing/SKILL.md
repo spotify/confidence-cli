@@ -57,6 +57,7 @@ Do **not** mock `fetch` or HTTP clients directly with `vi.fn()` or `vi.mock()`.
 | `ink-testing-library` | TUI screen rendering and interaction |
 | `msw`                 | Network-level API mocking            |
 | `waitFor`             | Poll until an assertion passes       |
+| `node-pty`            | E2E tests — spawns CLI in a real pty |
 
 ## Test File Location
 
@@ -68,9 +69,52 @@ __tests__/
   ui/
   lib/
   frameworks/
+  e2e/               # End-to-end tests (node-pty)
+    helpers/          # TerminalSession, mock server, navigation utils
+    *.e2e.ts          # E2E test files
 ```
 
-Or colocated as `src/**/__tests__/**/*.test.{ts,tsx}`.
+Unit/integration tests are colocated as `src/**/__tests__/**/*.test.{ts,tsx}`.
+
+## E2E Tests
+
+E2E tests spawn the **built CLI binary** (`dist/bin/cli.js`) in a real pseudo-terminal via `node-pty`, send keystrokes, and assert on terminal output. They exercise real code paths — not the dry-run stubs.
+
+### Running
+
+```bash
+pnpm test:e2e       # Build + run all e2e tests
+```
+
+E2E tests are **not** included in `pnpm test` or `pnpm qa`. They run in a separate CI job.
+
+### Config
+
+E2E tests use a dedicated vitest config (`vitest.config.e2e.ts`) with:
+
+- 120s test timeout (the full wizard flow takes ~12s)
+- Serial execution (`maxWorkers: 1`)
+- No MSW setup (HTTP is mocked via a real local server)
+- Global setup in `__tests__/e2e/global-setup.ts`
+
+### Helpers (`__tests__/e2e/helpers/`)
+
+- **`createSession(opts?)`** — spawns the CLI in a pty with an isolated temp project dir. Pass `{ project: 'empty' }` for an empty project (no `package.json`). Returns a `TerminalSession` with `[Symbol.dispose]`.
+- **`TerminalSession`** — wraps node-pty. Key methods: `waitForText(text)` (polls accumulated buffer), `sendKey(key)`, `waitForExit()`, `screen` (full ANSI-stripped output).
+- **`simulateAuthCallback()`** — hits the CLI's local OAuth callback server to simulate browser auth.
+- **`navigateToPlugins/ConnectTools/Onboarding(session)`** — navigation shortcuts that advance through earlier screens.
+- **Mock HTTP server** — started in global setup, mimics all Confidence APIs (auth, MCP, skills, telemetry). The CLI's API URLs are configurable via env vars (e.g. `CONFIDENCE_AUTH_URL`), which the global setup points at the local server.
+- **Mock `claude` binary** — placed on PATH, handles `mcp` subcommands and `--print` onboarding by emitting stream-json events.
+
+### Writing E2E Tests
+
+- **File naming**: `*.e2e.ts` (not `.test.ts`)
+- **One concern per file**: group related scenarios (e.g. `skip-plugins.e2e.ts` covers all skip-plugin variations).
+- **Use `createSession()` per test** — each call creates a fresh project dir for full isolation. No shared state between tests.
+- **Use `using`** for automatic cleanup: `using session = createSession()`.
+- **Assert positively** — the accumulated buffer contains ALL output ever rendered (including text from previous screens). Prefer `waitForText('expected')` over `not.toContain('unexpected')`.
+- **Use navigation helpers** to skip past earlier screens when testing later ones (e.g. `navigateToOnboarding(session)` advances through Welcome, SystemCheck, Auth, Plugins, and ConnectTools).
+- **Add comments** before each interaction block to identify the screen and the intent of the action (e.g. `// Welcome`, `// Select "Skip for now"`, `// Done — no IDE set, only Exit option`).
 
 ## Test Structure
 

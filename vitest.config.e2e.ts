@@ -1,7 +1,5 @@
 import { defineConfig } from 'vitest/config';
 
-const isCI = !!process.env.CI;
-
 export default defineConfig({
   resolve: {
     alias: {
@@ -16,19 +14,12 @@ export default defineConfig({
   test: {
     globals: true,
     environment: 'node',
-    include: ['__tests__/**/*.test.{ts,tsx}', 'src/**/__tests__/**/*.test.{ts,tsx}'],
-    exclude: ['node_modules', 'dist'],
-    setupFiles: ['__tests__/msw/setup.ts'],
-    clearMocks: true,
-    maxWorkers: isCI ? 1 : 4,
+    include: ['__tests__/e2e/**/*.e2e.ts'],
+    globalSetup: ['__tests__/e2e/global-setup.ts'],
+    setupFiles: [],
+    testTimeout: 120_000,
+    hookTimeout: 30_000,
+    maxWorkers: 1,
     pool: 'forks',
-    poolOptions: {
-      forks: {
-        execArgv: ['--import', './__tests__/msw/localstorage-fake.mjs'],
-      },
-    },
-  },
-  esbuild: {
-    jsx: 'automatic',
   },
 });

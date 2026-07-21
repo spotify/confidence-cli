@@ -1,15 +1,17 @@
+const MCP_BASE_URL = process.env.CONFIDENCE_MCP_URL ?? 'https://mcp.confidence.dev';
+
 export const MCP_SERVERS = {
   'confidence-flags': {
     type: 'http' as const,
-    url: 'https://mcp.confidence.dev/mcp/flags',
+    url: `${MCP_BASE_URL}/mcp/flags`,
     headers: { 'x-confidence-mcp-consumer': 'plugin' },
   },
   'confidence-docs': {
     type: 'http' as const,
-    url: 'https://mcp.confidence.dev/mcp/docs',
+    url: `${MCP_BASE_URL}/mcp/docs`,
     headers: { 'x-confidence-mcp-consumer': 'plugin' },
   },
-} as const;
+};
 
 export type McpServerName = keyof typeof MCP_SERVERS;
 

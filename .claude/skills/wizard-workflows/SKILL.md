@@ -143,14 +143,14 @@ Pin container images to SHA256 digests, not tags. Tags (including `:latest`) are
 ```yaml
 # Wrong:
 container:
-  image: node:20
+  image: node:24
 
 # Correct:
 container:
   image: node@sha256:01ba4719c80b6fe911b091a7c05124b64eeece964e09c058ef8f9805daca546b
 ```
 
-Retrieve digests via: `docker inspect node:20 --format='{{.RepoDigests}}'`
+Retrieve digests via: `docker inspect node:24 --format='{{.RepoDigests}}'`
 
 ## Other Rules
 

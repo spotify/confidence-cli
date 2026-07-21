@@ -5,7 +5,7 @@ import { writeFileSync, readFileSync, existsSync } from 'node:fs';
 import { tmpdir } from 'node:os';
 import { join } from 'node:path';
 import {
-  AUTH0_DOMAIN,
+  AUTH0_BASE_URL,
   AUTH0_AUDIENCE,
   AUTH0_SCOPE,
   AUTH0_CLIENT_ID_SIGNUP,
@@ -181,7 +181,7 @@ function buildAuthUrl(clientId: string, challenge: string, redirectUri: string):
     code_challenge: challenge,
     code_challenge_method: 'S256',
   });
-  return `https://${AUTH0_DOMAIN}/authorize?${params.toString()}`;
+  return `${AUTH0_BASE_URL}/authorize?${params.toString()}`;
 }
 
 type TokenResponse = {
@@ -205,7 +205,7 @@ async function exchangeCode(opts: {
     redirect_uri: opts.redirectUri,
   });
 
-  const response = await fetch(`https://${AUTH0_DOMAIN}/oauth/token`, {
+  const response = await fetch(`${AUTH0_BASE_URL}/oauth/token`, {
     method: 'POST',
     headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
     body: body.toString(),

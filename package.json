@@ -15,6 +15,7 @@
     "dev": "tsdown --watch",
     "try": "NODE_ENV=development node --import tsx bin/cli.ts",
     "test": "vitest run",
+    "test:e2e": "pnpm build && vitest run --config vitest.config.e2e.ts",
     "test:watch": "vitest",
     "lint": "eslint . && prettier --check .",
     "lint:fix": "eslint --fix . && prettier --write .",
@@ -46,6 +47,7 @@
     "ink-testing-library": "^4.0.0",
     "lint-staged": "^17.0.8",
     "msw": "^2.14.6",
+    "node-pty": "1.2.0-beta.14",
     "prettier": "^3.5.3",
     "tsdown": "^0.12.5",
     "tsx": "^4.19.0",
@@ -54,7 +56,7 @@
     "vitest": "^3.2.1"
   },
   "engines": {
-    "node": ">=20.0.0"
+    "node": ">=24.0.0"
   },
   "publishConfig": {
     "access": "public"

@@ -1,5 +1,6 @@
 import { spawn } from 'node:child_process';
 import {
+  act,
   renderApp,
   createProjectDir,
   mockNextSpawn,
@@ -280,7 +281,7 @@ describe('Onboarding flow', () => {
         expect(sut.lastFrame()).toContain("Integrate and migrate Statsig's flags");
       });
 
-      sut.stdin.write(ARROW_DOWN + ENTER);
+      await act(() => sut.stdin.write(ARROW_DOWN + ENTER));
 
       await waitFor(() => {
         expect(sut.lastFrame()).toContain('Feature Flags');

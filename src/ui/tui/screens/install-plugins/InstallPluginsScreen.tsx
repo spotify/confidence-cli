@@ -81,7 +81,7 @@ export function InstallPluginsScreen() {
     <Box flexDirection="column">
       <Box marginBottom={1}>
         <Text color={Colors.primary} bold>
-          Teach your AI about Confidence
+          Teach your AI Confidence
         </Text>
       </Box>
       <Box marginBottom={1}>

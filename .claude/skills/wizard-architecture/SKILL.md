@@ -267,6 +267,10 @@ import { ScreenId } from '@lib/session.js';
 - Fix lint errors immediately, do not suppress or downgrade them.
 - ESLint config includes `eslint-plugin-react-hooks` (`recommended-latest` flat config) with all warning-level rules upgraded to errors. See _React Hooks Rules_ above for the key rules.
 
+### No Warning Suppression
+
+Never suppress, silence, or filter runtime warnings (e.g. `--no-warnings`, `--disable-warning`, `NODE_NO_WARNINGS`) or compiler/linter diagnostics without explicit consent from the developers. Warnings exist to surface real issues — fix the root cause instead of hiding the symptom.
+
 ## Adding New Concerns
 
 When the project grows, new top-level concerns (e.g. `src/agent/` for agent harness logic, `src/detection/` for project analysis) follow the same pattern:

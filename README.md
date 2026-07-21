@@ -8,7 +8,7 @@ Interactive CLI wizard for setting up and integrating [Confidence](https://confi
 npx @spotify/confidence-quickstart
 ```
 
-Requires Node.js 20+.
+Requires Node.js 24+.
 
 ## What It Does
 
@@ -61,6 +61,10 @@ pnpm build        # Build for distribution
 ### E2E tests fail to install or build
 
 E2E tests use `node-pty` to drive the TUI in a real terminal. This native module requires platform-specific build tools. If `pnpm install` fails on `node-pty`, install the prerequisites listed at https://github.com/microsoft/node-pty#dependencies.
+
+### E2E tests fail with `posix_spawnp failed`
+
+The stable `node-pty` release (v1.1.0) doesn't ship prebuilt binaries for Node.js v26+. The project uses `node-pty@1.2.0-beta.14` which includes updated Node-API bindings for newer Node versions. If you hit this error on a newer Node version, ensure the beta is installed. On CI with Node 24, the stable release works fine.
 
 ## Telemetry
 

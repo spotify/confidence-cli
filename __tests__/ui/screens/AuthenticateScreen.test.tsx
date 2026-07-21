@@ -45,7 +45,7 @@ describe('AuthenticateScreen', () => {
       });
 
       await waitFor(() => {
-        expect(sut.lastFrame()).toContain('Teach your AI about Confidence');
+        expect(sut.lastFrame()).toContain('Teach your AI Confidence');
       });
     });
 

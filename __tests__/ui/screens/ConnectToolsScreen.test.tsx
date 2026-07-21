@@ -1,5 +1,6 @@
 import { http, HttpResponse } from 'msw';
 import {
+  act,
   renderScreen,
   renderApp,
   createProjectDir,
@@ -59,7 +60,7 @@ describe('ConnectToolsScreen', () => {
         expect(sut.lastFrame()).toContain('Connect all tools');
       });
 
-      sut.stdin.write(ENTER);
+      await act(() => sut.stdin.write(ENTER));
 
       await waitFor(() => {
         expect(sut.lastFrame()).toContain('Connected successfully');
@@ -85,7 +86,7 @@ describe('ConnectToolsScreen', () => {
         expect(sut.lastFrame()).toContain('Connect all tools');
       });
 
-      sut.stdin.write(ENTER);
+      await act(() => sut.stdin.write(ENTER));
 
       await waitFor(() => {
         expect(sut.lastFrame()).toContain('not responding');
@@ -106,7 +107,7 @@ describe('ConnectToolsScreen', () => {
         expect(sut.lastFrame()).toContain('Connect all tools');
       });
 
-      sut.stdin.write(ENTER);
+      await act(() => sut.stdin.write(ENTER));
 
       await waitFor(() => {
         expect(sut.lastFrame()).toContain('not responding');
@@ -124,7 +125,7 @@ describe('ConnectToolsScreen', () => {
         expect(sut.lastFrame()).toContain('Skip for now');
       });
 
-      sut.stdin.write(ARROW_DOWN + ARROW_DOWN + ARROW_DOWN + ENTER);
+      await act(() => sut.stdin.write(ARROW_DOWN + ARROW_DOWN + ARROW_DOWN + ENTER));
 
       await waitFor(() => {
         expect(sut.lastFrame()).toContain('Skipped');
