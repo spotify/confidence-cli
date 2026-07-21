@@ -1,5 +1,7 @@
 import { useCallback, useEffect, useMemo, useState } from 'react';
 import {
+  type IdeId,
+  type McpServer,
   type McpServerName,
   type McpServerStatus,
   allServersConnected,
@@ -10,7 +12,6 @@ import {
   MCP_SERVERS,
   getIntegration,
 } from '@integrations/index.js';
-import type { IdeId } from '@integrations/index.js';
 import { validateToken } from '@lib/auth.js';
 import { ScreenId } from '@lib/session.js';
 import { useLogger } from '../../hooks/useLog.js';
@@ -19,7 +20,13 @@ import { useSession, $session, store } from '../../store.js';
 import { useInitialMcpDetection } from './useInitialMcpDetection.js';
 
 export type McpPhase =
-  'detecting' | 'already-connected' | 'ask-install' | 'connecting' | 'connected' | 'skipped';
+  | 'detecting'
+  | 'already-connected'
+  | 'ask-install'
+  | 'auth-expired'
+  | 'connecting'
+  | 'connected'
+  | 'skipped';
 
 export type McpConnectState = {
   phase: McpPhase;
@@ -67,7 +74,7 @@ export function useMcpConnect(): McpConnectState {
       if (nothingChanged) return prev;
 
       const merged = { ...prev, ...updated };
-      setPhase(allServersConnected(merged) ? 'connected' : 'ask-install');
+      setPhase(resolvePhaseFromStatuses(merged));
       return merged;
     });
   }
@@ -98,9 +105,9 @@ export function useMcpConnect(): McpConnectState {
       const results = await Promise.all(
         names.map(async (name) => {
           const server = available.find((s) => s.name === name);
-          const ok = await verifyMcpServer(name);
-          log(mcpVerified(server?.url, ok));
-          return [name, ok ? 'connected' : 'installed'] as const;
+          const status = await verifyMcpServer(name, { authToken: token });
+          log(mcpVerified(server?.url, status));
+          return [name, status] as const;
         }),
       );
 
@@ -130,32 +137,31 @@ export function useMcpConnect(): McpConnectState {
 
         const preference = loadMcpPreference();
         if (preference !== 'connected') {
-          setPhase('ask-install');
+          setPhase(resolvePhaseFromStatuses(statuses));
           return;
         }
 
         const token = $session.get().authState.token;
         if (!token || !validateToken(token).valid) {
-          setPhase('ask-install');
+          setPhase(resolvePhaseFromStatuses(statuses));
           return;
         }
 
-        // Auto-reconnect only servers that were previously registered but lost their connection
-        const needsReconnect = available
-          .filter((s) => statuses[s.name as McpServerName] === 'installed')
+        const needReconnect = available
+          .filter((s) => needsReconnect(s, statuses))
           .map((s) => s.name as McpServerName);
 
-        if (needsReconnect.length === 0) {
-          setPhase('ask-install');
+        if (needReconnect.length === 0) {
+          setPhase(resolvePhaseFromStatuses(statuses));
           return;
         }
 
         setPhase('connecting');
-        const results = await registerAndVerify(needsReconnect, session.projectDir, token);
+        const results = await registerAndVerify(needReconnect, session.projectDir, token);
         const merged = { ...statuses, ...results };
         setServerStatuses(merged);
 
-        setPhase(allServersConnected(merged) ? 'connected' : 'ask-install');
+        setPhase(resolvePhaseFromStatuses(merged));
       }
 
       run();
@@ -165,9 +171,11 @@ export function useMcpConnect(): McpConnectState {
 
   function connect(value: string) {
     setPhase('connecting');
+
     const remaining = available
-      .filter((s) => (serverStatuses[s.name] ?? 'not-installed') !== 'connected')
+      .filter((s) => possibleToConnect(s, serverStatuses))
       .map((s) => s.name as McpServerName);
+
     const namesToConnect: McpServerName[] = value === 'all' ? remaining : [value as McpServerName];
 
     if ($session.get().dryRun) return connectDryRun(namesToConnect);
@@ -197,4 +205,26 @@ export function useMcpConnect(): McpConnectState {
   }
 
   return { phase, serverStatuses, available, connectedNames, connect, skip };
+}
+
+function resolvePhaseFromStatuses(statuses: Record<string, McpServerStatus>): McpPhase {
+  if (allServersConnected(statuses)) {
+    return 'connected';
+  }
+
+  if (Object.values(statuses).some((s) => s === 'auth-expired')) {
+    return 'auth-expired';
+  }
+
+  return 'ask-install';
+}
+
+function possibleToConnect(server: McpServer, statuses: Record<string, McpServerStatus>) {
+  const status = statuses[server.name] ?? 'not-installed';
+  return status !== 'connected';
+}
+
+function needsReconnect(server: McpServer, statuses: Record<string, McpServerStatus>) {
+  const status = statuses[server.name as McpServerName];
+  return status === 'installed' || status === 'auth-expired';
 }

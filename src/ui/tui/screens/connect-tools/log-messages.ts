@@ -32,9 +32,14 @@ export function mcpRegistered(opts: {
   };
 }
 
-export function mcpVerified(url: string | undefined, reachable: boolean): LogMessage {
+export function mcpVerified(url: string | undefined, status: string): LogMessage {
+  const labels: Record<string, string> = {
+    connected: 'Reachable',
+    installed: 'Not responding',
+    'auth-expired': 'Auth expired',
+  };
   return {
     input: `POST ${url} (verify)`,
-    output: reachable ? 'Reachable' : 'Not responding',
+    output: labels[status] ?? status,
   };
 }

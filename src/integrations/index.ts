@@ -7,6 +7,7 @@ export type {
 } from './types.js';
 export { getIntegrations, getIntegration } from './registry.js';
 export {
+  type McpServer,
   type McpServerName,
   type McpServerStatus,
   MCP_SERVERS,

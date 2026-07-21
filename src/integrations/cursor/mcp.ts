@@ -4,30 +4,23 @@ import { join } from 'node:path';
 import { promisify } from 'node:util';
 import type { McpConnectOpts } from '../types.js';
 import {
-  MCP_SERVERS,
   type McpServerName,
   type McpServerStatus,
-  verifyMcpServer,
+  detectMcpStatuses as detectShared,
 } from '../mcp/servers.js';
+import { getRegisteredMcpNames, getStoredAuthToken } from '../mcp/config.js';
 import { globalConfigPath, mcpConfigPath } from './paths.js';
 
 const execFile = promisify(execFileCb);
 
-export async function detectMcpStatuses(
+export function detectMcpStatuses(
   projectDir: string,
 ): Promise<Record<McpServerName, McpServerStatus>> {
-  const registered = getRegisteredMcpNames(projectDir);
-  const names = Object.keys(MCP_SERVERS) as McpServerName[];
-
-  const statuses = await Promise.all(
-    names.map(async (name): Promise<[McpServerName, McpServerStatus]> => {
-      if (!registered.includes(name)) return [name, 'not-installed'];
-      const ok = await verifyMcpServer(name);
-      return [name, ok ? 'connected' : 'installed'];
-    }),
-  );
-
-  return Object.fromEntries(statuses) as Record<McpServerName, McpServerStatus>;
+  const configPath = mcpConfigPath(projectDir);
+  return detectShared({
+    getRegisteredNames: () => getRegisteredMcpNames(configPath),
+    getAuthToken: (name) => getStoredAuthToken(configPath, name),
+  });
 }
 
 export async function connectMcpServer(opts: McpConnectOpts): Promise<void> {
@@ -65,17 +58,4 @@ function writeMcpEntry(configPath: string, serverName: string, entry: unknown): 
   config.mcpServers = mcpServers;
 
   writeFileSync(configPath, JSON.stringify(config, null, 2) + '\n', 'utf-8');
-}
-
-function getRegisteredMcpNames(projectDir: string): string[] {
-  try {
-    const config = JSON.parse(readFileSync(mcpConfigPath(projectDir), 'utf-8')) as Record<
-      string,
-      unknown
-    >;
-    const mcpServers = (config.mcpServers ?? {}) as Record<string, unknown>;
-    return (Object.keys(MCP_SERVERS) as McpServerName[]).filter((name) => name in mcpServers);
-  } catch {
-    return [];
-  }
 }
