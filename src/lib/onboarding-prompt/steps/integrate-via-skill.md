@@ -2,7 +2,7 @@
 
 Print "STATUS: Analyzing project for flag integration points..."
 
-Read `.claude/skills/analyze-project/SKILL.md` as a **methodology reference** — use it for what to analyze, how to identify flag candidates, which SDK to pick, and how to create and wire flags. Ignore its output formatting entirely: no step tracker, no EDUCATE blocks, no AskUserQuestion calls.
+Read `{{SKILLS_DIR}}/analyze-project/SKILL.md` as a **methodology reference** — use it for what to analyze, how to identify flag candidates, which SDK to pick, and how to create and wire flags. Ignore its output formatting entirely: no step tracker, no EDUCATE blocks, no AskUserQuestion calls.
 
 Execute the skill's workflow automatically, without pausing for user input:
 

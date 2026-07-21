@@ -45,7 +45,7 @@ export function buildOnboardingPrompt({
     addIf(isEmptyProject, () => scaffold(framework, steps.next())),
 
     usingSkill
-      ? [integrateViaSkill(framework, steps.next(), isEmptyProject)]
+      ? [integrateViaSkill(framework, steps.next(), isEmptyProject, ide)]
       : [
           addIf(includingFlags, () => determineSDK(framework, steps.next(), tools)),
           addIf(includingFlags, () => resolveClient(framework, steps.next(), tools)),
