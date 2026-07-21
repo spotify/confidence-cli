@@ -22,6 +22,7 @@ import * as te from './telemetry-events.js';
 const STATUS_ICON: Record<McpServerStatus, { icon: string; color: string }> = {
   'not-installed': { icon: Icons.dash, color: Colors.muted },
   installed: { icon: Icons.circle, color: Colors.warning },
+  'auth-expired': { icon: Icons.circle, color: Colors.warning },
   connected: { icon: Icons.check, color: Colors.success },
 };
 
@@ -47,22 +48,23 @@ export function ConnectToolsScreen() {
 
   const promptOptions = useMemo(() => {
     const hasConnected = connectedNames.length > 0;
+    const verb = phase === 'auth-expired' ? 'Reconnect' : 'Connect';
     const remaining = available.filter(
       (s) => (serverStatuses[s.name] ?? 'not-installed') !== 'connected',
     );
 
     return [
       {
-        label: hasConnected ? 'Connect all remaining' : 'Connect all tools',
+        label: hasConnected ? `${verb} all remaining` : `${verb} all tools`,
         value: 'all',
       },
-      ...remaining.map((s) => ({ label: `Connect ${s.name}`, value: s.name })),
+      ...remaining.map((s) => ({ label: `${verb} ${s.name}`, value: s.name })),
       {
         label: hasConnected ? 'Done' : 'Skip for now',
         value: 'skip',
       },
     ];
-  }, [available, serverStatuses, connectedNames]);
+  }, [available, serverStatuses, connectedNames, phase]);
 
   const tasks = buildWizardTasks('connectTools', isComplete ? 'done' : 'active');
 
@@ -121,6 +123,7 @@ export function ConnectToolsScreen() {
                   {status === 'installed' && (
                     <Text color={Colors.muted}>(installed, not responding)</Text>
                   )}
+                  {status === 'auth-expired' && <Text color={Colors.muted}>(auth expired)</Text>}
                 </Text>
               </Box>
             );
@@ -135,6 +138,14 @@ export function ConnectToolsScreen() {
               ? 'All tools connected and responding.'
               : 'Connected successfully.'}{' '}
             Continuing...
+          </Text>
+        </Box>
+      )}
+
+      {phase === 'auth-expired' && (
+        <Box marginTop={1}>
+          <Text color={Colors.warning}>
+            Authentication expired — reconnect to refresh your credentials.
           </Text>
         </Box>
       )}
@@ -160,10 +171,16 @@ export function ConnectToolsScreen() {
     <Box flexDirection="column" flexGrow={1} justifyContent="space-between">
       <TwoColumnLayout left={left} right={<TaskList tasks={tasks} />} />
 
-      {phase === 'ask-install' && (
+      {(phase === 'ask-install' || phase === 'auth-expired') && (
         <PromptPanel
           mode="select"
-          status={connectedNames.length > 0 ? 'Connect another tool?' : 'Connect Confidence tools?'}
+          status={
+            phase === 'auth-expired'
+              ? 'Reconnect to refresh credentials?'
+              : connectedNames.length > 0
+                ? 'Connect another tool?'
+                : 'Connect Confidence tools?'
+          }
           options={promptOptions}
           onSelect={(value) => {
             if (value === 'skip') {
