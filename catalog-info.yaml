@@ -1,0 +1,8 @@
+apiVersion: backstage.io/v1alpha1
+kind: Component
+metadata:
+  name: confidence-cli
+spec:
+  type: app
+  lifecycle: "beta"
+  owner: hawkeye
