@@ -5,6 +5,7 @@ import {
   ARROW_DOWN,
   ENTER,
   waitFor,
+  act,
 } from '../helpers/index.js';
 import { WelcomeScreen } from '@ui/tui/screens/welcome/index.js';
 
@@ -42,8 +43,8 @@ describe('WelcomeScreen', () => {
     using project = createProjectDir();
     using sut = renderScreen(<WelcomeScreen />, { dir: project.path });
     await waitFor(() => {
-      expect(sut.lastFrame()).toContain('Check your system');
-      expect(sut.lastFrame()).toContain('Sign in to Confidence');
+      expect(sut.lastFrame()).toContain('It will check your system');
+      expect(sut.lastFrame()).toContain('Sign you in to Confidence');
     });
   });
 
@@ -64,7 +65,7 @@ describe('WelcomeScreen', () => {
       expect(sut.lastFrame()).toContain('Start setup');
     });
 
-    sut.stdin.write(ENTER);
+    await act(() => sut.stdin.write(ENTER));
 
     await waitFor(() => {
       expect(sut.lastFrame()).toContain('System Check');
@@ -126,7 +127,7 @@ describe('WelcomeScreen', () => {
         expect(sut.lastFrame()).toContain('Select framework');
       });
 
-      sut.stdin.write(ENTER);
+      await act(() => sut.stdin.write(ENTER));
 
       await waitFor(() => {
         expect(sut.lastFrame()).toContain('Select Framework');
