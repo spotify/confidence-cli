@@ -5,7 +5,7 @@ import { WizardRouter } from '@ui/tui/router.js';
 import { SCREEN_TRANSITIONS } from '@ui/tui/screen-transitions.js';
 import { RouterContext } from '@ui/tui/hooks/useRouter.js';
 import { App } from '@ui/tui/App.js';
-import type { ScreenId } from '@lib/session.js';
+import type { AuthState, ScreenId } from '@lib/session.js';
 import type { ChosenIde } from '@lib/session.js';
 
 // ink-testing-library's Stdout provides columns (100) but not rows,
@@ -16,20 +16,32 @@ const stdoutProto = Object.getPrototypeOf((probe as Record<string, unknown>).std
 Object.defineProperty(stdoutProto, 'rows', { get: () => 40, configurable: true });
 probe.unmount();
 
-type RenderOptions = StoreOptions & {
+type RenderScreenOptions = StoreOptions & {
+  screen?: ScreenId;
+  ide?: ChosenIde;
+  installedPlugins?: string[];
+  authState?: AuthState;
+};
+
+type RenderAppOptions = StoreOptions & {
   screen?: ScreenId;
   ide?: ChosenIde;
   installedPlugins?: string[];
 };
 
-function setupStore(opts?: RenderOptions): void {
+function setupStore(opts: RenderScreenOptions | RenderAppOptions = {}): void {
   store.init(opts);
-  if (opts?.screen) store.navigateTo(opts.screen);
-  if (opts?.ide) store.setIde(opts.ide);
-  if (opts?.installedPlugins) store.setInstalledPlugins(opts.installedPlugins);
+
+  if (opts.screen) store.navigateTo(opts.screen);
+  if (opts.ide) store.setIde(opts.ide);
+  if (opts.installedPlugins) store.setInstalledPlugins(opts.installedPlugins);
+
+  if ('authState' in opts && (opts as RenderScreenOptions).authState) {
+    store.setAuthState((opts as RenderScreenOptions).authState!);
+  }
 }
 
-export function renderScreen(element: ReactElement, opts?: RenderOptions) {
+export function renderScreen(element: ReactElement, opts?: RenderScreenOptions) {
   setupStore(opts);
   const router = new WizardRouter(SCREEN_TRANSITIONS);
 
@@ -42,7 +54,7 @@ export function renderScreen(element: ReactElement, opts?: RenderOptions) {
   };
 }
 
-export function renderApp(opts?: RenderOptions) {
+export function renderApp(opts?: RenderAppOptions) {
   setupStore(opts);
   const result = render(<App />);
 

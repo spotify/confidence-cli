@@ -4,30 +4,23 @@ import { existsSync, readFileSync, writeFileSync, mkdirSync } from 'node:fs';
 import { join } from 'node:path';
 import type { McpConnectOpts } from '../types.js';
 import {
-  MCP_SERVERS,
   type McpServerName,
   type McpServerStatus,
-  verifyMcpServer,
+  detectMcpStatuses as detectShared,
 } from '../mcp/servers.js';
+import { getRegisteredMcpNames, getStoredAuthToken } from '../mcp/config.js';
 import { projectConfigPath } from './paths.js';
 
 const execFile = promisify(execFileCb);
 
-export async function detectMcpStatuses(
+export function detectMcpStatuses(
   projectDir: string,
 ): Promise<Record<McpServerName, McpServerStatus>> {
-  const registered = getRegisteredMcpNames(projectDir);
-  const names = Object.keys(MCP_SERVERS) as McpServerName[];
-
-  const statuses = await Promise.all(
-    names.map(async (name): Promise<[McpServerName, McpServerStatus]> => {
-      if (!registered.includes(name)) return [name, 'not-installed'];
-      const ok = await verifyMcpServer(name);
-      return [name, ok ? 'connected' : 'installed'];
-    }),
-  );
-
-  return Object.fromEntries(statuses) as Record<McpServerName, McpServerStatus>;
+  const configPath = projectConfigPath(projectDir);
+  return detectShared({
+    getRegisteredNames: () => getRegisteredMcpNames(configPath),
+    getAuthToken: (name) => getStoredAuthToken(configPath, name),
+  });
 }
 
 export async function connectMcpServer(opts: McpConnectOpts): Promise<void> {
@@ -61,19 +54,6 @@ export async function connectMcpServer(opts: McpConnectOpts): Promise<void> {
   await execFile('claude', args, { cwd: opts.projectDir });
 
   allowMcpToolsInSettings(opts.serverName, opts.projectDir);
-}
-
-function getRegisteredMcpNames(projectDir: string): string[] {
-  try {
-    const config = JSON.parse(readFileSync(projectConfigPath(projectDir), 'utf-8')) as Record<
-      string,
-      unknown
-    >;
-    const mcpServers = (config.mcpServers ?? {}) as Record<string, unknown>;
-    return (Object.keys(MCP_SERVERS) as McpServerName[]).filter((name) => name in mcpServers);
-  } catch {
-    return [];
-  }
 }
 
 type ClaudeSettings = {

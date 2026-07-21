@@ -6,27 +6,19 @@ import {
   MCP_SERVERS,
   type McpServerName,
   type McpServerStatus,
-  verifyMcpServer,
+  detectMcpStatuses as detectShared,
 } from '../mcp/servers.js';
 import { globalConfigPath, projectConfigPath } from './paths.js';
 
 const execFile = promisify(execFileCb);
 
-export async function detectMcpStatuses(
+export function detectMcpStatuses(
   projectDir: string,
 ): Promise<Record<McpServerName, McpServerStatus>> {
-  const registered = getRegisteredMcpNames(projectDir);
-  const names = Object.keys(MCP_SERVERS) as McpServerName[];
-
-  const statuses = await Promise.all(
-    names.map(async (name): Promise<[McpServerName, McpServerStatus]> => {
-      if (!registered.includes(name)) return [name, 'not-installed'];
-      const ok = await verifyMcpServer(name);
-      return [name, ok ? 'connected' : 'installed'];
-    }),
-  );
-
-  return Object.fromEntries(statuses) as Record<McpServerName, McpServerStatus>;
+  return detectShared({
+    getRegisteredNames: () => getRegisteredMcpNames(projectDir),
+    getAuthToken: (name) => getStoredAuthToken(name),
+  });
 }
 
 export async function connectMcpServer(opts: McpConnectOpts): Promise<void> {
@@ -60,6 +52,22 @@ function getRegisteredMcpNames(projectDir: string): McpServerName[] {
       }
     }),
   );
+}
+
+function getStoredAuthToken(serverName: McpServerName): string | null {
+  try {
+    const content = readFileSync(globalConfigPath(), 'utf-8');
+    const sectionHeader = `[mcp_servers.${serverName}]`;
+    const idx = content.indexOf(sectionHeader);
+    if (idx === -1) return null;
+
+    const nextSection = content.indexOf('\n[', idx + sectionHeader.length);
+    const section = content.slice(idx, nextSection === -1 ? undefined : nextSection);
+    const match = section.match(/"Authorization"\s*=\s*"Bearer\s+([^"]+)"/);
+    return match?.[1] ?? null;
+  } catch {
+    return null;
+  }
 }
 
 export function patchHttpHeaders(

@@ -1,4 +1,5 @@
 export {
+  type McpServer,
   type McpServerName,
   type McpServerStatus,
   MCP_SERVERS,
