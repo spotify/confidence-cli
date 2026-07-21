@@ -11,14 +11,24 @@ const IDE_CASES = [
     downPresses: 0,
     command: 'claude',
     expectedArgs: ['--print', '--output-format', 'stream-json', '--verbose'],
-    expectedPromptSnippets: ['Confidence SDK', 'React', 'mcp__confidence-flags__'],
+    expectedPromptSnippets: [
+      'Confidence SDK',
+      '.claude/skills/analyze-project/SKILL.md',
+      'existing codebase',
+      'mcp__confidence-flags__',
+    ],
   },
   {
     name: 'Cursor',
     downPresses: 1,
     command: 'cursor',
     expectedArgs: ['--print', '--output-format', 'stream-json', '--approve-mcps', '--yolo'],
-    expectedPromptSnippets: ['Confidence SDK', 'React', 'mcp__confidence-flags__'],
+    expectedPromptSnippets: [
+      'Confidence SDK',
+      '.cursor/skills/analyze-project/SKILL.md',
+      'existing codebase',
+      'mcp__confidence-flags__',
+    ],
     firstArg: 'agent',
   },
   {
@@ -26,7 +36,12 @@ const IDE_CASES = [
     downPresses: 2,
     command: 'codex',
     expectedArgs: ['exec', '--json', '--sandbox', 'danger-full-access', '-'],
-    expectedPromptSnippets: ['Confidence SDK', 'React', 'confidence-flags:'],
+    expectedPromptSnippets: [
+      'Confidence SDK',
+      '.agents/skills/analyze-project/SKILL.md',
+      'existing codebase',
+      'confidence-flags:',
+    ],
   },
 ] as const;
 

@@ -49,7 +49,7 @@ describe('when the user skips installing AI plugin', () => {
     await session.waitForText('onboarding complete', { timeout: 60_000 });
 
     // Done — onboarding ran so report file and code changes appear
-    await session.waitForText('What we set up');
+    await session.waitForText('What we have set up');
     await session.waitForText('CONFIDENCE_QUICKSTART.md');
   });
 });

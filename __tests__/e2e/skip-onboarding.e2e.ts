@@ -15,7 +15,7 @@ describe('when the user skips onboarding', () => {
     await session.waitForText("What's next?");
 
     // Docs and dashboard links still appear
-    await session.waitForText('Docs:');
+    await session.waitForText('Documentation:');
     await session.waitForText('Dashboard:');
   });
 

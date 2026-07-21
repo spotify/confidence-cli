@@ -9,12 +9,14 @@ import { launchChatSession, getIntegration } from '@integrations/index.js';
 import { useSession, $session } from '../../store.js';
 import { track } from '@lib/telemetry.js';
 import { doneActionSelected } from './telemetry-events.js';
+import { useIsShort } from '@ui/tui/hooks/useIsShort.js';
 
 const MAX_SHOWN_CHANGES = 5;
 
 export function DoneScreen() {
   const session = useSession();
   const { exit } = useApp();
+  const isShort = useIsShort();
   const narrow = useIsNarrow();
   const { reportFile, codeChanges, projectDir, ide } = session;
   const align = narrow ? HAlign.Left : HAlign.Center;
@@ -28,42 +30,40 @@ export function DoneScreen() {
           </Text>
         </Box>
 
-        {codeChanges.length > 0 && (
-          <Box flexDirection="column" marginBottom={1} alignItems={align}>
-            <Box>
-              <Text bold>What we set up:</Text>
+        {codeChanges.length > 0 && !isShort && (
+          <>
+            <Box alignItems={align}>
+              <Text bold>What we have set up:</Text>
             </Box>
-            {codeChanges
-              .toReversed()
-              .slice(0, MAX_SHOWN_CHANGES)
-              .map((change, i) => (
-                <Box key={i} gap={1}>
-                  <Text color={Colors.success}>{Icons.bullet}</Text>
-                  <Text>{change}</Text>
-                </Box>
-              ))}
-          </Box>
+            <Box flexDirection="column" marginBottom={1}>
+              {codeChanges
+                .toReversed()
+                .slice(0, MAX_SHOWN_CHANGES)
+                .map((change, i) => (
+                  <Box key={i} gap={1}>
+                    <Text color={Colors.success}>{Icons.bullet}</Text>
+                    <Text>{change}</Text>
+                  </Box>
+                ))}
+            </Box>
+          </>
         )}
 
-        {reportFile && (
-          <Box flexDirection="column" marginBottom={1} alignItems={align}>
-            <Text>Full details:</Text>
-            <Box gap={1}>
-              <Text color={Colors.success}>{Icons.bullet}</Text>
+        <Box flexDirection="column" marginTop={1}>
+          {reportFile && (
+            <Text color={Colors.muted}>
+              {'  Full report: '}
               <TerminalLink url={`file://${join(projectDir, reportFile)}`}>
                 {reportFile}
               </TerminalLink>
-            </Box>
-          </Box>
-        )}
-
-        <Box flexDirection="column" alignItems={align}>
+            </Text>
+          )}
           <Text color={Colors.muted}>
-            {'Docs: '}
+            {'Documentation: '}
             <Text color={Colors.primary}>{CONFIDENCE_DOCS_URL}</Text>
           </Text>
           <Text color={Colors.muted}>
-            {'Dashboard: '}
+            {'    Dashboard: '}
             <Text color={Colors.primary}>{CONFIDENCE_DASHBOARD_URL}</Text>
           </Text>
         </Box>

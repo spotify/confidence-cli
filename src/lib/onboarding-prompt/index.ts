@@ -2,7 +2,7 @@ import type { ChosenIde, OnboardingGoal } from '../session.js';
 import { addIf } from '../prompt-utils.js';
 import { preflight, scaffold } from './preflight.js';
 import { determineSDK, resolveClient } from './sdk.js';
-import { integrateSDK } from './integrate.js';
+import { integrateSDK, integrateViaSkill } from './integrate.js';
 import { determineRecordingSDK, integrateRecording } from './session-recording.js';
 import { migrateFlags } from './migration.js';
 import { generateReport, summary, rules } from './report.js';
@@ -33,20 +33,32 @@ export function buildOnboardingPrompt({
   hasPlugins = false,
 }: PromptOptions): string {
   const steps = new StepCounter(isEmptyProject ? 2 : 1);
-  const includeFlags = goal === 'feature-flags' || goal === 'all';
-  const includeRecording = goal === 'session-recording' || goal === 'all';
   const tools = buildToolVars(ide);
+
+  const includingFlags = goal === 'feature-flags' || goal === 'all';
+  const includingRecording = goal === 'session-recording' || goal === 'all';
+  const usingSkill = includingFlags && hasPlugins;
 
   const sections = [
     preamble(framework, projectDir, isEmptyProject, goal),
     preflight(tools),
     addIf(isEmptyProject, () => scaffold(framework, steps.next())),
-    addIf(includeFlags, () => determineSDK(framework, steps.next(), tools)),
-    addIf(includeFlags, () => resolveClient(framework, steps.next(), tools)),
-    addIf(includeFlags, () => integrateSDK(steps.next(), steps.current - 2, isEmptyProject, tools)),
-    addIf(includeRecording, () => determineRecordingSDK(framework, steps.next(), tools)),
-    addIf(includeRecording, () => integrateRecording(steps.next(), isEmptyProject)),
+
+    usingSkill
+      ? [integrateViaSkill(framework, steps.next(), isEmptyProject, ide)]
+      : [
+          addIf(includingFlags, () => determineSDK(framework, steps.next(), tools)),
+          addIf(includingFlags, () => resolveClient(framework, steps.next(), tools)),
+          addIf(includingFlags, () =>
+            integrateSDK(steps.next(), steps.current - 2, isEmptyProject, tools),
+          ),
+        ],
+
+    addIf(includingRecording, () => determineRecordingSDK(framework, steps.next(), tools)),
+    addIf(includingRecording, () => integrateRecording(steps.next(), isEmptyProject)),
+
     ...migrations.map((m) => migrateFlags(m, steps.next())),
+
     generateReport({ step: steps.next(), isEmptyProject, goal, hasPlugins }),
     summary(steps.next()),
     rules(),
