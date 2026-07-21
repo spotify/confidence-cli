@@ -4,5 +4,5 @@ metadata:
   name: confidence-cli
 spec:
   type: app
-  lifecycle: "beta"
+  lifecycle: 'beta'
   owner: hawkeye
