@@ -49,6 +49,7 @@ export class TerminalSession {
       env: {
         ...process.env,
         ...env,
+        CI: '0',
         TERM: 'xterm-256color',
         FORCE_COLOR: '1',
         NODE_ENV: 'test',
