@@ -128,10 +128,7 @@ export async function selectIdeAndOnboard(
   await session.sendKey(ENTER);
 
   // ConnectTools may auto-advance when MCP servers are already registered globally
-  const matched = await session.waitForText([
-    'Start onboarding?',
-    'Connect Confidence tools?',
-  ]);
+  const matched = await session.waitForText(['Start onboarding?', 'Connect Confidence tools?']);
 
   if (matched === 'Connect Confidence tools?') {
     await session.sendKey(ENTER);
