@@ -25,7 +25,6 @@ describe('happy-path flow', () => {
     await session.waitForText('Teach your AI');
     await session.waitForText('Which agent tool are you using?');
     await session.sendKey(ENTER);
-    await session.waitForText('Plugin installed successfully');
 
     // ConnectTools
     await session.waitForText('Connect your AI to Confidence');

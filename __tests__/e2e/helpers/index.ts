@@ -13,6 +13,8 @@ export { ARROW_DOWN, ARROW_UP, ENTER, ESCAPE } from './keys.js';
 export { AUTH_CALLBACK_PORT } from './constants.js';
 export { CHAT_PROMPT_FILE, ONBOARDING_INVOCATION_FILE } from './mock-binaries.js';
 
+const DEFAULT_TIMEOUT = 30_000;
+
 type ProjectType = 'react' | 'empty';
 
 export function createSession({
@@ -60,16 +62,19 @@ export function createSession({
 }
 
 export async function simulateAuthCallback(): Promise<void> {
-  const maxAttempts = 50;
-  for (let i = 0; i < maxAttempts; i++) {
+  const deadline = Date.now() + DEFAULT_TIMEOUT;
+  let backoff = 50;
+
+  while (Date.now() < deadline) {
     try {
       await fetch(`http://localhost:${AUTH_CALLBACK_PORT}/callback?code=test-auth-code`);
       return;
     } catch {
-      await new Promise((resolve) => setTimeout(resolve, 100));
+      await new Promise((resolve) => setTimeout(resolve, backoff));
+      backoff = Math.min(backoff * 2, 500);
     }
   }
-  throw new Error(`Auth callback server not ready after ${maxAttempts * 100}ms`);
+  throw new Error(`Auth callback server not ready after ${DEFAULT_TIMEOUT / 1000}s`);
 }
 
 export async function navigatePastWelcome(session: TerminalSession): Promise<void> {
@@ -90,24 +95,23 @@ export async function navigatePastAuth(session: TerminalSession): Promise<void> 
 export async function navigateToPlugins(session: TerminalSession): Promise<void> {
   await navigatePastWelcome(session);
   await navigatePastAuth(session);
-  await session.waitForText('Which agent tool are you using?');
   session.checkpoint();
+  await session.waitForText('Which agent tool are you using?');
 }
 
 export async function navigateToConnectTools(session: TerminalSession): Promise<void> {
   await navigateToPlugins(session);
-  await session.sendKey(ENTER);
-  await session.waitForText('Plugin installed successfully');
-  await session.waitForText('Connect Confidence tools?');
+  await session.waitForText('Skip (install manually later)');
   session.checkpoint();
+  await session.sendKey(ENTER);
+  await session.waitForText('Connect Confidence tools?');
 }
 
 export async function navigateToOnboarding(session: TerminalSession): Promise<void> {
   await navigateToConnectTools(session);
-  await session.sendKey(ENTER);
-  await session.waitForText('Connected successfully');
-  await session.waitForText('Start onboarding?');
   session.checkpoint();
+  await session.sendKey(ENTER);
+  await session.waitForText('Start onboarding?');
 }
 
 export type Invocation = {
@@ -122,13 +126,10 @@ export async function selectIdeAndOnboard(
 ): Promise<void> {
   await session.sendKeyRepeat(ARROW_DOWN, downPresses);
   await session.sendKey(ENTER);
-  await session.waitForText('Plugin installed successfully');
 
   // ConnectTools may auto-advance when MCP servers are already registered globally
-  const matched = await session.waitForAnyTextOf([
-    'Start onboarding?',
-    'Connect Confidence tools?',
-  ]);
+  const matched = await session.waitForText(['Start onboarding?', 'Connect Confidence tools?']);
+
   if (matched === 'Connect Confidence tools?') {
     await session.sendKey(ENTER);
     await session.waitForText('Connected successfully');
@@ -136,7 +137,7 @@ export async function selectIdeAndOnboard(
 
   await session.waitForText('Start onboarding?');
   await session.sendKey(ENTER);
-  await session.waitForText('onboarding complete', { timeout: 60_000 });
+  await session.waitForText('onboarding complete');
 }
 
 export function readInvocation(cwd: string): Invocation {
