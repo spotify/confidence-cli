@@ -44,6 +44,10 @@ confidence-quickstart [command] [options]
 | `--debug`        | Enable debug output and preserve terminal history |
 | `--no-telemetry` | Disable anonymous usage telemetry                 |
 
+## Security Note
+
+During the **project onboarding** step, the wizard spawns your chosen AI agent (Claude Code, Cursor, or Codex) to integrate the Confidence SDK into your project. The spawned agent runs with **full filesystem access** — this is required for it to install dependencies, create configuration files, and modify source code. You will be prompted to confirm before this step begins.
+
 ## Development
 
 ```bash
