@@ -4,15 +4,16 @@ import { exec } from 'node:child_process';
 import { writeFileSync, readFileSync, existsSync } from 'node:fs';
 import { tmpdir } from 'node:os';
 import { join } from 'node:path';
-import {
-  AUTH0_BASE_URL,
-  AUTH0_AUDIENCE,
-  AUTH0_SCOPE,
-  AUTH0_CLIENT_ID_SIGNUP,
-  AUTH0_CLIENT_ID_LOGIN,
-  AUTH_CALLBACK_PORT,
-} from './constants.js';
+import { env } from './env.js';
 import { successPage, errorPage, exchangeErrorPage } from './callback-pages.js';
+
+const AUTH_DOMAIN = env('CONFIDENCE_AUTH_DOMAIN', 'auth.confidence.dev');
+const AUTH_BASE_URL = env('CONFIDENCE_AUTH_URL', `https://${AUTH_DOMAIN}`);
+const AUTH_AUDIENCE = 'https://confidence.dev/';
+const AUTH_SCOPE = 'openid profile email offline_access';
+const AUTH_CLIENT_ID_SIGNUP = '82qMvwZvqd3t3S0gRDvs8R53TehQXSJY';
+const AUTH_CLIENT_ID_LOGIN = '2fG3H4RhlAbIZm9Rfn32zTaILH7w1X4w';
+export const AUTH_CALLBACK_PORT = 8084;
 
 const TOKEN_FILE = join(tmpdir(), 'confidence_token');
 const REFRESH_TOKEN_FILE = join(tmpdir(), 'confidence_refresh_token');
@@ -96,7 +97,7 @@ type AuthResult = {
 };
 
 export function authenticate(mode: 'signup' | 'login', signal?: AbortSignal): Promise<AuthResult> {
-  const clientId = mode === 'signup' ? AUTH0_CLIENT_ID_SIGNUP : AUTH0_CLIENT_ID_LOGIN;
+  const clientId = mode === 'signup' ? AUTH_CLIENT_ID_SIGNUP : AUTH_CLIENT_ID_LOGIN;
   const { verifier, challenge } = generatePKCE();
   const redirectUri = `http://localhost:${AUTH_CALLBACK_PORT}/callback`;
 
@@ -176,12 +177,12 @@ function buildAuthUrl(clientId: string, challenge: string, redirectUri: string):
     response_type: 'code',
     client_id: clientId,
     redirect_uri: redirectUri,
-    scope: AUTH0_SCOPE,
-    audience: AUTH0_AUDIENCE,
+    scope: AUTH_SCOPE,
+    audience: AUTH_AUDIENCE,
     code_challenge: challenge,
     code_challenge_method: 'S256',
   });
-  return `${AUTH0_BASE_URL}/authorize?${params.toString()}`;
+  return `${AUTH_BASE_URL}/authorize?${params.toString()}`;
 }
 
 type TokenResponse = {
@@ -205,7 +206,7 @@ async function exchangeCode(opts: {
     redirect_uri: opts.redirectUri,
   });
 
-  const response = await fetch(`${AUTH0_BASE_URL}/oauth/token`, {
+  const response = await fetch(`${AUTH_BASE_URL}/oauth/token`, {
     method: 'POST',
     headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
     body: body.toString(),

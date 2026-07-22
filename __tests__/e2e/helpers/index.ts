@@ -3,14 +3,14 @@ import { join } from 'node:path';
 import { tmpdir } from 'node:os';
 import { TerminalSession } from './pty.js';
 import { ENTER, ARROW_DOWN } from './keys.js';
-import { AUTH_CALLBACK_PORT } from './constants.js';
+import { AUTH_CALLBACK_PORT } from './env.js';
 import { ONBOARDING_INVOCATION_FILE } from './mock-binaries.js';
 
 export { TerminalSession } from './pty.js';
 export { stripAnsi } from './strip-ansi.js';
 export { buildTestJwt } from './jwt.js';
 export { ARROW_DOWN, ARROW_UP, ENTER, ESCAPE } from './keys.js';
-export { AUTH_CALLBACK_PORT } from './constants.js';
+export { AUTH_CALLBACK_PORT } from './env.js';
 export { CHAT_PROMPT_FILE, ONBOARDING_INVOCATION_FILE } from './mock-binaries.js';
 
 const DEFAULT_TIMEOUT = 30_000;

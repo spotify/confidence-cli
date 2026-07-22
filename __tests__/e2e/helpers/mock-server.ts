@@ -1,5 +1,6 @@
 import { createServer, type Server } from 'node:http';
 import { buildTestJwt } from './jwt.js';
+import { buildMockEnv } from './env.js';
 
 export type MockServer = {
   port: number;
@@ -82,13 +83,7 @@ export function startMockServer(): Promise<MockServer> {
         port,
         url,
         server,
-        envVars: {
-          CONFIDENCE_AUTH_URL: url,
-          CONFIDENCE_MCP_URL: url,
-          CONFIDENCE_SKILLS_URL: `${url}/skills`,
-          CONFIDENCE_TELEMETRY_KEY_URL: `${url}/v1/agentTelemetryKey:acquire`,
-          CONFIDENCE_TELEMETRY_EVENTS_URL: `${url}/v1/events:publish`,
-        },
+        envVars: buildMockEnv(url),
         [Symbol.dispose]() {
           server.close();
         },
