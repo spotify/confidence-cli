@@ -13,6 +13,8 @@ export { ARROW_DOWN, ARROW_UP, ENTER, ESCAPE } from './keys.js';
 export { AUTH_CALLBACK_PORT } from './constants.js';
 export { CHAT_PROMPT_FILE, ONBOARDING_INVOCATION_FILE } from './mock-binaries.js';
 
+const DEFAULT_TIMEOUT = 30_000;
+
 type ProjectType = 'react' | 'empty';
 
 export function createSession({
@@ -60,16 +62,19 @@ export function createSession({
 }
 
 export async function simulateAuthCallback(): Promise<void> {
-  const maxAttempts = 50;
-  for (let i = 0; i < maxAttempts; i++) {
+  const deadline = Date.now() + DEFAULT_TIMEOUT;
+  let backoff = 50;
+
+  while (Date.now() < deadline) {
     try {
       await fetch(`http://localhost:${AUTH_CALLBACK_PORT}/callback?code=test-auth-code`);
       return;
     } catch {
-      await new Promise((resolve) => setTimeout(resolve, 100));
+      await new Promise((resolve) => setTimeout(resolve, backoff));
+      backoff = Math.min(backoff * 2, 500);
     }
   }
-  throw new Error(`Auth callback server not ready after ${maxAttempts * 100}ms`);
+  throw new Error(`Auth callback server not ready after ${DEFAULT_TIMEOUT / 1000}s`);
 }
 
 export async function navigatePastWelcome(session: TerminalSession): Promise<void> {

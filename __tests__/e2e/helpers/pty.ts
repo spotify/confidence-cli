@@ -105,37 +105,29 @@ export class TerminalSession {
   }
 
   async waitForText(
-    text: string,
-    { timeout = DEFAULT_TIMEOUT, interval = 100, sinceCheckpoint = true } = {},
-  ): Promise<void> {
-    const deadline = Date.now() + timeout;
-
-    while (Date.now() < deadline) {
-      const haystack = sinceCheckpoint ? this.screenSinceCheckpoint : this.screen;
-      if (haystack.includes(text)) return;
-      await delay(interval);
-    }
-
-    throw new Error(
-      `Timed out waiting for "${text}" after ${timeout}ms.\n\nLast output:\n${this.screen.slice(-2000)}`,
-    );
-  }
-
-  async waitForAnyTextOf(
-    texts: string[],
-    { timeout = DEFAULT_TIMEOUT, interval = 100, sinceCheckpoint = true } = {},
+    text: string | string[],
+    { timeout = DEFAULT_TIMEOUT, sinceCheckpoint = true } = {},
   ): Promise<string> {
+    const targets = Array.isArray(text) ? text : [text];
     const deadline = Date.now() + timeout;
+    let poll = 25;
 
     while (Date.now() < deadline) {
       const haystack = sinceCheckpoint ? this.screenSinceCheckpoint : this.screen;
-      const match = texts.find((t) => haystack.includes(t));
+      const match = targets.find((t) => haystack.includes(t));
       if (match) return match;
-      await delay(interval);
+
+      await delay(poll);
+      poll = Math.min(poll * 2, 200);
     }
 
+    const label =
+      targets.length === 1
+        ? `"${targets[0]}"`
+        : `any of [${targets.map((t) => `"${t}"`).join(', ')}]`;
+
     throw new Error(
-      `Timed out waiting for any of [${texts.map((t) => `"${t}"`).join(', ')}] after ${timeout}ms.\n\nLast output:\n${this.screen.slice(-2000)}`,
+      `Timed out waiting for ${label} after ${timeout}ms.\n\nLast output:\n${this.screen.slice(-2000)}`,
     );
   }
 
