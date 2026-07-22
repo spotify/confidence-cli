@@ -82,6 +82,7 @@ function writeCliPermission(configPath: string, serverName: string): void {
   }
 
   permissions.allow = allow;
+  permissions.deny ??= [];
   config.permissions = permissions;
 
   writeFileSync(configPath, JSON.stringify(config, null, 2) + '\n', 'utf-8');
