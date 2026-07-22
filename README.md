@@ -44,6 +44,14 @@ confidence-quickstart [command] [options]
 | `--debug`        | Enable debug output and preserve terminal history |
 | `--no-telemetry` | Disable anonymous usage telemetry                 |
 
+## Security Note
+
+During the **project onboarding** step, the wizard spawns your chosen AI agent (Claude Code, Cursor, or Codex) to integrate the Confidence SDK into your project. The spawned agent can read and write files within your project directory — this is required for it to install dependencies, create configuration files, and modify source code. You will be prompted to confirm before this step begins.
+
+## Confidence AI Plugins
+
+Prefer to manage the integration process yourself? [confidence-ai-plugins](https://github.com/spotify/confidence-ai-plugins) provides a collection of standalone plugins that give AI agents the ability to more granularly manage feature flags, work with documentation, set up data warehouses for experiments, and more — without the guided wizard flow.
+
 ## Development
 
 ```bash

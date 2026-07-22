@@ -22,7 +22,7 @@ const IDE_CASES = [
     name: 'Cursor',
     downPresses: 1,
     command: 'cursor',
-    expectedArgs: ['--print', '--output-format', 'stream-json', '--approve-mcps', '--yolo'],
+    expectedArgs: ['--print', '--output-format', 'stream-json', '--approve-mcps', '--auto-review'],
     expectedPromptSnippets: [
       'Confidence SDK',
       '.cursor/skills/analyze-project/SKILL.md',
@@ -35,7 +35,7 @@ const IDE_CASES = [
     name: 'Codex',
     downPresses: 2,
     command: 'codex',
-    expectedArgs: ['exec', '--json', '--sandbox', 'danger-full-access', '-'],
+    expectedArgs: ['exec', '--json', '--sandbox', 'workspace-write', '-'],
     expectedPromptSnippets: [
       'Confidence SDK',
       '.agents/skills/analyze-project/SKILL.md',

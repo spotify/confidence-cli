@@ -1,6 +1,6 @@
 import { createServer, type IncomingMessage, type ServerResponse } from 'node:http';
 import { randomBytes, createHash } from 'node:crypto';
-import { exec } from 'node:child_process';
+import { execFile } from 'node:child_process';
 import { writeFileSync, readFileSync, existsSync } from 'node:fs';
 import { tmpdir } from 'node:os';
 import { join } from 'node:path';
@@ -30,12 +30,11 @@ function generatePKCE() {
 
 function openBrowser(url: string): void {
   const cmd =
-    process.platform === 'darwin'
-      ? `open "${url}"`
-      : process.platform === 'win32'
-        ? `start "${url}"`
-        : `xdg-open "${url}"`;
-  exec(cmd);
+    process.platform === 'darwin' ? 'open' : process.platform === 'win32' ? 'cmd' : 'xdg-open';
+
+  const args = process.platform === 'win32' ? ['/c', 'start', '', url] : [url];
+
+  execFile(cmd, args);
 }
 
 function decodeJwtPayload(token: string): Record<string, unknown> {

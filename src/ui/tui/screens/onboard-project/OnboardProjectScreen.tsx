@@ -29,6 +29,8 @@ const MAX_VISIBLE_STATUS = 3;
 const CONFIRM_DESCRIPTION =
   'The wizard will add the Confidence SDK and create your first feature flag.';
 
+const SANDBOX_WARNING = 'The AI agent will be able to read and write files in your project.';
+
 export function OnboardProjectScreen() {
   const session = useSession();
   const navigate = useNavigation(ScreenId.OnboardProject);
@@ -117,6 +119,14 @@ export function OnboardProjectScreen() {
         <Box marginBottom={1}>
           <Text color={Colors.muted}>{CONFIRM_DESCRIPTION}</Text>
         </Box>
+
+        {onboarding.phase === 'confirm' && (
+          <Box marginBottom={1}>
+            <Text color={Colors.warning}>
+              {Icons.diamond} {SANDBOX_WARNING}
+            </Text>
+          </Box>
+        )}
 
         {onboarding.phase === 'detecting' && <Spinner label="Detecting project framework..." />}
 
