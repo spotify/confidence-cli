@@ -13,6 +13,10 @@ export function mcpConfigPath(projectDir: string): string {
   return join(projectDir, '.cursor', 'mcp.json');
 }
 
+export function cliConfigPath(projectDir: string): string {
+  return join(projectDir, '.cursor', 'cli.json');
+}
+
 export function skillsDir(projectDir: string): string {
   return join(projectDir, '.cursor', 'skills');
 }
