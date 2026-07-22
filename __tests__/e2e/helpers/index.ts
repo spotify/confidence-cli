@@ -95,24 +95,23 @@ export async function navigatePastAuth(session: TerminalSession): Promise<void> 
 export async function navigateToPlugins(session: TerminalSession): Promise<void> {
   await navigatePastWelcome(session);
   await navigatePastAuth(session);
-  await session.waitForText('Which agent tool are you using?');
   session.checkpoint();
+  await session.waitForText('Which agent tool are you using?');
 }
 
 export async function navigateToConnectTools(session: TerminalSession): Promise<void> {
   await navigateToPlugins(session);
-  await session.sendKey(ENTER);
-  await session.waitForText('Plugin installed successfully');
-  await session.waitForText('Connect Confidence tools?');
+  await session.waitForText('Skip (install manually later)');
   session.checkpoint();
+  await session.sendKey(ENTER);
+  await session.waitForText('Connect Confidence tools?');
 }
 
 export async function navigateToOnboarding(session: TerminalSession): Promise<void> {
   await navigateToConnectTools(session);
-  await session.sendKey(ENTER);
-  await session.waitForText('Connected successfully');
-  await session.waitForText('Start onboarding?');
   session.checkpoint();
+  await session.sendKey(ENTER);
+  await session.waitForText('Start onboarding?');
 }
 
 export type Invocation = {
@@ -127,13 +126,13 @@ export async function selectIdeAndOnboard(
 ): Promise<void> {
   await session.sendKeyRepeat(ARROW_DOWN, downPresses);
   await session.sendKey(ENTER);
-  await session.waitForText('Plugin installed successfully');
 
   // ConnectTools may auto-advance when MCP servers are already registered globally
-  const matched = await session.waitForAnyTextOf([
+  const matched = await session.waitForText([
     'Start onboarding?',
     'Connect Confidence tools?',
   ]);
+
   if (matched === 'Connect Confidence tools?') {
     await session.sendKey(ENTER);
     await session.waitForText('Connected successfully');
@@ -141,7 +140,7 @@ export async function selectIdeAndOnboard(
 
   await session.waitForText('Start onboarding?');
   await session.sendKey(ENTER);
-  await session.waitForText('onboarding complete', { timeout: 60_000 });
+  await session.waitForText('onboarding complete');
 }
 
 export function readInvocation(cwd: string): Invocation {

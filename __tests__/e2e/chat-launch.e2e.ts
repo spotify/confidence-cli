@@ -54,7 +54,6 @@ describe('when the user starts chat after onboarding', () => {
 
     await navigateToPlugins(session);
     await session.sendKey(ENTER);
-    await session.waitForText('Plugin installed successfully');
 
     // Skip connecting tools
     await session.waitForText('Connect Confidence tools?');
