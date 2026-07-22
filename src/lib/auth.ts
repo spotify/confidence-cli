@@ -13,7 +13,7 @@ const AUTH_AUDIENCE = 'https://confidence.dev/';
 const AUTH_SCOPE = 'openid profile email offline_access';
 const AUTH_CLIENT_ID_SIGNUP = '82qMvwZvqd3t3S0gRDvs8R53TehQXSJY';
 const AUTH_CLIENT_ID_LOGIN = '2fG3H4RhlAbIZm9Rfn32zTaILH7w1X4w';
-const AUTH_CALLBACK_PORT = 8084;
+export const AUTH_CALLBACK_PORT = 8084;
 
 const TOKEN_FILE = join(tmpdir(), 'confidence_token');
 const REFRESH_TOKEN_FILE = join(tmpdir(), 'confidence_refresh_token');

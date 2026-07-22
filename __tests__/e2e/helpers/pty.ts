@@ -4,6 +4,7 @@ import { mkdtempSync, rmSync } from 'node:fs';
 import { tmpdir } from 'node:os';
 import { join } from 'node:path';
 import { stripAnsi } from './strip-ansi.js';
+import { E2E_BASE_ENV } from './env.js';
 
 const CLI_PATH = resolve(import.meta.dirname, '../../../dist/bin/cli.js');
 const DEFAULT_COLS = 100;
@@ -48,11 +49,8 @@ export class TerminalSession {
       cwd: this.cwd,
       env: {
         ...process.env,
+        ...E2E_BASE_ENV,
         ...env,
-        CI: '0',
-        TERM: 'xterm-256color',
-        FORCE_COLOR: '1',
-        NODE_ENV: 'test',
         TMPDIR: isolatedTmpDir,
       },
     });
