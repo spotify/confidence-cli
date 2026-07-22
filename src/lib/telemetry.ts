@@ -1,10 +1,17 @@
-import {
-  TELEMETRY_KEY_URL,
-  TELEMETRY_EVENTS_URL_TEMPLATE,
-  TELEMETRY_EVENT_DEFINITION,
-  TELEMETRY_SOURCE,
-} from './constants.js';
-import { getEnv, isCI } from '../env.js';
+import { env, isCI } from './env.js';
+
+const TELEMETRY_KEY_URL = env(
+  'CONFIDENCE_TELEMETRY_KEY_URL',
+  'https://onboarding.confidence.dev/v1/agentTelemetryKey:acquire',
+);
+
+const TELEMETRY_EVENTS_URL_TEMPLATE = env(
+  'CONFIDENCE_TELEMETRY_EVENTS_URL',
+  'https://events.{region}.confidence.dev/v1/events:publish',
+);
+
+const TELEMETRY_EVENT_DEFINITION = 'eventDefinitions/agent-telemetry';
+const TELEMETRY_SOURCE = 'wizard';
 
 type TelemetryRegion = 'EU' | 'US';
 
@@ -119,12 +126,12 @@ function createNoopClient(): TelemetryClient {
 }
 
 export function isTelemetryEnabled(): boolean {
-  const explicit = getEnv('CONFIDENCE_TELEMETRY');
+  const explicit = env('CONFIDENCE_TELEMETRY');
   if (explicit === 'true') return true;
   if (explicit === 'false') return false;
 
   if (isCI()) return false;
-  if (getEnv('NODE_ENV') === 'test' || getEnv('NODE_ENV') === 'development') return false;
+  if (env('NODE_ENV') === 'test' || env('NODE_ENV') === 'development') return false;
 
   return true;
 }

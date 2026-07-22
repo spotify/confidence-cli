@@ -1,6 +1,7 @@
 import { validateToken } from '@lib/auth.js';
+import { env } from '@lib/env.js';
 
-const MCP_BASE_URL = process.env.CONFIDENCE_MCP_URL ?? 'https://mcp.confidence.dev';
+const MCP_BASE_URL = env('CONFIDENCE_MCP_URL', 'https://mcp.confidence.dev');
 
 export const MCP_SERVERS = {
   'confidence-flags': {
