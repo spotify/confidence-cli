@@ -29,7 +29,7 @@ const MAX_VISIBLE_STATUS = 3;
 const CONFIRM_DESCRIPTION =
   'The wizard will add the Confidence SDK and create your first feature flag.';
 
-const SANDBOX_WARNING = 'The AI agent will have full filesystem access on your machine.';
+const SANDBOX_WARNING = 'The AI agent will be able to read and write files in your project.';
 
 export function OnboardProjectScreen() {
   const session = useSession();

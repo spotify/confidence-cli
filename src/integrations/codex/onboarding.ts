@@ -19,7 +19,7 @@ export function runOnboarding(
     ? { ...globalThis.process.env, CONFIDENCE_ACCESS_TOKEN: opts.token }
     : undefined;
 
-  const child = spawn('codex', ['exec', '--json', '--sandbox', 'danger-full-access', '-'], {
+  const child = spawn('codex', ['exec', '--json', '--sandbox', 'workspace-write', '-'], {
     cwd: opts.projectDir,
     timeout: 300000,
     stdio: ['pipe', 'pipe', 'pipe'],

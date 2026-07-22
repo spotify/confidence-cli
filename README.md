@@ -46,7 +46,7 @@ confidence-quickstart [command] [options]
 
 ## Security Note
 
-During the **project onboarding** step, the wizard spawns your chosen AI agent (Claude Code, Cursor, or Codex) to integrate the Confidence SDK into your project. The spawned agent runs with **full filesystem access** — this is required for it to install dependencies, create configuration files, and modify source code. You will be prompted to confirm before this step begins.
+During the **project onboarding** step, the wizard spawns your chosen AI agent (Claude Code, Cursor, or Codex) to integrate the Confidence SDK into your project. The spawned agent can read and write files within your project directory — this is required for it to install dependencies, create configuration files, and modify source code. You will be prompted to confirm before this step begins.
 
 ## Confidence AI Plugins
 

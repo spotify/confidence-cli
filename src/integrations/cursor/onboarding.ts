@@ -18,7 +18,7 @@ export function runOnboarding(
     '--output-format',
     'stream-json',
     '--approve-mcps',
-    '--yolo',
+    '--auto-review',
     opts.prompt,
   ];
   const child = spawn('cursor', args, {
