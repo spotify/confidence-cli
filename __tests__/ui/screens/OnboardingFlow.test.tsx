@@ -54,7 +54,7 @@ describe('Onboarding flow', () => {
       sut.stdin.write(ARROW_DOWN + ENTER);
 
       await waitFor(() => {
-        expect(sut.lastFrame()).toContain('Confidence is ready');
+        expect(sut.lastFrame()).toContain('Onboarding skipped');
       });
     });
   });
@@ -199,7 +199,7 @@ describe('Onboarding flow', () => {
       sut.stdin.write(ESCAPE);
 
       await waitFor(() => {
-        expect(sut.lastFrame()).toContain('Confidence is ready');
+        expect(sut.lastFrame()).toContain('Onboarding skipped');
       });
     });
 

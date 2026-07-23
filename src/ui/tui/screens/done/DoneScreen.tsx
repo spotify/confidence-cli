@@ -20,17 +20,27 @@ export function DoneScreen() {
   const narrow = useIsNarrow();
   const { reportFile, codeChanges, projectDir, ide } = session;
   const align = narrow ? HAlign.Left : HAlign.Center;
+  const skipped = codeChanges.length === 0;
 
   return (
     <Box flexDirection="column" flexGrow={1} justifyContent="space-between">
       <Box flexDirection="column" alignItems={align} flexGrow={1} justifyContent={VAlign.Center}>
         <Box marginBottom={1}>
-          <Text color={Colors.success} bold>
-            {Icons.check} Confidence is ready!
+          <Text color={skipped ? Colors.muted : Colors.success} bold>
+            {skipped ? Icons.diamond : Icons.check}{' '}
+            {skipped ? 'Onboarding skipped' : 'Confidence is ready!'}
           </Text>
         </Box>
 
-        {codeChanges.length > 0 && !isShort && (
+        {skipped && !isShort && (
+          <Box marginBottom={1}>
+            <Text color={Colors.muted}>
+              You can always use Confidence AI plugin to run onboarding yourself later.
+            </Text>
+          </Box>
+        )}
+
+        {!skipped && !isShort && (
           <>
             <Box alignItems={align}>
               <Text bold>What we have set up:</Text>

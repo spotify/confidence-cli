@@ -3,7 +3,7 @@ import { type ChildProcess } from 'node:child_process';
 import { buildOnboardingPrompt } from '@lib/onboarding-prompt/index.js';
 import { detectFramework } from '@frameworks/index.js';
 import { ScreenId, type OnboardingGoal } from '@lib/session.js';
-import { type IdeId, getIntegration } from '@integrations/index.js';
+import { type IdeId, getIntegration, normalizeStatusLine } from '@integrations/index.js';
 import type { DetectedProvider } from '@providers/types.js';
 import { useLogger } from '../../hooks/useLog.js';
 import { $session, store, isStaleSession } from '../../store.js';
@@ -61,10 +61,12 @@ export function useOnboardingProcess(): OnboardingProcess {
       store.setReportFile('CONFIDENCE_QUICKSTART.md');
       store.setCodeChanges(
         lines
-          ? lines.filter(
-              (line) =>
-                line.includes('Created') || line.includes('Modified') || line.includes('Added'),
-            )
+          ? lines
+              .filter(
+                (line) =>
+                  line.includes('Created') || line.includes('Modified') || line.includes('Added'),
+              )
+              .map(normalizeStatusLine)
           : dryRunCodeChanges(goal),
       );
       setPhase('done');

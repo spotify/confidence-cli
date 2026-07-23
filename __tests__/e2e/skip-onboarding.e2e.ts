@@ -11,7 +11,7 @@ describe('when the user skips onboarding', () => {
     await session.sendKey(ENTER);
 
     // Done — no onboarding ran
-    await session.waitForText('Confidence is ready');
+    await session.waitForText('Onboarding skipped');
     await session.waitForText("What's next?");
 
     // Docs and dashboard links still appear

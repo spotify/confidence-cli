@@ -1,8 +1,8 @@
 import { type ChildProcess, spawn } from 'node:child_process';
 import { createInterface } from 'node:readline';
 import type { OnboardingOpts, OnboardingCallbacks } from '../types.js';
-import { STATUS_PREFIX } from '../constants.js';
 import { type StreamEvent, extractTextLines } from '../stream-json.js';
+import { normalizeStatusLine } from '../utils.js';
 
 export function runOnboarding(
   opts: OnboardingOpts,
@@ -50,11 +50,7 @@ export function runOnboarding(
       if (!stripped) continue;
       allLines.push(stripped);
       callbacks.onStdout(stripped);
-
-      const status = stripped.startsWith(STATUS_PREFIX)
-        ? stripped.slice(STATUS_PREFIX.length)
-        : stripped;
-      callbacks.onStatus(status);
+      callbacks.onStatus(normalizeStatusLine(stripped));
     }
   });
 
