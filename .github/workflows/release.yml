@@ -4,50 +4,46 @@ on:
   push:
     branches: [main]
 
-permissions:
-  contents: write # create GitHub releases and push tags
-  pull-requests: write # open and update release PRs
+permissions: {}
 
 concurrency:
   group: release
   cancel-in-progress: false
 
 jobs:
-  release-stub:
-    name: Release Job Stub
+  release-please:
+    name: Release Please
     runs-on: ubuntu-latest
+    permissions:
+      contents: write # create GitHub releases and push tags
+      pull-requests: write # open and update release PRs
+    outputs:
+      release_created: ${{ steps.release.outputs.release_created }}
     steps:
-      - run: echo "Will be released soon!"
+      - uses: googleapis/release-please-action@d1a8f221d7723166f48a584aebba00ef3f6febec # v4.1.4
+        id: release
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
 
-  # release-please:
-  #   name: Release Please
-  #   runs-on: ubuntu-latest
-  #   outputs:
-  #     release_created: ${{ steps.release.outputs.release_created }}
-  #   steps:
-  #     - uses: googleapis/release-please-action@d1a8f221d7723166f48a584aebba00ef3f6febec # v4.1.4
-  #       id: release
-  #       with:
-  #         token: ${{ secrets.GITHUB_TOKEN }}
+  publish:
+    name: Publish to npm
+    needs: release-please
+    if: ${{ needs.release-please.outputs.release_created }}
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read # checkout code
+      id-token: write # OIDC token for npm trusted publishing
+    steps:
+      - uses: actions/checkout@fbc6f3992d24b796d5a048ff273f7fcc4a7b6c09 # v5.1.0
+        with:
+          persist-credentials: false
+      - uses: pnpm/action-setup@a15d269cd4658e1107c09f1fabf4cbd7bd1f308a # v4.4.0
+      - uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v7.0.0
+        with:
+          node-version: '24'
+          registry-url: https://registry.npmjs.org
 
-  # publish:
-  #   name: Publish to npm
-  #   needs: release-please
-  #   if: ${{ needs.release-please.outputs.release_created }}
-  #   runs-on: ubuntu-latest
-  #   steps:
-  #     - uses: actions/checkout@fbc6f3992d24b796d5a048ff273f7fcc4a7b6c09 # v5.1.0
-  #       with:
-  #         persist-credentials: false
-  #     - uses: pnpm/action-setup@a15d269cd4658e1107c09f1fabf4cbd7bd1f308a # v4.4.0
-  #     - uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v7.0.0
-  #       with:
-  #         node-version: '24'
-  #         registry-url: https://registry.npmjs.org
-
-  #     - run: pnpm install --frozen-lockfile
-  #     - run: pnpm test
-  #     - run: pnpm build
-  #     - run: pnpm publish --no-git-checks
-  #       env:
-  #         NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
+      - run: pnpm install --frozen-lockfile
+      - run: pnpm test
+      - run: pnpm build
+      - run: pnpm publish --no-git-checks --provenance
