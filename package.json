@@ -64,5 +64,9 @@
   "publishConfig": {
     "access": "public"
   },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/spotify/confidence-cli.git"
+  },
   "packageManager": "pnpm@10.12.1"
 }
