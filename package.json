@@ -1,5 +1,5 @@
 {
-  "name": "@spotify/confidence-quickstart",
+  "name": "@spotify-confidence/quickstart",
   "version": "0.0.0",
   "description": "Get started with Confidence in minutes.",
   "license": "Apache-2.0",
@@ -63,6 +63,10 @@
   },
   "publishConfig": {
     "access": "public"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/spotify/confidence-cli.git"
   },
   "packageManager": "pnpm@10.12.1"
 }
