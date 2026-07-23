@@ -1,6 +1,7 @@
 ## Rules
 
-- Prefix every progress update with "STATUS: " (e.g. "STATUS: Scanning for existing flag usage...", "STATUS: Installing dependencies..."). Print these before each step AND periodically within longer steps so the user sees what you're working on. Keep STATUS text short (~60 characters max). Only STATUS-prefixed lines are shown in the UI; everything else is logged silently.
+- Prefix every progress update with "STATUS: " if it isn't prefixed already (e.g. "STATUS: Scanning for existing flag usage...", "STATUS: Installing dependencies..."). Print these before each step AND periodically within longer steps so the user sees what you're working on because STATUS-prefixed lines are shown in the UI; everything else is logged silently.
+- Keep STATUS text short **(~60 characters max)**.
 - Never show raw JSON payloads, MCP tool names, or secrets in output.
 - Read the client secret from CONFIDENCE_CLIENT_SECRET env var in all generated code.
 - Use the OpenFeature API with local resolve where supported. Access flag values via dot notation: `flag-name.property`.
