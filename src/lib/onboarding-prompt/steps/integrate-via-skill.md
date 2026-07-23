@@ -29,6 +29,11 @@ The only user-visible output is STATUS-prefixed lines (~60 chars max). No step t
 - After wiring each flag: "STATUS: Integrated flag: <flag-name>"
 - "STATUS: Verifying project builds..."
 
-Read the client secret from CONFIDENCE_CLIENT_SECRET env var in all generated code.
-Use the OpenFeature API with local resolve where supported. Access flag values via dot notation: `flag-name.property`.
-{{REACT_GOTCHAS}}
+**Guardrails — apply regardless of what the skill says:**
+
+- Read the client secret from CONFIDENCE_CLIENT_SECRET env var in all generated code — never hardcode it. Write the secret to `.env` and ensure `.env` is listed in `.gitignore`.
+- Use the OpenFeature API with local resolve where supported. Access flag values via dot notation: `flag-name.property`.
+- Set up the evaluation context with a stable `targeting_key` (user ID, session ID, or anonymous ID) and any attributes the app already has (`country`, `plan`, `device`). Don't fabricate attributes.
+- Use only SDK APIs from the docs integration guide — do not improvise method names or signatures from memory.
+  {{FLAG_GUIDANCE}}
+  {{REACT_GOTCHAS}}

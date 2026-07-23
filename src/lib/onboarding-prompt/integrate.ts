@@ -29,6 +29,7 @@ export function integrateViaSkill(
       ? 'For fresh scaffolds, use the scaffold\'s default heading or welcome text as the insertion point — the "aha" moment works just as well on boilerplate. Demonstrate at least two use cases (e.g. a gradual rollout for a heading change and a kill switch for a feature section).'
       : 'Read the top 2–3 candidate files and pick the best one: a single visible string or component, no complex conditionals already wrapping it, in a file the user will recognize.',
 
+    FLAG_GUIDANCE: isEmptyProject ? FLAG_GUIDANCE_EMPTY : FLAG_GUIDANCE_EXISTING,
     REACT_GOTCHAS: needsReactGotchas ? REACT_GOTCHAS : '',
   });
 }
