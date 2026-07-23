@@ -15,7 +15,7 @@ Execute the skill's workflow automatically, without pausing for user input:
 
 {{INSERTION_HINT}}
 
-**Output format — use this instead of anything in the skill:**
+**Output format — use this instead of the skill's formatting:**
 
 The only user-visible output is STATUS-prefixed lines (~60 chars max). No step tracker boxes, no EDUCATE blocks, no headers, no AskUserQuestion. Print STATUS lines before each phase and periodically within longer phases:
 
