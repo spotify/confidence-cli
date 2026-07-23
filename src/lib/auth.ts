@@ -51,9 +51,10 @@ function extractRegion(token: string): 'EU' | 'US' {
 }
 
 function persistTokens(accessToken: string, refreshToken?: string): void {
-  writeFileSync(TOKEN_FILE, accessToken, 'utf-8');
+  const config = { encoding: 'utf-8', mode: 0o600 } as const;
+  writeFileSync(TOKEN_FILE, accessToken, config);
   if (refreshToken) {
-    writeFileSync(REFRESH_TOKEN_FILE, refreshToken, 'utf-8');
+    writeFileSync(REFRESH_TOKEN_FILE, refreshToken, config);
   }
 }
 
