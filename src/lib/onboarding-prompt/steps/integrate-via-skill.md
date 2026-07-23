@@ -2,6 +2,8 @@
 
 Print "STATUS: Analyzing project for flag integration points..."
 
+The detected framework is **{{FRAMEWORK}}**.
+
 Read `{{SKILLS_DIR}}/analyze-project/SKILL.md` as a **methodology reference** — use it for what to analyze, how to identify flag candidates, which SDK to pick, and how to create and wire flags. Ignore its output formatting entirely: no step tracker, no EDUCATE blocks, no AskUserQuestion calls.
 
 Execute the skill's workflow automatically, without pausing for user input:
@@ -29,3 +31,4 @@ The only user-visible output is STATUS-prefixed lines (~60 chars max). No step t
 
 Read the client secret from CONFIDENCE_CLIENT_SECRET env var in all generated code.
 Use the OpenFeature API with local resolve where supported. Access flag values via dot notation: `flag-name.property`.
+{{REACT_GOTCHAS}}
