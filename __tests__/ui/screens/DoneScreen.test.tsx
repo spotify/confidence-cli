@@ -8,10 +8,13 @@ vi.mock('../../../src/integrations/chat.js', () => ({
 }));
 
 describe('DoneScreen', () => {
-  it('renders completion message', async () => {
+  it('renders skipped message when no code changes', async () => {
     using sut = renderScreen(<DoneScreen />, { screen: ScreenId.Done });
     await waitFor(() => {
-      expect(sut.lastFrame()).toContain('Confidence is ready');
+      expect(sut.lastFrame()).toContain('Onboarding skipped');
+      expect(sut.lastFrame()).toContain(
+        'You can always use Confidence AI plugin to run onboarding yourself later.',
+      );
     });
   });
 
@@ -39,10 +42,11 @@ describe('DoneScreen', () => {
   });
 
   describe('when code changes are present', () => {
-    it('shows code changes summary', async () => {
+    it('renders completion message and code changes summary', async () => {
       using sut = renderScreen(<DoneScreen />, { screen: ScreenId.Done });
       store.setCodeChanges(['Added @spotify-confidence/sdk', 'Created confidence.config.ts']);
       await waitFor(() => {
+        expect(sut.lastFrame()).toContain('Confidence is ready');
         expect(sut.lastFrame()).toContain('What we have set up');
         expect(sut.lastFrame()).toContain('confidence.config.ts');
       });
