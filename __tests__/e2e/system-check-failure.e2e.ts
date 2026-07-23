@@ -19,6 +19,7 @@ describe('when system check fails', () => {
     await session.waitForText('Some required tools are missing');
     await session.waitForText('Retry');
     await session.waitForText('Quit');
+    expect(session.snapshot()).toMatchSnapshot('system-check-failure');
   });
 
   it('shows error when node is not on PATH', async () => {
@@ -31,6 +32,7 @@ describe('when system check fails', () => {
     // SystemCheck — node not found on PATH
     await session.waitForText('System Check');
     await session.waitForText('Some required tools are missing');
+    expect(session.snapshot()).toMatchSnapshot('system-check-node-missing');
   });
 
   it('exits with code 1 when user selects Quit', async () => {

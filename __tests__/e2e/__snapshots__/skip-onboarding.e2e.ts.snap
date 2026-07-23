@@ -1,0 +1,45 @@
+// Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
+
+exports[`when the user skips onboarding > offers "Continue work with Claude Code" since plugin was installed > done-skipped-with-ide 1`] = `
+" Confidence by Spotify                                              https://confidence.spotify.com/
+
+
+                                        ◆ Onboarding skipped
+
+              You can always use Confidence AI plugin to run onboarding yourself later.
+
+
+                         Documentation: https://confidence.spotify.com/docs
+                             Dashboard: https://app.confidence.spotify.com
+
+
+ ──────────────────────────────────────────────────────────────────────────────────────────────────
+ What's next?
+
+ ❯ Continue work with Claude Code
+   Exit
+
+ ↑↓ navigate   enter confirm   esc cancel                                                    vX.Y.Z"
+`;
+
+exports[`when the user skips onboarding > shows Done screen without report file or code changes > done-skipped 1`] = `
+" Confidence by Spotify                                              https://confidence.spotify.com/
+
+
+                                        ◆ Onboarding skipped
+
+              You can always use Confidence AI plugin to run onboarding yourself later.
+
+
+                         Documentation: https://confidence.spotify.com/docs
+                             Dashboard: https://app.confidence.spotify.com
+
+
+ ──────────────────────────────────────────────────────────────────────────────────────────────────
+ What's next?
+
+ ❯ Continue work with Claude Code
+   Exit
+
+ ↑↓ navigate   enter confirm   esc cancel                                                    vX.Y.Z"
+`;

@@ -24,6 +24,7 @@ describe('when the user skips installing AI plugin', () => {
     await session.waitForText('Confidence is ready');
     await session.waitForText("What's next?");
     await session.waitForText('Exit');
+    expect(session.snapshot()).toMatchSnapshot('done-no-ide');
 
     await session.sendKey(ENTER);
     const exitCode = await session.waitForExit();
@@ -51,5 +52,6 @@ describe('when the user skips installing AI plugin', () => {
     // Done — onboarding ran so report file and code changes appear
     await session.waitForText('What we have set up');
     await session.waitForText('CONFIDENCE_QUICKSTART.md');
+    expect(session.snapshot()).toMatchSnapshot('done-no-ide-with-report');
   });
 });
