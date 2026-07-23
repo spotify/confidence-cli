@@ -16,6 +16,7 @@
     "try": "NODE_ENV=development node --import tsx bin/cli.ts",
     "test": "vitest run",
     "test:e2e": "pnpm build && vitest run --config vitest.config.e2e.ts",
+    "test:e2e:update": "pnpm test:e2e -- --update",
     "test:watch": "vitest",
     "lint": "pnpm lint:src && pnpm lint:scripts && pnpm format:check",
     "lint:src": "eslint .",
