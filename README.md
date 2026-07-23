@@ -5,7 +5,7 @@ Interactive CLI wizard for setting up and integrating [Confidence](https://confi
 ## Quick Start
 
 ```bash
-npx @spotify/confidence-quickstart
+npx @spotify-confidence/quickstart
 ```
 
 Requires Node.js 24+.
@@ -81,13 +81,13 @@ The wizard collects anonymous usage data (e.g. which steps you complete) to help
 To opt out:
 
 ```bash
-npx @spotify/confidence-quickstart --no-telemetry
+npx @spotify-confidence/quickstart --no-telemetry
 ```
 
 Or set the environment variable:
 
 ```bash
-CONFIDENCE_TELEMETRY=false npx @spotify/confidence-quickstart
+CONFIDENCE_TELEMETRY=false npx @spotify-confidence/quickstart
 ```
 
 Telemetry is automatically disabled in CI environments and during development.
