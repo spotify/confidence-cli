@@ -18,7 +18,7 @@ describe('when the user skips installing AI plugin', () => {
     // OnboardProject
     await session.waitForText('Start onboarding?');
     await session.sendKey(ENTER);
-    await session.waitForText('onboarding complete', { timeout: 60_000 });
+    await session.waitForText('onboarding complete', { timeout: 30_000 });
 
     // Done — no IDE set, so only "Exit" option (no "Continue work with")
     await session.waitForText('Confidence is ready');
@@ -47,7 +47,7 @@ describe('when the user skips installing AI plugin', () => {
 
     await session.waitForText('Start onboarding?');
     await session.sendKey(ENTER);
-    await session.waitForText('onboarding complete', { timeout: 60_000 });
+    await session.waitForText('onboarding complete', { timeout: 30_000 });
 
     // Done — onboarding ran so report file and code changes appear
     await session.waitForText('What we have set up');

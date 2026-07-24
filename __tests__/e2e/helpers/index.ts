@@ -13,7 +13,7 @@ export { ARROW_DOWN, ARROW_UP, ENTER, ESCAPE } from './keys.js';
 export { AUTH_CALLBACK_PORT } from './env.js';
 export { CHAT_PROMPT_FILE, ONBOARDING_INVOCATION_FILE } from './mock-binaries.js';
 
-const DEFAULT_TIMEOUT = 30_000;
+const DEFAULT_TIMEOUT = 15_000;
 
 type ProjectType = 'react' | 'empty';
 

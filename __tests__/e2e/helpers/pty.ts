@@ -10,7 +10,7 @@ import { E2E_BASE_ENV } from './env.js';
 const CLI_PATH = resolve(import.meta.dirname, '../../../dist/bin/cli.js');
 const DEFAULT_COLS = 100;
 const DEFAULT_ROWS = 40;
-const DEFAULT_TIMEOUT = 30_000;
+const DEFAULT_TIMEOUT = 15_000;
 
 type SessionOptions = {
   args?: string[];

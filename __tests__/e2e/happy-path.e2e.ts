@@ -48,7 +48,7 @@ describe('happy-path flow', () => {
     session.checkpoint();
     await session.sendKey(ENTER);
     await session.waitForText('Installing @spotify-confidence/sdk');
-    await session.waitForText('onboarding complete', { timeout: 60_000 });
+    await session.waitForText('onboarding complete', { timeout: 30_000 });
 
     // Done
     await session.waitForText('Confidence is ready');
