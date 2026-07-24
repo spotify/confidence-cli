@@ -58,6 +58,7 @@ export class TerminalSession {
         ...process.env,
         ...E2E_BASE_ENV,
         ...env,
+        HOME: isolatedTmpDir,
         TMPDIR: isolatedTmpDir,
       },
     });
