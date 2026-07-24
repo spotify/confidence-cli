@@ -194,8 +194,8 @@ export function renderScreen(raw: string, cols: number, rows: number): string {
 
 export function normalizeSnapshot(text: string, cwd: string): string {
   let result = text.replaceAll(cwd, '<project-dir>');
-  result = result.replace(/v\d+\.\d+\.\d+(-[\w.]+)?/g, 'vX.Y.Z');
-  result = result.replace(/(?<=[\s])\d+\.\d+\.\d+/gm, 'X.Y.Z');
+  result = result.replace(/v\d+\.\d+\.\d+(-[\w.]+)?/g, (m) => 'vX.Y.Z'.padEnd(m.length));
+  result = result.replace(/(?<=[\s])\d+\.\d+\.\d+/gm, (m) => 'X.Y.Z'.padEnd(m.length));
   result = result.replace(/\n{4,}/g, '\n\n\n');
   return result;
 }
