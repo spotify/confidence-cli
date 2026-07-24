@@ -31,7 +31,7 @@ export function createSession({
   systemPath?: string;
 } = {}): TerminalSession {
   const mockBinDir = process.env.E2E_MOCK_BIN_DIR!;
-  const projectDir = mkdtempSync(join(tmpdir(), 'e2e-project-'));
+  const projectDir = mkdtempSync('/tmp/e2e-project-');
 
   if (project === 'react') {
     writeFileSync(
