@@ -1,0 +1,156 @@
+// Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
+
+exports[`happy-path flow > navigates Welcome → SystemCheck → Authenticate → InstallPlugins → ConnectTools → OnboardProject → Done > authenticate 1`] = `
+" Confidence by Spotify                                              https://confidence.spotify.com/
+
+ Sign in to Confidence                                                Todo (2/5)
+
+ Sign in so the wizard can create flags and set up your project.      ● Check system
+                                                                      ● Sign in to Confidence
+ ✔ Authenticated as test@example.com                                  ○ Set up your agent
+                                                                      ○ Connect tools
+ Continuing...                                                        ○ Onboard project"
+`;
+
+exports[`happy-path flow > navigates Welcome → SystemCheck → Authenticate → InstallPlugins → ConnectTools → OnboardProject → Done > connect-tools 1`] = `
+" Confidence by Spotify                                              https://confidence.spotify.com/
+
+ Connect your AI to Confidence                                        Todo (3/5)
+
+ Give your AI assistant direct access to flags, docs, and             ● Check system
+ integration tools. With it, you'll be able to:                       ● Sign in to Confidence
+                                                                      ● Set up your agent
+ ● Ask your agent to create and manage feature flags.                 ▶ Connect tools
+ ● Search docs and generate code, all from your IDE.                  ○ Onboard project
+ ● Avoid context-switching or manual lookups. Your assistant has the
+    keys.
+
+ Confidence tools:
+ ─ confidence-flags
+ ─ confidence-docs
+
+
+ ──────────────────────────────────────────────────────────────────────────────────────────────────
+ Connect Confidence tools?
+
+ ❯ Connect all tools
+   Connect confidence-flags
+   Connect confidence-docs
+   Skip for now
+
+ ↑↓ navigate   enter confirm                                                                 vX.Y.Z"
+`;
+
+exports[`happy-path flow > navigates Welcome → SystemCheck → Authenticate → InstallPlugins → ConnectTools → OnboardProject → Done > done 1`] = `
+" Confidence by Spotify                                              https://confidence.spotify.com/
+
+
+                                       ✔ Confidence is ready!
+
+                                        What we have set up:
+                                   ● Added feature flag example
+                                   ● Created confidence.config.ts
+
+
+                           Full report: [CONFIDENCE_QUICKSTART.md]
+                         Documentation: https://confidence.spotify.com/docs
+                             Dashboard: https://app.confidence.spotify.com
+
+
+ ──────────────────────────────────────────────────────────────────────────────────────────────────
+ What's next?
+
+ ❯ Continue work with Claude Code
+   Exit
+
+ ↑↓ navigate   enter confirm   esc cancel                                                    vX.Y.Z"
+`;
+
+exports[`happy-path flow > navigates Welcome → SystemCheck → Authenticate → InstallPlugins → ConnectTools → OnboardProject → Done > install-plugins 1`] = `
+" Confidence by Spotify                                              https://confidence.spotify.com/
+
+ Teach your AI Confidence                                             Todo (2/5)
+
+ Plugins give your agent tool Confidence-specific skills — flag       ● Check system
+ management, warehouse setup, migrations, onboarding — no more        ● Sign in to Confidence
+ searching docs yourself.                                             ▶ Set up your agent
+                                                                      ○ Connect tools
+                                                                      ○ Onboard project
+
+
+ ──────────────────────────────────────────────────────────────────────────────────────────────────
+ Which agent tool are you using?
+
+ ❯ Claude Code
+   Cursor
+   Codex
+   Skip (install manually later)
+
+ ↑↓ navigate   enter confirm                                                                 vX.Y.Z"
+`;
+
+exports[`happy-path flow > navigates Welcome → SystemCheck → Authenticate → InstallPlugins → ConnectTools → OnboardProject → Done > onboard-project 1`] = `
+" Confidence by Spotify                                              https://confidence.spotify.com/
+
+ Set up your project                                                  Todo (4/5)
+
+ The wizard will add the Confidence SDK and create your first         ● Check system
+ feature flag.                                                        ● Sign in to Confidence
+                                                                      ● Set up your agent
+ ◆ The AI agent will be able to read and write files in your          ● Connect tools
+ project.                                                             ▶ Onboard project
+
+
+ ──────────────────────────────────────────────────────────────────────────────────────────────────
+ Start onboarding?
+
+ ❯ Start onboarding
+   Skip for now
+
+ ↑↓ navigate   enter confirm                                                                 vX.Y.Z"
+`;
+
+exports[`happy-path flow > navigates Welcome → SystemCheck → Authenticate → InstallPlugins → ConnectTools → OnboardProject → Done > system-check 1`] = `
+" Confidence by Spotify                                              https://confidence.spotify.com/
+
+ System Check                                                         Todo (1/5)
+
+ Checking that your system has everything we need.                    ● Check system
+                                                                      ○ Sign in to Confidence
+ ✔ Node.js vX.Y.Z                                                     ○ Set up your agent
+ ✔ Git X.Y.Z                                                          ○ Connect tools
+                                                                      ○ Onboard project
+ All checks passed. Continuing..."
+`;
+
+exports[`happy-path flow > navigates Welcome → SystemCheck → Authenticate → InstallPlugins → ConnectTools → OnboardProject → Done > welcome 1`] = `
+" Confidence by Spotify                                              https://confidence.spotify.com/
+
+
+                                        Confidence Quickstart
+
+                      Feature flags and experiments, set up with AI in minutes.
+                       This wizard will help you get started with Confidence.
+
+                               1. It will check your system
+                               2. Sign you in to Confidence workspace
+                               3. Teach your AI agent about Confidence
+                               4. Integrate the SDK into your project
+                               5. Show a working feature flag example
+
+
+                                Directory  ✔ <project-dir>
+                                Framework  ✔ React (detected)
+                                Telemetry  ✘ off
+
+
+ ──────────────────────────────────────────────────────────────────────────────────────────────────
+ Ready to get started?
+
+ ❯ Start setup
+   Change framework
+   About Confidence
+   Quit
+
+ ↑↓ navigate   enter confirm                                                                 vX.Y.Z"
+`;

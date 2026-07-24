@@ -1,0 +1,45 @@
+// Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
+
+exports[`when system check fails > shows error when git is missing > system-check-failure 1`] = `
+" Confidence by Spotify                                              https://confidence.spotify.com/
+
+ System Check                                                         Todo (0/5)
+
+ Checking that your system has everything we need.                    ✘ Check system
+                                                                      ○ Sign in to Confidence
+ ✔ Node.js vX.Y.Z                                                     ○ Set up your agent
+ ✘ Git                                                                ○ Connect tools
+                                                                      ○ Onboard project
+ Some required tools are missing. Install them and retry.
+
+
+ ──────────────────────────────────────────────────────────────────────────────────────────────────
+ Required tools are missing.
+
+ ❯ Retry
+   Quit
+
+ ↑↓ navigate   enter confirm                                                                 vX.Y.Z"
+`;
+
+exports[`when system check fails > shows error when node is not on PATH > system-check-node-missing 1`] = `
+" Confidence by Spotify                                              https://confidence.spotify.com/
+
+ System Check                                                         Todo (0/5)
+
+ Checking that your system has everything we need.                    ✘ Check system
+                                                                      ○ Sign in to Confidence
+ ✘ Node.js                                                            ○ Set up your agent
+ ✔ Git X.Y.Z                                                          ○ Connect tools
+                                                                      ○ Onboard project
+ Some required tools are missing. Install them and retry.
+
+
+ ──────────────────────────────────────────────────────────────────────────────────────────────────
+ Required tools are missing.
+
+ ❯ Retry
+   Quit
+
+ ↑↓ navigate   enter confirm                                                                 vX.Y.Z"
+`;

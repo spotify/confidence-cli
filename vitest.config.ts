@@ -22,11 +22,7 @@ export default defineConfig({
     clearMocks: true,
     maxWorkers: isCI ? 1 : 4,
     pool: 'forks',
-    poolOptions: {
-      forks: {
-        execArgv: ['--import', './__tests__/msw/localstorage-fake.mjs'],
-      },
-    },
+    execArgv: ['--import', './__tests__/msw/localstorage-fake.mjs'],
   },
   esbuild: {
     jsx: 'automatic',

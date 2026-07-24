@@ -1,0 +1,86 @@
+// Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
+
+exports[`welcome screen navigation > exits cleanly on Quit > welcome-quit-selected 1`] = `
+" Confidence by Spotify                                              https://confidence.spotify.com/
+
+
+                                        Confidence Quickstart
+
+                      Feature flags and experiments, set up with AI in minutes.
+                       This wizard will help you get started with Confidence.
+
+                               1. It will check your system
+                               2. Sign you in to Confidence workspace
+                               3. Teach your AI agent about Confidence
+                               4. Integrate the SDK into your project
+                               5. Show a working feature flag example
+
+
+                                Directory  ✔ <project-dir>
+                                Framework  ✔ React (detected)
+                                Telemetry  ✘ off
+
+
+ ──────────────────────────────────────────────────────────────────────────────────────────────────
+ Ready to get started?
+
+   Start setup
+   Change framework
+   About Confidence
+ ❯ Quit ✔
+
+ ↑↓ navigate   enter confirm                                                                 vX.Y.Z"
+`;
+
+exports[`welcome screen navigation > navigates to About screen > about 1`] = `
+" Confidence by Spotify                                              https://confidence.spotify.com/
+
+
+                                          About Confidence
+
+               Confidence is Spotify's feature flagging and experimentation platform.
+                   Run experiments in your data warehouse — BigQuery, Snowflake,
+                     Redshift, Databricks. Your data stays under your control.
+                         OpenFeature-compliant SDKs mean no vendor lock-in.
+
+
+                                Docs: https://confidence.spotify.com/docs
+                           Dashboard: https://app.confidence.spotify.com
+
+
+ ──────────────────────────────────────────────────────────────────────────────────────────────────
+ Back to setup?
+
+ ❯ Back
+
+ enter confirm   esc cancel                                                                  vX.Y.Z"
+`;
+
+exports[`welcome screen navigation > navigates to SelectFramework screen > select-framework 1`] = `
+" Confidence by Spotify                                              https://confidence.spotify.com/
+
+
+                                          Select Framework
+
+                         Choose your project's SDK and the wizard will:
+                         1. Install the matching Confidence SDK package
+                         2. Generate framework-specific integration code
+                         3. Guide you through a working feature flag example
+
+                                          Currently: react
+
+
+ ──────────────────────────────────────────────────────────────────────────────────────────────────
+ Select your project's framework or language:
+
+ ❯ React
+   TypeScript
+   JavaScript
+   Swift
+   Kotlin
+   Java
+   Python
+   Go
+
+ ↑↓ navigate   enter confirm   esc cancel                                                    vX.Y.Z"
+`;

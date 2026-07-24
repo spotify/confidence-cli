@@ -11,6 +11,7 @@ describe('welcome screen navigation', () => {
     await session.sendKey(ENTER);
 
     await session.waitForText('About Confidence');
+    expect(session.snapshot()).toMatchSnapshot('about');
   });
 
   it('navigates to SelectFramework screen', async () => {
@@ -23,6 +24,7 @@ describe('welcome screen navigation', () => {
     await session.sendKey(ENTER);
 
     await session.waitForText('Select Framework');
+    expect(session.snapshot()).toMatchSnapshot('select-framework');
   });
 
   it('exits cleanly on Quit', async () => {
@@ -33,6 +35,7 @@ describe('welcome screen navigation', () => {
 
     await session.sendKeyRepeat(ARROW_DOWN, 3);
     await session.sendKey(ENTER);
+    expect(session.snapshot()).toMatchSnapshot('welcome-quit-selected');
 
     const exitCode = await session.waitForExit();
     expect(exitCode).toBe(0);

@@ -4,12 +4,13 @@ import { mkdtempSync, rmSync } from 'node:fs';
 import { tmpdir } from 'node:os';
 import { join } from 'node:path';
 import { stripAnsi } from './strip-ansi.js';
+import { renderScreen, normalizeSnapshot } from './screen-buffer.js';
 import { E2E_BASE_ENV } from './env.js';
 
 const CLI_PATH = resolve(import.meta.dirname, '../../../dist/bin/cli.js');
 const DEFAULT_COLS = 100;
 const DEFAULT_ROWS = 40;
-const DEFAULT_TIMEOUT = 30_000;
+const DEFAULT_TIMEOUT = 15_000;
 
 type SessionOptions = {
   args?: string[];
@@ -29,14 +30,20 @@ export class TerminalSession {
   private cachedScreen = '';
   private cachedRawLength = 0;
   private markPosition = 0;
+  private rawMarkPosition = 0;
   private exitCode: number | null = null;
   private exitPromise: Promise<number>;
   private tempDirs: string[] = [];
 
   readonly cwd: string;
+  readonly cols: number;
+  readonly rows: number;
 
   constructor(options: SessionOptions = {}) {
     const { args = ['--debug'], env = {}, cols = DEFAULT_COLS, rows = DEFAULT_ROWS, cwd } = options;
+
+    this.cols = cols;
+    this.rows = rows;
 
     const isolatedTmpDir = env.TMPDIR ?? mkdtempSync(join(tmpdir(), 'e2e-'));
     this.cwd = cwd ?? process.cwd();
@@ -51,6 +58,7 @@ export class TerminalSession {
         ...process.env,
         ...E2E_BASE_ENV,
         ...env,
+        HOME: isolatedTmpDir,
         TMPDIR: isolatedTmpDir,
       },
     });
@@ -85,6 +93,13 @@ export class TerminalSession {
 
   checkpoint(): void {
     this.markPosition = this.screen.length;
+    this.rawMarkPosition = this.rawOutput.length;
+  }
+
+  snapshot(): string {
+    const raw = this.rawOutput.slice(this.rawMarkPosition);
+    const rendered = renderScreen(raw, this.cols, this.rows);
+    return normalizeSnapshot(rendered, this.cwd);
   }
 
   send(data: string): void {

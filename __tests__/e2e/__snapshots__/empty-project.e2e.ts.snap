@@ -1,0 +1,64 @@
+// Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
+
+exports[`when the project is empty > shows "Select framework" instead of "Start setup" on the Welcome screen > welcome-no-framework 1`] = `
+" Confidence by Spotify                                              https://confidence.spotify.com/
+
+
+                                        Confidence Quickstart
+
+                      Feature flags and experiments, set up with AI in minutes.
+                       This wizard will help you get started with Confidence.
+
+                               1. It will check your system
+                               2. Sign you in to Confidence workspace
+                               3. Teach your AI agent about Confidence
+                               4. Integrate the SDK into your project
+                               5. Show a working feature flag example
+
+
+                                Directory  ✔ <project-dir>
+                                Framework  ✘ Could not auto-detect
+                                Telemetry  ✘ off
+
+
+ ──────────────────────────────────────────────────────────────────────────────────────────────────
+ Please, select your framework
+
+ ❯ Select framework
+   About Confidence
+   Quit
+
+ ↑↓ navigate   enter confirm                                                                 vX.Y.Z"
+`;
+
+exports[`when the project is empty > shows "Start setup" after selecting a framework > welcome-after-framework-selected 1`] = `
+" Confidence by Spotify                                              https://confidence.spotify.com/
+
+
+                                        Confidence Quickstart
+
+                      Feature flags and experiments, set up with AI in minutes.
+                       This wizard will help you get started with Confidence.
+
+                               1. It will check your system
+                               2. Sign you in to Confidence workspace
+                               3. Teach your AI agent about Confidence
+                               4. Integrate the SDK into your project
+                               5. Show a working feature flag example
+
+
+                                Directory  ✔ <project-dir>
+                                Framework  ✔ React (selected)
+                                Telemetry  ✘ off
+
+
+ ──────────────────────────────────────────────────────────────────────────────────────────────────
+ Ready to get started?
+
+ ❯ Start setup
+   Change framework
+   About Confidence
+   Quit
+
+ ↑↓ navigate   enter confirm                                                                 vX.Y.Z"
+`;

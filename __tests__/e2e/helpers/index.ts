@@ -13,7 +13,7 @@ export { ARROW_DOWN, ARROW_UP, ENTER, ESCAPE } from './keys.js';
 export { AUTH_CALLBACK_PORT } from './env.js';
 export { CHAT_PROMPT_FILE, ONBOARDING_INVOCATION_FILE } from './mock-binaries.js';
 
-const DEFAULT_TIMEOUT = 30_000;
+const DEFAULT_TIMEOUT = 15_000;
 
 type ProjectType = 'react' | 'empty';
 
@@ -31,7 +31,7 @@ export function createSession({
   systemPath?: string;
 } = {}): TerminalSession {
   const mockBinDir = process.env.E2E_MOCK_BIN_DIR!;
-  const projectDir = mkdtempSync(join(tmpdir(), 'e2e-project-'));
+  const projectDir = mkdtempSync('/tmp/e2e-project-');
 
   if (project === 'react') {
     writeFileSync(
