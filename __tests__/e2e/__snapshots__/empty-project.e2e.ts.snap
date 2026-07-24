@@ -16,9 +16,9 @@ exports[`when the project is empty > shows "Select framework" instead of "Start 
                                5. Show a working feature flag example
 
 
-          Directory  ✔ <project-dir>
-          Framework  ✘ Could not auto-detect
-          Telemetry  ✘ off
+                                Directory  ✔ <project-dir>
+                                Framework  ✘ Could not auto-detect
+                                Telemetry  ✘ off
 
 
  ──────────────────────────────────────────────────────────────────────────────────────────────────
@@ -47,9 +47,9 @@ exports[`when the project is empty > shows "Start setup" after selecting a frame
                                5. Show a working feature flag example
 
 
-          Directory  ✔ <project-dir>
-          Framework  ✔ React (selected)
-          Telemetry  ✘ off
+                                Directory  ✔ <project-dir>
+                                Framework  ✔ React (selected)
+                                Telemetry  ✘ off
 
 
  ──────────────────────────────────────────────────────────────────────────────────────────────────

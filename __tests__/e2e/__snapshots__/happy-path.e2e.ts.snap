@@ -117,8 +117,8 @@ exports[`happy-path flow > navigates Welcome → SystemCheck → Authenticate �
 
  Checking that your system has everything we need.                    ● Check system
                                                                       ○ Sign in to Confidence
- ✔ Node.js vX.Y.Z                                                    ○ Set up your agent
- ✔ Git X.Y.Z                                                         ○ Connect tools
+ ✔ Node.js vX.Y.Z                                                     ○ Set up your agent
+ ✔ Git X.Y.Z                                                          ○ Connect tools
                                                                       ○ Onboard project
  All checks passed. Continuing..."
 `;
@@ -139,9 +139,9 @@ exports[`happy-path flow > navigates Welcome → SystemCheck → Authenticate �
                                5. Show a working feature flag example
 
 
-          Directory  ✔ <project-dir>
-          Framework  ✔ React (detected)
-          Telemetry  ✘ off
+                                Directory  ✔ <project-dir>
+                                Framework  ✔ React (detected)
+                                Telemetry  ✘ off
 
 
  ──────────────────────────────────────────────────────────────────────────────────────────────────
