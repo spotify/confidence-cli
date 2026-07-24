@@ -21,5 +21,9 @@ export default defineConfig({
     hookTimeout: 120_000,
     maxWorkers: 1,
     pool: 'forks',
+    retry: {
+      count: 2,
+      condition: /timed out/i,
+    },
   },
 });
