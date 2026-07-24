@@ -25,7 +25,7 @@ export function runOnboarding(
   try {
     child = spawn('cursor', args, {
       cwd: opts.projectDir,
-      timeout: 300000,
+      timeout: 600_000,
       stdio: ['ignore', 'pipe', 'pipe'],
       env,
     });

@@ -24,7 +24,7 @@ export function runOnboarding(
   try {
     child = spawn('codex', ['exec', '--json', '--sandbox', 'workspace-write', '-'], {
       cwd: opts.projectDir,
-      timeout: 300000,
+      timeout: 600_000,
       stdio: ['pipe', 'pipe', 'pipe'],
       env,
     });

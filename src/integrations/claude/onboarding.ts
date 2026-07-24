@@ -20,7 +20,7 @@ export function runOnboarding(
       ['--print', '--output-format', 'stream-json', '--verbose', opts.prompt],
       {
         cwd: opts.projectDir,
-        timeout: 300000,
+        timeout: 600_000,
         stdio: ['ignore', 'pipe', 'pipe'],
         env,
       },
