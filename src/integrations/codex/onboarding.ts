@@ -2,6 +2,7 @@ import { type ChildProcess, spawn } from 'node:child_process';
 import { createInterface } from 'node:readline';
 import type { OnboardingOpts, OnboardingCallbacks } from '../types.js';
 import { STATUS_PREFIX } from '../constants.js';
+import { spawnErrorMessage } from '../utils.js';
 
 type CodexEvent = {
   type: string;
@@ -19,16 +20,22 @@ export function runOnboarding(
     ? { ...globalThis.process.env, CONFIDENCE_ACCESS_TOKEN: opts.token }
     : undefined;
 
-  const child = spawn('codex', ['exec', '--json', '--sandbox', 'workspace-write', '-'], {
-    cwd: opts.projectDir,
-    timeout: 300000,
-    stdio: ['pipe', 'pipe', 'pipe'],
-    env,
-  });
+  let child: ChildProcess;
+  try {
+    child = spawn('codex', ['exec', '--json', '--sandbox', 'workspace-write', '-'], {
+      cwd: opts.projectDir,
+      timeout: 600_000,
+      stdio: ['pipe', 'pipe', 'pipe'],
+      env,
+    });
+  } catch (err) {
+    callbacks.onError(spawnErrorMessage('codex', err as NodeJS.ErrnoException));
+    return null;
+  }
 
   child.stdin?.end(opts.prompt);
 
-  if (!child?.stdout) return null;
+  if (!child.stdout) return null;
 
   const allLines: string[] = [];
   let stderrBuf = '';
@@ -74,9 +81,9 @@ export function runOnboarding(
     callbacks.onComplete(allLines);
   });
 
-  child.on('error', (err: Error) => {
+  child.on('error', (err: NodeJS.ErrnoException) => {
     rl.close();
-    callbacks.onError(err.message);
+    callbacks.onError(spawnErrorMessage('codex', err));
   });
 
   return child;

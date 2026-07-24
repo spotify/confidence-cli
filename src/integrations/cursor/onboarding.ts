@@ -2,7 +2,7 @@ import { type ChildProcess, spawn } from 'node:child_process';
 import { createInterface } from 'node:readline';
 import type { OnboardingOpts, OnboardingCallbacks } from '../types.js';
 import { type StreamEvent, extractTextLines } from '../stream-json.js';
-import { normalizeStatusLine } from '../utils.js';
+import { normalizeStatusLine, spawnErrorMessage } from '../utils.js';
 
 export function runOnboarding(
   opts: OnboardingOpts,
@@ -21,14 +21,20 @@ export function runOnboarding(
     '--auto-review',
     opts.prompt,
   ];
-  const child = spawn('cursor', args, {
-    cwd: opts.projectDir,
-    timeout: 300000,
-    stdio: ['ignore', 'pipe', 'pipe'],
-    env,
-  });
+  let child: ChildProcess;
+  try {
+    child = spawn('cursor', args, {
+      cwd: opts.projectDir,
+      timeout: 600_000,
+      stdio: ['ignore', 'pipe', 'pipe'],
+      env,
+    });
+  } catch (err) {
+    callbacks.onError(spawnErrorMessage('cursor', err as NodeJS.ErrnoException));
+    return null;
+  }
 
-  if (!child?.stdout) return null;
+  if (!child.stdout) return null;
 
   const allLines: string[] = [];
   let stderrBuf = '';
@@ -69,9 +75,9 @@ export function runOnboarding(
     callbacks.onComplete(allLines);
   });
 
-  child.on('error', (err: Error) => {
+  child.on('error', (err: NodeJS.ErrnoException) => {
     rl.close();
-    callbacks.onError(err.message);
+    callbacks.onError(spawnErrorMessage('cursor', err));
   });
 
   return child;

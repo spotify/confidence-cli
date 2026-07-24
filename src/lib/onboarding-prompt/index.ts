@@ -35,27 +35,27 @@ export function buildOnboardingPrompt({
   const steps = new StepCounter(isEmptyProject ? 2 : 1);
   const tools = buildToolVars(ide);
 
-  const includingFlags = goal === 'feature-flags' || goal === 'all';
-  const includingRecording = goal === 'session-recording' || goal === 'all';
-  const usingSkill = includingFlags && hasPlugins;
+  const withFlags = goal === 'feature-flags' || goal === 'all';
+  const withRecordings = goal === 'session-recording' || goal === 'all';
+  const viaSkill = withFlags && hasPlugins;
 
   const sections = [
     preamble(framework, projectDir, isEmptyProject, goal),
     preflight(tools),
     addIf(isEmptyProject, () => scaffold(framework, steps.next())),
 
-    usingSkill
+    viaSkill
       ? [integrateViaSkill(framework, steps.next(), isEmptyProject, ide)]
       : [
-          addIf(includingFlags, () => determineSDK(framework, steps.next(), tools)),
-          addIf(includingFlags, () => resolveClient(framework, steps.next(), tools)),
-          addIf(includingFlags, () =>
+          addIf(withFlags, () => determineSDK(framework, steps.next(), tools)),
+          addIf(withFlags, () => resolveClient(framework, steps.next(), tools)),
+          addIf(withFlags, () =>
             integrateSDK(steps.next(), steps.current - 2, isEmptyProject, tools),
           ),
         ],
 
-    addIf(includingRecording, () => determineRecordingSDK(framework, steps.next(), tools)),
-    addIf(includingRecording, () => integrateRecording(steps.next(), isEmptyProject)),
+    addIf(withRecordings, () => determineRecordingSDK(framework, steps.next(), tools)),
+    addIf(withRecordings, () => integrateRecording(steps.next(), isEmptyProject)),
 
     ...migrations.map((m) => migrateFlags(m, steps.next())),
 
