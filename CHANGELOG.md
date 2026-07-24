@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.0.1](https://github.com/spotify/confidence-cli/compare/quickstart-v1.0.0...quickstart-v1.0.1) (2026-07-24)
+
+
+### Bug Fixes
+
+* improve context and error handling for integration via skill ([#16](https://github.com/spotify/confidence-cli/issues/16)) ([9cc5c56](https://github.com/spotify/confidence-cli/commit/9cc5c56ab9dc570e70ef50ca4fc23219b164c24b))
+
 ## 1.0.0 (2026-07-23)
 
 
