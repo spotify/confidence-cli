@@ -8,6 +8,7 @@ describe('when the project is empty', () => {
     await session.waitForText('Could not auto-detect');
     await session.waitForText('Please, select your framework');
     await session.waitForText('Select framework');
+    expect(session.snapshot()).toMatchSnapshot('welcome-no-framework');
   });
 
   it('shows "Start setup" after selecting a framework', async () => {
@@ -25,5 +26,6 @@ describe('when the project is empty', () => {
     // Back to Welcome — now with framework set
     await session.waitForText('Start setup');
     await session.waitForText('Ready to get started?');
+    expect(session.snapshot()).toMatchSnapshot('welcome-after-framework-selected');
   });
 });

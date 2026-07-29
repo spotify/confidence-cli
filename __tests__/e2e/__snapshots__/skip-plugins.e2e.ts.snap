@@ -1,0 +1,49 @@
+// Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
+
+exports[`when the user skips installing AI plugin > does not show "Continue work with" on the Done screen > done-no-ide 1`] = `
+" Confidence by Spotify                                              https://confidence.spotify.com/
+
+
+                                       ✔ Confidence is ready!
+
+                                        What we have set up:
+                                   ● Added feature flag example
+                                   ● Created confidence.config.ts
+
+
+                           Full report: [CONFIDENCE_QUICKSTART.md]
+                         Documentation: https://confidence.spotify.com/docs
+                             Dashboard: https://app.confidence.spotify.com
+
+
+ ──────────────────────────────────────────────────────────────────────────────────────────────────
+ What's next?
+
+ ❯ Exit
+
+ enter confirm   esc cancel                                                                  vX.Y.Z"
+`;
+
+exports[`when the user skips installing AI plugin > still shows report file and code changes on the Done screen > done-no-ide-with-report 1`] = `
+" Confidence by Spotify                                              https://confidence.spotify.com/
+
+
+                                       ✔ Confidence is ready!
+
+                                        What we have set up:
+                                   ● Added feature flag example
+                                   ● Created confidence.config.ts
+
+
+                           Full report: [CONFIDENCE_QUICKSTART.md]
+                         Documentation: https://confidence.spotify.com/docs
+                             Dashboard: https://app.confidence.spotify.com
+
+
+ ──────────────────────────────────────────────────────────────────────────────────────────────────
+ What's next?
+
+ ❯ Exit
+
+ enter confirm   esc cancel                                                                  vX.Y.Z"
+`;

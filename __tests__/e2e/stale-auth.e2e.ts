@@ -18,6 +18,7 @@ describe('when auth token is stale', () => {
 
     // Authenticate — expired token should be rejected, showing choose-action
     await session.waitForText('Sign in to a Confidence account');
+    expect(session.snapshot()).toMatchSnapshot('auth-expired');
   });
 
   it('shows "Use existing account" when the token is still valid', async () => {
@@ -27,6 +28,7 @@ describe('when auth token is stale', () => {
 
     // Authenticate — valid token found
     await session.waitForText('Use existing account');
+    expect(session.snapshot()).toMatchSnapshot('auth-existing');
   });
 
   it('allows re-authentication after expired token and proceeds normally', async () => {
@@ -43,6 +45,7 @@ describe('when auth token is stale', () => {
 
     // Continues to InstallPlugins
     await session.waitForText('Which agent tool are you using?');
+    expect(session.snapshot()).toMatchSnapshot('auth-re-authenticated');
   });
 
   it('treats a near-expiry token as valid', async () => {
@@ -53,6 +56,7 @@ describe('when auth token is stale', () => {
 
     // Token expires in 5s — no buffer in validateToken, so still accepted
     await session.waitForText('Use existing account');
+    expect(session.snapshot()).toMatchSnapshot('auth-near-expiry');
   });
 
   it('treats a malformed token as invalid and prompts sign-in', async () => {
@@ -62,5 +66,6 @@ describe('when auth token is stale', () => {
 
     // Malformed JWT cannot be decoded — treated as invalid
     await session.waitForText('Sign in to a Confidence account');
+    expect(session.snapshot()).toMatchSnapshot('auth-malformed');
   });
 });

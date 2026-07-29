@@ -15,7 +15,7 @@ describe('when the user starts chat after onboarding', () => {
 
     await navigateToOnboarding(session);
     await session.sendKey(ENTER);
-    await session.waitForText('onboarding complete', { timeout: 60_000 });
+    await session.waitForText('onboarding complete', { timeout: 30_000 });
 
     await session.waitForText('Continue work with Claude Code');
     await session.sendKey(ENTER);
@@ -65,7 +65,7 @@ describe('when the user starts chat after onboarding', () => {
     await session.waitForText('Start onboarding?');
     await session.waitForText('Skip for now');
     await session.sendKey(ENTER);
-    await session.waitForText('onboarding complete', { timeout: 60_000 });
+    await session.waitForText('onboarding complete', { timeout: 30_000 });
 
     // Chat
     await session.waitForText('Continue work with Claude Code');

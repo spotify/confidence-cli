@@ -1,0 +1,26 @@
+// Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
+
+exports[`when the user skips connecting tools > shows skip message and proceeds to onboarding > done-tools-skipped 1`] = `
+" Confidence by Spotify                                              https://confidence.spotify.com/
+
+
+                                       ✔ Confidence is ready!
+
+                                        What we have set up:
+                                   ● Added feature flag example
+                                   ● Created confidence.config.ts
+
+
+                           Full report: [CONFIDENCE_QUICKSTART.md]
+                         Documentation: https://confidence.spotify.com/docs
+                             Dashboard: https://app.confidence.spotify.com
+
+
+ ──────────────────────────────────────────────────────────────────────────────────────────────────
+ What's next?
+
+ ❯ Continue work with Claude Code
+   Exit
+
+ ↑↓ navigate   enter confirm   esc cancel                                                    vX.Y.Z"
+`;

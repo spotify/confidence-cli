@@ -1,0 +1,75 @@
+// Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
+
+exports[`when MCP config has expired auth tokens > allows skipping when auth is expired > mcp-auth-skipped 1`] = `
+" Confidence by Spotify                                              https://confidence.spotify.com/
+
+ Set up your project                                                  Todo (4/5)
+
+ The wizard will add the Confidence SDK and create your first         ● Check system
+ feature flag.                                                        ● Sign in to Confidence
+                                                                      ● Set up your agent
+ ◆ The AI agent will be able to read and write files in your          ● Connect tools
+ project.                                                             ▶ Onboard project
+
+
+ ──────────────────────────────────────────────────────────────────────────────────────────────────
+ Start onboarding?
+
+ ❯ Start onboarding
+   Skip for now
+
+ ↑↓ navigate   enter confirm                                                                 vX.Y.Z"
+`;
+
+exports[`when MCP config has expired auth tokens > shows auth-expired status and reconnects successfully > connect-tools-expired 1`] = `
+" Confidence by Spotify                                              https://confidence.spotify.com/
+
+ Connect your AI to Confidence                                        Todo (3/5)
+
+ Give your AI assistant direct access to flags, docs, and             ● Check system
+ integration tools. With it, you'll be able to:                       ● Sign in to Confidence
+                                                                      ● Set up your agent
+ ● Ask your agent to create and manage feature flags.                 ▶ Connect tools
+ ● Search docs and generate code, all from your IDE.                  ○ Onboard project
+ ● Avoid context-switching or manual lookups. Your assistant has the
+    keys.
+
+ Confidence tools:
+ ○ confidence-flags (auth expired)
+ ○ confidence-docs (auth expired)
+
+
+ Authentication expired — reconnect to refresh your credentials.
+
+
+ ──────────────────────────────────────────────────────────────────────────────────────────────────
+ Reconnect to refresh credentials?
+
+ ❯ Reconnect all tools
+   Reconnect confidence-flags
+   Reconnect confidence-docs
+   Skip for now
+
+ ↑↓ navigate   enter confirm                                                                 vX.Y.Z"
+`;
+
+exports[`when MCP config has expired auth tokens > shows auth-expired status and reconnects successfully > connect-tools-reconnected 1`] = `
+" Confidence by Spotify                                              https://confidence.spotify.com/
+
+ Connect your AI to Confidence                                        Todo (4/5)
+
+ Give your AI assistant direct access to flags, docs, and             ● Check system
+ integration tools. With it, you'll be able to:                       ● Sign in to Confidence
+                                                                      ● Set up your agent
+ ● Ask your agent to create and manage feature flags.                 ● Connect tools
+ ● Search docs and generate code, all from your IDE.                  ○ Onboard project
+ ● Avoid context-switching or manual lookups. Your assistant has the
+    keys.
+
+ Confidence tools:
+ ✔ confidence-flags
+ ✔ confidence-docs
+
+
+ Connected successfully. Continuing..."
+`;

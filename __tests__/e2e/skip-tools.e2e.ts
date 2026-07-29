@@ -16,8 +16,9 @@ describe('when the user skips connecting tools', () => {
     // Still proceeds to OnboardProject
     await session.waitForText('Start onboarding?');
     await session.sendKey(ENTER);
-    await session.waitForText('onboarding complete', { timeout: 60_000 });
+    await session.waitForText('onboarding complete', { timeout: 30_000 });
 
     await session.waitForText('Confidence is ready');
+    expect(session.snapshot()).toMatchSnapshot('done-tools-skipped');
   });
 });

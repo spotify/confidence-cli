@@ -55,10 +55,12 @@ describe('when MCP config has expired auth tokens', () => {
     await session.waitForText('auth expired');
     await session.waitForText('Reconnect to refresh credentials?');
     await session.waitForText('Reconnect all tools');
+    expect(session.snapshot()).toMatchSnapshot('connect-tools-expired');
 
     // Select "Reconnect all tools"
     await session.sendKey(ENTER);
     await session.waitForText('Connected successfully');
+    expect(session.snapshot()).toMatchSnapshot('connect-tools-reconnected');
   });
 
   it('allows skipping when auth is expired', async () => {
@@ -82,5 +84,6 @@ describe('when MCP config has expired auth tokens', () => {
 
     // Proceeds to OnboardProject
     await session.waitForText('Start onboarding?');
+    expect(session.snapshot()).toMatchSnapshot('mcp-auth-skipped');
   });
 });

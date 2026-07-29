@@ -25,7 +25,7 @@ export function createFakeChild(
     stderr,
     stdin: null,
     pid: 1234,
-    kill: vi.fn(),
+    kill: vi.fn() as (...args: unknown[]) => boolean,
   });
 
   setTimeout(() => {
