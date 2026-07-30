@@ -161,10 +161,14 @@ export function InstallPluginsScreen() {
               { label: 'Skip', value: 'skip' },
             ]}
             onSelect={(value) => {
-              if (value === 'skip') {
-                track(te.pluginSkippedAfterError());
-                log(pluginSkippedAfterError(error));
+              if (value === 'retry') {
+                const ide = $session.get().ide;
+                if (ide) selectIde(ide);
+                return;
               }
+
+              track(te.pluginSkippedAfterError());
+              log(pluginSkippedAfterError(error));
               navigate.to('next');
             }}
           />
