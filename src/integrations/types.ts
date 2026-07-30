@@ -1,7 +1,7 @@
 import type { ChildProcess } from 'node:child_process';
 import type { McpServerName, McpServerStatus } from './mcp/servers.js';
 
-export type IdeId = 'claude' | 'cursor' | 'codex';
+export type IdeId = 'claude' | 'cursor' | 'codex' | 'antigravity';
 
 export type McpConnectOpts = {
   serverName: string;

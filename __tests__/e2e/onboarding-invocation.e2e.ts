@@ -43,6 +43,18 @@ const IDE_CASES = [
       'confidence-flags:',
     ],
   },
+  {
+    name: 'Antigravity',
+    downPresses: 3,
+    command: 'agy',
+    expectedArgs: ['-p', '--output-format', 'stream-json'],
+    expectedPromptSnippets: [
+      'Confidence SDK',
+      '.agents/skills/analyze-project/SKILL.md',
+      'existing codebase',
+      'confidence-flags_',
+    ],
+  },
 ] as const;
 
 describe.each(IDE_CASES)('$name onboarding invocation', (ide) => {

@@ -3,8 +3,14 @@ import type { IdeIntegration } from './types.js';
 import { claudeIntegration } from './claude/index.js';
 import { cursorIntegration } from './cursor/index.js';
 import { codexIntegration } from './codex/index.js';
+import { antigravityIntegration } from './antigravity/index.js';
 
-const INTEGRATIONS: IdeIntegration[] = [claudeIntegration, cursorIntegration, codexIntegration];
+const INTEGRATIONS: IdeIntegration[] = [
+  claudeIntegration,
+  cursorIntegration,
+  codexIntegration,
+  antigravityIntegration,
+];
 
 export function getIntegrations(): IdeIntegration[] {
   return INTEGRATIONS;

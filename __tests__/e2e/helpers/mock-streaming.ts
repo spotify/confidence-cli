@@ -8,22 +8,30 @@ const STATUS_MESSAGES = [
   'STATUS: Generating CONFIDENCE_QUICKSTART.md report...',
 ];
 
-type EventFormat = 'claude' | 'codex';
+type EventFormat = 'claude' | 'codex' | 'antigravity';
 
 function buildEvent(format: EventFormat, message: string, isLast: boolean): string {
+  if (format === 'antigravity') {
+    return JSON.stringify({
+      type: 'step_update',
+      step_type: 'agent_response',
+      text_delta: message + '\n',
+    });
+  }
+
   if (format === 'codex') {
     return JSON.stringify({
       type: 'item.completed',
       item: { type: 'agent_message', text: message },
     });
   }
-  if (isLast) {
-    return JSON.stringify({ type: 'result', result: message });
-  }
-  return JSON.stringify({
-    type: 'assistant',
-    message: { content: [{ type: 'text', text: message }] },
-  });
+
+  return isLast
+    ? JSON.stringify({ type: 'result', result: message })
+    : JSON.stringify({
+        type: 'assistant',
+        message: { content: [{ type: 'text', text: message }] },
+      });
 }
 
 export function streamEventsSnippet(format: EventFormat): string {

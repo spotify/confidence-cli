@@ -146,6 +146,7 @@ export function InstallPluginsScreen() {
               { label: 'Claude Code', value: 'claude' },
               { label: 'Cursor', value: 'cursor' },
               { label: 'Codex', value: 'codex' },
+              { label: 'Antigravity', value: 'antigravity' },
               { label: 'Skip (install manually later)', value: 'skip' },
             ]}
             onSelect={handleIdeSelect}

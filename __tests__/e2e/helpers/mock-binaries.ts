@@ -3,6 +3,7 @@ import { join } from 'node:path';
 import { CLAUDE_SCRIPT } from './mock-claude.js';
 import { CURSOR_SCRIPT } from './mock-cursor.js';
 import { CODEX_SCRIPT } from './mock-codex.js';
+import { ANTIGRAVITY_SCRIPT } from './mock-antigravity.js';
 
 export const CHAT_PROMPT_FILE = '.e2e-chat-prompt';
 export const ONBOARDING_INVOCATION_FILE = '.e2e-onboarding-invocation';
@@ -20,6 +21,7 @@ export function createMockBinDir(dir: string): string {
   writeMockBinary(binDir, 'claude', CLAUDE_SCRIPT);
   writeMockBinary(binDir, 'cursor', CURSOR_SCRIPT);
   writeMockBinary(binDir, 'codex', CODEX_SCRIPT);
+  writeMockBinary(binDir, 'agy', ANTIGRAVITY_SCRIPT);
   writeMockBinary(binDir, 'open', '#!/bin/sh\nexit 0\n');
 
   return binDir;

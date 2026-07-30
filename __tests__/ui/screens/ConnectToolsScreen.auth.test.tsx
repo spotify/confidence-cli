@@ -213,6 +213,10 @@ function writeMcpConfig(projectDir: string, ide: ChosenIde, opts?: McpConfigOpts
     case 'codex':
       return writeCodexMcpConfig(projectDir);
 
+    case 'antigravity':
+      mkdirSync(join(projectDir, '.agents'), { recursive: true });
+      return writeAntigravityMcpConfig(join(projectDir, '.agents', 'mcp_config.json'), opts);
+
     default: {
       const _exhaustive: never = ide satisfies never;
       throw new Error(`Unhandled IDE: ${_exhaustive}`);
@@ -227,6 +231,25 @@ function writeJsonMcpConfig(configPath: string, opts?: McpConfigOpts): void {
       mcpServers: Object.fromEntries(
         Object.entries(MCP_SERVERS).map(([name, { type, url }]) => {
           const server: Record<string, unknown> = { type, url };
+
+          if (opts?.token) {
+            server.headers = { Authorization: `Bearer ${opts.token}` };
+          }
+
+          return [name, server];
+        }),
+      ),
+    }),
+  );
+}
+
+function writeAntigravityMcpConfig(configPath: string, opts?: McpConfigOpts): void {
+  writeFileSync(
+    configPath,
+    JSON.stringify({
+      mcpServers: Object.fromEntries(
+        Object.entries(MCP_SERVERS).map(([name, { url }]) => {
+          const server: Record<string, unknown> = { serverUrl: url };
 
           if (opts?.token) {
             server.headers = { Authorization: `Bearer ${opts.token}` };

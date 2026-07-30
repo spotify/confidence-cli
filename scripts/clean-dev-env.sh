@@ -180,6 +180,12 @@ if $clean_mcp; then
     fi
   done
 
+  # Clean Antigravity MCP config (JSON format) — both project-level and global
+  agy_configs=("$PROJECT_DIR/.agents/mcp_config.json" "$HOME/.gemini/config/mcp_config.json")
+  for agy_config in "${agy_configs[@]}"; do
+    remove_all_mcp_entries "$agy_config"
+  done
+
   # --- MCP tool permissions from .claude/settings*.json ---
 
   remove_mcp_settings() {
@@ -200,6 +206,9 @@ if $clean_mcp; then
 
   remove_mcp_settings "$PROJECT_DIR/.claude/settings.json"
   remove_mcp_settings "$PROJECT_DIR/.claude/settings.local.json"
+
+  # Clean Antigravity settings/permissions
+  remove_mcp_settings "$HOME/.gemini/antigravity-cli/settings.json"
 fi
 
 # --- Summary ---

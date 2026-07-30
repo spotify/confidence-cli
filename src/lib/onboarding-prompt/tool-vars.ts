@@ -6,6 +6,7 @@ const TOOL_FORMATTERS: Record<ChosenIde, ToolFormatter> = {
   claude: (server, tool) => `mcp__${server}__${tool}`,
   codex: (server, tool) => `${server}:${tool}`,
   cursor: (server, tool) => `mcp__${server}__${tool}`,
+  antigravity: (server, tool) => `${server}_${tool}`,
 };
 
 export function buildToolVars(ide: ChosenIde): Record<string, string> {

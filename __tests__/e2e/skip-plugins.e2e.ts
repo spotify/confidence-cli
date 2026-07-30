@@ -7,7 +7,7 @@ describe('when the user skips installing AI plugin', () => {
     await navigateToPlugins(session);
 
     // Select "Skip (install manually later)" — 4th option
-    await session.sendKeyRepeat(ARROW_DOWN, 3);
+    await session.sendKeyRepeat(ARROW_DOWN, 4);
     await session.sendKey(ENTER);
 
     // ConnectTools
@@ -37,7 +37,7 @@ describe('when the user skips installing AI plugin', () => {
     await navigateToPlugins(session);
 
     // Skip plugins
-    await session.sendKeyRepeat(ARROW_DOWN, 3);
+    await session.sendKeyRepeat(ARROW_DOWN, 4);
     await session.sendKey(ENTER);
 
     // Connect + onboard

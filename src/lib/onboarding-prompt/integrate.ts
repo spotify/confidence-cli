@@ -6,6 +6,7 @@ const SKILLS_DIR: Record<ChosenIde, string> = {
   claude: '.claude/skills',
   cursor: '.cursor/skills',
   codex: '.agents/skills',
+  antigravity: '.agents/skills',
 };
 
 export function integrateViaSkill(

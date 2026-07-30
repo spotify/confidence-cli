@@ -1,7 +1,7 @@
 import { randomUUID } from 'node:crypto';
 import type { DetectedProvider } from '@providers/types.js';
 
-export type ChosenIde = 'claude' | 'cursor' | 'codex';
+export type ChosenIde = 'claude' | 'cursor' | 'codex' | 'antigravity';
 
 export type OnboardingGoal = 'feature-flags' | 'session-recording' | 'all';
 
