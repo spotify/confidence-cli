@@ -110,6 +110,24 @@ describe('InstallPluginsScreen', () => {
     });
   });
 
+  it('shows continue option for each detected IDE when multiple plugins installed', async () => {
+    const { detectInstalledPlugins } = await import('../../../src/integrations/plugins.js');
+    vi.mocked(detectInstalledPlugins).mockReturnValueOnce(['codex', 'antigravity']);
+
+    using sut = renderApp({ screen: ScreenId.InstallPlugins });
+
+    await waitFor(() => {
+      expect(sut.lastFrame()).toContain('Continue with Codex');
+      expect(sut.lastFrame()).toContain('Continue with Antigravity');
+    });
+
+    sut.stdin.write(ARROW_DOWN + ENTER);
+
+    await waitFor(() => {
+      expect(sut.lastFrame()).toContain('Sign in to Confidence');
+    });
+  });
+
   it('shows error and retry option on install failure', async () => {
     server.use(
       http.get(

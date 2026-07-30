@@ -5,6 +5,7 @@ import { PromptPanel } from '../../components/PromptPanel.js';
 import { TwoColumnLayout } from '../../components/TwoColumnLayout.js';
 import { TaskList } from '../../components/TaskList.js';
 import { buildWizardTasks } from '../../lib/wizard-tasks.js';
+import { formatList } from '../../lib/format.js';
 import { type IdeId, getIntegrations } from '@integrations/index.js';
 import { PLUGINS_REPO_URL } from '@lib/constants.js';
 import { ScreenId } from '@lib/session.js';
@@ -22,9 +23,9 @@ import {
 } from './log-messages.js';
 import * as te from './telemetry-events.js';
 
-const ALL_INTEGRATIONS = getIntegrations();
+const INTEGRATIONS = getIntegrations();
 
-const IDE_LABELS = Object.fromEntries(ALL_INTEGRATIONS.map((i) => [i.id, i.name])) as Record<
+const IDE_LABELS = Object.fromEntries(INTEGRATIONS.map((i) => [i.id, i.name])) as Record<
   IdeId,
   string
 >;
@@ -55,11 +56,11 @@ export function InstallPluginsScreen() {
     selectIde(value as IdeId);
   }
 
-  const preferredIndex = ALL_INTEGRATIONS.map((i) => i.id).find((id) => detected.includes(id));
+  const detectedIdes = new Set(detected);
 
   function handleDetectedSelect(value: string) {
-    if (value === 'continue' && preferredIndex) {
-      store.setIde(preferredIndex);
+    if (detectedIdes.has(value)) {
+      store.setIde(value as IdeId);
       log(pluginsAlreadyInstalled(detected));
       track(te.pluginsAlreadyDetected());
       navigate.to('next');
@@ -152,6 +153,7 @@ export function InstallPluginsScreen() {
             onSelect={handleIdeSelect}
           />
         );
+
       case 'error':
         return (
           <PromptPanel
@@ -170,19 +172,34 @@ export function InstallPluginsScreen() {
             }}
           />
         );
+
       case 'already-installed': {
-        const preferredLabel = preferredIndex ? IDE_LABELS[preferredIndex] : null;
-        const otherOptions = ALL_INTEGRATIONS.filter((i) => i.id !== preferredIndex).map((i) => ({
+        const detected = INTEGRATIONS.filter((i) => detectedIdes.has(i.id));
+        const others = INTEGRATIONS.filter((i) => !detectedIdes.has(i.id));
+
+        const detectedOptions = detected.map((i) => ({
+          label: `Continue with ${i.name}`,
+          value: i.id,
+        }));
+
+        const otherOptions = others.map((i) => ({
           label: i.name,
           value: i.id,
         }));
 
+        const detectedNames = formatList(detected.map((i) => i.name));
+        const statusContext = `Confidence plugin detected for ${detectedNames}.`;
+        const statusPrompt =
+          detectedNames.length === 1
+            ? 'Continue with this agent tool?'
+            : 'Continue with one of these?';
+
         return (
           <PromptPanel
             mode="select"
-            status={`Confidence plugin detected for ${preferredLabel}. Continue with this agent tool?`}
+            status={`${statusContext} ${statusPrompt}`}
             options={[
-              { label: `Continue with ${preferredLabel}`, value: 'continue' },
+              ...detectedOptions,
               ...otherOptions,
               { label: 'Skip (install manually later)', value: 'skip' },
             ]}
@@ -190,10 +207,12 @@ export function InstallPluginsScreen() {
           />
         );
       }
+
       case 'detecting':
       case 'installing':
       case 'installed':
         return null;
+
       default: {
         const _exhaustive: never = phase satisfies never;
         throw new Error(`Unhandled phase: ${_exhaustive}`);
