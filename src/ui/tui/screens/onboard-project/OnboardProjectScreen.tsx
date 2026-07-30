@@ -6,6 +6,7 @@ import { TwoColumnLayout } from '../../components/TwoColumnLayout.js';
 import { TaskList } from '../../components/TaskList.js';
 import { StatusFeed } from '../../components/StatusFeed.js';
 import { buildWizardTasks } from '../../lib/wizard-tasks.js';
+import { formatList } from '../../lib/format.js';
 import { SDK_OPTIONS } from '@lib/sdk-options.js';
 import { useTipRotation } from '../../hooks/useTipRotation.js';
 import { TipCard } from '../../components/TipCard.js';
@@ -254,7 +255,5 @@ function migrationOptions(providers: DetectedProvider[]) {
 }
 
 function formatNames(providers: DetectedProvider[]): string {
-  const names = providers.map((c) => c.name);
-  if (names.length === 1) return names[0];
-  return `${names.slice(0, -1).join(', ')} and ${names.at(-1)}`;
+  return formatList(providers.map((c) => c.name));
 }
