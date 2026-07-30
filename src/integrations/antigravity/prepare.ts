@@ -11,4 +11,12 @@ export async function prepare(): Promise<void> {
       'Antigravity CLI not found. Install it from: https://antigravity.google/docs/cli/install',
     );
   }
+
+  try {
+    await execFile('agy', ['models']);
+  } catch {
+    throw new Error(
+      'Not logged in to Antigravity. Please, run `agy` once interactively to authenticate.',
+    );
+  }
 }
