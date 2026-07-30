@@ -49,13 +49,13 @@ describe('InstallPluginsScreen', () => {
     });
   });
 
-  it('advances to Authenticate on Skip', async () => {
+  it('advances to ConnectTools on Skip', async () => {
     using sut = renderApp({ screen: ScreenId.InstallPlugins });
 
     sut.stdin.write(ARROW_DOWN + ARROW_DOWN + ARROW_DOWN + ENTER);
 
     await waitFor(() => {
-      expect(sut.lastFrame()).toContain('Sign in to Confidence');
+      expect(sut.lastFrame()).toContain('Connect your AI to Confidence');
     });
   });
 
@@ -88,7 +88,7 @@ describe('InstallPluginsScreen', () => {
     sut.stdin.write(ARROW_DOWN + ENTER);
 
     await waitFor(() => {
-      expect(sut.lastFrame()).toContain('Sign in to Confidence');
+      expect(sut.lastFrame()).toContain('Connect your AI to Confidence');
     });
   });
 
@@ -106,7 +106,7 @@ describe('InstallPluginsScreen', () => {
     sut.stdin.write(ENTER);
 
     await waitFor(() => {
-      expect(sut.lastFrame()).toContain('Sign in to Confidence');
+      expect(sut.lastFrame()).toContain('Connect your AI to Confidence');
     });
   });
 
