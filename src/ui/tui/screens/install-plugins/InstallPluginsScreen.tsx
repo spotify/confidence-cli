@@ -190,7 +190,7 @@ export function InstallPluginsScreen() {
         const detectedNames = formatList(detected.map((i) => i.name));
         const statusContext = `Confidence plugin detected for ${detectedNames}.`;
         const statusPrompt =
-          detectedNames.length === 1
+          detectedOptions.length === 1
             ? 'Continue with this agent tool?'
             : 'Continue with one of these?';
 
