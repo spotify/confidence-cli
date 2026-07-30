@@ -142,7 +142,7 @@ export function InstallPluginsScreen() {
         return (
           <PromptPanel
             mode="select"
-            status="Which agent tool are you using?"
+            status="Which CLI agent would you like to use?"
             options={[
               { label: 'Claude Code', value: 'claude' },
               { label: 'Cursor', value: 'cursor' },

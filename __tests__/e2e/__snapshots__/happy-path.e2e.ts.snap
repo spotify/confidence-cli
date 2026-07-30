@@ -79,7 +79,7 @@ exports[`happy-path flow > navigates Welcome → SystemCheck → Authenticate �
 
 
  ──────────────────────────────────────────────────────────────────────────────────────────────────
- Which agent tool are you using?
+ Which CLI agent would you like to use?
 
  ❯ Claude Code
    Cursor

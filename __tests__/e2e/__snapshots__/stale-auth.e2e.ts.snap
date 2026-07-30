@@ -13,7 +13,7 @@ exports[`when auth token is stale > allows re-authentication after expired token
 
 
  ──────────────────────────────────────────────────────────────────────────────────────────────────
- Which agent tool are you using?
+ Which CLI agent would you like to use?
 
  ❯ Claude Code
    Cursor
