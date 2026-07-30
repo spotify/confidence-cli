@@ -1,7 +1,7 @@
 import { type ChildProcess, spawn } from 'node:child_process';
 import { createInterface } from 'node:readline';
 import type { OnboardingOpts, OnboardingCallbacks } from '../types.js';
-import { STATUS_PREFIX } from '../constants.js';
+import { ONBOARDING_TIMEOUT_MS, STATUS_PREFIX } from '../constants.js';
 import { spawnErrorMessage } from '../utils.js';
 
 type CodexEvent = {
@@ -24,7 +24,7 @@ export function runOnboarding(
   try {
     child = spawn('codex', ['exec', '--json', '--sandbox', 'workspace-write', '-'], {
       cwd: opts.projectDir,
-      timeout: 600_000,
+      timeout: ONBOARDING_TIMEOUT_MS,
       stdio: ['pipe', 'pipe', 'pipe'],
       env,
     });
