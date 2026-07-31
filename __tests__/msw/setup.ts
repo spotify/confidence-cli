@@ -7,10 +7,14 @@ const ALLOWED_HOSTS: string[] = [];
 
 beforeAll(() =>
   server.listen({
-    onUnhandledRequest(request, print) {
+    onUnhandledRequest(request) {
       const url = new URL(request.url);
+
       if (ALLOWED_HOSTS.includes(url.hostname)) return;
-      print.warning();
+
+      throw new Error(
+        `[MSW] Unhandled ${request.method} ${url.href}. Add a handler or allowlist the host.`,
+      );
     },
   }),
 );

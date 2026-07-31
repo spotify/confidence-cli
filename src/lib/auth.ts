@@ -67,6 +67,15 @@ export function loadPersistedToken(): string | null {
   }
 }
 
+function loadPersistedRefreshToken(): string | null {
+  if (!existsSync(REFRESH_TOKEN_FILE)) return null;
+  try {
+    return readFileSync(REFRESH_TOKEN_FILE, 'utf-8').trim();
+  } catch {
+    return null;
+  }
+}
+
 export function validateToken(token: string): {
   valid: boolean;
   region?: 'EU' | 'US';
@@ -95,6 +104,42 @@ type AuthResult = {
   region: 'EU' | 'US';
   workspace?: string;
 };
+
+export async function refreshAccessToken(): Promise<AuthResult> {
+  const refreshToken = loadPersistedRefreshToken();
+  if (!refreshToken) {
+    throw new Error('No refresh token available');
+  }
+
+  const body = new URLSearchParams({
+    grant_type: 'refresh_token',
+    client_id: AUTH_CLIENT_ID_LOGIN,
+    refresh_token: refreshToken,
+  });
+
+  const response = await fetch(`${AUTH_BASE_URL}/oauth/token`, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+    body: body.toString(),
+    signal: AbortSignal.timeout(10000),
+  });
+
+  if (!response.ok) {
+    throw new Error('Session expired');
+  }
+
+  const data = (await response.json()) as TokenResponse;
+  persistTokens(data.access_token, data.refresh_token);
+
+  const region = extractRegion(data.access_token);
+  const { workspace } = validateToken(data.access_token);
+  return {
+    accessToken: data.access_token,
+    refreshToken: data.refresh_token,
+    region,
+    workspace,
+  };
+}
 
 export function authenticate(mode: 'signup' | 'login', signal?: AbortSignal): Promise<AuthResult> {
   const clientId = mode === 'signup' ? AUTH_CLIENT_ID_SIGNUP : AUTH_CLIENT_ID_LOGIN;

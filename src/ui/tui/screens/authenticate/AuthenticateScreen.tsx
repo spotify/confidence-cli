@@ -16,7 +16,7 @@ import * as te from './telemetry-events.js';
 
 export function AuthenticateScreen() {
   const log = useLogger(ScreenId.Authenticate);
-  const { phase, error, workspace, startAuth, cancelAuth, confirmExisting, resetToChoose } =
+  const { phase, error, notice, workspace, startAuth, cancelAuth, confirmExisting, resetToChoose } =
     useAuthFlow();
 
   useAutoAdvance({
@@ -48,7 +48,13 @@ export function AuthenticateScreen() {
         </Text>
       </Box>
 
-      {phase === 'checking' && <Spinner label="Checking for existing credentials..." />}
+      {notice && (
+        <Box marginBottom={1}>
+          <Text color={Colors.warning}>{notice}</Text>
+        </Box>
+      )}
+
+      {phase === 'checking' && <Spinner label="Verifying selected account..." />}
 
       {phase === 'waiting-browser' && (
         <Box flexDirection="column">

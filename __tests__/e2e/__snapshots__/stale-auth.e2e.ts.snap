@@ -23,6 +23,49 @@ exports[`when auth token is stale > allows re-authentication after expired token
  ↑↓ navigate   enter confirm                                                                 vX.Y.Z"
 `;
 
+exports[`when auth token is stale > allows signing in after failed refresh and proceeds normally > auth-refresh-failed-then-signed-in 1`] = `
+" Confidence by Spotify                                              https://confidence.spotify.com/
+
+ Teach your AI Confidence                                             Todo (2/5)
+
+ Plugins give your agent tool Confidence-specific skills — flag       ● Check system
+ management, warehouse setup, migrations, onboarding — no more        ● Sign in to Confidence
+ searching docs yourself.                                             ▶ Set up your agent
+                                                                      ○ Connect tools
+                                                                      ○ Onboard project
+
+
+ ──────────────────────────────────────────────────────────────────────────────────────────────────
+ Which agent tool are you using?
+
+ ❯ Claude Code
+   Cursor
+   Codex
+   Skip (install manually later)
+
+ ↑↓ navigate   enter confirm                                                                 vX.Y.Z"
+`;
+
+exports[`when auth token is stale > falls back to sign-in when choosing existing account and refresh fails > auth-refresh-failed 1`] = `
+" Confidence by Spotify                                              https://confidence.spotify.com/
+
+ Sign in to Confidence                                                Todo (1/5)
+
+ Sign in so the wizard can create flags and set up your project.      ● Check system
+                                                                      ▶ Sign in to Confidence
+ Your session seems to be expired. Please sign in again.              ○ Set up your agent
+                                                                      ○ Connect tools
+                                                                      ○ Onboard project
+
+
+ ──────────────────────────────────────────────────────────────────────────────────────────────────
+ We'll open your browser to sign in. Continue?
+
+ ❯ Sign in to a Confidence account
+
+ enter confirm                                                                               vX.Y.Z"
+`;
+
 exports[`when auth token is stale > prompts user to sign in again instead of using the expired token > auth-expired 1`] = `
 " Confidence by Spotify                                              https://confidence.spotify.com/
 
@@ -41,6 +84,29 @@ exports[`when auth token is stale > prompts user to sign in again instead of usi
  ❯ Sign in to a Confidence account
 
  enter confirm                                                                               vX.Y.Z"
+`;
+
+exports[`when auth token is stale > refreshes and authenticates when choosing existing account > auth-refreshed 1`] = `
+" Confidence by Spotify                                              https://confidence.spotify.com/
+
+ Teach your AI Confidence                                             Todo (2/5)
+
+ Plugins give your agent tool Confidence-specific skills — flag       ● Check system
+ management, warehouse setup, migrations, onboarding — no more        ● Sign in to Confidence
+ searching docs yourself.                                             ▶ Set up your agent
+                                                                      ○ Connect tools
+                                                                      ○ Onboard project
+
+
+ ──────────────────────────────────────────────────────────────────────────────────────────────────
+ Which agent tool are you using?
+
+ ❯ Claude Code
+   Cursor
+   Codex
+   Skip (install manually later)
+
+ ↑↓ navigate   enter confirm                                                                 vX.Y.Z"
 `;
 
 exports[`when auth token is stale > shows "Use existing account" when the token is still valid > auth-existing 1`] = `
