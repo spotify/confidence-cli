@@ -36,7 +36,7 @@ exports[`when auth token is stale > allows signing in after failed refresh and p
 
 
  ──────────────────────────────────────────────────────────────────────────────────────────────────
- Which agent tool are you using?
+ Which CLI agent would you like to use?
 
  ❯ Claude Code
    Cursor
@@ -99,7 +99,7 @@ exports[`when auth token is stale > refreshes and authenticates when choosing ex
 
 
  ──────────────────────────────────────────────────────────────────────────────────────────────────
- Which agent tool are you using?
+ Which CLI agent would you like to use?
 
  ❯ Claude Code
    Cursor

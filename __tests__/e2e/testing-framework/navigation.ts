@@ -43,7 +43,7 @@ export async function navigateToPlugins(session: TerminalSession): Promise<void>
   await navigatePastWelcome(session);
   await navigatePastAuth(session);
   session.checkpoint();
-  await session.waitForText('Which agent tool are you using?');
+  await session.waitForText('Which CLI agent would you like to use?');
 }
 
 /**

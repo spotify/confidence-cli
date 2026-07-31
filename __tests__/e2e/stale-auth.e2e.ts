@@ -41,7 +41,7 @@ describe('when auth token is stale', () => {
     await session.waitForText('Authenticated');
 
     // Continues to InstallPlugins
-    await session.waitForText('Which agent tool are you using?');
+    await session.waitForText('Which CLI agent would you like to use?');
     expect(session.snapshot()).toMatchSnapshot('auth-refreshed');
   });
 
@@ -93,7 +93,7 @@ describe('when auth token is stale', () => {
     await session.waitForText('Authenticated');
 
     // Continues to InstallPlugins
-    await session.waitForText('Which agent tool are you using?');
+    await session.waitForText('Which CLI agent would you like to use?');
     expect(session.snapshot()).toMatchSnapshot('auth-refresh-failed-then-signed-in');
   });
 
