@@ -11,6 +11,12 @@ vi.mock('../../../src/lib/auth.js', () => ({
     region: 'EU' as const,
     workspace: 'test@example.com',
   }),
+  refreshAccessToken: vi.fn().mockResolvedValue({
+    accessToken: 'refreshed-token',
+    refreshToken: 'refreshed-refresh',
+    region: 'EU' as const,
+    workspace: 'test@example.com',
+  }),
 }));
 
 describe('AuthenticateScreen', () => {
@@ -74,6 +80,67 @@ describe('AuthenticateScreen', () => {
       await waitFor(() => {
         expect(sut.lastFrame()).toContain('existing@example.com');
         expect(sut.lastFrame()).toContain('Use existing account');
+      });
+    });
+
+    it('refreshes token when choosing existing account', async () => {
+      // Arrange
+      const { loadPersistedToken, validateToken, refreshAccessToken } =
+        await import('../../../src/lib/auth.js');
+
+      vi.mocked(loadPersistedToken).mockReturnValueOnce('existing-jwt');
+      vi.mocked(validateToken).mockReturnValueOnce({
+        valid: true,
+        region: 'EU',
+        workspace: 'existing@example.com',
+      });
+
+      vi.mocked(refreshAccessToken).mockResolvedValueOnce({
+        accessToken: 'refreshed-token',
+        refreshToken: 'refreshed-refresh',
+        region: 'EU' as const,
+        workspace: 'existing@example.com',
+      });
+
+      using sut = renderScreen(<AuthenticateScreen />, { screen: ScreenId.Authenticate });
+      await waitFor(() => {
+        expect(sut.lastFrame()).toContain('Use existing account');
+      });
+
+      // Act
+      sut.stdin.write(ENTER);
+
+      // Assert
+      await waitFor(() => {
+        expect(sut.lastFrame()).toContain('Authenticated');
+      });
+    });
+
+    it('falls back to sign-in if token refresh fails', async () => {
+      // Arrange
+      const { loadPersistedToken, validateToken, refreshAccessToken } =
+        await import('../../../src/lib/auth.js');
+
+      vi.mocked(loadPersistedToken).mockReturnValueOnce('existing-jwt');
+      vi.mocked(validateToken).mockReturnValueOnce({
+        valid: true,
+        region: 'EU',
+        workspace: 'existing@example.com',
+      });
+      vi.mocked(refreshAccessToken).mockRejectedValueOnce(new Error('Session expired'));
+
+      using sut = renderScreen(<AuthenticateScreen />, { screen: ScreenId.Authenticate });
+      await waitFor(() => {
+        expect(sut.lastFrame()).toContain('Use existing account');
+      });
+
+      // Act
+      sut.stdin.write(ENTER);
+
+      // Assert
+      await waitFor(() => {
+        expect(sut.lastFrame()).toContain('session seems to be expired');
+        expect(sut.lastFrame()).toContain('Sign in to a Confidence account');
       });
     });
   });

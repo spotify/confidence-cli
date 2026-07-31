@@ -16,7 +16,7 @@ import * as te from './telemetry-events.js';
 
 export function AuthenticateScreen() {
   const log = useLogger(ScreenId.Authenticate);
-  const { phase, error, workspace, startAuth, cancelAuth, confirmExisting, resetToChoose } =
+  const { phase, error, notice, workspace, startAuth, cancelAuth, confirmExisting, resetToChoose } =
     useAuthFlow();
 
   useAutoAdvance({
@@ -47,6 +47,12 @@ export function AuthenticateScreen() {
           Sign in so the wizard can create flags and set up your project.
         </Text>
       </Box>
+
+      {notice && (
+        <Box marginBottom={1}>
+          <Text color={Colors.warning}>{notice}</Text>
+        </Box>
+      )}
 
       {phase === 'checking' && <Spinner label="Checking for existing credentials..." />}
 
