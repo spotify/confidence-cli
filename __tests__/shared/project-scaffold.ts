@@ -1,6 +1,5 @@
 import { mkdtempSync, writeFileSync, rmSync } from 'node:fs';
 import { join } from 'node:path';
-import { tmpdir } from 'node:os';
 import { noop } from '@lib/noop.js';
 
 /**
@@ -36,6 +35,12 @@ const SCAFFOLDS: Record<ProjectType, (dir: string) => void> = {
  * Creates an isolated temporary directory populated with the requested
  * project scaffold. Supports `Symbol.dispose` for automatic cleanup.
  *
+ * @remarks
+ * Uses a hardcoded `/tmp/` prefix instead of `os.tmpdir()`. On macOS
+ * `tmpdir()` returns `/var/folders/…` which is longer than Linux's `/tmp/`,
+ * shifting column alignment in the VT100 screen buffer and breaking e2e
+ * snapshot assertions across platforms.
+ *
  * @param type - Which scaffold to use. @defaultValue `'react'`
  * @returns An object with `path` and a disposer that removes the directory.
  *
@@ -49,7 +54,7 @@ const SCAFFOLDS: Record<ProjectType, (dir: string) => void> = {
  * ```
  */
 export function createProjectDir(type: ProjectType = 'react') {
-  const dir = mkdtempSync(join(tmpdir(), 'wizard-test-'));
+  const dir = mkdtempSync('/tmp/wizard-test-');
   SCAFFOLDS[type](dir);
 
   return {
