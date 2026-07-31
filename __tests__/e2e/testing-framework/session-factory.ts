@@ -2,7 +2,7 @@ import { mkdtempSync, writeFileSync } from 'node:fs';
 import { join } from 'node:path';
 import { tmpdir } from 'node:os';
 import { TerminalSession } from './terminal/index.js';
-import { createProjectDir, type ProjectType } from '../../shared/project-scaffold.js';
+import { createProjectDir, type ProjectType } from '../../shared/project-scaffold/index.js';
 
 /**
  * Creates an isolated {@link TerminalSession} pre-configured for e2e testing.

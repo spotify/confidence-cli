@@ -4,7 +4,7 @@ export { delay, waitFor } from './async.js';
 
 export { KEY_MAP, resolveKey, type KeyName, type Modifiers } from '../../shared/key-map.js';
 export { buildTestJwt, buildExpiredJwt, buildAuthState } from '../../shared/auth.js';
-export { createProjectDir, type ProjectType } from '../../shared/project-scaffold.js';
+export { createProjectDir, type ProjectType } from '../../shared/project-scaffold/index.js';
 
 import { KEY_MAP } from '../../shared/key-map.js';
 
