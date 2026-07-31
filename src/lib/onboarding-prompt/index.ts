@@ -59,7 +59,13 @@ export function buildOnboardingPrompt({
 
     ...migrations.map((m) => migrateFlags(m, steps.next())),
 
-    generateReport({ step: steps.next(), isEmptyProject, goal, hasPlugins }),
+    generateReport({
+      step: steps.next(),
+      isEmptyProject,
+      goal,
+      hasPlugins,
+      hasMigrations: migrations.length > 0,
+    }),
     summary(steps.next()),
     rules(),
   ];
