@@ -29,7 +29,7 @@ describe('happy-path flow', () => {
 
     // InstallPlugins
     await session.waitForText('Teach your AI');
-    await session.waitForText('Which agent tool are you using?');
+    await session.waitForText('Which CLI agent would you like to use?');
     expect(session.snapshot()).toMatchSnapshot('install-plugins');
     session.checkpoint();
     await session.sendKey(ENTER);

@@ -48,7 +48,7 @@ describe('when MCP config has expired auth tokens', () => {
     await navigatePastAuth(session);
 
     // InstallPlugins
-    await session.waitForText('Which agent tool are you using?');
+    await session.waitForText('Which CLI agent would you like to use?');
     await session.sendKey(ENTER);
 
     // ConnectTools — should detect expired auth
@@ -71,7 +71,7 @@ describe('when MCP config has expired auth tokens', () => {
     await navigatePastAuth(session);
 
     // InstallPlugins
-    await session.waitForText('Which agent tool are you using?');
+    await session.waitForText('Which CLI agent would you like to use?');
     await session.sendKey(ENTER);
 
     // ConnectTools — skip instead of reconnecting
