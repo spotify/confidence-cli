@@ -3,8 +3,7 @@ import {
   navigatePastWelcome,
   simulateAuthCallback,
   buildTestJwt,
-  ENTER,
-} from './helpers/index.js';
+} from './testing-framework/index.js';
 
 function buildExpiredJwt(): string {
   return buildTestJwt({ exp: Math.floor(Date.now() / 1000) - 3600 });
@@ -38,11 +37,11 @@ describe('when auth token is stale', () => {
 
     // Authenticate — click "Use existing account", token is refreshed via mock server
     await session.waitForText('Use existing account');
-    await session.sendKey(ENTER);
+    await session.press('Enter');
     await session.waitForText('Authenticated');
 
     // Continues to InstallPlugins
-    await session.waitForText('Which agent tool are you using?');
+    await session.waitForText('Which CLI agent would you like to use?');
     expect(session.snapshot()).toMatchSnapshot('auth-refreshed');
   });
 
@@ -53,7 +52,7 @@ describe('when auth token is stale', () => {
 
     // Authenticate — click "Use existing account", refresh fails (no refresh token)
     await session.waitForText('Use existing account');
-    await session.sendKey(ENTER);
+    await session.press('Enter');
     await session.waitForText('session seems to be expired');
     await session.waitForText('Sign in to a Confidence account');
     expect(session.snapshot()).toMatchSnapshot('auth-refresh-failed');
@@ -66,7 +65,7 @@ describe('when auth token is stale', () => {
 
     // Authenticate — sign in fresh
     await session.waitForText('Sign in to a Confidence account');
-    await session.sendKey(ENTER);
+    await session.press('Enter');
     await session.waitForText('Waiting for browser');
     await simulateAuthCallback();
     await session.waitForText('Authenticated');
@@ -83,18 +82,18 @@ describe('when auth token is stale', () => {
 
     // Authenticate — click "Use existing account", refresh fails
     await session.waitForText('Use existing account');
-    await session.sendKey(ENTER);
+    await session.press('Enter');
     await session.waitForText('session seems to be expired');
 
     // Sign in via browser
     await session.waitForText('Sign in to a Confidence account');
-    await session.sendKey(ENTER);
+    await session.press('Enter');
     await session.waitForText('Waiting for browser');
     await simulateAuthCallback();
     await session.waitForText('Authenticated');
 
     // Continues to InstallPlugins
-    await session.waitForText('Which agent tool are you using?');
+    await session.waitForText('Which CLI agent would you like to use?');
     expect(session.snapshot()).toMatchSnapshot('auth-refresh-failed-then-signed-in');
   });
 

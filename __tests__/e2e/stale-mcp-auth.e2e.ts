@@ -5,9 +5,7 @@ import {
   navigatePastWelcome,
   navigatePastAuth,
   buildTestJwt,
-  ENTER,
-  ARROW_DOWN,
-} from './helpers/index.js';
+} from './testing-framework/index.js';
 
 function buildExpiredJwt(): string {
   return buildTestJwt({ exp: Math.floor(Date.now() / 1000) - 3600 });
@@ -39,7 +37,7 @@ describe('when MCP config has expired auth tokens', () => {
 
     // Welcome
     await session.waitForText('Start setup');
-    await session.sendKey(ENTER);
+    await session.press('Enter');
 
     // SystemCheck
     await session.waitForText('All checks passed');
@@ -49,7 +47,7 @@ describe('when MCP config has expired auth tokens', () => {
 
     // InstallPlugins
     await session.waitForText('Which CLI agent would you like to use?');
-    await session.sendKey(ENTER);
+    await session.press('Enter');
 
     // ConnectTools — should detect expired auth
     await session.waitForText('auth expired');
@@ -58,7 +56,7 @@ describe('when MCP config has expired auth tokens', () => {
     expect(session.snapshot()).toMatchSnapshot('connect-tools-expired');
 
     // Select "Reconnect all tools"
-    await session.sendKey(ENTER);
+    await session.press('Enter');
     await session.waitForText('Connected successfully');
     expect(session.snapshot()).toMatchSnapshot('connect-tools-reconnected');
   });
@@ -72,14 +70,14 @@ describe('when MCP config has expired auth tokens', () => {
 
     // InstallPlugins
     await session.waitForText('Which CLI agent would you like to use?');
-    await session.sendKey(ENTER);
+    await session.press('Enter');
 
     // ConnectTools — skip instead of reconnecting
     await session.waitForText('Reconnect all tools');
 
     // Select "Skip for now" — 4th option (Reconnect all, 2 individual, Skip)
-    await session.sendKeyRepeat(ARROW_DOWN, 3);
-    await session.sendKey(ENTER);
+    await session.pressRepeat('ArrowDown', 3);
+    await session.press('Enter');
     await session.waitForText('Skipped');
 
     // Proceeds to OnboardProject

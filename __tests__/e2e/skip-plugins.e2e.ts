@@ -1,4 +1,4 @@
-import { createSession, navigateToPlugins, ENTER, ARROW_DOWN } from './helpers/index.js';
+import { createSession, navigateToPlugins } from './testing-framework/index.js';
 
 describe('when the user skips installing AI plugin', () => {
   it('does not show "Continue work with" on the Done screen', async () => {
@@ -7,17 +7,17 @@ describe('when the user skips installing AI plugin', () => {
     await navigateToPlugins(session);
 
     // Select "Skip (install manually later)" — 4th option
-    await session.sendKeyRepeat(ARROW_DOWN, 3);
-    await session.sendKey(ENTER);
+    await session.pressRepeat('ArrowDown', 3);
+    await session.press('Enter');
 
     // ConnectTools
     await session.waitForText('Connect Confidence tools?');
-    await session.sendKey(ENTER);
+    await session.press('Enter');
     await session.waitForText('Connected successfully');
 
     // OnboardProject
     await session.waitForText('Start onboarding?');
-    await session.sendKey(ENTER);
+    await session.press('Enter');
     await session.waitForText('onboarding complete', { timeout: 30_000 });
 
     // Done — no IDE set, so only "Exit" option (no "Continue work with")
@@ -26,7 +26,7 @@ describe('when the user skips installing AI plugin', () => {
     await session.waitForText('Exit');
     expect(session.snapshot()).toMatchSnapshot('done-no-ide');
 
-    await session.sendKey(ENTER);
+    await session.press('Enter');
     const exitCode = await session.waitForExit();
     expect(exitCode).toBe(0);
   });
@@ -37,16 +37,16 @@ describe('when the user skips installing AI plugin', () => {
     await navigateToPlugins(session);
 
     // Skip plugins
-    await session.sendKeyRepeat(ARROW_DOWN, 3);
-    await session.sendKey(ENTER);
+    await session.pressRepeat('ArrowDown', 3);
+    await session.press('Enter');
 
     // Connect + onboard
     await session.waitForText('Connect Confidence tools?');
-    await session.sendKey(ENTER);
+    await session.press('Enter');
     await session.waitForText('Connected successfully');
 
     await session.waitForText('Start onboarding?');
-    await session.sendKey(ENTER);
+    await session.press('Enter');
     await session.waitForText('onboarding complete', { timeout: 30_000 });
 
     // Done — onboarding ran so report file and code changes appear

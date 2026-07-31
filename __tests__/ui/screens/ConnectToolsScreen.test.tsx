@@ -7,7 +7,7 @@ import {
   ENTER,
   ARROW_DOWN,
   waitFor,
-} from '../helpers/index.js';
+} from '../testing-framework/index.js';
 import { ConnectToolsScreen } from '@ui/tui/screens/connect-tools/index.js';
 import { ScreenId } from '@lib/session.js';
 import { server } from '../../msw/server.js';

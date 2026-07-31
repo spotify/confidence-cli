@@ -186,12 +186,38 @@ class ScreenBuffer {
   }
 }
 
+/**
+ * Renders a raw ANSI byte stream into plain text as it would appear on a
+ * physical terminal of the given dimensions.
+ *
+ * Internally feeds the data through a VT100-compatible {@link ScreenBuffer}
+ * that handles cursor movement, line wrapping, scrolling, and erase commands,
+ * then serializes the resulting character grid.
+ *
+ * @param raw - Raw terminal output including ANSI escape sequences.
+ * @param cols - Terminal width in columns.
+ * @param rows - Terminal height in rows.
+ * @returns Plain text with trailing whitespace trimmed per line.
+ */
 export function renderScreen(raw: string, cols: number, rows: number): string {
   const buf = new ScreenBuffer(rows, cols);
   buf.write(raw);
   return buf.toText();
 }
 
+/**
+ * Replaces environment-specific values in rendered terminal output with
+ * stable placeholders so Vitest snapshots don't break across machines.
+ *
+ * Normalizations applied:
+ * - Project directory path to `<project-dir>`
+ * - Semantic version numbers (`v1.2.3`, `1.2.3`) to `vX.Y.Z` / `X.Y.Z`
+ * - Runs of 4+ consecutive newlines collapsed to 3
+ *
+ * @param text - Plain-text terminal output (from {@link renderScreen}).
+ * @param cwd - The project directory path to replace.
+ * @returns Normalized text safe for snapshot comparison.
+ */
 export function normalizeSnapshot(text: string, cwd: string): string {
   let result = text.replaceAll(cwd, '<project-dir>');
   result = result.replace(/v\d+\.\d+\.\d+(-[\w.]+)?/g, (m) => 'vX.Y.Z'.padEnd(m.length));

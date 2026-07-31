@@ -26,6 +26,19 @@ function buildEvent(format: EventFormat, message: string, isLast: boolean): stri
   });
 }
 
+/**
+ * Generates an inline JavaScript snippet that streams mock onboarding
+ * events to stdout as JSON lines at 200 ms intervals.
+ *
+ * The snippet is embedded directly into the mock IDE binary scripts
+ * so they can simulate the real CLI's streaming output without any
+ * external dependencies.
+ *
+ * @param format - Event JSON structure: `'claude'` for the Claude/Cursor
+ *   streaming format, `'codex'` for the Codex format.
+ * @returns A string of JavaScript code ready to be interpolated into
+ *   a mock binary template.
+ */
 export function streamEventsSnippet(format: EventFormat): string {
   const events = STATUS_MESSAGES.map((msg, i) =>
     buildEvent(format, msg, i === STATUS_MESSAGES.length - 1),

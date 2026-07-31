@@ -6,7 +6,7 @@ import {
   ENTER,
   ARROW_DOWN,
   waitFor,
-} from '../helpers/index.js';
+} from '../testing-framework/index.js';
 import { InstallPluginsScreen } from '@ui/tui/screens/install-plugins/index.js';
 import { ScreenId } from '@lib/session.js';
 import { server } from '../../msw/server.js';

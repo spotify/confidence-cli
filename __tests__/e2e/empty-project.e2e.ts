@@ -1,4 +1,4 @@
-import { createSession, ENTER } from './helpers/index.js';
+import { createSession } from './testing-framework/index.js';
 
 describe('when the project is empty', () => {
   it('shows "Select framework" instead of "Start setup" on the Welcome screen', async () => {
@@ -16,12 +16,12 @@ describe('when the project is empty', () => {
 
     // Welcome — no framework detected
     await session.waitForText('Select framework');
-    await session.sendKey(ENTER);
+    await session.press('Enter');
 
     // SelectFramework
     await session.waitForText('Select Framework');
     await session.waitForText("Select your project's framework or language:");
-    await session.sendKey(ENTER);
+    await session.press('Enter');
 
     // Back to Welcome — now with framework set
     await session.waitForText('Start setup');

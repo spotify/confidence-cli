@@ -1,16 +1,16 @@
 import { http, HttpResponse } from 'msw';
+import { server } from '../../msw/server.js';
 import {
   renderScreen,
   renderApp,
   createProjectDir,
+  prepareAuthTokens,
   buildTestJwt,
-  persistTestTokens,
   ENTER,
   waitFor,
-} from '../helpers/index.js';
+} from '../testing-framework/index.js';
 import { AuthenticateScreen } from '@ui/tui/screens/authenticate/index.js';
 import { ScreenId } from '@lib/session.js';
-import { server } from '../../msw/server.js';
 
 // Mocking `authenticate` because it opens
 // a real browser and starts a local HTTP server.
@@ -31,6 +31,7 @@ const testOpts = { screen: ScreenId.Authenticate };
 
 describe('AuthenticateScreen', () => {
   it('renders title', async () => {
+    using _auth = prepareAuthTokens('none');
     using sut = renderScreen(<AuthenticateScreen />, testOpts);
 
     await waitFor(() => {
@@ -40,6 +41,7 @@ describe('AuthenticateScreen', () => {
 
   describe('when no existing token', () => {
     it('shows sign-in option', async () => {
+      using _auth = prepareAuthTokens('none');
       using sut = renderScreen(<AuthenticateScreen />, testOpts);
 
       await waitFor(() => {
@@ -48,6 +50,7 @@ describe('AuthenticateScreen', () => {
     });
 
     it('authenticates and auto-advances on sign in', async () => {
+      using _auth = prepareAuthTokens('none');
       using project = createProjectDir();
       using sut = renderApp({
         screen: ScreenId.Authenticate,
@@ -68,6 +71,7 @@ describe('AuthenticateScreen', () => {
     });
 
     it('shows authenticated state after sign in', async () => {
+      using _auth = prepareAuthTokens('none');
       using sut = renderScreen(<AuthenticateScreen />, testOpts);
 
       sut.stdin.write(ENTER);
@@ -80,7 +84,7 @@ describe('AuthenticateScreen', () => {
 
   describe('when existing token is found', () => {
     it('shows existing account options', async () => {
-      using _tokens = persistTestTokens(buildTestJwt({ email: 'existing@example.com' }));
+      using _auth = prepareAuthTokens();
 
       using sut = renderScreen(<AuthenticateScreen />, testOpts);
 
@@ -92,10 +96,7 @@ describe('AuthenticateScreen', () => {
 
     it('refreshes token when confirming existing account', async () => {
       // Arrange
-      using _tokens = persistTestTokens(
-        buildTestJwt({ email: 'existing@example.com' }),
-        'test-refresh-token',
-      );
+      using _auth = prepareAuthTokens('with-refresh');
 
       server.use(
         http.post('https://auth.confidence.dev/oauth/token', () =>
@@ -124,10 +125,7 @@ describe('AuthenticateScreen', () => {
 
     it('falls back to sign-in when token refresh fails', async () => {
       // Arrange
-      using _tokens = persistTestTokens(
-        buildTestJwt({ email: 'existing@example.com' }),
-        'test-refresh-token',
-      );
+      using _auth = prepareAuthTokens('with-refresh');
 
       server.use(
         http.post(

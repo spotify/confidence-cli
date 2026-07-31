@@ -1,4 +1,4 @@
-import { createSession, navigateToConnectTools, ENTER, ARROW_DOWN } from './helpers/index.js';
+import { createSession, navigateToConnectTools } from './testing-framework/index.js';
 
 describe('when the user skips connecting tools', () => {
   it('shows skip message and proceeds to onboarding', async () => {
@@ -7,15 +7,15 @@ describe('when the user skips connecting tools', () => {
     await navigateToConnectTools(session);
 
     // Select "Skip for now" — 4th option (after "Connect all tools", 2 individual tools)
-    await session.sendKeyRepeat(ARROW_DOWN, 3);
-    await session.sendKey(ENTER);
+    await session.pressRepeat('ArrowDown', 3);
+    await session.press('Enter');
 
     // Skip confirmation text
     await session.waitForText('Skipped');
 
     // Still proceeds to OnboardProject
     await session.waitForText('Start onboarding?');
-    await session.sendKey(ENTER);
+    await session.press('Enter');
     await session.waitForText('onboarding complete', { timeout: 30_000 });
 
     await session.waitForText('Confidence is ready');

@@ -8,7 +8,7 @@ import {
   ARROW_DOWN,
   ESCAPE,
   waitFor,
-} from '../helpers/index.js';
+} from '../testing-framework/index.js';
 import { ScreenId } from '@lib/session.js';
 
 vi.mock('node:child_process', async (importOriginal) => {
@@ -23,7 +23,7 @@ describe('Onboarding flow', () => {
 
   describe('confirmation prompt', () => {
     it('shows confirmation prompt on mount', async () => {
-      using project = createProjectDir({ react: '^19.0.0' });
+      using project = createProjectDir();
 
       using sut = renderApp({
         screen: ScreenId.OnboardProject,
@@ -40,7 +40,7 @@ describe('Onboarding flow', () => {
     });
 
     it('advances to Done on skip', async () => {
-      using project = createProjectDir({ react: '^19.0.0' });
+      using project = createProjectDir();
 
       using sut = renderApp({
         screen: ScreenId.OnboardProject,
@@ -61,7 +61,7 @@ describe('Onboarding flow', () => {
 
   describe('when onboarding is confirmed', () => {
     it('shows Feature Flags heading on progress screen', async () => {
-      using project = createProjectDir({ react: '^19.0.0' });
+      using project = createProjectDir();
       mockNextSpawn({ hang: true });
 
       using sut = renderApp({
@@ -82,7 +82,7 @@ describe('Onboarding flow', () => {
     });
 
     it('shows status updates from spawned process', async () => {
-      using project = createProjectDir({ react: '^19.0.0' });
+      using project = createProjectDir();
       mockNextSpawn({
         lines: ['STATUS: Creating feature flag example...', 'other output without STATUS prefix'],
         hang: true,
@@ -106,7 +106,7 @@ describe('Onboarding flow', () => {
     });
 
     it('advances to Done after successful onboarding', async () => {
-      using project = createProjectDir({ react: '^19.0.0' });
+      using project = createProjectDir();
       mockNextSpawn({
         lines: [
           'STATUS: Installing SDK...',
@@ -132,7 +132,7 @@ describe('Onboarding flow', () => {
     });
 
     it('shows error when process exits with non-zero code', async () => {
-      using project = createProjectDir({ react: '^19.0.0' });
+      using project = createProjectDir();
       mockNextSpawn({
         exitCode: 1,
         stderrOutput: 'Something went wrong',
@@ -156,7 +156,7 @@ describe('Onboarding flow', () => {
     });
 
     it('shows error when process fails to start', async () => {
-      using project = createProjectDir({ react: '^19.0.0' });
+      using project = createProjectDir();
       mockNextSpawn({
         error: new Error('spawn claude ENOENT'),
       });
@@ -178,7 +178,7 @@ describe('Onboarding flow', () => {
     });
 
     it('advances to Done on cancel from progress screen', async () => {
-      using project = createProjectDir({ react: '^19.0.0' });
+      using project = createProjectDir();
       mockNextSpawn({ lines: ['STATUS: Working...'], hang: true });
 
       using sut = renderApp({
@@ -204,7 +204,7 @@ describe('Onboarding flow', () => {
     });
 
     it('shows choose-sdk prompt for empty project', async () => {
-      using project = createProjectDir(null);
+      using project = createProjectDir('empty');
       mockNextSpawn({ hang: true });
 
       using sut = renderApp({
@@ -226,10 +226,7 @@ describe('Onboarding flow', () => {
 
   describe('when competitor is detected', () => {
     it('shows migration option instead of plain Start if AI plugin is installed', async () => {
-      using project = createProjectDir({
-        react: '^19.0.0',
-        '@statsig/js-client': '^1.0.0',
-      });
+      using project = createProjectDir('react-statsig');
 
       using sut = renderApp({
         screen: ScreenId.OnboardProject,
@@ -246,10 +243,7 @@ describe('Onboarding flow', () => {
     });
 
     it('shows standard options when no AI plugin is installed', async () => {
-      using project = createProjectDir({
-        react: '^19.0.0',
-        '@statsig/js-client': '^1.0.0',
-      });
+      using project = createProjectDir('react-statsig');
 
       using sut = renderApp({
         screen: ScreenId.OnboardProject,
@@ -265,10 +259,7 @@ describe('Onboarding flow', () => {
     });
 
     it('starts onboarding with migration when migration option is selected', async () => {
-      using project = createProjectDir({
-        react: '^19.0.0',
-        '@statsig/js-client': '^1.0.0',
-      });
+      using project = createProjectDir('react-statsig');
       mockNextSpawn({ hang: true });
 
       using sut = renderApp({
@@ -289,11 +280,7 @@ describe('Onboarding flow', () => {
     });
 
     it('shows migrate-all option and per-competitor options when multiple detected', async () => {
-      using project = createProjectDir({
-        react: '^19.0.0',
-        'posthog-js': '^1.0.0',
-        '@statsig/js-client': '^1.0.0',
-      });
+      using project = createProjectDir('react-posthog-statsig');
 
       using sut = renderApp({
         screen: ScreenId.OnboardProject,
@@ -313,10 +300,7 @@ describe('Onboarding flow', () => {
     });
 
     it('does not show migrate-all when only one competitor detected', async () => {
-      using project = createProjectDir({
-        react: '^19.0.0',
-        '@statsig/js-client': '^1.0.0',
-      });
+      using project = createProjectDir('react-statsig');
 
       using sut = renderApp({
         screen: ScreenId.OnboardProject,

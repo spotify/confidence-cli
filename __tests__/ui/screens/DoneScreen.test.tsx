@@ -1,4 +1,4 @@
-import { renderScreen, waitFor } from '../helpers/index.js';
+import { renderScreen, waitFor } from '../testing-framework/index.js';
 import { DoneScreen } from '@ui/tui/screens/done/index.js';
 import { ScreenId } from '@lib/session.js';
 import { store } from '@ui/tui/store.js';

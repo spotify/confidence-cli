@@ -1,7 +1,12 @@
 ---
 name: testing
-description: Testing guidelines and conventions for the Confidence Wizard CLI project
-version: '0.1'
+description: >
+  Load before writing, modifying, or adding any test file (unit,
+  integration, or e2e). Covers testing philosophy, conventions, shared
+  test scaffolds (__tests__/shared/), test framework structure
+  (__tests__/e2e/testing-framework/, __tests__/ui/testing-framework/),
+  and the named-key press() API for e2e tests.
+version: '0.2'
 ---
 
 # Testing Guidelines
@@ -65,13 +70,27 @@ Tests live in `__tests__/` mirroring the `src/` directory structure:
 
 ```
 __tests__/
+  shared/                       # Utilities shared between e2e and integration tests
+    key-map.ts                  # Named terminal key mapping (Enter, ArrowDown, etc.)
+    auth.ts                     # JWT builders (buildTestJwt, buildExpiredJwt, buildAuthState)
+    project-scaffold.ts         # Project directory factory (react, empty, react-statsig, etc.)
+  e2e/                          # End-to-end tests (node-pty)
+    testing-framework/
+      terminal/                 # PTY infrastructure (TerminalSession, screen buffer, ANSI strip)
+      mocks/                    # Mock HTTP server + mock IDE binaries (binaries/ subdirectory)
+      navigation.ts             # Screen navigation shortcuts
+      session-factory.ts        # createSession() factory
+      utils.ts                  # simulateAuthCallback, readInvocation
+    *.e2e.ts                    # E2E test files
+  ui/                           # Integration tests (ink-testing-library)
+    testing-framework/
+      ink/                      # Ink rendering (renderScreen, renderApp, act)
+      mocks/                    # Mock child process (createFakeChild, mockNextSpawn)
+      async.ts                  # delay, waitFor
+    screens/                    # Screen test files
   commands/
-  ui/
   lib/
   frameworks/
-  e2e/               # End-to-end tests (node-pty)
-    helpers/          # TerminalSession, mock server, navigation utils
-    *.e2e.ts          # E2E test files
 ```
 
 Unit/integration tests are colocated as `src/**/__tests__/**/*.test.{ts,tsx}`.
@@ -97,14 +116,15 @@ E2E tests use a dedicated vitest config (`vitest.config.e2e.ts`) with:
 - No MSW setup (HTTP is mocked via a real local server)
 - Global setup in `__tests__/e2e/global-setup.ts`
 
-### Helpers (`__tests__/e2e/helpers/`)
+### Testing Framework (`__tests__/e2e/testing-framework/`)
 
-- **`createSession(opts?)`** — spawns the CLI in a pty with an isolated temp project dir. Pass `{ project: 'empty' }` for an empty project (no `package.json`). Returns a `TerminalSession` with `[Symbol.dispose]`.
-- **`TerminalSession`** — wraps node-pty. Key methods: `waitForText(text)` (polls accumulated buffer), `sendKey(key)`, `waitForExit()`, `screen` (full ANSI-stripped output).
-- **`simulateAuthCallback()`** — hits the CLI's local OAuth callback server to simulate browser auth.
-- **`navigateToPlugins/ConnectTools/Onboarding(session)`** — navigation shortcuts that advance through earlier screens.
-- **Mock HTTP server** — started in global setup, mimics all Confidence APIs (auth, MCP, skills, telemetry). The CLI's API URLs are configurable via env vars (e.g. `CONFIDENCE_AUTH_URL`), which the global setup points at the local server.
-- **Mock `claude` binary** — placed on PATH, handles `mcp` subcommands and `--print` onboarding by emitting stream-json events.
+- **`createSession(opts?)`** (`session-factory.ts`) — spawns the CLI in a pty with an isolated temp project dir. Pass `{ project: 'empty' }` for an empty project (no `package.json`). Returns a `TerminalSession` with `[Symbol.dispose]`.
+- **`TerminalSession`** (`terminal/session.ts`) — wraps node-pty. Key methods: `press(key)` (named keys like `'Enter'`, `'ArrowDown'`), `pressRepeat(key, count)`, `waitForText(text)`, `waitForPattern(regex)`, `waitForExit()`, `checkpoint()`, `snapshot()`, `screen` (full ANSI-stripped output).
+- **`simulateAuthCallback()`** (`utils.ts`) — hits the CLI's local OAuth callback server to simulate browser auth.
+- **`navigateToPlugins/ConnectTools/Onboarding(session)`** (`navigation.ts`) — navigation shortcuts that advance through earlier screens.
+- **Mock HTTP server** (`mocks/server.ts`) — started in global setup, mimics all Confidence APIs (auth, MCP, skills, telemetry). The CLI's API URLs are configurable via env vars (e.g. `CONFIDENCE_AUTH_URL`), which the global setup points at the local server.
+- **Mock IDE binaries** (`mocks/binaries/`) — `claude`, `cursor`, `codex` mock scripts placed on PATH, handle subcommands and `--print` onboarding by emitting stream-json events.
+- **Shared utilities** (`__tests__/shared/`) — `key-map.ts` (key escape sequences), `auth.ts` (JWT builders), `project-scaffold.ts` (temp project directory factory). Shared with integration tests.
 
 ### Writing E2E Tests
 
@@ -112,7 +132,9 @@ E2E tests use a dedicated vitest config (`vitest.config.e2e.ts`) with:
 - **One concern per file**: group related scenarios (e.g. `skip-plugins.e2e.ts` covers all skip-plugin variations).
 - **Use `createSession()` per test** — each call creates a fresh project dir for full isolation. No shared state between tests.
 - **Use `using`** for automatic cleanup: `using session = createSession()`.
+- **Use named keys** with `session.press('Enter')`, `session.press('ArrowDown')`, `session.pressRepeat('ArrowDown', 3)` — not raw escape code constants.
 - **Assert positively** — the accumulated buffer contains ALL output ever rendered (including text from previous screens). Prefer `waitForText('expected')` over `not.toContain('unexpected')`.
+- **Use `checkpoint()`** between screens to scope `waitForText` and `snapshot()` to the current screen, avoiding false positives from earlier output.
 - **Use navigation helpers** to skip past earlier screens when testing later ones (e.g. `navigateToOnboarding(session)` advances through Welcome, SystemCheck, Auth, Plugins, and ConnectTools).
 - **Add comments** before each interaction block to identify the screen and the intent of the action (e.g. `// Welcome`, `// Select "Skip for now"`, `// Done — no IDE set, only Exit option`).
 
@@ -195,7 +217,7 @@ describe('resolve method internals', () => {
 
 - One assertion concern per test — multiple `expect` calls are fine if they assert the same behavior.
 - No snapshot tests unless explicitly requested.
-- **Prefer `createProjectDir()` for setting up project context** (framework, dependencies, project structure) in TUI screen tests. Pass dependencies to control framework detection (e.g., `createProjectDir({ react: '^19.0.0' })` for React, `createProjectDir({ express: '^4.0.0' })` for Node.js, `createProjectDir(null)` for an empty project). Only pre-build a `WizardStore` directly when the test needs store state that `createProjectDir` cannot provide (e.g., a framework already set from an earlier screen).
+- **Prefer `createProjectDir()` for setting up project context** (framework, dependencies, project structure) in TUI screen tests. Use scaffold types to control framework detection (e.g., `createProjectDir('react')`, `createProjectDir('empty')`, `createProjectDir('react-statsig')`). The function lives in `__tests__/shared/project-scaffold.ts` and is shared between integration and e2e tests. Only pre-build a `WizardStore` directly when the test needs store state that `createProjectDir` cannot provide (e.g., a framework already set from an earlier screen).
 - **Prefer `using` for disposable resources.** When a helper returns an object with `[Symbol.dispose]` (e.g., `createProjectDir()`, `renderScreen()`, `renderApp()`), declare it with `using` inside each test rather than sharing it via `beforeAll`/`afterAll`. This keeps each test self-contained and guarantees cleanup even if the test throws.
 
 ```ts

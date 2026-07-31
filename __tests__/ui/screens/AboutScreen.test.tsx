@@ -5,7 +5,7 @@ import {
   ENTER,
   ESCAPE,
   waitFor,
-} from '../helpers/index.js';
+} from '../testing-framework/index.js';
 import { AboutScreen } from '@ui/tui/screens/about/index.js';
 import { ScreenId } from '@lib/session.js';
 

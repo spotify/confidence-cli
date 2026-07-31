@@ -1,4 +1,4 @@
-import { streamEventsSnippet } from './mock-streaming.js';
+import { streamEventsSnippet } from './streaming.js';
 
 export const CLAUDE_SCRIPT = `#!/usr/bin/env node
 const fs = require('fs');

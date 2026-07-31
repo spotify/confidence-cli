@@ -1,5 +1,11 @@
 export { AUTH_CALLBACK_PORT } from '@lib/auth.js';
 
+/**
+ * Baseline environment variables injected into every e2e terminal session.
+ *
+ * Forces a consistent terminal environment regardless of the host machine's
+ * locale, CI mode, or color support settings.
+ */
 export const E2E_BASE_ENV: Record<string, string> = {
   CI: '0',
   TERM: 'xterm-256color',
@@ -7,6 +13,13 @@ export const E2E_BASE_ENV: Record<string, string> = {
   NODE_ENV: 'test',
 };
 
+/**
+ * Builds environment variables that point Confidence service URLs
+ * at the mock HTTP server.
+ *
+ * @param baseUrl - The mock server's base URL (e.g. `http://127.0.0.1:12345`).
+ * @returns A record of `CONFIDENCE_*` env vars ready to merge into the session env.
+ */
 export function buildMockEnv(baseUrl: string): Record<string, string> {
   return {
     CONFIDENCE_AUTH_URL: baseUrl,
