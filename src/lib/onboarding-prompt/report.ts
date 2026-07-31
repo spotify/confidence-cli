@@ -1,6 +1,6 @@
 import type { OnboardingGoal } from '../session.js';
 import { CONFIDENCE_DOCS_URL } from '../constants.js';
-import { buildReportTemplate } from './report-templates.js';
+import { buildReportTemplate, MIGRATION_REPORT_SECTION } from './report-templates.js';
 import { loadStep } from './steps/load.js';
 
 const HOW_TO_RUN = `
@@ -17,11 +17,13 @@ export function generateReport({
   isEmptyProject,
   goal = 'feature-flags',
   hasPlugins = false,
+  hasMigrations = false,
 }: {
   step: number;
   isEmptyProject: boolean;
   goal?: OnboardingGoal;
   hasPlugins?: boolean;
+  hasMigrations?: boolean;
 }): string {
   const template = buildReportTemplate(goal);
 
@@ -29,6 +31,7 @@ export function generateReport({
     STEP: step,
     REPORT_START: template.start,
     HOW_TO_RUN: isEmptyProject ? HOW_TO_RUN : '',
+    MIGRATION_REPORT: hasMigrations ? MIGRATION_REPORT_SECTION : '',
     REPORT_END: template.end,
     SKILLS_NOTE: hasPlugins ? SKILLS_NOTE : '',
     DOCS_URL: CONFIDENCE_DOCS_URL,
