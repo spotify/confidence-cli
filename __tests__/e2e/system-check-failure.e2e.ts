@@ -1,9 +1,5 @@
-import { createSession, ENTER, ARROW_DOWN } from './helpers/index.js';
+import { createSession } from './testing-framework/index.js';
 import { dirname } from 'node:path';
-
-// The CLI is spawned via process.execPath (absolute node path), so it runs
-// regardless of PATH. But the system check uses execFile('node'/'git'), which
-// resolves from PATH — so stripping a binary from PATH makes that check fail.
 
 describe('when system check fails', () => {
   it('shows error when git is missing', async () => {
@@ -12,7 +8,7 @@ describe('when system check fails', () => {
 
     // Welcome
     await session.waitForText('Start setup');
-    await session.sendKey(ENTER);
+    await session.press('Enter');
 
     // SystemCheck — git not found
     await session.waitForText('System Check');
@@ -27,7 +23,7 @@ describe('when system check fails', () => {
     using session = createSession({ systemPath: '/usr/bin' });
 
     await session.waitForText('Start setup');
-    await session.sendKey(ENTER);
+    await session.press('Enter');
 
     // SystemCheck — node not found on PATH
     await session.waitForText('System Check');
@@ -39,12 +35,12 @@ describe('when system check fails', () => {
     using session = createSession({ systemPath: dirname(process.execPath) });
 
     await session.waitForText('Start setup');
-    await session.sendKey(ENTER);
+    await session.press('Enter');
 
     // SystemCheck — select Quit (2nd option)
     await session.waitForText('Required tools are missing');
-    await session.sendKey(ARROW_DOWN);
-    await session.sendKey(ENTER);
+    await session.press('ArrowDown');
+    await session.press('Enter');
 
     const exitCode = await session.waitForExit();
     expect(exitCode).toBe(1);

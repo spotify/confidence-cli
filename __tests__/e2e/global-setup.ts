@@ -1,8 +1,8 @@
 import { mkdtempSync, rmSync } from 'node:fs';
 import { join } from 'node:path';
 import { tmpdir } from 'node:os';
-import { startMockServer, type MockServer } from './helpers/mock-server.js';
-import { createMockBinDir } from './helpers/mock-binaries.js';
+import { startMockServer, type MockServer } from './testing-framework/mocks/server.js';
+import { createMockBinDir } from './testing-framework/mocks/binaries/index.js';
 
 let mockServer: MockServer;
 let tempBase: string;

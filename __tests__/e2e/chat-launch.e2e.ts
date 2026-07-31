@@ -4,21 +4,19 @@ import {
   createSession,
   navigateToOnboarding,
   navigateToPlugins,
-  ENTER,
-  ARROW_DOWN,
   CHAT_PROMPT_FILE,
-} from './helpers/index.js';
+} from './testing-framework/index.js';
 
 describe('when the user starts chat after onboarding', () => {
   it('includes code changes and report file in the prompt', async () => {
     using session = createSession();
 
     await navigateToOnboarding(session);
-    await session.sendKey(ENTER);
+    await session.press('Enter');
     await session.waitForText('onboarding complete', { timeout: 30_000 });
 
     await session.waitForText('Continue work with Claude Code');
-    await session.sendKey(ENTER);
+    await session.press('Enter');
 
     const exitCode = await session.waitForExit();
     expect(exitCode).toBe(0);
@@ -34,11 +32,11 @@ describe('when the user starts chat after onboarding', () => {
     using session = createSession();
 
     await navigateToOnboarding(session);
-    await session.sendKey(ARROW_DOWN);
-    await session.sendKey(ENTER);
+    await session.press('ArrowDown');
+    await session.press('Enter');
 
     await session.waitForText('Continue work with Claude Code');
-    await session.sendKey(ENTER);
+    await session.press('Enter');
 
     const exitCode = await session.waitForExit();
     expect(exitCode).toBe(0);
@@ -53,23 +51,23 @@ describe('when the user starts chat after onboarding', () => {
     using session = createSession();
 
     await navigateToPlugins(session);
-    await session.sendKey(ENTER);
+    await session.press('Enter');
 
     // Skip connecting tools
     await session.waitForText('Connect Confidence tools?');
-    await session.sendKeyRepeat(ARROW_DOWN, 3);
-    await session.sendKey(ENTER);
+    await session.pressRepeat('ArrowDown', 3);
+    await session.press('Enter');
     await session.waitForText('Skipped');
 
     // Onboard — wait for options to render before pressing Enter
     await session.waitForText('Start onboarding?');
     await session.waitForText('Skip for now');
-    await session.sendKey(ENTER);
+    await session.press('Enter');
     await session.waitForText('onboarding complete', { timeout: 30_000 });
 
     // Chat
     await session.waitForText('Continue work with Claude Code');
-    await session.sendKey(ENTER);
+    await session.press('Enter');
 
     const exitCode = await session.waitForExit();
     expect(exitCode).toBe(0);

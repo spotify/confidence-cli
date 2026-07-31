@@ -3,7 +3,7 @@ import {
   navigateToPlugins,
   selectIdeAndOnboard,
   readInvocation,
-} from './helpers/index.js';
+} from './testing-framework/index.js';
 
 const IDE_CASES = [
   {

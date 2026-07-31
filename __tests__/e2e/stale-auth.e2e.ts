@@ -3,8 +3,7 @@ import {
   navigatePastWelcome,
   simulateAuthCallback,
   buildTestJwt,
-  ENTER,
-} from './helpers/index.js';
+} from './testing-framework/index.js';
 
 function buildExpiredJwt(): string {
   return buildTestJwt({ exp: Math.floor(Date.now() / 1000) - 3600 });
@@ -38,7 +37,7 @@ describe('when auth token is stale', () => {
 
     // Authenticate — sign in fresh
     await session.waitForText('Sign in to a Confidence account');
-    await session.sendKey(ENTER);
+    await session.press('Enter');
     await session.waitForText('Waiting for browser');
     await simulateAuthCallback();
     await session.waitForText('Authenticated');
