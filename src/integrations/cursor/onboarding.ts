@@ -1,6 +1,7 @@
 import { type ChildProcess, spawn } from 'node:child_process';
 import { createInterface } from 'node:readline';
 import type { OnboardingOpts, OnboardingCallbacks } from '../types.js';
+import { ONBOARDING_TIMEOUT_MS } from '../constants.js';
 import { type StreamEvent, extractTextLines } from '../stream-json.js';
 import { normalizeStatusLine, spawnErrorMessage } from '../utils.js';
 
@@ -25,7 +26,7 @@ export function runOnboarding(
   try {
     child = spawn('cursor', args, {
       cwd: opts.projectDir,
-      timeout: 600_000,
+      timeout: ONBOARDING_TIMEOUT_MS,
       stdio: ['ignore', 'pipe', 'pipe'],
       env,
     });

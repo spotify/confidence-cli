@@ -9,3 +9,10 @@ export function authCompleted(
     output: `Authenticated${workspace ? ` as ${workspace}` : ''}${region ? ` (${region})` : ''}`,
   };
 }
+
+export function authRefreshFailed(): LogMessage {
+  return {
+    input: 'Use existing account',
+    output: 'Session could not be verified — prompting re-authentication',
+  };
+}

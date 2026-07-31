@@ -30,6 +30,34 @@ describe('when auth token is stale', () => {
     expect(session.snapshot()).toMatchSnapshot('auth-existing');
   });
 
+  it('refreshes and authenticates when choosing existing account', async () => {
+    using session = createSession({ token: buildTestJwt() });
+
+    await navigatePastWelcome(session);
+
+    // Authenticate — click "Use existing account", token is refreshed via mock server
+    await session.waitForText('Use existing account');
+    await session.press('Enter');
+    await session.waitForText('Authenticated');
+
+    // Continues to InstallPlugins
+    await session.waitForText('Which agent tool are you using?');
+    expect(session.snapshot()).toMatchSnapshot('auth-refreshed');
+  });
+
+  it('falls back to sign-in when choosing existing account and refresh fails', async () => {
+    using session = createSession({ token: buildTestJwt(), refreshToken: null });
+
+    await navigatePastWelcome(session);
+
+    // Authenticate — click "Use existing account", refresh fails (no refresh token)
+    await session.waitForText('Use existing account');
+    await session.press('Enter');
+    await session.waitForText('session seems to be expired');
+    await session.waitForText('Sign in to a Confidence account');
+    expect(session.snapshot()).toMatchSnapshot('auth-refresh-failed');
+  });
+
   it('allows re-authentication after expired token and proceeds normally', async () => {
     using session = createSession({ token: buildExpiredJwt() });
 
@@ -43,8 +71,30 @@ describe('when auth token is stale', () => {
     await session.waitForText('Authenticated');
 
     // Continues to InstallPlugins
-    await session.waitForText('Which agent tool are you using?');
+    await session.waitForText('Which CLI agent would you like to use?');
     expect(session.snapshot()).toMatchSnapshot('auth-re-authenticated');
+  });
+
+  it('allows signing in after failed refresh and proceeds normally', async () => {
+    using session = createSession({ token: buildTestJwt(), refreshToken: null });
+
+    await navigatePastWelcome(session);
+
+    // Authenticate — click "Use existing account", refresh fails
+    await session.waitForText('Use existing account');
+    await session.press('Enter');
+    await session.waitForText('session seems to be expired');
+
+    // Sign in via browser
+    await session.waitForText('Sign in to a Confidence account');
+    await session.press('Enter');
+    await session.waitForText('Waiting for browser');
+    await simulateAuthCallback();
+    await session.waitForText('Authenticated');
+
+    // Continues to InstallPlugins
+    await session.waitForText('Which agent tool are you using?');
+    expect(session.snapshot()).toMatchSnapshot('auth-refresh-failed-then-signed-in');
   });
 
   it('treats a near-expiry token as valid', async () => {

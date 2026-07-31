@@ -1,9 +1,9 @@
 import { useRef, useState } from 'react';
-import { authenticate } from '@lib/auth.js';
+import { authenticate, refreshAccessToken } from '@lib/auth.js';
 import { $session, store } from '../../store.js';
 import { useInitialAuth } from './useInitialAuth.js';
 import { track } from '@lib/telemetry.js';
-import { authFailed } from './telemetry-events.js';
+import { authFailed, authRefreshFailed } from './telemetry-events.js';
 
 export type AuthPhase =
   'checking' | 'has-existing' | 'choose-action' | 'waiting-browser' | 'authenticated' | 'failed';
@@ -11,6 +11,7 @@ export type AuthPhase =
 export type AuthFlowState = {
   phase: AuthPhase;
   error: string | null;
+  notice: string | null;
   workspace: string | null;
   startAuth: (mode: 'signup' | 'login') => void;
   cancelAuth: () => void;
@@ -22,12 +23,14 @@ export function useAuthFlow(): AuthFlowState {
   const initial = useInitialAuth();
   const [phase, setPhase] = useState<AuthPhase>(initial.phase);
   const [error, setError] = useState<string | null>(null);
+  const [notice, setNotice] = useState<string | null>(null);
   const [workspace, setWorkspace] = useState<string | null>(initial.workspace);
   const abortRef = useRef<AbortController | null>(null);
 
   function startAuth(mode: 'signup' | 'login') {
     setPhase('waiting-browser');
     setError(null);
+    setNotice(null);
 
     if ($session.get().dryRun) return startDryRunAuth();
     startRealAuth(mode);
@@ -88,16 +91,47 @@ export function useAuthFlow(): AuthFlowState {
   }
 
   function confirmExisting() {
-    setPhase('authenticated');
+    setPhase('checking');
+    setError(null);
+
+    if ($session.get().dryRun) return confirmDryRun();
+    confirmReal();
+
+    function confirmDryRun() {
+      setPhase('authenticated');
+    }
+
+    function confirmReal() {
+      refreshAccessToken()
+        .then((result) => {
+          store.setAuthState({
+            status: 'authenticated',
+            token: result.accessToken,
+            refreshToken: result.refreshToken,
+            region: result.region,
+            workspace: result.workspace,
+          });
+          setWorkspace(result.workspace ?? null);
+          setPhase('authenticated');
+        })
+        .catch(() => {
+          store.setAuthState({ status: 'idle' });
+          setNotice('Your session seems to be expired. Please sign in again.');
+          track(authRefreshFailed());
+          setPhase('choose-action');
+        });
+    }
   }
 
   function resetToChoose() {
     setPhase('choose-action');
+    setNotice(null);
   }
 
   return {
     phase,
     error,
+    notice,
     workspace,
     startAuth,
     cancelAuth,

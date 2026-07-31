@@ -1,7 +1,7 @@
 import { type ChildProcess, spawn } from 'node:child_process';
 import { createInterface } from 'node:readline';
 import type { OnboardingOpts, OnboardingCallbacks } from '../types.js';
-import { STATUS_PREFIX } from '../constants.js';
+import { ONBOARDING_TIMEOUT_MS, STATUS_PREFIX } from '../constants.js';
 import { type StreamEvent, extractTextLines } from '../stream-json.js';
 import { spawnErrorMessage } from '../utils.js';
 
@@ -20,7 +20,7 @@ export function runOnboarding(
       ['--print', '--output-format', 'stream-json', '--verbose', opts.prompt],
       {
         cwd: opts.projectDir,
-        timeout: 600_000,
+        timeout: ONBOARDING_TIMEOUT_MS,
         stdio: ['ignore', 'pipe', 'pipe'],
         env,
       },

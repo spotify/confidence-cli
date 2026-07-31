@@ -20,17 +20,6 @@ vi.mock('../../../src/integrations/plugins.js', async (importOriginal) => {
   };
 });
 
-vi.mock('../../../src/lib/auth.js', () => ({
-  loadPersistedToken: vi.fn().mockReturnValue(null),
-  validateToken: vi.fn().mockReturnValue({ valid: false }),
-  authenticate: vi.fn().mockResolvedValue({
-    accessToken: 'test-token',
-    refreshToken: 'test-refresh',
-    region: 'EU' as const,
-    workspace: 'test@example.com',
-  }),
-}));
-
 describe('InstallPluginsScreen', () => {
   it('renders title', async () => {
     using sut = renderScreen(<InstallPluginsScreen />, { screen: ScreenId.InstallPlugins });

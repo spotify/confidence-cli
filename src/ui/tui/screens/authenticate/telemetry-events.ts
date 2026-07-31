@@ -20,6 +20,10 @@ export function authRetried(): TelemetryEvent {
   return { step: 'authenticate.retry', action: 'retried' };
 }
 
+export function authRefreshFailed(): TelemetryEvent {
+  return { step: 'authenticate.refresh', action: 'failed', sentiment: 'frustrated' };
+}
+
 export function authQuit(): TelemetryEvent {
   return {
     step: 'authenticate.quit',
