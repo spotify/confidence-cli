@@ -22,12 +22,14 @@ export function createSession({
   extraArgs = [],
   env = {},
   token,
+  refreshToken = 'e2e-refresh-token',
   systemPath,
 }: {
   project?: ProjectType;
   extraArgs?: string[];
   env?: Record<string, string>;
   token?: string;
+  refreshToken?: string | null;
   systemPath?: string;
 } = {}): TerminalSession {
   const mockBinDir = process.env.E2E_MOCK_BIN_DIR!;
@@ -47,7 +49,12 @@ export function createSession({
 
   if (token) {
     const tokenDir = mkdtempSync(join(tmpdir(), 'e2e-tmp-'));
+
     writeFileSync(join(tokenDir, 'confidence_token'), token, 'utf-8');
+    if (refreshToken) {
+      writeFileSync(join(tokenDir, 'confidence_refresh_token'), refreshToken, 'utf-8');
+    }
+
     sessionEnv.TMPDIR = tokenDir;
   }
 
