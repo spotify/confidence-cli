@@ -9,7 +9,7 @@ import {
   buildExpiredJwt,
   buildAuthState,
   ENTER,
-} from '../helpers/index.js';
+} from '../testing-framework/index.js';
 import { ConnectToolsScreen } from '@ui/tui/screens/connect-tools/index.js';
 import { ScreenId } from '@lib/session.js';
 import { persistMcpPreference, clearMcpPreference, MCP_SERVERS } from '@integrations/index.js';

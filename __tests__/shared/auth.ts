@@ -1,3 +1,5 @@
+import type { AuthState } from '@lib/session.js';
+
 function base64url(str: string): string {
   return Buffer.from(str, 'utf-8').toString('base64url');
 }
@@ -30,4 +32,27 @@ export function buildTestJwt(claims: Record<string, unknown> = {}): string {
     }),
   );
   return `${header}.${payload}.`;
+}
+
+/**
+ * Builds a JWT that expired one hour ago.
+ *
+ * @returns An expired JWT string.
+ */
+export function buildExpiredJwt(): string {
+  return buildTestJwt({ exp: Math.floor(Date.now() / 1000) - 3600 });
+}
+
+/**
+ * Builds a complete {@link AuthState} object with a valid (or custom) token.
+ *
+ * @param token - Optional JWT string. Defaults to a fresh test JWT.
+ * @returns An `AuthState` with `status: 'authenticated'` and `region: 'EU'`.
+ */
+export function buildAuthState(token?: string): AuthState {
+  return {
+    status: 'authenticated',
+    token: token ?? buildTestJwt(),
+    region: 'EU',
+  };
 }

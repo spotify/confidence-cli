@@ -139,9 +139,9 @@ exports[`happy-path flow > navigates Welcome → SystemCheck → Authenticate �
                                5. Show a working feature flag example
 
 
-                                Directory  ✔ <project-dir>
-                                Framework  ✔ React (detected)
-                                Telemetry  ✘ off
+          Directory  ✔ <project-dir>
+          Framework  ✔ React (detected)
+          Telemetry  ✘ off
 
 
  ──────────────────────────────────────────────────────────────────────────────────────────────────

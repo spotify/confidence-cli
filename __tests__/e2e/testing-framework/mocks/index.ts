@@ -4,4 +4,4 @@ export {
   CHAT_PROMPT_FILE,
   ONBOARDING_INVOCATION_FILE,
 } from './binaries/index.js';
-export { buildTestJwt } from './auth.js';
+export { buildTestJwt } from '../../../shared/auth.js';

@@ -1,5 +1,5 @@
 import { createServer, type Server } from 'node:http';
-import { buildTestJwt } from './auth.js';
+import { buildTestJwt } from '../../../shared/auth.js';
 import { buildMockEnv } from '../env.js';
 
 /**

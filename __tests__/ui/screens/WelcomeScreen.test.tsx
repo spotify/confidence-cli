@@ -6,7 +6,7 @@ import {
   ENTER,
   waitFor,
   act,
-} from '../helpers/index.js';
+} from '../testing-framework/index.js';
 import { WelcomeScreen } from '@ui/tui/screens/welcome/index.js';
 
 vi.mock('../../../src/lib/system-check.js', () => ({

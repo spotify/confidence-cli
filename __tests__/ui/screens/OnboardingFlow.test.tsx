@@ -8,7 +8,7 @@ import {
   ARROW_DOWN,
   ESCAPE,
   waitFor,
-} from '../helpers/index.js';
+} from '../testing-framework/index.js';
 import { ScreenId } from '@lib/session.js';
 
 vi.mock('node:child_process', async (importOriginal) => {

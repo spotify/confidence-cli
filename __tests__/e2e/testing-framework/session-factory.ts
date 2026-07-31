@@ -2,7 +2,7 @@ import { mkdtempSync, writeFileSync } from 'node:fs';
 import { join } from 'node:path';
 import { tmpdir } from 'node:os';
 import { TerminalSession } from './terminal/index.js';
-import { createProjectDir, type ProjectType } from './project-scaffold.js';
+import { createProjectDir, type ProjectType } from '../../shared/project-scaffold.js';
 
 /**
  * Creates an isolated {@link TerminalSession} pre-configured for e2e testing.
@@ -53,7 +53,7 @@ export function createSession({
   systemPath?: string;
 } = {}): TerminalSession {
   const mockBinDir = process.env.E2E_MOCK_BIN_DIR!;
-  const projectDir = createProjectDir(project);
+  const { path: projectDir } = createProjectDir(project);
 
   const sessionEnv: Record<string, string> = {
     PATH: `${mockBinDir}:${systemPath ?? process.env.PATH}`,

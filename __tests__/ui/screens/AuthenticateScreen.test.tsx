@@ -1,4 +1,10 @@
-import { renderScreen, renderApp, createProjectDir, ENTER, waitFor } from '../helpers/index.js';
+import {
+  renderScreen,
+  renderApp,
+  createProjectDir,
+  ENTER,
+  waitFor,
+} from '../testing-framework/index.js';
 import { AuthenticateScreen } from '@ui/tui/screens/authenticate/index.js';
 import { ScreenId } from '@lib/session.js';
 

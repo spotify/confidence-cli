@@ -1,2 +1,2 @@
 export { TerminalSession } from './session.js';
-export type { KeyName, Modifiers } from './key-map.js';
+export type { KeyName, Modifiers } from '../../../shared/key-map.js';
