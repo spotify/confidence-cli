@@ -1,27 +1,38 @@
-import { renderScreen, renderApp, createProjectDir, ENTER, waitFor } from '../helpers/index.js';
+import { http, HttpResponse } from 'msw';
+import {
+  renderScreen,
+  renderApp,
+  createProjectDir,
+  buildTestJwt,
+  persistTestTokens,
+  ENTER,
+  waitFor,
+} from '../helpers/index.js';
 import { AuthenticateScreen } from '@ui/tui/screens/authenticate/index.js';
 import { ScreenId } from '@lib/session.js';
+import { server } from '../../msw/server.js';
 
-vi.mock('../../../src/lib/auth.js', () => ({
-  loadPersistedToken: vi.fn().mockReturnValue(null),
-  validateToken: vi.fn().mockReturnValue({ valid: false }),
-  authenticate: vi.fn().mockResolvedValue({
-    accessToken: 'test-token',
-    refreshToken: 'test-refresh',
-    region: 'EU' as const,
-    workspace: 'test@example.com',
-  }),
-  refreshAccessToken: vi.fn().mockResolvedValue({
-    accessToken: 'refreshed-token',
-    refreshToken: 'refreshed-refresh',
-    region: 'EU' as const,
-    workspace: 'test@example.com',
-  }),
-}));
+// Mocking `authenticate` because it opens
+// a real browser and starts a local HTTP server.
+vi.mock('../../../src/lib/auth.js', async (importOriginal) => {
+  const actual = await importOriginal<typeof import('../../../src/lib/auth.js')>();
+  return {
+    ...actual,
+    authenticate: vi.fn().mockResolvedValue({
+      accessToken: 'test-token',
+      refreshToken: 'test-refresh',
+      region: 'EU' as const,
+      workspace: 'test@example.com',
+    }),
+  };
+});
+
+const testOpts = { screen: ScreenId.Authenticate };
 
 describe('AuthenticateScreen', () => {
   it('renders title', async () => {
-    using sut = renderScreen(<AuthenticateScreen />, { screen: ScreenId.Authenticate });
+    using sut = renderScreen(<AuthenticateScreen />, testOpts);
+
     await waitFor(() => {
       expect(sut.lastFrame()).toContain('Sign in to Confidence');
     });
@@ -29,7 +40,8 @@ describe('AuthenticateScreen', () => {
 
   describe('when no existing token', () => {
     it('shows sign-in option', async () => {
-      using sut = renderScreen(<AuthenticateScreen />, { screen: ScreenId.Authenticate });
+      using sut = renderScreen(<AuthenticateScreen />, testOpts);
+
       await waitFor(() => {
         expect(sut.lastFrame()).toContain('Sign in to a Confidence account');
       });
@@ -56,7 +68,7 @@ describe('AuthenticateScreen', () => {
     });
 
     it('shows authenticated state after sign in', async () => {
-      using sut = renderScreen(<AuthenticateScreen />, { screen: ScreenId.Authenticate });
+      using sut = renderScreen(<AuthenticateScreen />, testOpts);
 
       sut.stdin.write(ENTER);
 
@@ -68,41 +80,35 @@ describe('AuthenticateScreen', () => {
 
   describe('when existing token is found', () => {
     it('shows existing account options', async () => {
-      const { loadPersistedToken, validateToken } = await import('../../../src/lib/auth.js');
-      vi.mocked(loadPersistedToken).mockReturnValueOnce('existing-jwt');
-      vi.mocked(validateToken).mockReturnValueOnce({
-        valid: true,
-        region: 'EU',
-        workspace: 'existing@example.com',
-      });
+      using _tokens = persistTestTokens(buildTestJwt({ email: 'existing@example.com' }));
 
-      using sut = renderScreen(<AuthenticateScreen />, { screen: ScreenId.Authenticate });
+      using sut = renderScreen(<AuthenticateScreen />, testOpts);
+
       await waitFor(() => {
         expect(sut.lastFrame()).toContain('existing@example.com');
         expect(sut.lastFrame()).toContain('Use existing account');
       });
     });
 
-    it('refreshes token when choosing existing account', async () => {
+    it('refreshes token when confirming existing account', async () => {
       // Arrange
-      const { loadPersistedToken, validateToken, refreshAccessToken } =
-        await import('../../../src/lib/auth.js');
+      using _tokens = persistTestTokens(
+        buildTestJwt({ email: 'existing@example.com' }),
+        'test-refresh-token',
+      );
 
-      vi.mocked(loadPersistedToken).mockReturnValueOnce('existing-jwt');
-      vi.mocked(validateToken).mockReturnValueOnce({
-        valid: true,
-        region: 'EU',
-        workspace: 'existing@example.com',
-      });
+      server.use(
+        http.post('https://auth.confidence.dev/oauth/token', () =>
+          HttpResponse.json({
+            access_token: buildTestJwt({ email: 'existing@example.com' }),
+            refresh_token: 'new-refresh-token',
+            token_type: 'Bearer',
+            expires_in: 86400,
+          }),
+        ),
+      );
 
-      vi.mocked(refreshAccessToken).mockResolvedValueOnce({
-        accessToken: 'refreshed-token',
-        refreshToken: 'refreshed-refresh',
-        region: 'EU' as const,
-        workspace: 'existing@example.com',
-      });
-
-      using sut = renderScreen(<AuthenticateScreen />, { screen: ScreenId.Authenticate });
+      using sut = renderScreen(<AuthenticateScreen />, testOpts);
       await waitFor(() => {
         expect(sut.lastFrame()).toContain('Use existing account');
       });
@@ -116,20 +122,21 @@ describe('AuthenticateScreen', () => {
       });
     });
 
-    it('falls back to sign-in if token refresh fails', async () => {
+    it('falls back to sign-in when token refresh fails', async () => {
       // Arrange
-      const { loadPersistedToken, validateToken, refreshAccessToken } =
-        await import('../../../src/lib/auth.js');
+      using _tokens = persistTestTokens(
+        buildTestJwt({ email: 'existing@example.com' }),
+        'test-refresh-token',
+      );
 
-      vi.mocked(loadPersistedToken).mockReturnValueOnce('existing-jwt');
-      vi.mocked(validateToken).mockReturnValueOnce({
-        valid: true,
-        region: 'EU',
-        workspace: 'existing@example.com',
-      });
-      vi.mocked(refreshAccessToken).mockRejectedValueOnce(new Error('Session expired'));
+      server.use(
+        http.post(
+          'https://auth.confidence.dev/oauth/token',
+          () => new HttpResponse(null, { status: 401 }),
+        ),
+      );
 
-      using sut = renderScreen(<AuthenticateScreen />, { screen: ScreenId.Authenticate });
+      using sut = renderScreen(<AuthenticateScreen />, testOpts);
       await waitFor(() => {
         expect(sut.lastFrame()).toContain('Use existing account');
       });
@@ -150,7 +157,7 @@ describe('AuthenticateScreen', () => {
       const { authenticate } = await import('../../../src/lib/auth.js');
       vi.mocked(authenticate).mockRejectedValueOnce(new Error('Network error'));
 
-      using sut = renderScreen(<AuthenticateScreen />, { screen: ScreenId.Authenticate });
+      using sut = renderScreen(<AuthenticateScreen />, testOpts);
 
       sut.stdin.write(ENTER);
 
@@ -171,9 +178,10 @@ describe('AuthenticateScreen', () => {
           region: 'EU' as const,
           workspace: 'retry@example.com',
         });
-      using sut = renderScreen(<AuthenticateScreen />, { screen: ScreenId.Authenticate });
 
-      // Act — trigger first attempt (fails)
+      using sut = renderScreen(<AuthenticateScreen />, testOpts);
+
+      // Trigger first attempt (fails)
       sut.stdin.write(ENTER);
 
       await waitFor(() => {

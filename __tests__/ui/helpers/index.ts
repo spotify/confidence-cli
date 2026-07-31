@@ -5,4 +5,4 @@ export { delay } from './delay.js';
 export { waitFor } from './waitFor.js';
 export { createProjectDir } from './project.js';
 export { createFakeChild, mockNextSpawn } from './spawn.js';
-export { buildTestJwt, buildExpiredJwt, buildAuthState } from './auth.js';
+export { buildTestJwt, buildExpiredJwt, buildAuthState, persistTestTokens } from './auth.js';
