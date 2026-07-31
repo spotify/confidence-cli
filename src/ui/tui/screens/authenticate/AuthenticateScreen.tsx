@@ -54,7 +54,7 @@ export function AuthenticateScreen() {
         </Box>
       )}
 
-      {phase === 'checking' && <Spinner label="Checking for existing credentials..." />}
+      {phase === 'checking' && <Spinner label="Verifying selected account..." />}
 
       {phase === 'waiting-browser' && (
         <Box flexDirection="column">
