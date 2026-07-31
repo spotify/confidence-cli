@@ -1,13 +1,29 @@
 import { mkdtempSync, writeFileSync, rmSync } from 'node:fs';
 import { join } from 'node:path';
 import { tmpdir } from 'node:os';
+import { noop } from '@lib/noop.js';
 
-export function createProjectDir(deps: Record<string, string> | null = { react: '^19.0.0' }) {
+type ProjectType = 'react' | 'empty' | 'react-statsig' | 'react-posthog-statsig';
+
+function writeDeps(dir: string, dependencies: Record<string, string>): void {
+  writeFileSync(join(dir, 'package.json'), JSON.stringify({ dependencies }));
+}
+
+const SCAFFOLDS: Record<ProjectType, (dir: string) => void> = {
+  empty: noop,
+  react: (dir) => writeDeps(dir, { react: '^19.0.0' }),
+  'react-statsig': (dir) => writeDeps(dir, { react: '^19.0.0', '@statsig/js-client': '^1.0.0' }),
+  'react-posthog-statsig': (dir) =>
+    writeDeps(dir, {
+      react: '^19.0.0',
+      'posthog-js': '^1.0.0',
+      '@statsig/js-client': '^1.0.0',
+    }),
+};
+
+export function createProjectDir(type: ProjectType = 'react') {
   const dir = mkdtempSync(join(tmpdir(), 'wizard-test-'));
-
-  if (deps) {
-    writeFileSync(join(dir, 'package.json'), JSON.stringify({ dependencies: deps }));
-  }
+  SCAFFOLDS[type](dir);
 
   return {
     path: dir,
@@ -16,3 +32,5 @@ export function createProjectDir(deps: Record<string, string> | null = { react: 
     },
   };
 }
+
+export type { ProjectType };

@@ -1,7 +1,7 @@
 import { writeFileSync } from 'node:fs';
 import { join } from 'node:path';
 import { detectProviders } from '@providers/index.js';
-import { createProjectDir } from '../ui/helpers/project.js';
+import { createProjectDir } from './helpers/project.js';
 
 describe('detectProviders', () => {
   describe('when project has no manifest files', () => {

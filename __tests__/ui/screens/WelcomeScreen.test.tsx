@@ -100,7 +100,7 @@ describe('WelcomeScreen', () => {
 
   describe('when no known framework is detected', () => {
     it('hides "Start setup" and shows "Select framework"', async () => {
-      using project = createProjectDir(null);
+      using project = createProjectDir('empty');
       using sut = renderScreen(<WelcomeScreen />, { dir: project.path });
 
       await waitFor(() => {
@@ -111,7 +111,7 @@ describe('WelcomeScreen', () => {
     });
 
     it('does not show "Change framework"', async () => {
-      using project = createProjectDir(null);
+      using project = createProjectDir('empty');
       using sut = renderScreen(<WelcomeScreen />, { dir: project.path });
 
       await waitFor(() => {
@@ -120,7 +120,7 @@ describe('WelcomeScreen', () => {
     });
 
     it('navigates to SelectFramework on "Select framework"', async () => {
-      using project = createProjectDir(null);
+      using project = createProjectDir('empty');
       using sut = renderApp({ dir: project.path });
 
       await waitFor(() => {
