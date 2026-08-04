@@ -1,5 +1,19 @@
 # Changelog
 
+## [1.1.0](https://github.com/spotify/confidence-cli/compare/quickstart-v1.0.1...quickstart-v1.1.0) (2026-08-04)
+
+
+### Features
+
+* improve migration guardrails ([#23](https://github.com/spotify/confidence-cli/issues/23)) ([dbe5b8e](https://github.com/spotify/confidence-cli/commit/dbe5b8e6ae642cb73d5b45db2f01beee55d4148b))
+* more robust auth refresh ([#24](https://github.com/spotify/confidence-cli/issues/24)) ([4fdad95](https://github.com/spotify/confidence-cli/commit/4fdad95f1c89c8cf970eeaf73fd70b80d90c6596))
+
+
+### Bug Fixes
+
+* apply dependabot patch for postcss ([#26](https://github.com/spotify/confidence-cli/issues/26)) ([5d472da](https://github.com/spotify/confidence-cli/commit/5d472da749f4db29660bb61add3b304b6fcf845f))
+* fix false-negative tests and handle retries ([#19](https://github.com/spotify/confidence-cli/issues/19)) ([9e0853c](https://github.com/spotify/confidence-cli/commit/9e0853c2ec692a33080d6f85cec633b21d510252))
+
 ## [1.0.1](https://github.com/spotify/confidence-cli/compare/quickstart-v1.0.0...quickstart-v1.0.1) (2026-07-24)
 
 
