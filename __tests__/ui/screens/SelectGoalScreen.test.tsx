@@ -56,7 +56,7 @@ describe('SelectGoalScreen', () => {
       });
 
       await waitFor(() => {
-        expect(sut.lastFrame()).toContain('Set up your project');
+        expect(sut.lastFrame()).toContain('Ready to start?');
         expect(sut.lastFrame()).toContain('Start onboarding?');
       });
     });

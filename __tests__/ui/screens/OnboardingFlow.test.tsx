@@ -1,6 +1,7 @@
 import { spawn } from 'node:child_process';
 import {
   renderApp,
+  renderScreen,
   createProjectDir,
   mockNextSpawn,
   ENTER,
@@ -8,6 +9,7 @@ import {
   ESCAPE,
   waitFor,
 } from '../testing-framework/index.js';
+import { OnboardProjectScreen } from '@ui/tui/screens/onboard-project/index.js';
 import { ScreenId } from '@lib/session.js';
 
 vi.mock('node:child_process', async (importOriginal) => {
@@ -31,7 +33,9 @@ describe('Onboarding flow', () => {
 
       await waitFor(() => {
         const frame = sut.lastFrame()!;
-        expect(frame).toContain('Set up your project');
+        expect(frame).toContain('Ready to start?');
+        expect(frame).toContain('The wizard will:');
+        expect(frame).toContain('add the Confidence SDK');
         expect(frame).toContain('Start onboarding?');
         expect(frame).toContain('Start');
         expect(frame).toContain('Skip');
@@ -76,7 +80,7 @@ describe('Onboarding flow', () => {
 
       await waitFor(() => {
         expect(sut.lastFrame()).not.toContain('Start onboarding?');
-        expect(sut.lastFrame()).toContain('Set up your project');
+        expect(sut.lastFrame()).toContain('Setting up your project');
       });
     });
 
@@ -219,6 +223,59 @@ describe('Onboarding flow', () => {
 
       await waitFor(() => {
         expect(sut.lastFrame()).toContain('Project appears to be empty');
+      });
+    });
+  });
+
+  describe('selected goal display', () => {
+    it('shows feature flag steps when goal is feature-flags', async () => {
+      using project = createProjectDir();
+
+      using sut = renderScreen(<OnboardProjectScreen />, {
+        screen: ScreenId.OnboardProject,
+        dir: project.path,
+        goal: 'feature-flags',
+      });
+
+      await waitFor(() => {
+        const frame = sut.lastFrame()!;
+        expect(frame).toContain('The wizard will:');
+        expect(frame).toContain('add the Confidence SDK');
+        expect(frame).toContain('create your first feature flag');
+      });
+    });
+
+    it('shows session recording steps when goal is session-recordings', async () => {
+      using project = createProjectDir();
+
+      using sut = renderScreen(<OnboardProjectScreen />, {
+        screen: ScreenId.OnboardProject,
+        dir: project.path,
+        goal: 'session-recordings',
+      });
+
+      await waitFor(() => {
+        const frame = sut.lastFrame()!;
+        expect(frame).toContain('add the Confidence SDK');
+        expect(frame).toContain('set up session recordings');
+        expect(frame).not.toContain('feature flag');
+      });
+    });
+
+    it('shows combined steps when goal is all', async () => {
+      using project = createProjectDir();
+
+      using sut = renderScreen(<OnboardProjectScreen />, {
+        screen: ScreenId.OnboardProject,
+        dir: project.path,
+        goal: 'all',
+      });
+
+      await waitFor(() => {
+        const frame = sut.lastFrame()!;
+        expect(frame).toContain('add the Confidence SDK');
+        expect(frame).toContain('set up feature flags');
+        expect(frame).toContain('set up session recordings');
       });
     });
   });

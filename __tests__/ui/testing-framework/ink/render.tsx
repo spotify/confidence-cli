@@ -5,7 +5,7 @@ import { WizardRouter } from '@ui/tui/router.js';
 import { SCREEN_TRANSITIONS } from '@ui/tui/screen-transitions.js';
 import { RouterContext } from '@ui/tui/hooks/useRouter.js';
 import { App } from '@ui/tui/App.js';
-import type { AuthState, ScreenId } from '@lib/session.js';
+import type { AuthState, OnboardingGoal, ScreenId } from '@lib/session.js';
 import type { ChosenIde } from '@lib/session.js';
 
 // ink-testing-library's Stdout provides columns (100) but not rows,
@@ -25,23 +25,8 @@ type RenderAppOptions = StoreOptions & {
 type RenderScreenOptions = RenderAppOptions & {
   authState?: AuthState;
   framework?: string;
+  goal?: OnboardingGoal;
 };
-
-function setupStore(opts: RenderScreenOptions | RenderAppOptions = {}): void {
-  store.init(opts);
-
-  if (opts.screen) store.navigateTo(opts.screen);
-  if (opts.ide) store.setIde(opts.ide);
-  if (opts.installedPlugins) store.setInstalledPlugins(opts.installedPlugins);
-
-  if ('framework' in opts && (opts as RenderScreenOptions).framework) {
-    store.setFramework((opts as RenderScreenOptions).framework!);
-  }
-
-  if ('authState' in opts && (opts as RenderScreenOptions).authState) {
-    store.setAuthState((opts as RenderScreenOptions).authState!);
-  }
-}
 
 export function renderScreen(element: ReactElement, opts?: RenderScreenOptions) {
   setupStore(opts);
@@ -65,4 +50,20 @@ export function renderApp(opts?: RenderAppOptions) {
     cleanup: result.unmount,
     [Symbol.dispose]: result.unmount,
   };
+}
+
+function setupStore(opts: RenderScreenOptions | RenderAppOptions = {}): void {
+  store.init(opts);
+
+  if (opts.screen) store.navigateTo(opts.screen);
+  if (opts.ide) store.setIde(opts.ide);
+  if (opts.installedPlugins) store.setInstalledPlugins(opts.installedPlugins);
+
+  setupScreenOptions(opts);
+}
+
+function setupScreenOptions(opts: RenderScreenOptions) {
+  if (opts.authState) store.setAuthState(opts.authState);
+  if (opts.framework) store.setFramework(opts.framework);
+  if (opts.goal) store.setOnboardingGoal(opts.goal);
 }

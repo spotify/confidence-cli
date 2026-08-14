@@ -17,37 +17,46 @@ describe('SelectGoal screen', () => {
     expect(session.snapshot()).toMatchSnapshot('select-goal');
   });
 
-  it('advances to OnboardProject after selecting Feature Flags', async () => {
+  it('shows feature flag steps after selecting Feature Flags', async () => {
     using session = createSession();
 
     await navigateToGoalSelection(session);
+    session.checkpoint();
     await session.press('Enter');
 
     await session.waitForText('Start onboarding?');
+    expect(session.snapshot()).toContain('add the Confidence SDK');
+    expect(session.snapshot()).toContain('create your first feature flag');
   });
 
-  it('advances to OnboardProject after selecting Session Recordings', async () => {
+  it('shows session recording steps after selecting Session Recordings', async () => {
     using session = createSession();
 
     await navigateToGoalSelection(session);
+    session.checkpoint();
 
     // Session Recordings — 2nd option
     await session.press('ArrowDown');
     await session.press('Enter');
 
     await session.waitForText('Start onboarding?');
+    expect(session.snapshot()).toContain('add the Confidence SDK');
+    expect(session.snapshot()).toContain('set up session recordings');
   });
 
-  it('advances to OnboardProject after selecting YOLO', async () => {
+  it('shows combined steps after selecting YOLO', async () => {
     using session = createSession();
 
     await navigateToGoalSelection(session);
+    session.checkpoint();
 
     // YOLO — 3rd option
     await session.pressRepeat('ArrowDown', 2);
     await session.press('Enter');
 
     await session.waitForText('Start onboarding?');
+    expect(session.snapshot()).toContain('set up feature flags');
+    expect(session.snapshot()).toContain('set up session recordings');
   });
 
   it('advances to Done when skip is selected', async () => {

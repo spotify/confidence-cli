@@ -11,25 +11,24 @@ import { useTipRotation } from '../../hooks/useTipRotation.js';
 import { TipCard } from '../../components/TipCard.js';
 import { useTerminalSize } from '../../hooks/useTerminalSize.js';
 import { tipsFitInViewport } from '../../lib/layout-budget.js';
-import { ScreenId } from '@lib/session.js';
+import { ScreenId, type OnboardingGoal } from '@lib/session.js';
 import { useAutoAdvance } from '../../hooks/useAutoAdvance.js';
 import { useLogger } from '../../hooks/useLog.js';
 import { useNavigation } from '../../hooks/useNavigation.js';
 import { skipped } from '../../lib/log-messages.js';
-import { $session } from '../../store.js';
+import { $session, useSession } from '../../store.js';
 import { useOnboardingProcess } from './useOnboardingProcess.js';
 import { track } from '@lib/telemetry.js';
 import { onboardingCancelled, onboardingCompleted } from './log-messages.js';
 import * as te from './telemetry-events.js';
 
 const MAX_VISIBLE_STATUS = 3;
-
-const CONFIRM_DESCRIPTION =
-  'The wizard will add the Confidence SDK and create your first feature flag.';
+const DEFAULT_GOAL: OnboardingGoal = 'feature-flags';
 
 const SANDBOX_WARNING = 'The AI agent will be able to read and write files in your project.';
 
 export function OnboardProjectScreen() {
+  const session = useSession();
   const navigate = useNavigation(ScreenId.OnboardProject);
   const log = useLogger(ScreenId.OnboardProject);
   const { rows, columns } = useTerminalSize();
@@ -93,19 +92,29 @@ export function OnboardProjectScreen() {
       <Box flexDirection="column">
         <Box marginBottom={1}>
           <Text color={Colors.primary} bold>
-            Set up your project
+            {onboarding.phase === 'confirm' ? 'Ready to start?' : 'Setting up your project'}
           </Text>
-        </Box>
-        <Box marginBottom={1}>
-          <Text color={Colors.muted}>{CONFIRM_DESCRIPTION}</Text>
         </Box>
 
         {onboarding.phase === 'confirm' && (
-          <Box marginBottom={1}>
-            <Text color={Colors.warning}>
-              {Icons.diamond} {SANDBOX_WARNING}
-            </Text>
-          </Box>
+          <>
+            <Box flexDirection="column" marginBottom={1}>
+              <Text color={Colors.muted}>The wizard will:</Text>
+              {onboardingSteps({
+                goal: session.onboardingGoal ?? DEFAULT_GOAL,
+                migrations: session.migrationTargets,
+              }).map((step) => (
+                <Text key={step} color={Colors.muted}>
+                  {Icons.check} {step}
+                </Text>
+              ))}
+            </Box>
+            <Box marginBottom={1}>
+              <Text color={Colors.warning}>
+                {Icons.diamond} {SANDBOX_WARNING}
+              </Text>
+            </Box>
+          </>
         )}
 
         {onboarding.phase === 'detecting' && <Spinner label="Detecting project framework..." />}
@@ -143,7 +152,20 @@ export function OnboardProjectScreen() {
   function BottomPrompt() {
     switch (onboarding.phase) {
       case 'confirm':
-        return <ConfirmPrompt />;
+        return (
+          <PromptPanel
+            mode="select"
+            status="Start onboarding?"
+            options={[
+              { label: 'Start onboarding', value: 'start' },
+              { label: 'Skip for now', value: 'skip' },
+            ]}
+            onSelect={(value) => {
+              if (value === 'skip') return handleConfirmSkip();
+              handleConfirmStart();
+            }}
+          />
+        );
       case 'choose-sdk':
         return (
           <PromptPanel
@@ -185,21 +207,23 @@ export function OnboardProjectScreen() {
       }
     }
   }
+}
 
-  function ConfirmPrompt() {
-    return (
-      <PromptPanel
-        mode="select"
-        status="Start onboarding?"
-        options={[
-          { label: 'Start onboarding', value: 'start' },
-          { label: 'Skip for now', value: 'skip' },
-        ]}
-        onSelect={(value) => {
-          if (value === 'skip') return handleConfirmSkip();
-          handleConfirmStart();
-        }}
-      />
-    );
-  }
+const GOAL_STEPS: Record<OnboardingGoal, string[]> = {
+  'feature-flags': ['create your first feature flag'],
+  'session-recordings': ['set up session recordings to capture user sessions'],
+  all: ['set up feature flags', 'set up session recordings to capture user sessions'],
+};
+
+type SelectedChoices = {
+  goal: OnboardingGoal;
+  migrations: Array<{ name: string }>;
+};
+
+function onboardingSteps({ goal, migrations }: SelectedChoices): string[] {
+  return [
+    'add the Confidence SDK',
+    ...GOAL_STEPS[goal],
+    ...migrations.map((t) => `migrate ${t.name} feature flags to Confidence`),
+  ];
 }
