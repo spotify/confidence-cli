@@ -26,7 +26,7 @@ export type WizardSession = {
   systemChecks: Record<string, CheckResult>;
   authState: AuthState;
   ide: ChosenIde | null;
-  installedPlugins: string[];
+  installedPlugins: ChosenIde[];
   connectedMcps: string[];
   isEmptyProject: boolean;
   detectedProviders: DetectedProvider[];

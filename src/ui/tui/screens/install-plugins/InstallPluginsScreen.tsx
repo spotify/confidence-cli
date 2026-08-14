@@ -99,7 +99,7 @@ export function InstallPluginsScreen() {
           {detected.map((d) => (
             <Box key={d} gap={1}>
               <Text color={Colors.success}>{Icons.check}</Text>
-              <Text>{IDE_LABELS[d as IdeId] ?? d}</Text>
+              <Text>{IDE_LABELS[d] ?? d}</Text>
             </Box>
           ))}
         </>

@@ -1,7 +1,7 @@
 import type { IdeId } from './types.js';
 import { getIntegration, getIntegrations } from './registry.js';
 
-export function detectInstalledPlugins(projectDir: string): string[] {
+export function detectInstalledPlugins(projectDir: string): IdeId[] {
   return getIntegrations()
     .filter((i) => i.detectPlugins(projectDir))
     .map((i) => i.id);

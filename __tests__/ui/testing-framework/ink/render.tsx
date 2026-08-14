@@ -21,7 +21,7 @@ type RenderOptions = StoreOptions & {
   authState?: AuthState;
 
   ide?: ChosenIde;
-  plugins?: string[];
+  plugins?: ChosenIde[];
 
   framework?: string;
 
