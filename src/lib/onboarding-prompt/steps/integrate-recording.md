@@ -30,14 +30,13 @@ import { initSessionRecorder } from '@spotify-confidence/session-recording';
 
 const recorder = initSessionRecorder({
   clientSecret: process.env.CONFIDENCE_CLIENT_SECRET,
-  // context should match the evaluation context used for feature flags
   context: {
     visitor_id: '<stable user or visitor id>',
   },
 });
 ```
 
-The recorder starts automatically by default. For manual control, pass `mode: 'manual'` and call `recorder.start()`.
+The function always returns a `SessionRecorder` — safe to call, never throws. Recording starts automatically by default. For manual control, pass `mode: 'manual'` and call `recorder.start()`.
 
 ### {{STEP}}d. Configure privacy and capture settings
 
@@ -49,7 +48,7 @@ Scan the project's components and templates to determine the right configuration
 
 - `maskInputs` (boolean, default `true`) — masks all `<input>`, `<textarea>`, and contenteditable values. Keep enabled unless the app has no user input.
 - `maskSelectors` (string[]) — CSS selectors for elements whose text should be replaced with bullet characters. Masking preserves layout but hides content.
-- `blockSelectors` (string[]) — CSS selectors for elements to remove from recordings entirely. Use for heavy or irrelevant content, not for text you want to stay visible.
+- `blockSelectors` (string[]) — CSS selectors for elements to remove from recordings entirely (replaced with empty placeholders). Use for heavy or irrelevant content, not for text you want to stay visible.
 
 **Capture** (what extra data to collect):
 
