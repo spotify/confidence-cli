@@ -26,8 +26,8 @@ Observable behavior is what a user or caller can see: rendered output, return va
 Write tests that exercise the code the same way a real user would interact with it:
 
 - For TUI screens: assert on rendered terminal output (`lastFrame()`), never on store internals like `store.currentScreen` or `store.session.*`.
-  - Use `renderScreen()` for tests that check a single screen's content and interactions.
-  - Use `renderApp()` for tests that verify navigation — it renders the full app so screen transitions are visible in the output.
+  - Prefer `renderApp()` — it renders the full app with framework detection and screen transitions, relying on the project dir (via `createProjectDir()`) for context rather than manually injecting store props.
+  - Use `renderScreen()` when `renderApp()` is not feasible — e.g., a screen depends on state that is normally set by a prior screen in the flow. `renderScreen()` accepts a `framework` option and other store props that `renderApp()` does not.
 - For store/state: assert on the public API and its effects, not on internal atom values.
 - For CLI commands: test the command's output and side effects, not how it assembles arguments internally.
 
