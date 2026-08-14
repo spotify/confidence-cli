@@ -35,8 +35,8 @@ export function buildOnboardingPrompt({
   const steps = new StepCounter(isEmptyProject ? 2 : 1);
   const tools = buildToolVars(ide);
 
-  const withFlags = goal === 'feature-flags' || goal === 'all';
-  const withRecordings = goal === 'session-recordings' || goal === 'all';
+  const withFlags = ['feature-flags', 'all'].includes(goal);
+  const withRecordings = ['session-recordings', 'all'].includes(goal);
   const viaSkill = withFlags && hasPlugins;
 
   const sections = [
