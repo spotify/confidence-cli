@@ -75,7 +75,7 @@ export function SelectGoalScreen() {
         return (
           <PromptPanel
             mode="select"
-            status={`Found ${formatProviderNames(goalSelection.detectedProviders)} in code. How would you like to proceed?`}
+            status={`Found ${formatProviderNames(goalSelection.detectedProviders)} flags in code. How would you like to proceed?`}
             options={migrationOptions(goalSelection.detectedProviders)}
             onSelect={goalSelection.selectMigration}
           />

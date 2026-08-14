@@ -83,7 +83,7 @@ export function useGoalSelection(): GoalSelection {
       return navigate.to('next');
     }
 
-    const id = value.replace('migrate-', '');
+    const id = value.slice('migrate-'.length);
     const provider = initial.providers.find((p) => p.id === id);
     if (provider) {
       store.setMigrationTargets([provider]);

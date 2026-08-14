@@ -1,6 +1,6 @@
 import { useEffect } from 'react';
 import type { DetectedProvider } from '@providers/types.js';
-import { $session, store } from '../store.js';
+import { $session, store } from '../../store.js';
 
 export function useSyncProviders(providers: DetectedProvider[]): void {
   useEffect(

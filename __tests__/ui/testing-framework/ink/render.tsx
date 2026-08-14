@@ -16,22 +16,22 @@ const stdoutProto = Object.getPrototypeOf((probe as Record<string, unknown>).std
 Object.defineProperty(stdoutProto, 'rows', { get: () => 40, configurable: true });
 probe.unmount();
 
-type RenderAppOptions = StoreOptions & {
+type RenderOptions = StoreOptions & {
   screen?: ScreenId;
-  ide?: ChosenIde;
-  installedPlugins?: string[];
-};
-
-type RenderScreenOptions = RenderAppOptions & {
   authState?: AuthState;
+
+  ide?: ChosenIde;
+  plugins?: string[];
+
   framework?: string;
+
   goal?: OnboardingGoal;
 };
 
-export function renderScreen(element: ReactElement, opts?: RenderScreenOptions) {
+export function renderScreen(element: ReactElement, opts?: RenderOptions) {
   setupStore(opts);
-  const router = new WizardRouter(SCREEN_TRANSITIONS);
 
+  const router = new WizardRouter(SCREEN_TRANSITIONS);
   const result = render(<RouterContext.Provider value={router}>{element}</RouterContext.Provider>);
 
   return {
@@ -41,8 +41,9 @@ export function renderScreen(element: ReactElement, opts?: RenderScreenOptions) 
   };
 }
 
-export function renderApp(opts?: RenderAppOptions) {
+export function renderApp(opts?: RenderOptions) {
   setupStore(opts);
+
   const result = render(<App />);
 
   return {
@@ -52,18 +53,13 @@ export function renderApp(opts?: RenderAppOptions) {
   };
 }
 
-function setupStore(opts: RenderScreenOptions | RenderAppOptions = {}): void {
+function setupStore(opts: RenderOptions = {}): void {
   store.init(opts);
 
   if (opts.screen) store.navigateTo(opts.screen);
   if (opts.ide) store.setIde(opts.ide);
-  if (opts.installedPlugins) store.setInstalledPlugins(opts.installedPlugins);
-
-  setupScreenOptions(opts);
-}
-
-function setupScreenOptions(opts: RenderScreenOptions) {
-  if (opts.authState) store.setAuthState(opts.authState);
+  if (opts.plugins) store.setInstalledPlugins(opts.plugins);
   if (opts.framework) store.setFramework(opts.framework);
+  if (opts.authState) store.setAuthState(opts.authState);
   if (opts.goal) store.setOnboardingGoal(opts.goal);
 }

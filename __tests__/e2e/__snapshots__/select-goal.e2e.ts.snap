@@ -36,7 +36,7 @@ exports[`SelectGoal screen > shows migration directly for non-browser project wi
 
 
  ──────────────────────────────────────────────────────────────────────────────────────────────────
- Found Statsig in code. How would you like to proceed?
+ Found Statsig flags in code. How would you like to proceed?
 
  ❯ Just integrate Confidence
    Integrate and migrate Statsig's flags

@@ -14,4 +14,4 @@ export const SDK_OPTIONS: SdkOption[] = [
   { id: 'go', label: 'Go' },
 ];
 
-export const BROWSER_SDKS = new Set(['react', 'nextjs', 'javascript', 'typescript']);
+export const BROWSER_PLATFORMS = new Set(['react', 'nextjs', 'javascript', 'typescript']);
