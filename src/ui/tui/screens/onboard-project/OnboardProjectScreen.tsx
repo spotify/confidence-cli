@@ -1,5 +1,5 @@
 import { Box } from 'ink';
-import { TwoColumnLayout } from '../../components/TwoColumnLayout.js';
+import { MainLayout } from '../../components/MainLayout.js';
 import { TaskList } from '../../components/TaskList.js';
 import { buildWizardTasks } from '../../lib/wizard-tasks.js';
 import { useTipRotation } from '../../hooks/useTipRotation.js';
@@ -78,8 +78,8 @@ export function OnboardProjectScreen() {
 
   return (
     <Box flexDirection="column" flexGrow={1} justifyContent="space-between">
-      <TwoColumnLayout
-        left={
+      <MainLayout
+        main={
           <OnboardingLeftPanel
             phase={onboarding.phase}
             statusLines={onboarding.statusLines}
@@ -90,7 +90,7 @@ export function OnboardProjectScreen() {
             tip={tip}
           />
         }
-        right={<TaskList tasks={tasks} />}
+        aside={<TaskList tasks={tasks} />}
       />
       <OnboardingBottomPrompt
         phase={onboarding.phase}

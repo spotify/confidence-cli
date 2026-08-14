@@ -3,7 +3,7 @@ import { Box, Text } from 'ink';
 import { Spinner } from '@inkjs/ui';
 import { Colors, Icons } from '../../styles.js';
 import { PromptPanel } from '../../components/PromptPanel.js';
-import { TwoColumnLayout } from '../../components/TwoColumnLayout.js';
+import { MainLayout } from '../../components/MainLayout.js';
 import { TaskList } from '../../components/TaskList.js';
 import { buildWizardTasks } from '../../lib/wizard-tasks.js';
 import type { McpServerStatus } from '@integrations/index.js';
@@ -68,7 +68,7 @@ export function ConnectToolsScreen() {
 
   const tasks = buildWizardTasks('connectTools', isComplete ? 'done' : 'active');
 
-  const left = (
+  const main = (
     <Box flexDirection="column">
       <Box marginBottom={1}>
         <Text color={Colors.primary} bold>
@@ -169,7 +169,7 @@ export function ConnectToolsScreen() {
 
   return (
     <Box flexDirection="column" flexGrow={1} justifyContent="space-between">
-      <TwoColumnLayout left={left} right={<TaskList tasks={tasks} />} />
+      <MainLayout main={main} aside={<TaskList tasks={tasks} />} />
 
       {(phase === 'ask-install' || phase === 'auth-expired') && (
         <PromptPanel

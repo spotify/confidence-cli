@@ -2,7 +2,7 @@ import { Box, Text } from 'ink';
 import { Spinner } from '@inkjs/ui';
 import { Colors, Icons } from '../../styles.js';
 import { PromptPanel } from '../../components/PromptPanel.js';
-import { TwoColumnLayout } from '../../components/TwoColumnLayout.js';
+import { MainLayout } from '../../components/MainLayout.js';
 import { TaskList } from '../../components/TaskList.js';
 import { buildWizardTasks } from '../../lib/wizard-tasks.js';
 import { ScreenId } from '@lib/session.js';
@@ -36,7 +36,7 @@ export function AuthenticateScreen() {
     phase === 'authenticated' ? 'done' : phase === 'failed' ? 'error' : 'active',
   );
 
-  const left = (
+  const main = (
     <Box flexDirection="column">
       <Box marginBottom={1}>
         <Text color={Colors.primary} bold>
@@ -88,11 +88,11 @@ export function AuthenticateScreen() {
     </Box>
   );
 
-  const right = <TaskList tasks={tasks} />;
+  const aside = <TaskList tasks={tasks} />;
 
   return (
     <Box flexDirection="column" flexGrow={1} justifyContent="space-between">
-      <TwoColumnLayout left={left} right={right} />
+      <MainLayout main={main} aside={aside} />
       {renderPromptPanel()}
     </Box>
   );

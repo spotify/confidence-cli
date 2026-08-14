@@ -7,4 +7,4 @@ export { TaskList, type TaskItem } from './TaskList.js';
 export { TerminalLink } from './TerminalLink.js';
 export { TextBlock } from './TextBlock.js';
 export { TitleBar } from './TitleBar.js';
-export { TwoColumnLayout } from './TwoColumnLayout.js';
+export { MainLayout } from './MainLayout.js';

@@ -2,7 +2,7 @@ import { Box, Text } from 'ink';
 import { Spinner } from '@inkjs/ui';
 import { Colors, Icons } from '../../styles.js';
 import { PromptPanel } from '../../components/PromptPanel.js';
-import { TwoColumnLayout } from '../../components/TwoColumnLayout.js';
+import { MainLayout } from '../../components/MainLayout.js';
 import { TaskList } from '../../components/TaskList.js';
 import { buildWizardTasks } from '../../lib/wizard-tasks.js';
 import { type IdeId, getIntegrations } from '@integrations/index.js';
@@ -85,7 +85,7 @@ export function InstallPluginsScreen() {
         : 'active',
   );
 
-  const left = (
+  const main = (
     <Box flexDirection="column">
       <Box marginBottom={1}>
         <Text color={Colors.primary} bold>
@@ -134,11 +134,11 @@ export function InstallPluginsScreen() {
     </Box>
   );
 
-  const right = <TaskList tasks={tasks} />;
+  const aside = <TaskList tasks={tasks} />;
 
   return (
     <Box flexDirection="column" flexGrow={1} justifyContent="space-between">
-      <TwoColumnLayout left={left} right={right} />
+      <MainLayout main={main} aside={aside} />
       {renderPromptPanel()}
     </Box>
   );
