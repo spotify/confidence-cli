@@ -15,6 +15,10 @@ describe('when the user skips installing AI plugin', () => {
     await session.press('Enter');
     await session.waitForText('Connected successfully');
 
+    // SelectGoal
+    await session.waitForText('Which features would you like to set up?');
+    await session.press('Enter');
+
     // OnboardProject
     await session.waitForText('Start onboarding?');
     await session.press('Enter');
@@ -44,6 +48,10 @@ describe('when the user skips installing AI plugin', () => {
     await session.waitForText('Connect Confidence tools?');
     await session.press('Enter');
     await session.waitForText('Connected successfully');
+
+    // SelectGoal
+    await session.waitForText('Which features would you like to set up?');
+    await session.press('Enter');
 
     await session.waitForText('Start onboarding?');
     await session.press('Enter');

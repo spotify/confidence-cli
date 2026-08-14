@@ -1,0 +1,45 @@
+// Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
+
+exports[`SelectGoal screen > shows goal options for a browser framework > select-goal 1`] = `
+" Confidence by Spotify                                              https://confidence.spotify.com/
+
+ Which features would you like to set up?                             Todo (4/5)
+
+ Choose the Confidence features to integrate with your project.       ● Check system
+                                                                      ● Sign in to Confidence
+ ◆ Session Recordings (β) require the feature to be enabled on your   ● Set up your agent
+ Confidence account.                                                  ● Connect tools
+                                                                      ▶ Onboard project
+
+
+ ──────────────────────────────────────────────────────────────────────────────────────────────────
+ Select features to set up:
+
+ ❯ Feature Flags
+   Session Recordings (β)
+   YOLO! Set up everything
+   Skip setup
+
+ ↑↓ navigate   enter confirm                                                                 vX.Y.Z"
+`;
+
+exports[`SelectGoal screen > shows migration directly for non-browser project with competitors > select-goal-migration 1`] = `
+" Confidence by Spotify                                              https://confidence.spotify.com/
+
+ Migrate existing flags?                                              Todo (4/5)
+
+ Found Statsig in your project. Would you like to migrate their       ● Check system
+ flags to Confidence?                                                 ● Sign in to Confidence
+                                                                      ● Set up your agent
+                                                                      ● Connect tools
+                                                                      ▶ Onboard project
+
+
+ ──────────────────────────────────────────────────────────────────────────────────────────────────
+ Found Statsig in code. How would you like to proceed?
+
+ ❯ Just integrate Confidence
+   Integrate and migrate Statsig's flags
+
+ ↑↓ navigate   enter confirm                                                                 vX.Y.Z"
+`;
