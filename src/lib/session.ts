@@ -3,7 +3,7 @@ import type { DetectedProvider } from '@providers/types.js';
 
 export type ChosenIde = 'claude' | 'cursor' | 'codex';
 
-export type OnboardingGoal = 'feature-flags' | 'session-recording' | 'all';
+export type OnboardingGoal = 'feature-flags' | 'session-recordings' | 'all';
 
 export type FrameworkSource = 'detected' | 'selected';
 
@@ -60,6 +60,7 @@ export enum ScreenId {
   InstallPlugins = 'install-plugins',
   Authenticate = 'authenticate',
   ConnectTools = 'connect-tools',
+  SelectGoal = 'select-goal',
   OnboardProject = 'onboard-project',
   Done = 'done',
 }

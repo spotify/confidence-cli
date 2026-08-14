@@ -36,7 +36,7 @@ export function buildOnboardingPrompt({
   const tools = buildToolVars(ide);
 
   const withFlags = goal === 'feature-flags' || goal === 'all';
-  const withRecordings = goal === 'session-recording' || goal === 'all';
+  const withRecordings = goal === 'session-recordings' || goal === 'all';
   const viaSkill = withFlags && hasPlugins;
 
   const sections = [
@@ -85,7 +85,7 @@ class StepCounter {
 
 const GOAL_PREAMBLE: Record<OnboardingGoal, string> = {
   'feature-flags': 'the Confidence SDK',
-  'session-recording': 'Confidence Session Recording',
+  'session-recordings': 'Confidence Session Recording',
   all: 'the Confidence SDK and Session Recording',
 };
 

@@ -31,7 +31,6 @@ export type OnboardingProcess = {
   statusLines: StatusLine[];
   error: string | null;
   confirmStart: () => void;
-  confirmStartWithMigration: (providers: DetectedProvider[]) => void;
   selectSdk: (id: string, label: string) => void;
   cancel: () => void;
   retry: () => void;
@@ -168,10 +167,7 @@ export function useOnboardingProcess(): OnboardingProcess {
     [log, addStatus, markComplete],
   );
 
-  function beginOnboarding(providers: DetectedProvider[] = []) {
-    store.setMigrationTargets(providers);
-    store.setOnboardingGoal('feature-flags');
-
+  function beginOnboarding() {
     if (initial.needsSdkSelection) {
       store.setEmptyProject(true);
       setPhase('choose-sdk');
@@ -225,7 +221,6 @@ export function useOnboardingProcess(): OnboardingProcess {
     statusLines,
     error,
     confirmStart: beginOnboarding,
-    confirmStartWithMigration: beginOnboarding,
     selectSdk,
     cancel,
     retry,
@@ -258,7 +253,7 @@ function buildDryRunSteps(
   const goalSteps =
     goal === 'feature-flags'
       ? flagSteps
-      : goal === 'session-recording'
+      : goal === 'session-recordings'
         ? recordingSteps
         : [...flagSteps, ...recordingSteps];
 
@@ -282,6 +277,6 @@ function dryRunCodeChanges(goal: OnboardingGoal): string[] {
   ];
 
   if (goal === 'feature-flags') return flagChanges;
-  if (goal === 'session-recording') return recordingChanges;
+  if (goal === 'session-recordings') return recordingChanges;
   return [...flagChanges, ...recordingChanges];
 }

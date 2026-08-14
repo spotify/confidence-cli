@@ -7,7 +7,7 @@ export function buildReportTemplate(goal: OnboardingGoal): ReportTemplate {
     case 'feature-flags':
       return { start: FLAGS_TEMPLATE_START, end: COMMON_TEMPLATE_END };
 
-    case 'session-recording':
+    case 'session-recordings':
       return { start: RECORDING_TEMPLATE_START, end: COMMON_TEMPLATE_END };
 
     case 'all':

@@ -16,17 +16,15 @@ const stdoutProto = Object.getPrototypeOf((probe as Record<string, unknown>).std
 Object.defineProperty(stdoutProto, 'rows', { get: () => 40, configurable: true });
 probe.unmount();
 
-type RenderScreenOptions = StoreOptions & {
-  screen?: ScreenId;
-  ide?: ChosenIde;
-  installedPlugins?: string[];
-  authState?: AuthState;
-};
-
 type RenderAppOptions = StoreOptions & {
   screen?: ScreenId;
   ide?: ChosenIde;
   installedPlugins?: string[];
+};
+
+type RenderScreenOptions = RenderAppOptions & {
+  authState?: AuthState;
+  framework?: string;
 };
 
 function setupStore(opts: RenderScreenOptions | RenderAppOptions = {}): void {
@@ -35,6 +33,10 @@ function setupStore(opts: RenderScreenOptions | RenderAppOptions = {}): void {
   if (opts.screen) store.navigateTo(opts.screen);
   if (opts.ide) store.setIde(opts.ide);
   if (opts.installedPlugins) store.setInstalledPlugins(opts.installedPlugins);
+
+  if ('framework' in opts && (opts as RenderScreenOptions).framework) {
+    store.setFramework((opts as RenderScreenOptions).framework!);
+  }
 
   if ('authState' in opts && (opts as RenderScreenOptions).authState) {
     store.setAuthState((opts as RenderScreenOptions).authState!);
