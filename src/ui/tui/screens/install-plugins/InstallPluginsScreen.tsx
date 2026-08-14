@@ -1,8 +1,7 @@
 import { Box, Text } from 'ink';
 import { Spinner } from '@inkjs/ui';
 import { Colors, Icons } from '../../styles.js';
-import { PromptPanel } from '../../components/PromptPanel.js';
-import { TwoColumnLayout } from '../../components/TwoColumnLayout.js';
+import { MainLayout } from '../../components/MainLayout.js';
 import { TaskList } from '../../components/TaskList.js';
 import { buildWizardTasks } from '../../lib/wizard-tasks.js';
 import { type IdeId, getIntegrations } from '@integrations/index.js';
@@ -21,13 +20,8 @@ import {
   pluginSkippedAfterError,
 } from './log-messages.js';
 import * as te from './telemetry-events.js';
-import {
-  IDE_SELECT_OPTIONS,
-  ERROR_OPTIONS,
-  type IdeSelectValue,
-  type DetectedSelectValue,
-  type ErrorAction,
-} from './actions.js';
+import { type IdeSelectValue, type DetectedSelectValue, type ErrorAction } from './actions.js';
+import { BottomPrompt } from './components/index.js';
 
 const ALL_INTEGRATIONS = getIntegrations();
 
@@ -76,6 +70,18 @@ export function InstallPluginsScreen() {
     handleIdeSelect(value);
   }
 
+  function handleError(value: ErrorAction) {
+    if (value === 'retry') {
+      const ide = $session.get().ide;
+      if (ide) selectIde(ide);
+      return;
+    }
+
+    track(te.pluginSkippedAfterError());
+    log(pluginSkippedAfterError(error));
+    navigate.to('next');
+  }
+
   const tasks = buildWizardTasks(
     'installPlugins',
     phase === 'installed' || phase === 'already-installed'
@@ -85,7 +91,7 @@ export function InstallPluginsScreen() {
         : 'active',
   );
 
-  const left = (
+  const main = (
     <Box flexDirection="column">
       <Box marginBottom={1}>
         <Text color={Colors.primary} bold>
@@ -134,73 +140,23 @@ export function InstallPluginsScreen() {
     </Box>
   );
 
-  const right = <TaskList tasks={tasks} />;
+  const preferredLabel = preferredIndex ? IDE_LABELS[preferredIndex] : null;
+  const otherIntegrations = ALL_INTEGRATIONS.filter((i) => i.id !== preferredIndex);
 
   return (
-    <Box flexDirection="column" flexGrow={1} justifyContent="space-between">
-      <TwoColumnLayout left={left} right={right} />
-      {renderPromptPanel()}
-    </Box>
+    <MainLayout
+      main={main}
+      aside={<TaskList tasks={tasks} />}
+      prompt={
+        <BottomPrompt
+          phase={phase}
+          preferredLabel={preferredLabel}
+          otherIntegrations={otherIntegrations}
+          onIdeSelect={handleIdeSelect}
+          onDetectedSelect={handleDetectedSelect}
+          onError={handleError}
+        />
+      }
+    />
   );
-
-  function renderPromptPanel() {
-    switch (phase) {
-      case 'choose-ide':
-        return (
-          <PromptPanel
-            mode="select"
-            status="Which CLI agent would you like to use?"
-            options={IDE_SELECT_OPTIONS}
-            onSelect={handleIdeSelect}
-          />
-        );
-      case 'error':
-        return (
-          <PromptPanel
-            mode="select"
-            status="Plugin installation failed."
-            options={ERROR_OPTIONS}
-            onSelect={(value: ErrorAction) => {
-              if (value === 'retry') {
-                const ide = $session.get().ide;
-                if (ide) selectIde(ide);
-                return;
-              }
-
-              track(te.pluginSkippedAfterError());
-              log(pluginSkippedAfterError(error));
-              navigate.to('next');
-            }}
-          />
-        );
-      case 'already-installed': {
-        const preferredLabel = preferredIndex ? IDE_LABELS[preferredIndex] : null;
-        const otherOptions = ALL_INTEGRATIONS.filter((i) => i.id !== preferredIndex).map((i) => ({
-          label: i.name,
-          value: i.id,
-        }));
-
-        return (
-          <PromptPanel
-            mode="select"
-            status={`Confidence plugin detected for ${preferredLabel}. Continue with this agent tool?`}
-            options={[
-              { label: `Continue with ${preferredLabel}`, value: 'continue' },
-              ...otherOptions,
-              { label: 'Skip (install manually later)', value: 'skip' },
-            ]}
-            onSelect={handleDetectedSelect}
-          />
-        );
-      }
-      case 'detecting':
-      case 'installing':
-      case 'installed':
-        return null;
-      default: {
-        const _exhaustive: never = phase satisfies never;
-        throw new Error(`Unhandled phase: ${_exhaustive}`);
-      }
-    }
-  }
 }
