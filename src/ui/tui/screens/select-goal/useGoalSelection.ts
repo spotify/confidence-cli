@@ -1,6 +1,5 @@
 import { useState } from 'react';
 import { ScreenId } from '@lib/session.js';
-import type { OnboardingGoal } from '@lib/session.js';
 import type { DetectedProvider } from '@providers/types.js';
 import { useNavigation } from '../../hooks/useNavigation.js';
 import { useLogger } from '../../hooks/useLog.js';
@@ -15,13 +14,14 @@ import {
 } from './useInitialGoalSelection.js';
 import { goalChosen, migrationChosen } from './log-messages.js';
 import * as te from './telemetry-events.js';
+import { goalLabel, type GoalValue, type MigrationValue } from './actions.js';
 
 export type GoalSelection = {
   phase: Phase;
   detectedProviders: DetectedProvider[];
   recordingAvailable: boolean;
-  selectGoal: (value: string) => void;
-  selectMigration: (value: string) => void;
+  selectGoal: (value: GoalValue) => void;
+  selectMigration: (value: MigrationValue) => void;
 };
 
 export function useGoalSelection(): GoalSelection {
@@ -43,7 +43,7 @@ export function useGoalSelection(): GoalSelection {
     },
   });
 
-  function selectGoal(value: string) {
+  function selectGoal(value: GoalValue) {
     if (value === 'skip') {
       track(te.goalSkipped());
       log(skipped());
@@ -51,7 +51,7 @@ export function useGoalSelection(): GoalSelection {
       return;
     }
 
-    const goal = value as OnboardingGoal;
+    const goal = value;
     store.setOnboardingGoal(goal);
     track(te.goalSelected(goal));
     log(goalChosen(goalLabel(goal)));
@@ -68,7 +68,7 @@ export function useGoalSelection(): GoalSelection {
     }
   }
 
-  function selectMigration(value: string) {
+  function selectMigration(value: MigrationValue) {
     if (value === 'skip') {
       store.setMigrationTargets([]);
       log(migrationChosen([]));
@@ -101,21 +101,4 @@ export function useGoalSelection(): GoalSelection {
     selectGoal,
     selectMigration,
   };
-}
-
-const GOAL_OPTIONS = [
-  { label: 'Feature Flags', value: 'feature-flags' },
-  { label: 'Session Recordings (β)', value: 'session-recordings' },
-  { label: 'YOLO! Set up everything', value: 'all' },
-  { label: 'Skip setup', value: 'skip' },
-];
-
-const FLAGS_ONLY_OPTIONS = GOAL_OPTIONS.filter((o) => ['feature-flags', 'skip'].includes(o.value));
-
-export function goalOptionsFor(recordingAvailable: boolean) {
-  return recordingAvailable ? GOAL_OPTIONS : FLAGS_ONLY_OPTIONS;
-}
-
-function goalLabel(goal: OnboardingGoal): string {
-  return GOAL_OPTIONS.find((o) => o.value === goal)?.label ?? goal;
 }

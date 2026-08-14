@@ -1,11 +1,12 @@
 import { Box, Text } from 'ink';
 import { Colors, Icons } from '../../styles.js';
-import { PromptPanel, type PromptOption } from '../../components/PromptPanel.js';
+import { PromptPanel } from '../../components/PromptPanel.js';
 import { TwoColumnLayout } from '../../components/TwoColumnLayout.js';
 import { TaskList } from '../../components/TaskList.js';
 import { buildWizardTasks } from '../../lib/wizard-tasks.js';
 import type { DetectedProvider } from '@providers/types.js';
-import { useGoalSelection, goalOptionsFor } from './useGoalSelection.js';
+import { useGoalSelection } from './useGoalSelection.js';
+import { goalOptionsFor, migrationOptionsFor } from './actions.js';
 
 const WIZARD_TASKS = buildWizardTasks('onboardProject', 'active');
 
@@ -76,7 +77,7 @@ export function SelectGoalScreen() {
           <PromptPanel
             mode="select"
             status={`Found ${formatProviderNames(goalSelection.detectedProviders)} flags in code. How would you like to proceed?`}
-            options={migrationOptions(goalSelection.detectedProviders)}
+            options={migrationOptionsFor(goalSelection.detectedProviders)}
             onSelect={goalSelection.selectMigration}
           />
         );
@@ -88,21 +89,6 @@ export function SelectGoalScreen() {
       }
     }
   }
-}
-
-function migrationOptions(providers: DetectedProvider[]): PromptOption[] {
-  return [
-    { label: 'Just integrate Confidence', value: 'skip' },
-
-    ...(providers.length > 1
-      ? [{ label: 'Integrate and migrate all existing flags', value: 'migrate-all' }]
-      : []),
-
-    ...providers.map((p) => ({
-      label: `Integrate and migrate ${p.name}'s flags`,
-      value: `migrate-${p.id}`,
-    })),
-  ];
 }
 
 function formatProviderNames(providers: DetectedProvider[]): string {

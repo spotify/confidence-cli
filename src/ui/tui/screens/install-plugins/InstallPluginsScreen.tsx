@@ -21,6 +21,13 @@ import {
   pluginSkippedAfterError,
 } from './log-messages.js';
 import * as te from './telemetry-events.js';
+import {
+  IDE_SELECT_OPTIONS,
+  ERROR_OPTIONS,
+  type IdeSelectValue,
+  type DetectedSelectValue,
+  type ErrorAction,
+} from './actions.js';
 
 const ALL_INTEGRATIONS = getIntegrations();
 
@@ -44,7 +51,7 @@ export function InstallPluginsScreen() {
     },
   });
 
-  function handleIdeSelect(value: string) {
+  function handleIdeSelect(value: IdeSelectValue) {
     if (value === 'skip') {
       track(te.pluginSkipped());
       log(skipped());
@@ -52,13 +59,14 @@ export function InstallPluginsScreen() {
       return;
     }
     track(te.pluginIdeSelected(value));
-    selectIde(value as IdeId);
+    selectIde(value);
   }
 
   const preferredIndex = ALL_INTEGRATIONS.map((i) => i.id).find((id) => detected.includes(id));
 
-  function handleDetectedSelect(value: string) {
-    if (value === 'continue' && preferredIndex) {
+  function handleDetectedSelect(value: DetectedSelectValue) {
+    if (value === 'continue') {
+      if (!preferredIndex) return;
       store.setIde(preferredIndex);
       log(pluginsAlreadyInstalled(detected));
       track(te.pluginsAlreadyDetected());
@@ -142,12 +150,7 @@ export function InstallPluginsScreen() {
           <PromptPanel
             mode="select"
             status="Which CLI agent would you like to use?"
-            options={[
-              { label: 'Claude Code', value: 'claude' },
-              { label: 'Cursor', value: 'cursor' },
-              { label: 'Codex', value: 'codex' },
-              { label: 'Skip (install manually later)', value: 'skip' },
-            ]}
+            options={IDE_SELECT_OPTIONS}
             onSelect={handleIdeSelect}
           />
         );
@@ -156,11 +159,8 @@ export function InstallPluginsScreen() {
           <PromptPanel
             mode="select"
             status="Plugin installation failed."
-            options={[
-              { label: 'Retry', value: 'retry' },
-              { label: 'Skip', value: 'skip' },
-            ]}
-            onSelect={(value) => {
+            options={ERROR_OPTIONS}
+            onSelect={(value: ErrorAction) => {
               if (value === 'retry') {
                 const ide = $session.get().ide;
                 if (ide) selectIde(ide);

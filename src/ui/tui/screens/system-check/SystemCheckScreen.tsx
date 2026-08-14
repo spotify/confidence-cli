@@ -13,6 +13,7 @@ import { useSystemCheck } from './useSystemCheck.js';
 import { track } from '@lib/telemetry.js';
 import { systemCheckPassed, systemCheckQuit } from './log-messages.js';
 import * as te from './telemetry-events.js';
+import { FAIL_OPTIONS } from './actions.js';
 
 export function SystemCheckScreen() {
   const navigate = useNavigation(ScreenId.SystemCheck);
@@ -90,10 +91,7 @@ export function SystemCheckScreen() {
         <PromptPanel
           mode="select"
           status="Required tools are missing."
-          options={[
-            { label: 'Retry', value: 'retry' },
-            { label: 'Quit', value: 'quit' },
-          ]}
+          options={FAIL_OPTIONS}
           onSelect={(value) => {
             if (value === 'retry') {
               track(te.systemCheckRetried());
