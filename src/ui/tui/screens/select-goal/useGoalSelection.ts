@@ -69,8 +69,6 @@ export function useGoalSelection(): GoalSelection {
   }
 
   function selectMigration(value: string) {
-    store.setOnboardingGoal('feature-flags');
-
     if (value === 'skip') {
       store.setMigrationTargets([]);
       log(migrationChosen([]));
