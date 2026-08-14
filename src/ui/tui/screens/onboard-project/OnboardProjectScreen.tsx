@@ -1,4 +1,3 @@
-import { Box } from 'ink';
 import { MainLayout } from '../../components/MainLayout.js';
 import { TaskList } from '../../components/TaskList.js';
 import { buildWizardTasks } from '../../lib/wizard-tasks.js';
@@ -77,30 +76,30 @@ export function OnboardProjectScreen() {
   );
 
   return (
-    <Box flexDirection="column" flexGrow={1} justifyContent="space-between">
-      <MainLayout
-        main={
-          <OnboardingLeftPanel
-            phase={onboarding.phase}
-            statusLines={onboarding.statusLines}
-            error={onboarding.error}
-            goal={session.onboardingGoal ?? DEFAULT_GOAL}
-            migrations={session.migrationTargets}
-            showTips={showTips}
-            tip={tip}
-          />
-        }
-        aside={<TaskList tasks={tasks} />}
-      />
-      <OnboardingBottomPrompt
-        phase={onboarding.phase}
-        selectSdk={onboarding.selectSdk}
-        onConfirmStart={handleConfirmStart}
-        onConfirmSkip={handleConfirmSkip}
-        onSkip={handleSkip}
-        onRetry={handleRetry}
-        onCancel={handleCancel}
-      />
-    </Box>
+    <MainLayout
+      main={
+        <OnboardingLeftPanel
+          phase={onboarding.phase}
+          statusLines={onboarding.statusLines}
+          error={onboarding.error}
+          goal={session.onboardingGoal ?? DEFAULT_GOAL}
+          migrations={session.migrationTargets}
+          showTips={showTips}
+          tip={tip}
+        />
+      }
+      aside={<TaskList tasks={tasks} />}
+      prompt={
+        <OnboardingBottomPrompt
+          phase={onboarding.phase}
+          selectSdk={onboarding.selectSdk}
+          onConfirmStart={handleConfirmStart}
+          onConfirmSkip={handleConfirmSkip}
+          onSkip={handleSkip}
+          onRetry={handleRetry}
+          onCancel={handleCancel}
+        />
+      }
+    />
   );
 }

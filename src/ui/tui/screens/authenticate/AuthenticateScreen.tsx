@@ -90,12 +90,7 @@ export function AuthenticateScreen() {
 
   const aside = <TaskList tasks={tasks} />;
 
-  return (
-    <Box flexDirection="column" flexGrow={1} justifyContent="space-between">
-      <MainLayout main={main} aside={aside} />
-      {renderPromptPanel()}
-    </Box>
-  );
+  return <MainLayout main={main} aside={aside} prompt={renderPromptPanel()} />;
 
   function renderPromptPanel() {
     switch (phase) {

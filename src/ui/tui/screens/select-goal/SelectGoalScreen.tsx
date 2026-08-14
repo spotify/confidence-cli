@@ -1,4 +1,3 @@
-import { Box } from 'ink';
 import { MainLayout } from '../../components/MainLayout.js';
 import { TaskList } from '../../components/TaskList.js';
 import { buildWizardTasks } from '../../lib/wizard-tasks.js';
@@ -11,12 +10,10 @@ export function SelectGoalScreen() {
   const goalSelection = useGoalSelection();
 
   return (
-    <Box flexDirection="column" flexGrow={1} justifyContent="space-between">
-      <MainLayout
-        main={<LeftPanel goalSelection={goalSelection} />}
-        aside={<TaskList tasks={WIZARD_TASKS} />}
-      />
-      <BottomPrompt goalSelection={goalSelection} />
-    </Box>
+    <MainLayout
+      main={<LeftPanel goalSelection={goalSelection} />}
+      aside={<TaskList tasks={WIZARD_TASKS} />}
+      prompt={<BottomPrompt goalSelection={goalSelection} />}
+    />
   );
 }

@@ -168,31 +168,33 @@ export function ConnectToolsScreen() {
   );
 
   return (
-    <Box flexDirection="column" flexGrow={1} justifyContent="space-between">
-      <MainLayout main={main} aside={<TaskList tasks={tasks} />} />
-
-      {(phase === 'ask-install' || phase === 'auth-expired') && (
-        <PromptPanel
-          mode="select"
-          status={
-            phase === 'auth-expired'
-              ? 'Reconnect to refresh credentials?'
-              : connectedNames.length > 0
-                ? 'Connect another tool?'
-                : 'Connect Confidence tools?'
-          }
-          options={promptOptions}
-          onSelect={(value) => {
-            if (value === 'skip') {
-              track(te.connectToolsSkipped());
-              skip();
-            } else {
-              track(te.connectToolsSelected(value));
-              connect(value);
+    <MainLayout
+      main={main}
+      aside={<TaskList tasks={tasks} />}
+      prompt={
+        (phase === 'ask-install' || phase === 'auth-expired') && (
+          <PromptPanel
+            mode="select"
+            status={
+              phase === 'auth-expired'
+                ? 'Reconnect to refresh credentials?'
+                : connectedNames.length > 0
+                  ? 'Connect another tool?'
+                  : 'Connect Confidence tools?'
             }
-          }}
-        />
-      )}
-    </Box>
+            options={promptOptions}
+            onSelect={(value) => {
+              if (value === 'skip') {
+                track(te.connectToolsSkipped());
+                skip();
+              } else {
+                track(te.connectToolsSelected(value));
+                connect(value);
+              }
+            }}
+          />
+        )
+      }
+    />
   );
 }

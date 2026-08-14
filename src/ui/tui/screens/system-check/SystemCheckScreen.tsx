@@ -85,26 +85,31 @@ export function SystemCheckScreen() {
   const aside = <TaskList tasks={tasks} />;
 
   return (
-    <Box flexDirection="column" flexGrow={1} justifyContent="space-between">
-      <MainLayout main={main} aside={aside} />
-      {hasFailed && (
-        <PromptPanel
-          mode="select"
-          status="Required tools are missing."
-          options={FAIL_OPTIONS}
-          onSelect={(value) => {
-            if (value === 'retry') {
-              track(te.systemCheckRetried());
-              retry();
-            } else {
-              track(te.systemCheckQuit());
-              log(systemCheckQuit(formatChecksOutput()));
-              process.exit(1);
-            }
-          }}
-        />
-      )}
-      {running && <PromptPanel mode="info" status="Running system checks..." />}
-    </Box>
+    <MainLayout
+      main={main}
+      aside={aside}
+      prompt={
+        <>
+          {hasFailed && (
+            <PromptPanel
+              mode="select"
+              status="Required tools are missing."
+              options={FAIL_OPTIONS}
+              onSelect={(value) => {
+                if (value === 'retry') {
+                  track(te.systemCheckRetried());
+                  retry();
+                } else {
+                  track(te.systemCheckQuit());
+                  log(systemCheckQuit(formatChecksOutput()));
+                  process.exit(1);
+                }
+              }}
+            />
+          )}
+          {running && <PromptPanel mode="info" status="Running system checks..." />}
+        </>
+      }
+    />
   );
 }
