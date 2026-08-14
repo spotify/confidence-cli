@@ -1,7 +1,6 @@
 import { Box, Text } from 'ink';
 import { Spinner } from '@inkjs/ui';
 import { Colors, Icons } from '../../styles.js';
-import { PromptPanel } from '../../components/PromptPanel.js';
 import { MainLayout } from '../../components/MainLayout.js';
 import { TaskList } from '../../components/TaskList.js';
 import { buildWizardTasks } from '../../lib/wizard-tasks.js';
@@ -13,7 +12,7 @@ import { useAuthFlow } from './useAuthFlow.js';
 import { track } from '@lib/telemetry.js';
 import { authCompleted } from './log-messages.js';
 import * as te from './telemetry-events.js';
-import { EXISTING_OPTIONS, FAIL_OPTIONS } from './actions.js';
+import { BottomPrompt } from './components/index.js';
 
 export function AuthenticateScreen() {
   const log = useLogger(ScreenId.Authenticate);
@@ -88,73 +87,33 @@ export function AuthenticateScreen() {
     </Box>
   );
 
-  const aside = <TaskList tasks={tasks} />;
-
-  return <MainLayout main={main} aside={aside} prompt={renderPromptPanel()} />;
-
-  function renderPromptPanel() {
-    switch (phase) {
-      case 'has-existing':
-        return (
-          <PromptPanel
-            mode="select"
-            status={`Found existing account${workspace ? ` (${workspace})` : ''}. What would you like to do?`}
-            options={EXISTING_OPTIONS}
-            onSelect={(value) => {
-              if (value === 'use-existing') {
-                track(te.authExistingConfirmed());
-                confirmExisting();
-              } else {
-                track(te.authBrowserStarted());
-                startAuth('login');
-              }
-            }}
-          />
-        );
-      case 'choose-action':
-        return (
-          <PromptPanel
-            mode="select"
-            status="We'll open your browser to sign in. Continue?"
-            options={[{ label: 'Sign in to a Confidence account', value: 'login' }]}
-            onSelect={() => {
-              track(te.authBrowserStarted());
-              startAuth('login');
-            }}
-          />
-        );
-      case 'failed':
-        return (
-          <PromptPanel
-            mode="select"
-            status="Authentication failed."
-            options={FAIL_OPTIONS}
-            onSelect={(value) => {
-              if (value === 'retry') {
-                track(te.authRetried());
-                resetToChoose();
-              } else {
-                track(te.authQuit());
-                process.exit(1);
-              }
-            }}
-          />
-        );
-      case 'waiting-browser':
-        return (
-          <PromptPanel
-            mode="info"
-            status="Waiting for browser authentication..."
-            onCancel={cancelAuth}
-          />
-        );
-      case 'checking':
-      case 'authenticated':
-        return null;
-      default: {
-        const _exhaustive: never = phase satisfies never;
-        throw new Error(`Unhandled phase: ${_exhaustive}`);
+  return (
+    <MainLayout
+      main={main}
+      aside={<TaskList tasks={tasks} />}
+      prompt={
+        <BottomPrompt
+          phase={phase}
+          workspace={workspace}
+          onUseExisting={() => {
+            track(te.authExistingConfirmed());
+            confirmExisting();
+          }}
+          onLogin={() => {
+            track(te.authBrowserStarted());
+            startAuth('login');
+          }}
+          onRetry={() => {
+            track(te.authRetried());
+            resetToChoose();
+          }}
+          onQuit={() => {
+            track(te.authQuit());
+            process.exit(1);
+          }}
+          onCancelBrowser={cancelAuth}
+        />
       }
-    }
-  }
+    />
+  );
 }
