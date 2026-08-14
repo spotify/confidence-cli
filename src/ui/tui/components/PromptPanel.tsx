@@ -4,20 +4,20 @@ import { APP_VERSION } from '@lib/meta.js';
 import { Colors, HAlign } from '../styles.js';
 import { useIsNarrow } from '../hooks/useIsNarrow.js';
 
-export type PromptOption = {
+export type PromptOption<T extends string = string> = {
   label: string;
-  value: string;
+  value: T;
 };
 
 type PromptPanelBase = {
   onCancel?: () => void;
 };
 
-type PromptPanelSelectProps = PromptPanelBase & {
+type PromptPanelSelectProps<T extends string = string> = PromptPanelBase & {
   mode: 'select';
   status: string;
-  options: PromptOption[];
-  onSelect: (value: string) => void;
+  options: PromptOption<T>[];
+  onSelect: (value: T) => void;
 };
 
 type PromptPanelInputProps = PromptPanelBase & {
@@ -32,11 +32,12 @@ type PromptPanelInfoProps = PromptPanelBase & {
   status: string;
 };
 
-type PromptPanelProps = PromptPanelSelectProps | PromptPanelInputProps | PromptPanelInfoProps;
+type PromptPanelProps<T extends string = string> =
+  PromptPanelSelectProps<T> | PromptPanelInputProps | PromptPanelInfoProps;
 
 const MAX_VISIBLE_OPTIONS = 8;
 
-export function PromptPanel(props: PromptPanelProps) {
+export function PromptPanel<T extends string = string>(props: PromptPanelProps<T>) {
   const narrow = useIsNarrow();
 
   useInput((_input, key) => {
@@ -65,7 +66,7 @@ export function PromptPanel(props: PromptPanelProps) {
           {props.mode === 'select' && (
             <Select
               options={props.options}
-              onChange={props.onSelect}
+              onChange={props.onSelect as (value: string) => void}
               visibleOptionCount={Math.min(props.options.length, MAX_VISIBLE_OPTIONS)}
             />
           )}

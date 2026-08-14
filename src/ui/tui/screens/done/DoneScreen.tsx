@@ -10,6 +10,7 @@ import { useSession, $session } from '../../store.js';
 import { track } from '@lib/telemetry.js';
 import { doneActionSelected } from './telemetry-events.js';
 import { useIsShort } from '@ui/tui/hooks/useIsShort.js';
+import { doneOptions } from './actions.js';
 
 const MAX_SHOWN_CHANGES = 5;
 
@@ -21,6 +22,7 @@ export function DoneScreen() {
   const { reportFile, codeChanges, projectDir, ide } = session;
   const align = narrow ? HAlign.Left : HAlign.Center;
   const skipped = codeChanges.length === 0;
+  const ideName = ide ? getIntegration(ide).name : null;
 
   return (
     <Box flexDirection="column" flexGrow={1} justifyContent="space-between">
@@ -82,12 +84,7 @@ export function DoneScreen() {
       <PromptPanel
         mode="select"
         status="What's next?"
-        options={[
-          ...(ide
-            ? [{ label: `Continue work with ${getIntegration(ide).name}`, value: 'chat' as const }]
-            : []),
-          { label: 'Exit', value: 'exit' },
-        ]}
+        options={doneOptions(ideName)}
         onSelect={(value) => {
           track(doneActionSelected(value));
           if (value === 'chat') {

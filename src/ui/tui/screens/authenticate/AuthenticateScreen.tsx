@@ -13,6 +13,7 @@ import { useAuthFlow } from './useAuthFlow.js';
 import { track } from '@lib/telemetry.js';
 import { authCompleted } from './log-messages.js';
 import * as te from './telemetry-events.js';
+import { EXISTING_OPTIONS, FAIL_OPTIONS } from './actions.js';
 
 export function AuthenticateScreen() {
   const log = useLogger(ScreenId.Authenticate);
@@ -103,10 +104,7 @@ export function AuthenticateScreen() {
           <PromptPanel
             mode="select"
             status={`Found existing account${workspace ? ` (${workspace})` : ''}. What would you like to do?`}
-            options={[
-              { label: 'Use existing account', value: 'use-existing' },
-              { label: 'Sign in to a different account', value: 'login' },
-            ]}
+            options={EXISTING_OPTIONS}
             onSelect={(value) => {
               if (value === 'use-existing') {
                 track(te.authExistingConfirmed());
@@ -135,10 +133,7 @@ export function AuthenticateScreen() {
           <PromptPanel
             mode="select"
             status="Authentication failed."
-            options={[
-              { label: 'Try again', value: 'retry' },
-              { label: 'Quit', value: 'quit' },
-            ]}
+            options={FAIL_OPTIONS}
             onSelect={(value) => {
               if (value === 'retry') {
                 track(te.authRetried());

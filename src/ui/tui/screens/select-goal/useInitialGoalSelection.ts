@@ -2,7 +2,7 @@ import { useState } from 'react';
 import { detectProviders, type DetectedProvider } from '@providers/index.js';
 import { useSyncProviders } from './useSyncProviders.js';
 import { useSession } from '../../store.js';
-import type { WizardSession } from '@lib/session.js';
+import type { ChosenIde, WizardSession } from '@lib/session.js';
 import { BROWSER_PLATFORMS } from '@lib/sdk-options.js';
 
 export type Phase = 'select-goal' | 'select-migration' | 'done';
@@ -45,7 +45,7 @@ function resolveProviders(session: WizardSession): DetectedProvider[] {
 
 export function canOfferMigration(
   providers: DetectedProvider[],
-  installedPlugins: string[],
+  installedPlugins: ChosenIde[],
 ): boolean {
   return providers.length > 0 && installedPlugins.length > 0;
 }

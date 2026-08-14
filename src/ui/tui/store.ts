@@ -79,7 +79,7 @@ export const store = {
       ide,
     }),
 
-  setInstalledPlugins: (plugins: string[]): void =>
+  setInstalledPlugins: (plugins: ChosenIde[]): void =>
     updateSession({
       installedPlugins: plugins,
     }),

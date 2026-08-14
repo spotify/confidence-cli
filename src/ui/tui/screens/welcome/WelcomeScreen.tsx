@@ -12,6 +12,7 @@ import { useSession } from '../../store.js';
 import { track, isTelemetryEnabled } from '@lib/telemetry.js';
 import { welcomeMenuSelect } from './log-messages.js';
 import { welcomeMenuSelected } from './telemetry-events.js';
+import { MENU_OPTIONS, MENU_OPTIONS_NO_FRAMEWORK, type MenuAction } from './actions.js';
 
 const STEPS = [
   'It will check your system',
@@ -19,19 +20,6 @@ const STEPS = [
   'Teach your AI agent about Confidence',
   'Integrate the SDK into your project',
   'Show a working feature flag example',
-] as const;
-
-const MENU_OPTIONS = [
-  { label: 'Start setup', value: 'start' },
-  { label: 'Change framework', value: 'framework' },
-  { label: 'About Confidence', value: 'about' },
-  { label: 'Quit', value: 'quit' },
-] as const;
-
-const MENU_OPTIONS_NO_FRAMEWORK = [
-  { label: 'Select framework', value: 'framework' },
-  { label: 'About Confidence', value: 'about' },
-  { label: 'Quit', value: 'quit' },
 ] as const;
 
 export function WelcomeScreen() {
@@ -57,7 +45,7 @@ export function WelcomeScreen() {
   const frameworkUnknown = detectionAttempted && frameworkLabel === null;
   const menuOptions = frameworkUnknown ? MENU_OPTIONS_NO_FRAMEWORK : MENU_OPTIONS;
 
-  function handleMenuSelect(value: string) {
+  function handleMenuSelect(value: MenuAction) {
     log(
       welcomeMenuSelect({
         label: menuOptions.find((o) => o.value === value)?.label ?? value,
@@ -137,7 +125,7 @@ export function WelcomeScreen() {
       <PromptPanel
         mode="select"
         status={frameworkUnknown ? 'Please, select your framework' : 'Ready to get started?'}
-        options={menuOptions.map(({ label, value }) => ({ label, value }))}
+        options={menuOptions}
         onSelect={handleMenuSelect}
       />
     </Box>

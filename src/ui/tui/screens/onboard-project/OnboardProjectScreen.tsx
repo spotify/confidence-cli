@@ -21,6 +21,7 @@ import { useOnboardingProcess } from './useOnboardingProcess.js';
 import { track } from '@lib/telemetry.js';
 import { onboardingCancelled, onboardingCompleted } from './log-messages.js';
 import * as te from './telemetry-events.js';
+import { CONFIRM_OPTIONS, ERROR_OPTIONS } from './actions.js';
 
 const MAX_VISIBLE_STATUS = 3;
 const DEFAULT_GOAL: OnboardingGoal = 'feature-flags';
@@ -156,10 +157,7 @@ export function OnboardProjectScreen() {
           <PromptPanel
             mode="select"
             status="Start onboarding?"
-            options={[
-              { label: 'Start onboarding', value: 'start' },
-              { label: 'Skip for now', value: 'skip' },
-            ]}
+            options={CONFIRM_OPTIONS}
             onSelect={(value) => {
               if (value === 'skip') return handleConfirmSkip();
               handleConfirmStart();
@@ -191,10 +189,7 @@ export function OnboardProjectScreen() {
           <PromptPanel
             mode="select"
             status="Onboarding encountered an error."
-            options={[
-              { label: 'Retry', value: 'retry' },
-              { label: 'Skip', value: 'skip' },
-            ]}
+            options={ERROR_OPTIONS}
             onSelect={(value) => (value === 'retry' ? handleRetry() : handleSkip())}
           />
         );

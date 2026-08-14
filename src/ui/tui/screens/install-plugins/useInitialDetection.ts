@@ -1,12 +1,13 @@
 import { useEffect, useState } from 'react';
 import { detectInstalledPlugins } from '@integrations/index.js';
+import type { ChosenIde } from '@lib/session.js';
 import { useSession, store } from '../../store.js';
 import type { PluginPhase } from './usePluginInstall.js';
 
 function resolveDetection(
   dryRun: boolean,
   projectDir: string,
-): { phase: PluginPhase; detected: string[] } {
+): { phase: PluginPhase; detected: ChosenIde[] } {
   if (dryRun) return { phase: 'choose-ide', detected: [] };
   const found = detectInstalledPlugins(projectDir);
   return {
@@ -17,7 +18,7 @@ function resolveDetection(
 
 export type InitialDetection = {
   phase: PluginPhase;
-  detected: string[];
+  detected: ChosenIde[];
 };
 
 export function useInitialDetection(): InitialDetection {
