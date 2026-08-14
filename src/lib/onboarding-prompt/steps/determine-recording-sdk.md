@@ -2,7 +2,7 @@
 
 Print "STATUS: Checking session recording availability..."
 
-Confidence Session Recording is currently available as a browser SDK: `@spotify-confidence/session-recording`.
+Confidence Session Recording is available as a browser SDK: `@spotify-confidence/session-recording`.
 It captures DOM events in real time and streams them to the Confidence backend for replay and analysis.
 
 Check whether the project is a browser-based application (React, Next.js, Vue, Svelte, plain JS/TS with a DOM).

@@ -16,6 +16,7 @@ function completionForScreen(screen: ScreenId): 'starting' | 'in_progress' | 'co
     case ScreenId.InstallPlugins:
     case ScreenId.Authenticate:
     case ScreenId.ConnectTools:
+    case ScreenId.SelectGoal:
     case ScreenId.About:
     case ScreenId.SelectFramework:
       return 'in_progress';

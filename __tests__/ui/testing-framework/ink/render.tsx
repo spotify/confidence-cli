@@ -5,7 +5,7 @@ import { WizardRouter } from '@ui/tui/router.js';
 import { SCREEN_TRANSITIONS } from '@ui/tui/screen-transitions.js';
 import { RouterContext } from '@ui/tui/hooks/useRouter.js';
 import { App } from '@ui/tui/App.js';
-import type { AuthState, ScreenId } from '@lib/session.js';
+import type { AuthState, OnboardingGoal, ScreenId } from '@lib/session.js';
 import type { ChosenIde } from '@lib/session.js';
 
 // ink-testing-library's Stdout provides columns (100) but not rows,
@@ -16,35 +16,22 @@ const stdoutProto = Object.getPrototypeOf((probe as Record<string, unknown>).std
 Object.defineProperty(stdoutProto, 'rows', { get: () => 40, configurable: true });
 probe.unmount();
 
-type RenderScreenOptions = StoreOptions & {
+type RenderOptions = StoreOptions & {
   screen?: ScreenId;
-  ide?: ChosenIde;
-  installedPlugins?: string[];
   authState?: AuthState;
-};
 
-type RenderAppOptions = StoreOptions & {
-  screen?: ScreenId;
   ide?: ChosenIde;
-  installedPlugins?: string[];
+  plugins?: string[];
+
+  framework?: string;
+
+  goal?: OnboardingGoal;
 };
 
-function setupStore(opts: RenderScreenOptions | RenderAppOptions = {}): void {
-  store.init(opts);
-
-  if (opts.screen) store.navigateTo(opts.screen);
-  if (opts.ide) store.setIde(opts.ide);
-  if (opts.installedPlugins) store.setInstalledPlugins(opts.installedPlugins);
-
-  if ('authState' in opts && (opts as RenderScreenOptions).authState) {
-    store.setAuthState((opts as RenderScreenOptions).authState!);
-  }
-}
-
-export function renderScreen(element: ReactElement, opts?: RenderScreenOptions) {
+export function renderScreen(element: ReactElement, opts?: RenderOptions) {
   setupStore(opts);
-  const router = new WizardRouter(SCREEN_TRANSITIONS);
 
+  const router = new WizardRouter(SCREEN_TRANSITIONS);
   const result = render(<RouterContext.Provider value={router}>{element}</RouterContext.Provider>);
 
   return {
@@ -54,8 +41,9 @@ export function renderScreen(element: ReactElement, opts?: RenderScreenOptions) 
   };
 }
 
-export function renderApp(opts?: RenderAppOptions) {
+export function renderApp(opts?: RenderOptions) {
   setupStore(opts);
+
   const result = render(<App />);
 
   return {
@@ -63,4 +51,15 @@ export function renderApp(opts?: RenderAppOptions) {
     cleanup: result.unmount,
     [Symbol.dispose]: result.unmount,
   };
+}
+
+function setupStore(opts: RenderOptions = {}): void {
+  store.init(opts);
+
+  if (opts.screen) store.navigateTo(opts.screen);
+  if (opts.ide) store.setIde(opts.ide);
+  if (opts.plugins) store.setInstalledPlugins(opts.plugins);
+  if (opts.framework) store.setFramework(opts.framework);
+  if (opts.authState) store.setAuthState(opts.authState);
+  if (opts.goal) store.setOnboardingGoal(opts.goal);
 }

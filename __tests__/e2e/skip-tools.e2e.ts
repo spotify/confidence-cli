@@ -13,7 +13,11 @@ describe('when the user skips connecting tools', () => {
     // Skip confirmation text
     await session.waitForText('Skipped');
 
-    // Still proceeds to OnboardProject
+    // SelectGoal
+    await session.waitForText('Which features would you like to set up?');
+    await session.press('Enter');
+
+    // OnboardProject
     await session.waitForText('Start onboarding?');
     await session.press('Enter');
     await session.waitForText('onboarding complete', { timeout: 30_000 });

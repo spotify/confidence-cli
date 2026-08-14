@@ -1,6 +1,6 @@
 // Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
 
-exports[`happy-path flow > navigates Welcome → SystemCheck → Authenticate → InstallPlugins → ConnectTools → OnboardProject → Done > authenticate 1`] = `
+exports[`happy-path flow > navigates Welcome → SystemCheck → Authenticate → InstallPlugins → ConnectTools → SelectGoal → OnboardProject → Done > authenticate 1`] = `
 " Confidence by Spotify                                              https://confidence.spotify.com/
 
  Sign in to Confidence                                                Todo (2/5)
@@ -12,7 +12,7 @@ exports[`happy-path flow > navigates Welcome → SystemCheck → Authenticate �
  Continuing...                                                        ○ Onboard project"
 `;
 
-exports[`happy-path flow > navigates Welcome → SystemCheck → Authenticate → InstallPlugins → ConnectTools → OnboardProject → Done > connect-tools 1`] = `
+exports[`happy-path flow > navigates Welcome → SystemCheck → Authenticate → InstallPlugins → ConnectTools → SelectGoal → OnboardProject → Done > connect-tools 1`] = `
 " Confidence by Spotify                                              https://confidence.spotify.com/
 
  Connect your AI to Confidence                                        Todo (3/5)
@@ -41,7 +41,7 @@ exports[`happy-path flow > navigates Welcome → SystemCheck → Authenticate �
  ↑↓ navigate   enter confirm                                                                 vX.Y.Z"
 `;
 
-exports[`happy-path flow > navigates Welcome → SystemCheck → Authenticate → InstallPlugins → ConnectTools → OnboardProject → Done > done 1`] = `
+exports[`happy-path flow > navigates Welcome → SystemCheck → Authenticate → InstallPlugins → ConnectTools → SelectGoal → OnboardProject → Done > done 1`] = `
 " Confidence by Spotify                                              https://confidence.spotify.com/
 
 
@@ -66,7 +66,7 @@ exports[`happy-path flow > navigates Welcome → SystemCheck → Authenticate �
  ↑↓ navigate   enter confirm   esc cancel                                                    vX.Y.Z"
 `;
 
-exports[`happy-path flow > navigates Welcome → SystemCheck → Authenticate → InstallPlugins → ConnectTools → OnboardProject → Done > install-plugins 1`] = `
+exports[`happy-path flow > navigates Welcome → SystemCheck → Authenticate → InstallPlugins → ConnectTools → SelectGoal → OnboardProject → Done > install-plugins 1`] = `
 " Confidence by Spotify                                              https://confidence.spotify.com/
 
  Teach your AI Confidence                                             Todo (2/5)
@@ -89,16 +89,17 @@ exports[`happy-path flow > navigates Welcome → SystemCheck → Authenticate �
  ↑↓ navigate   enter confirm                                                                 vX.Y.Z"
 `;
 
-exports[`happy-path flow > navigates Welcome → SystemCheck → Authenticate → InstallPlugins → ConnectTools → OnboardProject → Done > onboard-project 1`] = `
+exports[`happy-path flow > navigates Welcome → SystemCheck → Authenticate → InstallPlugins → ConnectTools → SelectGoal → OnboardProject → Done > onboard-project 1`] = `
 " Confidence by Spotify                                              https://confidence.spotify.com/
 
- Set up your project                                                  Todo (4/5)
+ Ready to start?                                                      Todo (4/5)
 
- The wizard will add the Confidence SDK and create your first         ● Check system
- feature flag.                                                        ● Sign in to Confidence
-                                                                      ● Set up your agent
- ◆ The AI agent will be able to read and write files in your          ● Connect tools
- project.                                                             ▶ Onboard project
+ The wizard will:                                                     ● Check system
+ ✔ add the Confidence SDK                                             ● Sign in to Confidence
+ ✔ create your first feature flag                                     ● Set up your agent
+                                                                      ● Connect tools
+ ◆ The AI agent will be able to read and write files in your          ▶ Onboard project
+ project.
 
 
  ──────────────────────────────────────────────────────────────────────────────────────────────────
@@ -110,7 +111,30 @@ exports[`happy-path flow > navigates Welcome → SystemCheck → Authenticate �
  ↑↓ navigate   enter confirm                                                                 vX.Y.Z"
 `;
 
-exports[`happy-path flow > navigates Welcome → SystemCheck → Authenticate → InstallPlugins → ConnectTools → OnboardProject → Done > system-check 1`] = `
+exports[`happy-path flow > navigates Welcome → SystemCheck → Authenticate → InstallPlugins → ConnectTools → SelectGoal → OnboardProject → Done > select-goal 1`] = `
+" Confidence by Spotify                                              https://confidence.spotify.com/
+
+ Which features would you like to set up?                             Todo (4/5)
+
+ Choose the Confidence features to integrate with your project.       ● Check system
+                                                                      ● Sign in to Confidence
+ ◆ Session Recordings (β) require the feature to be enabled on your   ● Set up your agent
+ Confidence account.                                                  ● Connect tools
+                                                                      ▶ Onboard project
+
+
+ ──────────────────────────────────────────────────────────────────────────────────────────────────
+ Select features to set up:
+
+ ❯ Feature Flags
+   Session Recordings (β)
+   YOLO! Set up everything
+   Skip setup
+
+ ↑↓ navigate   enter confirm                                                                 vX.Y.Z"
+`;
+
+exports[`happy-path flow > navigates Welcome → SystemCheck → Authenticate → InstallPlugins → ConnectTools → SelectGoal → OnboardProject → Done > system-check 1`] = `
 " Confidence by Spotify                                              https://confidence.spotify.com/
 
  System Check                                                         Todo (1/5)
@@ -123,7 +147,7 @@ exports[`happy-path flow > navigates Welcome → SystemCheck → Authenticate �
  All checks passed. Continuing..."
 `;
 
-exports[`happy-path flow > navigates Welcome → SystemCheck → Authenticate → InstallPlugins → ConnectTools → OnboardProject → Done > welcome 1`] = `
+exports[`happy-path flow > navigates Welcome → SystemCheck → Authenticate → InstallPlugins → ConnectTools → SelectGoal → OnboardProject → Done > welcome 1`] = `
 " Confidence by Spotify                                              https://confidence.spotify.com/
 
 

@@ -3,13 +3,14 @@
 exports[`when MCP config has expired auth tokens > allows skipping when auth is expired > mcp-auth-skipped 1`] = `
 " Confidence by Spotify                                              https://confidence.spotify.com/
 
- Set up your project                                                  Todo (4/5)
+ Ready to start?                                                      Todo (4/5)
 
- The wizard will add the Confidence SDK and create your first         ● Check system
- feature flag.                                                        ● Sign in to Confidence
-                                                                      ● Set up your agent
- ◆ The AI agent will be able to read and write files in your          ● Connect tools
- project.                                                             ▶ Onboard project
+ The wizard will:                                                     ● Check system
+ ✔ add the Confidence SDK                                             ● Sign in to Confidence
+ ✔ create your first feature flag                                     ● Set up your agent
+                                                                      ● Connect tools
+ ◆ The AI agent will be able to read and write files in your          ▶ Onboard project
+ project.
 
 
  ──────────────────────────────────────────────────────────────────────────────────────────────────

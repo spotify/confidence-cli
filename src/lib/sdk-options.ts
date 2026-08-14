@@ -13,3 +13,5 @@ export const SDK_OPTIONS: SdkOption[] = [
   { id: 'python', label: 'Python' },
   { id: 'go', label: 'Go' },
 ];
+
+export const BROWSER_PLATFORMS = new Set(['react', 'nextjs', 'javascript', 'typescript']);

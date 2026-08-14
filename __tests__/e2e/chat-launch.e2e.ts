@@ -59,7 +59,11 @@ describe('when the user starts chat after onboarding', () => {
     await session.press('Enter');
     await session.waitForText('Skipped');
 
-    // Onboard — wait for options to render before pressing Enter
+    // SelectGoal
+    await session.waitForText('Which features would you like to set up?');
+    await session.press('Enter');
+
+    // OnboardProject
     await session.waitForText('Start onboarding?');
     await session.waitForText('Skip for now');
     await session.press('Enter');

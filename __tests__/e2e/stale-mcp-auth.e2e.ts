@@ -80,7 +80,11 @@ describe('when MCP config has expired auth tokens', () => {
     await session.press('Enter');
     await session.waitForText('Skipped');
 
-    // Proceeds to OnboardProject
+    // SelectGoal
+    await session.waitForText('Which features would you like to set up?');
+    await session.press('Enter');
+
+    // OnboardProject
     await session.waitForText('Start onboarding?');
     expect(session.snapshot()).toMatchSnapshot('mcp-auth-skipped');
   });

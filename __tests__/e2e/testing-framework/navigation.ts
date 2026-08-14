@@ -61,13 +61,26 @@ export async function navigateToConnectTools(session: TerminalSession): Promise<
 }
 
 /**
- * Navigates from the start through to the OnboardProject screen,
+ * Navigates from the start through to the SelectGoal screen,
  * accepting default tools connection and setting a checkpoint.
  *
  * @param session - An active terminal session at the Welcome screen.
  */
-export async function navigateToOnboarding(session: TerminalSession): Promise<void> {
+export async function navigateToGoalSelection(session: TerminalSession): Promise<void> {
   await navigateToConnectTools(session);
+  session.checkpoint();
+  await session.press('Enter');
+  await session.waitForText('Which features would you like to set up?');
+}
+
+/**
+ * Navigates from the start through to the OnboardProject screen,
+ * selecting "Feature Flags" as the goal and setting a checkpoint.
+ *
+ * @param session - An active terminal session at the Welcome screen.
+ */
+export async function navigateToOnboarding(session: TerminalSession): Promise<void> {
+  await navigateToGoalSelection(session);
   session.checkpoint();
   await session.press('Enter');
   await session.waitForText('Start onboarding?');
@@ -98,14 +111,24 @@ export async function selectIdeAndOnboard(
   await session.pressRepeat('ArrowDown', downPresses);
   await session.press('Enter');
 
-  const matched = await session.waitForText(['Start onboarding?', 'Connect Confidence tools?']);
+  const matched = await session.waitForText([
+    'Start onboarding?',
+    'Connect Confidence tools?',
+    'Which features would you like to set up?',
+  ]);
 
   if (matched === 'Connect Confidence tools?') {
     await session.press('Enter');
     await session.waitForText('Connected successfully');
+    await session.waitForText('Which features would you like to set up?');
   }
 
-  await session.waitForText('Start onboarding?');
+  if (matched !== 'Start onboarding?') {
+    // SelectGoal — pick Feature Flags (default)
+    await session.press('Enter');
+    await session.waitForText('Start onboarding?');
+  }
+
   await session.press('Enter');
   await session.waitForText('onboarding complete');
 }

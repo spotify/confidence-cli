@@ -8,6 +8,7 @@ export {
   navigatePastAuth,
   navigateToPlugins,
   navigateToConnectTools,
+  navigateToGoalSelection,
   navigateToOnboarding,
   selectIdeAndOnboard,
 } from './navigation.js';

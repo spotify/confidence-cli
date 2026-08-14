@@ -1,7 +1,7 @@
 import { spawn } from 'node:child_process';
 import {
-  act,
   renderApp,
+  renderScreen,
   createProjectDir,
   mockNextSpawn,
   ENTER,
@@ -9,6 +9,7 @@ import {
   ESCAPE,
   waitFor,
 } from '../testing-framework/index.js';
+import { OnboardProjectScreen } from '@ui/tui/screens/onboard-project/index.js';
 import { ScreenId } from '@lib/session.js';
 
 vi.mock('node:child_process', async (importOriginal) => {
@@ -32,7 +33,9 @@ describe('Onboarding flow', () => {
 
       await waitFor(() => {
         const frame = sut.lastFrame()!;
-        expect(frame).toContain('Set up your project');
+        expect(frame).toContain('Ready to start?');
+        expect(frame).toContain('The wizard will:');
+        expect(frame).toContain('add the Confidence SDK');
         expect(frame).toContain('Start onboarding?');
         expect(frame).toContain('Start');
         expect(frame).toContain('Skip');
@@ -60,7 +63,7 @@ describe('Onboarding flow', () => {
   });
 
   describe('when onboarding is confirmed', () => {
-    it('shows Feature Flags heading on progress screen', async () => {
+    it('shows progress screen after confirming', async () => {
       using project = createProjectDir();
       mockNextSpawn({ hang: true });
 
@@ -77,7 +80,7 @@ describe('Onboarding flow', () => {
 
       await waitFor(() => {
         expect(sut.lastFrame()).not.toContain('Start onboarding?');
-        expect(sut.lastFrame()).toContain('Feature Flags');
+        expect(sut.lastFrame()).toContain('Setting up your project');
       });
     });
 
@@ -224,94 +227,55 @@ describe('Onboarding flow', () => {
     });
   });
 
-  describe('when competitor is detected', () => {
-    it('shows migration option instead of plain Start if AI plugin is installed', async () => {
-      using project = createProjectDir('react-statsig');
+  describe('selected goal display', () => {
+    it('shows feature flag steps when goal is feature-flags', async () => {
+      using project = createProjectDir();
 
-      using sut = renderApp({
+      using sut = renderScreen(<OnboardProjectScreen />, {
         screen: ScreenId.OnboardProject,
         dir: project.path,
-        installedPlugins: ['claude'],
+        goal: 'feature-flags',
       });
 
       await waitFor(() => {
         const frame = sut.lastFrame()!;
-        expect(frame).toContain('Found Statsig in code. How would you like to proceed?');
-        expect(frame).toContain('Just integrate Confidence');
-        expect(frame).toContain("Integrate and migrate Statsig's flags");
+        expect(frame).toContain('The wizard will:');
+        expect(frame).toContain('add the Confidence SDK');
+        expect(frame).toContain('create your first feature flag');
       });
     });
 
-    it('shows standard options when no AI plugin is installed', async () => {
-      using project = createProjectDir('react-statsig');
+    it('shows session recording steps when goal is session-recordings', async () => {
+      using project = createProjectDir();
 
-      using sut = renderApp({
+      using sut = renderScreen(<OnboardProjectScreen />, {
         screen: ScreenId.OnboardProject,
         dir: project.path,
+        goal: 'session-recordings',
       });
 
       await waitFor(() => {
         const frame = sut.lastFrame()!;
-        expect(frame).toContain('Start');
-        expect(frame).not.toContain('Just integrate Confidence');
-        expect(frame).not.toContain('migrate');
+        expect(frame).toContain('add the Confidence SDK');
+        expect(frame).toContain('set up session recordings');
+        expect(frame).not.toContain('feature flag');
       });
     });
 
-    it('starts onboarding with migration when migration option is selected', async () => {
-      using project = createProjectDir('react-statsig');
-      mockNextSpawn({ hang: true });
+    it('shows combined steps when goal is all', async () => {
+      using project = createProjectDir();
 
-      using sut = renderApp({
+      using sut = renderScreen(<OnboardProjectScreen />, {
         screen: ScreenId.OnboardProject,
         dir: project.path,
-        installedPlugins: ['claude'],
-      });
-
-      await waitFor(() => {
-        expect(sut.lastFrame()).toContain("Integrate and migrate Statsig's flags");
-      });
-
-      await act(() => sut.stdin.write(ARROW_DOWN + ENTER));
-
-      await waitFor(() => {
-        expect(sut.lastFrame()).toContain('Feature Flags');
-      });
-    });
-
-    it('shows migrate-all option and per-competitor options when multiple detected', async () => {
-      using project = createProjectDir('react-posthog-statsig');
-
-      using sut = renderApp({
-        screen: ScreenId.OnboardProject,
-        dir: project.path,
-        installedPlugins: ['claude'],
+        goal: 'all',
       });
 
       await waitFor(() => {
         const frame = sut.lastFrame()!;
-        expect(frame).toContain(
-          'Found PostHog and Statsig in code. How would you like to proceed?',
-        );
-        expect(frame).toContain('Integrate and migrate all existing flags');
-        expect(frame).toContain("Integrate and migrate PostHog's flags");
-        expect(frame).toContain("Integrate and migrate Statsig's flags");
-      });
-    });
-
-    it('does not show migrate-all when only one competitor detected', async () => {
-      using project = createProjectDir('react-statsig');
-
-      using sut = renderApp({
-        screen: ScreenId.OnboardProject,
-        dir: project.path,
-        installedPlugins: ['claude'],
-      });
-
-      await waitFor(() => {
-        const frame = sut.lastFrame()!;
-        expect(frame).toContain("Integrate and migrate Statsig's flags");
-        expect(frame).not.toContain('migrate all');
+        expect(frame).toContain('add the Confidence SDK');
+        expect(frame).toContain('set up feature flags');
+        expect(frame).toContain('set up session recordings');
       });
     });
   });

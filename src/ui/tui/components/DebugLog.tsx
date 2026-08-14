@@ -11,6 +11,7 @@ const SCREEN_LABELS: Record<ScreenId, string> = {
   [ScreenId.InstallPlugins]: 'Install Plugins',
   [ScreenId.Authenticate]: 'Sign In',
   [ScreenId.ConnectTools]: 'Connect Tools',
+  [ScreenId.SelectGoal]: 'Select Goal',
   [ScreenId.OnboardProject]: 'Onboard Project',
   [ScreenId.Done]: 'Done',
 };
