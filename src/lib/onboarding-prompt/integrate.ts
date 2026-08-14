@@ -37,9 +37,10 @@ export function integrateViaSkill(
 const REACT_GOTCHAS = `
 
 **React/Next.js gotchas:**
-- Next.js App Router: use \`ConfidenceProvider\` in the root layout. Server Components use \`getFlag('flag.prop', default, context)\`; Client Components use the \`useFlag('flag.prop', default)\` hook. If using the client provider, the rendering file must be a Client Component — extract into \`providers.tsx\` with \`"use client"\` if needed.
+- Use \`@spotify-confidence/openfeature-server-provider-local\` for React/Next.js — the client SDKs (\`@spotify-confidence/react\`, \`@spotify-confidence/sdk\`, \`@openfeature/react-sdk\`) are being phased out.
 - Never call \`useFlag\` in a Server Component — use \`getFlag\` or wrap in a Client Component.
-- Place the provider above any \`<Suspense>\` boundary.`;
+- Place the provider above any \`<Suspense>\` boundary.
+- If using the client provider, the rendering file must be a Client Component — extract into \`providers.tsx\` with \`"use client"\` if needed.`;
 
 const FLAG_GUIDANCE_EMPTY =
   '   - Wire each flag into the sample app so running it demonstrates the flag in action (e.g. the app outputs different text, enables a feature, or changes its behavior based on the flag value).\n   - The sample app should be a self-contained working example of Confidence flag evaluation — a user running it should immediately see that flags control behavior.';
