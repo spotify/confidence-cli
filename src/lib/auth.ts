@@ -17,6 +17,7 @@ export const AUTH_CALLBACK_PORT = 8084;
 
 const TOKEN_FILE = join(tmpdir(), 'confidence_token');
 const REFRESH_TOKEN_FILE = join(tmpdir(), 'confidence_refresh_token');
+const ORGANIZATION_FILE = join(tmpdir(), 'confidence_organization');
 
 function base64url(buf: Buffer): string {
   return buf.toString('base64url');
@@ -50,11 +51,23 @@ function extractRegion(token: string): 'EU' | 'US' {
   return region === 'US' ? 'US' : 'EU';
 }
 
+function extractOrganization(token: string): string | undefined {
+  const payload = decodeJwtPayload(token);
+  const organization =
+    (payload.org_id as string | undefined) ??
+    (payload['https://confidence.dev/org_login_id'] as string | undefined);
+  return organization ?? undefined;
+}
+
 function persistTokens(accessToken: string, refreshToken?: string): void {
   const config = { encoding: 'utf-8', mode: 0o600 } as const;
   writeFileSync(TOKEN_FILE, accessToken, config);
   if (refreshToken) {
     writeFileSync(REFRESH_TOKEN_FILE, refreshToken, config);
+  }
+  const organization = extractOrganization(accessToken);
+  if (organization) {
+    writeFileSync(ORGANIZATION_FILE, organization, config);
   }
 }
 
@@ -73,6 +86,17 @@ function loadPersistedRefreshToken(): string | null {
     return readFileSync(REFRESH_TOKEN_FILE, 'utf-8').trim();
   } catch {
     return null;
+  }
+}
+
+function resolveOrganization(): string | undefined {
+  const override = env('CONFIDENCE_ORGANIZATION');
+  if (override) return override;
+  if (!existsSync(ORGANIZATION_FILE)) return undefined;
+  try {
+    return readFileSync(ORGANIZATION_FILE, 'utf-8').trim() || undefined;
+  } catch {
+    return undefined;
   }
 }
 
@@ -143,6 +167,7 @@ export async function refreshAccessToken(): Promise<AuthResult> {
 
 export function authenticate(mode: 'signup' | 'login', signal?: AbortSignal): Promise<AuthResult> {
   const clientId = mode === 'signup' ? AUTH_CLIENT_ID_SIGNUP : AUTH_CLIENT_ID_LOGIN;
+  const organization = mode === 'login' ? resolveOrganization() : undefined;
   const { verifier, challenge } = generatePKCE();
   const redirectUri = `http://localhost:${AUTH_CALLBACK_PORT}/callback`;
 
@@ -151,6 +176,8 @@ export function authenticate(mode: 'signup' | 'login', signal?: AbortSignal): Pr
       reject(new Error('Authentication cancelled'));
       return;
     }
+
+    let retriedWithoutOrganization = false;
 
     const server = createServer(async (req: IncomingMessage, res: ServerResponse) => {
       const url = new URL(req.url ?? '/', `http://localhost:${AUTH_CALLBACK_PORT}`);
@@ -165,6 +192,12 @@ export function authenticate(mode: 'signup' | 'login', signal?: AbortSignal): Pr
       const error = url.searchParams.get('error');
 
       if (error || !code) {
+        if (organization && !retriedWithoutOrganization) {
+          retriedWithoutOrganization = true;
+          res.writeHead(302, { Location: buildAuthUrl({ clientId, challenge, redirectUri }) });
+          res.end();
+          return;
+        }
         res.writeHead(200, { 'Content-Type': 'text/html' });
         res.end(errorPage);
         server.close();
@@ -194,7 +227,7 @@ export function authenticate(mode: 'signup' | 'login', signal?: AbortSignal): Pr
     });
 
     server.listen(AUTH_CALLBACK_PORT, () => {
-      const authUrl = buildAuthUrl(clientId, challenge, redirectUri);
+      const authUrl = buildAuthUrl({ clientId, challenge, redirectUri, organization });
       openBrowser(authUrl);
     });
 
@@ -217,16 +250,24 @@ export function authenticate(mode: 'signup' | 'login', signal?: AbortSignal): Pr
   });
 }
 
-function buildAuthUrl(clientId: string, challenge: string, redirectUri: string): string {
+function buildAuthUrl(opts: {
+  clientId: string;
+  challenge: string;
+  redirectUri: string;
+  organization?: string;
+}): string {
   const params = new URLSearchParams({
     response_type: 'code',
-    client_id: clientId,
-    redirect_uri: redirectUri,
+    client_id: opts.clientId,
+    redirect_uri: opts.redirectUri,
     scope: AUTH_SCOPE,
     audience: AUTH_AUDIENCE,
-    code_challenge: challenge,
+    code_challenge: opts.challenge,
     code_challenge_method: 'S256',
   });
+  if (opts.organization) {
+    params.set('organization', opts.organization);
+  }
   return `${AUTH_BASE_URL}/authorize?${params.toString()}`;
 }
 

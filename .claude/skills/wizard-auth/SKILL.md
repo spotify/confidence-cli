@@ -8,7 +8,7 @@ Handles OAuth2 PKCE authentication with Confidence via Auth0.
 2. **Prompt user** — If valid token exists, offer to reuse or re-authenticate. If no token, ask whether to create a new account or sign in.
 3. **Browser-based OAuth2 PKCE** — Start local HTTP server on port 8084, open browser to Auth0 authorize endpoint, wait for callback with authorization code.
 4. **Token exchange** — Exchange authorization code + PKCE verifier for access token and refresh token.
-5. **Persist tokens** — Write access token to `$TMPDIR/confidence_token`, refresh token to `$TMPDIR/confidence_refresh_token`.
+5. **Persist tokens** — Write access token to `$TMPDIR/confidence_token`, refresh token to `$TMPDIR/confidence_refresh_token`, and the Auth0 organization (`org_id` claim, falling back to `https://confidence.dev/org_login_id`) to `$TMPDIR/confidence_organization`.
 6. **Extract region** — Decode JWT payload, read `https://confidence.dev/region` claim (EU or US) to determine regional API endpoints.
 
 ## Auth0 Configuration
@@ -44,7 +44,12 @@ The auth flow is implemented in `src/lib/auth.ts` using Node.js built-ins:
 
 ## Token Files
 
-| File                               | Content                          |
-| ---------------------------------- | -------------------------------- |
-| `$TMPDIR/confidence_token`         | JWT access token                 |
-| `$TMPDIR/confidence_refresh_token` | Refresh token for silent re-auth |
+| File                               | Content                                                       |
+| ---------------------------------- | ------------------------------------------------------------- |
+| `$TMPDIR/confidence_token`         | JWT access token                                              |
+| `$TMPDIR/confidence_refresh_token` | Refresh token for silent re-auth                              |
+| `$TMPDIR/confidence_organization`  | Auth0 organization for skipping the workspace prompt on login |
+
+## Remembered Workspace
+
+On interactive **login** (never signup), the remembered organization is passed as the `organization` parameter to the Auth0 authorize endpoint so the workspace prompt is skipped. The `CONFIDENCE_ORGANIZATION` env var overrides the remembered value. If Auth0 returns an error on the callback while an organization was passed, the flow retries once without the `organization` parameter instead of failing.

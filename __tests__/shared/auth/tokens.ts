@@ -7,6 +7,7 @@ import type { TokenType } from './types.js';
 
 const TOKEN_PATH = join(tmpdir(), 'confidence_token');
 const REFRESH_TOKEN_PATH = join(tmpdir(), 'confidence_refresh_token');
+const ORGANIZATION_PATH = join(tmpdir(), 'confidence_organization');
 
 const TOKEN_CONFIG = { encoding: 'utf-8', mode: 0o600 } as const;
 const DEFAULT_EMAIL = 'existing@example.com';
@@ -56,6 +57,12 @@ function clearAuthTokens(): void {
 
   try {
     unlinkSync(REFRESH_TOKEN_PATH);
+  } catch {
+    // File may not exist, ignore.
+  }
+
+  try {
+    unlinkSync(ORGANIZATION_PATH);
   } catch {
     // File may not exist, ignore.
   }
