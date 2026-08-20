@@ -1,4 +1,3 @@
-import { useState } from 'react';
 import { ScreenId } from '@lib/session.js';
 import { useNavigation } from '../../hooks/useNavigation.js';
 import { useLogger } from '../../hooks/useLog.js';
@@ -21,8 +20,6 @@ export function useGoalSelection(): GoalSelection {
   const navigate = useNavigation(ScreenId.SelectGoal);
   const log = useLogger(ScreenId.SelectGoal);
   const initial = useInitialGoalSelection();
-
-  const [phase] = useState<Phase>(initial.phase);
 
   useAutoAdvance({
     screen: ScreenId.SelectGoal,
@@ -50,7 +47,7 @@ export function useGoalSelection(): GoalSelection {
   }
 
   return {
-    phase,
+    phase: initial.phase,
     recordingAvailable: initial.supportsRecordings,
     selectGoal,
   };
