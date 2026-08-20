@@ -87,6 +87,8 @@ const GOAL_LABELS: Record<OnboardingGoal, string> = {
 
 function goalPreamble(goals: OnboardingGoal[]): string {
   const labels = goals.map((g) => GOAL_LABELS[g]);
+
+  if (labels.length === 0) return '';
   if (labels.length <= 2) return labels.join(' and ');
   return labels.slice(0, -1).join(', ') + ', and ' + labels.at(-1);
 }
