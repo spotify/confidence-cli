@@ -1,11 +1,12 @@
-import { getIntegration } from '@integrations/index.js';
 import { useSession } from '../../store.js';
+import { useChosenIdeName } from './useChosenIdeName.js';
+import { useSkippedOnboarding } from './useSkippedOnboarding.js';
 
 export function useScreenDescription() {
-  const { codeChanges, ide, detectedProviders, installedPlugins } = useSession();
+  const { detectedProviders, installedPlugins } = useSession();
 
-  const skipped = codeChanges.length === 0;
-  const ideName = ide ? getIntegration(ide).name : null;
+  const skipped = useSkippedOnboarding();
+  const ideName = useChosenIdeName();
   const hasPlugins = installedPlugins.length > 0;
   const hasProviders = detectedProviders.length > 0;
 
