@@ -1,5 +1,5 @@
 import type { LogMessage } from '../../lib/log-messages.js';
 
-export function goalChosen(goal: string): LogMessage {
-  return { input: 'Select goal', output: goal };
+export function goalsChosen(goals: string): LogMessage {
+  return { input: 'Select goals', output: goals };
 }

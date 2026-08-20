@@ -1,7 +1,7 @@
 import type { TelemetryEvent } from '@lib/telemetry.js';
 
-export function goalSelected(goal: string): TelemetryEvent {
-  return { step: 'select-goal.select', action: goal };
+export function goalsSelected(goals: string[]): TelemetryEvent {
+  return { step: 'select-goal.select', action: goals.join(',') };
 }
 
 export function goalSkipped(): TelemetryEvent {

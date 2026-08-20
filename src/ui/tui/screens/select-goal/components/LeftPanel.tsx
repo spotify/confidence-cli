@@ -11,27 +11,27 @@ export function LeftPanel({ goalSelection }: GoalSelectionProps) {
     <Box flexDirection="column">
       <Box marginBottom={1}>
         <Text color={Colors.primary} bold>
-          {goalSelection.phase === 'select-goal'
-            ? 'Which features would you like to set up?'
-            : 'Set up your project'}
+          Select the features you'd like to set up
         </Text>
       </Box>
 
-      {goalSelection.phase === 'select-goal' && (
-        <Box flexDirection="column" marginBottom={1}>
-          <Text color={Colors.muted}>
-            Choose the Confidence features to integrate with your project.
+      <Box flexDirection="column" marginBottom={1}>
+        <Text color={Colors.muted}>Toggle Confidence features to integrate with your project.</Text>
+        <Box marginTop={1}>
+          <Text color={Colors.warning}>
+            {Icons.star} Event Tracking works best with a managed warehouse or an existing warehouse
+            setup.
           </Text>
-          {goalSelection.recordingAvailable && (
-            <Box marginTop={1}>
-              <Text color={Colors.warning}>
-                {Icons.diamond} Session Recordings (β) require the feature to be enabled on your
-                Confidence account.
-              </Text>
-            </Box>
-          )}
         </Box>
-      )}
+        {goalSelection.recordingAvailable && (
+          <Box marginTop={1}>
+            <Text color={Colors.warning}>
+              {Icons.star} Session Recordings (β) require the feature to be enabled on your
+              Confidence account.
+            </Text>
+          </Box>
+        )}
+      </Box>
     </Box>
   );
 }

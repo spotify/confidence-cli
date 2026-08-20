@@ -81,7 +81,8 @@ describe('when MCP config has expired auth tokens', () => {
     await session.waitForText('Skipped');
 
     // SelectGoal
-    await session.waitForText('Which features would you like to set up?');
+    await session.waitForText("Select the features you'd like to set up");
+    await session.press('Space');
     await session.press('Enter');
 
     // OnboardProject

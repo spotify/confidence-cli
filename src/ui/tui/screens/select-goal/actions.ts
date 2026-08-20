@@ -1,21 +1,20 @@
 import type { OnboardingGoal } from '@lib/session.js';
 import type { PromptOption } from '../../components/PromptPanel.js';
 
-export type GoalValue = OnboardingGoal | 'skip';
-
-const GOAL_OPTIONS: PromptOption<GoalValue>[] = [
+const BASE_GOALS: PromptOption<OnboardingGoal>[] = [
   { label: 'Feature Flags', value: 'feature-flags' },
-  { label: 'Session Recordings (β)', value: 'session-recordings' },
-  { label: 'YOLO! Set up everything', value: 'all' },
-  { label: 'Skip setup', value: 'skip' },
+  { label: 'Event Tracking', value: 'event-tracking' },
 ];
 
-const FLAGS_ONLY_OPTIONS: PromptOption<GoalValue>[] = GOAL_OPTIONS.filter((o) =>
-  (['feature-flags', 'skip'] as GoalValue[]).includes(o.value),
-);
+const RECORDINGS_GOAL: PromptOption<OnboardingGoal> = {
+  label: 'Session Recordings (β)',
+  value: 'session-recordings',
+};
 
-export function goalOptionsFor(recordingAvailable: boolean): PromptOption<GoalValue>[] {
-  return recordingAvailable ? GOAL_OPTIONS : FLAGS_ONLY_OPTIONS;
+const GOAL_OPTIONS = [...BASE_GOALS, RECORDINGS_GOAL];
+
+export function goalOptionsFor(recordingAvailable: boolean): PromptOption<OnboardingGoal>[] {
+  return recordingAvailable ? GOAL_OPTIONS : BASE_GOALS;
 }
 
 export function goalLabel(goal: OnboardingGoal): string {

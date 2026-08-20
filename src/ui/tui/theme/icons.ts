@@ -10,6 +10,7 @@ export const Icons = {
   square: '■',
   squareSmall: '▪',
   triangleRight: '▶',
+  star: '✱',
   dash: '─',
   plus: '+',
   verticalLine: '│',

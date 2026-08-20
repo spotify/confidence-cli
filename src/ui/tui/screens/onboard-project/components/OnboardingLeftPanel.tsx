@@ -16,7 +16,7 @@ type OnboardingLeftPanelProps = {
   phase: OnboardingPhase;
   statusLines: StatusLine[];
   error: string | null;
-  goal: OnboardingGoal;
+  goals: OnboardingGoal[];
   showTips: boolean;
   tip: Tip;
 };
@@ -25,7 +25,7 @@ export function OnboardingLeftPanel({
   phase,
   statusLines,
   error,
-  goal,
+  goals,
   showTips,
   tip,
 }: OnboardingLeftPanelProps) {
@@ -41,7 +41,7 @@ export function OnboardingLeftPanel({
         <>
           <Box flexDirection="column" marginBottom={1}>
             <Text color={Colors.muted}>The wizard will:</Text>
-            {onboardingSteps(goal).map((step) => (
+            {onboardingSteps(goals).map((step) => (
               <Text key={step} color={Colors.muted}>
                 {Icons.check} {step}
               </Text>
@@ -90,9 +90,9 @@ export function OnboardingLeftPanel({
 const GOAL_STEPS: Record<OnboardingGoal, string[]> = {
   'feature-flags': ['create your first feature flag'],
   'session-recordings': ['set up session recordings to capture user sessions'],
-  all: ['set up feature flags', 'set up session recordings to capture user sessions'],
+  'event-tracking': ['instrument event tracking to measure user behavior'],
 };
 
-function onboardingSteps(goal: OnboardingGoal): string[] {
-  return ['add the Confidence SDK', ...GOAL_STEPS[goal]];
+function onboardingSteps(goals: OnboardingGoal[]): string[] {
+  return ['add the Confidence SDK', ...goals.flatMap((g) => GOAL_STEPS[g])];
 }

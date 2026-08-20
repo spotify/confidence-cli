@@ -3,22 +3,23 @@
 exports[`SelectGoal screen > shows goal options for a browser framework > select-goal 1`] = `
 " Confidence by Spotify                                              https://confidence.spotify.com/
 
- Which features would you like to set up?                             Todo (4/5)
+ Select the features you'd like to set up                             Todo (4/5)
 
- Choose the Confidence features to integrate with your project.       ● Check system
+ Toggle Confidence features to integrate with your project.           ● Check system
                                                                       ● Sign in to Confidence
- ◆ Session Recordings (β) require the feature to be enabled on your   ● Set up your agent
- Confidence account.                                                  ● Connect tools
+ ✱ Event Tracking works best with a managed warehouse or an           ● Set up your agent
+ existing warehouse setup.                                            ● Connect tools
                                                                       ▶ Onboard project
+ ✱ Session Recordings (β) require the feature to be enabled on your
+ Confidence account.
 
 
  ──────────────────────────────────────────────────────────────────────────────────────────────────
- Select features to set up:
+ Toggle features to set up (select none to skip):
 
  ❯ Feature Flags
+   Event Tracking
    Session Recordings (β)
-   YOLO! Set up everything
-   Skip setup
 
- ↑↓ navigate   enter confirm                                                                 vX.Y.Z"
+ ↑↓ navigate   space toggle   enter confirm                                                  vX.Y.Z"
 `;
