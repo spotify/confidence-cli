@@ -234,7 +234,7 @@ describe('Onboarding flow', () => {
       using sut = renderScreen(<OnboardProjectScreen />, {
         screen: ScreenId.OnboardProject,
         dir: project.path,
-        goal: 'feature-flags',
+        goals: ['feature-flags'],
       });
 
       await waitFor(() => {
@@ -251,7 +251,7 @@ describe('Onboarding flow', () => {
       using sut = renderScreen(<OnboardProjectScreen />, {
         screen: ScreenId.OnboardProject,
         dir: project.path,
-        goal: 'session-recordings',
+        goals: ['session-recordings'],
       });
 
       await waitFor(() => {
@@ -262,20 +262,21 @@ describe('Onboarding flow', () => {
       });
     });
 
-    it('shows combined steps when goal is all', async () => {
+    it('shows combined steps when multiple goals are selected', async () => {
       using project = createProjectDir();
 
       using sut = renderScreen(<OnboardProjectScreen />, {
         screen: ScreenId.OnboardProject,
         dir: project.path,
-        goal: 'all',
+        goals: ['feature-flags', 'session-recordings', 'event-tracking'],
       });
 
       await waitFor(() => {
         const frame = sut.lastFrame()!;
         expect(frame).toContain('add the Confidence SDK');
-        expect(frame).toContain('set up feature flags');
+        expect(frame).toContain('create your first feature flag');
         expect(frame).toContain('set up session recordings');
+        expect(frame).toContain('instrument event tracking');
       });
     });
   });

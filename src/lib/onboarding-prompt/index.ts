@@ -13,7 +13,7 @@ type PromptOptions = {
   projectDir: string;
   ide?: ChosenIde;
   isEmptyProject?: boolean;
-  goal?: OnboardingGoal;
+  goals?: OnboardingGoal[];
   hasPlugins?: boolean;
   hasProviders?: boolean;
 };
@@ -23,20 +23,20 @@ export function buildOnboardingPrompt({
   projectDir,
   ide = 'claude',
   isEmptyProject = false,
-  goal = 'feature-flags',
+  goals = ['feature-flags'],
   hasPlugins = false,
   hasProviders = false,
 }: PromptOptions): string {
   const steps = new StepCounter(isEmptyProject ? 2 : 1);
   const tools = buildToolVars(ide);
 
-  const withFlags = ['feature-flags', 'all'].includes(goal);
-  const withRecordings = ['session-recordings', 'all'].includes(goal);
-  const withEventTracking = ['event-tracking', 'all'].includes(goal);
+  const withFlags = goals.includes('feature-flags');
+  const withRecordings = goals.includes('session-recordings');
+  const withEventTracking = goals.includes('event-tracking');
   const viaSkill = withFlags && hasPlugins;
 
   const sections = [
-    preamble(framework, projectDir, isEmptyProject, goal),
+    preamble(framework, projectDir, isEmptyProject, goals),
     preflight(tools),
     addIf(isEmptyProject, () => scaffold(framework, steps.next())),
 
@@ -58,7 +58,7 @@ export function buildOnboardingPrompt({
     generateReport({
       step: steps.next(),
       isEmptyProject,
-      goal,
+      goals,
       hasPlugins,
       hasProviders,
     }),
@@ -79,21 +79,26 @@ class StepCounter {
   }
 }
 
-const GOAL_PREAMBLE: Record<OnboardingGoal, string> = {
+const GOAL_LABELS: Record<OnboardingGoal, string> = {
   'feature-flags': 'the Confidence SDK',
   'session-recordings': 'Confidence Session Recording',
   'event-tracking': 'Confidence Event Tracking',
-  all: 'the Confidence SDK, Session Recording, and Event Tracking',
 };
+
+function goalPreamble(goals: OnboardingGoal[]): string {
+  const labels = goals.map((g) => GOAL_LABELS[g]);
+  if (labels.length <= 2) return labels.join(' and ');
+  return labels.slice(0, -1).join(', ') + ', and ' + labels.at(-1);
+}
 
 function preamble(
   framework: string,
   projectDir: string,
   isEmptyProject: boolean,
-  goal: OnboardingGoal,
+  goals: OnboardingGoal[],
 ): string {
   const action = isEmptyProject ? 'Generate a sample app and integrate' : 'Integrate';
   return `\
-${action} ${GOAL_PREAMBLE[goal]} into a ${framework} project at ${projectDir}.
+${action} ${goalPreamble(goals)} into a ${framework} project at ${projectDir}.
 Follow these steps in order, printing a short status line before each one.`;
 }

@@ -4,7 +4,7 @@ import { buildWizardTasks } from '../../lib/wizard-tasks.js';
 import { useTipRotation } from '../../hooks/useTipRotation.js';
 import { useTerminalSize } from '../../hooks/useTerminalSize.js';
 import { tipsFitInViewport } from '../../lib/layout-budget.js';
-import { ScreenId, type OnboardingGoal } from '@lib/session.js';
+import { ScreenId } from '@lib/session.js';
 import { useAutoAdvance } from '../../hooks/useAutoAdvance.js';
 import { useLogger } from '../../hooks/useLog.js';
 import { useNavigation } from '../../hooks/useNavigation.js';
@@ -19,8 +19,6 @@ import {
   OnboardingBottomPrompt,
   MAX_VISIBLE_STATUS,
 } from './components/index.js';
-
-const DEFAULT_GOAL: OnboardingGoal = 'feature-flags';
 
 export function OnboardProjectScreen() {
   const session = useSession();
@@ -82,7 +80,7 @@ export function OnboardProjectScreen() {
           phase={onboarding.phase}
           statusLines={onboarding.statusLines}
           error={onboarding.error}
-          goal={session.onboardingGoal ?? DEFAULT_GOAL}
+          goals={session.onboardingGoals}
           showTips={showTips}
           tip={tip}
         />

@@ -21,17 +21,17 @@ function buildSkillsNote(hasProviders: boolean): string {
 export function generateReport({
   step,
   isEmptyProject,
-  goal = 'feature-flags',
+  goals = ['feature-flags'],
   hasPlugins = false,
   hasProviders = false,
 }: {
   step: number;
   isEmptyProject: boolean;
-  goal?: OnboardingGoal;
+  goals?: OnboardingGoal[];
   hasPlugins?: boolean;
   hasProviders?: boolean;
 }): string {
-  const template = buildReportTemplate(goal);
+  const template = buildReportTemplate(goals);
 
   return loadStep('generate-report.md', {
     STEP: step,

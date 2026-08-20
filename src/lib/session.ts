@@ -3,7 +3,7 @@ import type { DetectedProvider } from '@providers/types.js';
 
 export type ChosenIde = 'claude' | 'cursor' | 'codex';
 
-export type OnboardingGoal = 'feature-flags' | 'session-recordings' | 'event-tracking' | 'all';
+export type OnboardingGoal = 'feature-flags' | 'session-recordings' | 'event-tracking';
 
 export type FrameworkSource = 'detected' | 'selected';
 
@@ -30,7 +30,7 @@ export type WizardSession = {
   connectedMcps: string[];
   isEmptyProject: boolean;
   detectedProviders: DetectedProvider[];
-  onboardingGoal: OnboardingGoal | null;
+  onboardingGoals: OnboardingGoal[];
   onboardingStatus: string;
   reportFile: string | null;
   codeChanges: string[];
@@ -86,7 +86,7 @@ export function createSession(opts?: {
     connectedMcps: [],
     isEmptyProject: false,
     detectedProviders: [],
-    onboardingGoal: null,
+    onboardingGoals: [],
     onboardingStatus: '',
     reportFile: null,
     codeChanges: [],

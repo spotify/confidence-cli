@@ -4,6 +4,7 @@ import {
   createProjectDir,
   ENTER,
   ARROW_DOWN,
+  SPACE,
   waitFor,
 } from '../testing-framework/index.js';
 import { ScreenId } from '@lib/session.js';
@@ -21,12 +22,12 @@ describe('SelectGoalScreen', () => {
 
       await waitFor(() => {
         const frame = sut.lastFrame()!;
-        expect(frame).toContain('Which features would you like to set up?');
+        expect(frame).toContain('Select the features');
         expect(frame).toContain('Feature Flags');
         expect(frame).toContain('Session Recording');
         expect(frame).toContain('Event Tracking');
-        expect(frame).toContain('YOLO');
-        expect(frame).toContain('Skip setup');
+        expect(frame).toContain('space');
+        expect(frame).toContain('toggle');
       });
     });
 
@@ -72,7 +73,6 @@ describe('SelectGoalScreen', () => {
         const frame = sut.lastFrame()!;
         expect(frame).toContain('Feature Flags');
         expect(frame).toContain('Event Tracking');
-        expect(frame).toContain('Skip setup');
         expect(frame).not.toContain('Session Recording');
       });
     });
@@ -90,6 +90,7 @@ describe('SelectGoalScreen', () => {
         expect(sut.lastFrame()).toContain('Feature Flags');
       });
 
+      await act(() => sut.stdin.write(SPACE));
       await act(() => sut.stdin.write(ENTER));
 
       await waitFor(() => {
@@ -98,7 +99,7 @@ describe('SelectGoalScreen', () => {
       });
     });
 
-    it('advances to Done when skip is selected', async () => {
+    it('advances to Done when submitting with nothing selected', async () => {
       using project = createProjectDir();
 
       using sut = renderApp({
@@ -108,11 +109,10 @@ describe('SelectGoalScreen', () => {
       });
 
       await waitFor(() => {
-        expect(sut.lastFrame()).toContain('Skip setup');
+        expect(sut.lastFrame()).toContain('Feature Flags');
       });
 
-      // Skip is the 5th option for browser projects (flags, events, recordings, yolo, skip)
-      await act(() => sut.stdin.write(ARROW_DOWN.repeat(4) + ENTER));
+      await act(() => sut.stdin.write(ENTER));
 
       await waitFor(() => {
         expect(sut.lastFrame()).toContain('Onboarding skipped');
@@ -132,8 +132,8 @@ describe('SelectGoalScreen', () => {
         expect(sut.lastFrame()).toContain('Event Tracking');
       });
 
-      // Event Tracking is the 2nd option for browser projects
-      await act(() => sut.stdin.write(ARROW_DOWN + ENTER));
+      await act(() => sut.stdin.write(ARROW_DOWN + SPACE));
+      await act(() => sut.stdin.write(ENTER));
 
       await waitFor(() => {
         expect(sut.lastFrame()).toContain('Ready to start?');

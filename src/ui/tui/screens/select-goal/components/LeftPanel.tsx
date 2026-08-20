@@ -12,7 +12,7 @@ export function LeftPanel({ goalSelection }: GoalSelectionProps) {
       <Box marginBottom={1}>
         <Text color={Colors.primary} bold>
           {goalSelection.phase === 'select-goal'
-            ? 'Which features would you like to set up?'
+            ? "Select the features you'd like to set up"
             : 'Set up your project'}
         </Text>
       </Box>
@@ -20,7 +20,7 @@ export function LeftPanel({ goalSelection }: GoalSelectionProps) {
       {goalSelection.phase === 'select-goal' && (
         <Box flexDirection="column" marginBottom={1}>
           <Text color={Colors.muted}>
-            Choose the Confidence features to integrate with your project.
+            Toggle Confidence features to integrate with your project.
           </Text>
           <Box marginTop={1}>
             <Text color={Colors.warning}>

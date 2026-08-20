@@ -99,9 +99,9 @@ export const store = {
       detectedProviders: providers,
     }),
 
-  setOnboardingGoal: (goal: OnboardingGoal): void =>
+  setOnboardingGoals: (goals: OnboardingGoal[]): void =>
     updateSession({
-      onboardingGoal: goal,
+      onboardingGoals: goals,
     }),
 
   setOnboardingStatus: (status: string): void =>

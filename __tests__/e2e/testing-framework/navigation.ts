@@ -70,7 +70,7 @@ export async function navigateToGoalSelection(session: TerminalSession): Promise
   await navigateToConnectTools(session);
   session.checkpoint();
   await session.press('Enter');
-  await session.waitForText('Which features would you like to set up?');
+  await session.waitForText("Select the features you'd like to set up");
 }
 
 /**
@@ -82,6 +82,7 @@ export async function navigateToGoalSelection(session: TerminalSession): Promise
 export async function navigateToOnboarding(session: TerminalSession): Promise<void> {
   await navigateToGoalSelection(session);
   session.checkpoint();
+  await session.press('Space');
   await session.press('Enter');
   await session.waitForText('Start onboarding?');
 }
@@ -114,17 +115,18 @@ export async function selectIdeAndOnboard(
   const matched = await session.waitForText([
     'Start onboarding?',
     'Connect Confidence tools?',
-    'Which features would you like to set up?',
+    "Select the features you'd like to set up",
   ]);
 
   if (matched === 'Connect Confidence tools?') {
     await session.press('Enter');
     await session.waitForText('Connected successfully');
-    await session.waitForText('Which features would you like to set up?');
+    await session.waitForText("Select the features you'd like to set up");
   }
 
   if (matched !== 'Start onboarding?') {
-    // SelectGoal — pick Feature Flags (default)
+    // SelectGoal — toggle Feature Flags and submit
+    await session.press('Space');
     await session.press('Enter');
     await session.waitForText('Start onboarding?');
   }

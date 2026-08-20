@@ -13,8 +13,8 @@ describe('SelectGoal screen', () => {
     await session.waitForText('Feature Flags');
     await session.waitForText('Session Recordings');
     await session.waitForText('Event Tracking');
-    await session.waitForText('YOLO');
-    await session.waitForText('Skip setup');
+    await session.waitForText('space');
+    await session.waitForText('toggle');
     expect(session.snapshot()).toMatchSnapshot('select-goal');
   });
 
@@ -23,6 +23,7 @@ describe('SelectGoal screen', () => {
 
     await navigateToGoalSelection(session);
     session.checkpoint();
+    await session.press('Space');
     await session.press('Enter');
 
     await session.waitForText('Start onboarding?');
@@ -38,10 +39,31 @@ describe('SelectGoal screen', () => {
 
     // Session Recordings — 3rd option
     await session.pressRepeat('ArrowDown', 2);
+    await session.press('Space');
     await session.press('Enter');
 
     await session.waitForText('Start onboarding?');
     expect(session.snapshot()).toContain('add the Confidence SDK');
+    expect(session.snapshot()).toContain('set up session recordings');
+  });
+
+  it('shows combined steps when multiple goals are selected', async () => {
+    using session = createSession();
+
+    await navigateToGoalSelection(session);
+    session.checkpoint();
+
+    // Toggle Feature Flags (1st), Event Tracking (2nd), Session Recordings (3rd)
+    await session.press('Space');
+    await session.press('ArrowDown');
+    await session.press('Space');
+    await session.pressRepeat('ArrowDown', 1);
+    await session.press('Space');
+    await session.press('Enter');
+
+    await session.waitForText('Start onboarding?');
+    expect(session.snapshot()).toContain('create your first feature flag');
+    expect(session.snapshot()).toContain('instrument event tracking');
     expect(session.snapshot()).toContain('set up session recordings');
   });
 
@@ -53,6 +75,7 @@ describe('SelectGoal screen', () => {
 
     // Event Tracking — 2nd option
     await session.press('ArrowDown');
+    await session.press('Space');
     await session.press('Enter');
 
     await session.waitForText('Start onboarding?');
@@ -60,29 +83,10 @@ describe('SelectGoal screen', () => {
     expect(session.snapshot()).toContain('instrument event tracking');
   });
 
-  it('shows combined steps after selecting YOLO', async () => {
+  it('advances to Done when submitting with nothing selected', async () => {
     using session = createSession();
 
     await navigateToGoalSelection(session);
-    session.checkpoint();
-
-    // YOLO — 4th option
-    await session.pressRepeat('ArrowDown', 3);
-    await session.press('Enter');
-
-    await session.waitForText('Start onboarding?');
-    expect(session.snapshot()).toContain('set up feature flags');
-    expect(session.snapshot()).toContain('set up session recordings');
-    expect(session.snapshot()).toContain('instrument event tracking');
-  });
-
-  it('advances to Done when skip is selected', async () => {
-    using session = createSession();
-
-    await navigateToGoalSelection(session);
-
-    // Skip setup — 5th option
-    await session.pressRepeat('ArrowDown', 4);
     await session.press('Enter');
 
     await session.waitForText('Onboarding skipped');
@@ -98,6 +102,5 @@ describe('SelectGoal screen', () => {
     // Non-browser project now shows goal selection (without Session Recordings)
     await session.waitForText('Feature Flags');
     await session.waitForText('Event Tracking');
-    await session.waitForText('Skip setup');
   });
 });

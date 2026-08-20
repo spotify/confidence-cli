@@ -25,7 +25,7 @@ type RenderOptions = StoreOptions & {
 
   framework?: string;
 
-  goal?: OnboardingGoal;
+  goals?: OnboardingGoal[];
 };
 
 export function renderScreen(element: ReactElement, opts?: RenderOptions) {
@@ -61,5 +61,5 @@ function setupStore(opts: RenderOptions = {}): void {
   if (opts.plugins) store.setInstalledPlugins(opts.plugins);
   if (opts.framework) store.setFramework(opts.framework);
   if (opts.authState) store.setAuthState(opts.authState);
-  if (opts.goal) store.setOnboardingGoal(opts.goal);
+  if (opts.goals) store.setOnboardingGoals(opts.goals);
 }
