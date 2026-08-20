@@ -1,5 +1,20 @@
 # Changelog
 
+## [1.2.0](https://github.com/spotify/confidence-cli/compare/quickstart-v1.1.0...quickstart-v1.2.0) (2026-08-20)
+
+
+### Features
+
+* **auth:** remember last workspace and skip Auth0 workspace prompt on login ([#34](https://github.com/spotify/confidence-cli/issues/34)) ([2cf846f](https://github.com/spotify/confidence-cli/commit/2cf846fa88b517f1d3f1cbc352d6aed855f1c13a))
+* introduce session recordings setup ([#28](https://github.com/spotify/confidence-cli/issues/28)) ([666ad47](https://github.com/spotify/confidence-cli/commit/666ad47e6362c23dfc1c09fbf6ede98e9f80a948))
+* offer flag migration after initial setup ([#35](https://github.com/spotify/confidence-cli/issues/35)) ([7b63700](https://github.com/spotify/confidence-cli/commit/7b63700f264b066fc73e26679e2e5d38cf69fe60))
+
+
+### Bug Fixes
+
+* make reporting lines more concise ([#36](https://github.com/spotify/confidence-cli/issues/36)) ([0eff6d4](https://github.com/spotify/confidence-cli/commit/0eff6d47a7ae3118d8e8ee3fae1cf113a6652e22))
+* update React gotchas with phased-out SDK mentions ([#29](https://github.com/spotify/confidence-cli/issues/29)) ([7bc1917](https://github.com/spotify/confidence-cli/commit/7bc1917dee1295e7e7c095c2b326d9073470edf8))
+
 ## [1.1.0](https://github.com/spotify/confidence-cli/compare/quickstart-v1.0.1...quickstart-v1.1.0) (2026-08-04)
 
 
