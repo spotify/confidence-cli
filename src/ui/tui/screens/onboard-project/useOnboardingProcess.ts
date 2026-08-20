@@ -267,12 +267,12 @@ function buildDryRunSteps(
 
 function dryRunCodeChanges(goal: OnboardingGoal): string[] {
   const flagChanges = [
-    'Added @spotify-confidence/sdk dependency',
-    'Created confidence.config.ts',
-    'Added feature flag example',
+    'Added @spotify-confidence/sdk',
+    'Created confidence.config.ts — SDK configuration',
+    'Created feature flag example',
   ];
   const recordingChanges = [
-    'Added @spotify-confidence/session-recording dependency',
+    'Added @spotify-confidence/session-recording',
     'Added session recording provider',
   ];
 
