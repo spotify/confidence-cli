@@ -98,186 +98,8 @@ describe('SelectGoalScreen', () => {
         expect(sut.lastFrame()).toContain('Onboarding skipped');
       });
     });
-  });
 
-  describe('migration sub-phase', () => {
-    it('shows migration options when competitor detected and plugins installed', async () => {
-      using project = createProjectDir('react-statsig');
-
-      using sut = renderApp({
-        screen: ScreenId.SelectGoal,
-        dir: project.path,
-        framework: 'react',
-        plugins: ['claude'],
-      });
-
-      await waitFor(() => {
-        expect(sut.lastFrame()).toContain('Feature Flags');
-      });
-
-      await act(() => sut.stdin.write(ENTER));
-
-      await waitFor(() => {
-        const frame = sut.lastFrame()!;
-        expect(frame).toContain('Found Statsig flags in code. How would you like to proceed?');
-        expect(frame).toContain('Just integrate Confidence');
-        expect(frame).toContain("Integrate and migrate Statsig's flags");
-      });
-    });
-
-    it('skips migration when goal is session-recording only', async () => {
-      using project = createProjectDir('react-statsig');
-
-      using sut = renderApp({
-        screen: ScreenId.SelectGoal,
-        dir: project.path,
-        framework: 'react',
-        plugins: ['claude'],
-      });
-
-      await waitFor(() => {
-        expect(sut.lastFrame()).toContain('Session Recording');
-      });
-
-      await act(() => sut.stdin.write(ARROW_DOWN + ENTER));
-
-      await waitFor(() => {
-        expect(sut.lastFrame()).toContain('Ready to start?');
-        expect(sut.lastFrame()).toContain('set up session recordings to capture user sessions');
-      });
-    });
-
-    it('skips migration when no plugins installed', async () => {
-      using project = createProjectDir('react-statsig');
-
-      using sut = renderApp({
-        screen: ScreenId.SelectGoal,
-        dir: project.path,
-        framework: 'react',
-      });
-
-      await waitFor(() => {
-        expect(sut.lastFrame()).toContain('Feature Flags');
-      });
-
-      await act(() => sut.stdin.write(ENTER));
-
-      await waitFor(() => {
-        expect(sut.lastFrame()).toContain('Ready to start?');
-        expect(sut.lastFrame()).toContain('create your first feature flag');
-      });
-    });
-
-    it('shows migrate-all option when multiple competitors detected', async () => {
-      using project = createProjectDir('react-posthog-statsig');
-
-      using sut = renderApp({
-        screen: ScreenId.SelectGoal,
-        dir: project.path,
-        framework: 'react',
-        plugins: ['claude'],
-      });
-
-      await waitFor(() => {
-        expect(sut.lastFrame()).toContain('Feature Flags');
-      });
-
-      await act(() => sut.stdin.write(ENTER));
-
-      await waitFor(() => {
-        const frame = sut.lastFrame()!;
-        expect(frame).toContain(
-          'Found PostHog and Statsig flags in code. How would you like to proceed?',
-        );
-        expect(frame).toContain('Integrate and migrate all existing flags');
-        expect(frame).toContain("Integrate and migrate PostHog's flags");
-        expect(frame).toContain("Integrate and migrate Statsig's flags");
-      });
-    });
-
-    it('does not show migrate-all when only one competitor detected', async () => {
-      using project = createProjectDir('react-statsig');
-
-      using sut = renderApp({
-        screen: ScreenId.SelectGoal,
-        dir: project.path,
-        framework: 'react',
-        plugins: ['claude'],
-      });
-
-      await waitFor(() => {
-        expect(sut.lastFrame()).toContain('Feature Flags');
-      });
-
-      await act(() => sut.stdin.write(ENTER));
-
-      await waitFor(() => {
-        const frame = sut.lastFrame()!;
-        expect(frame).toContain("Integrate and migrate Statsig's flags");
-        expect(frame).not.toContain('migrate all');
-      });
-    });
-
-    it('navigates after migration selection', async () => {
-      using project = createProjectDir('react-statsig');
-
-      using sut = renderApp({
-        screen: ScreenId.SelectGoal,
-        dir: project.path,
-        framework: 'react',
-        plugins: ['claude'],
-      });
-
-      await waitFor(() => {
-        expect(sut.lastFrame()).toContain('Feature Flags');
-      });
-
-      await act(() => sut.stdin.write(ENTER));
-
-      await waitFor(() => {
-        expect(sut.lastFrame()).toContain("Integrate and migrate Statsig's flags");
-      });
-
-      await act(() => sut.stdin.write(ARROW_DOWN + ENTER));
-
-      await waitFor(() => {
-        expect(sut.lastFrame()).toContain('Ready to start?');
-        expect(sut.lastFrame()).toContain('migrate Statsig feature flags to Confidence');
-      });
-    });
-
-    it('preserves "all" goal through migration sub-phase', async () => {
-      using project = createProjectDir('react-statsig');
-
-      using sut = renderApp({
-        screen: ScreenId.SelectGoal,
-        dir: project.path,
-        framework: 'react',
-        plugins: ['claude'],
-      });
-
-      await waitFor(() => {
-        expect(sut.lastFrame()).toContain('YOLO');
-      });
-
-      await act(() => sut.stdin.write(ARROW_DOWN.repeat(2) + ENTER));
-
-      await waitFor(() => {
-        expect(sut.lastFrame()).toContain('How would you like to proceed?');
-      });
-
-      await act(() => sut.stdin.write(ARROW_DOWN + ENTER));
-
-      await waitFor(() => {
-        const frame = sut.lastFrame()!;
-        expect(frame).toContain('Ready to start?');
-        expect(frame).toContain('set up feature flags');
-        expect(frame).toContain('set up session recordings to capture user sessions');
-        expect(frame).toContain('migrate Statsig feature flags to Confidence');
-      });
-    });
-
-    it('shows migration directly for non-browser project with competitors', async () => {
+    it('auto-skips for non-browser project with competitors', async () => {
       using project = createProjectDir('statsig-node');
 
       using sut = renderApp({
@@ -288,10 +110,23 @@ describe('SelectGoalScreen', () => {
       });
 
       await waitFor(() => {
-        const frame = sut.lastFrame()!;
-        expect(frame).toContain('Migrate existing flags?');
-        expect(frame).toContain("Integrate and migrate Statsig's flags");
-        expect(frame).not.toContain('Session Recording');
+        expect(sut.lastFrame()).toContain('Ready to start?');
+        expect(sut.lastFrame()).toContain('Start onboarding?');
+      });
+    });
+
+    it('skips directly to OnboardProject for non-browser project without competitors', async () => {
+      using project = createProjectDir('empty');
+
+      using sut = renderApp({
+        screen: ScreenId.SelectGoal,
+        dir: project.path,
+        framework: 'node',
+      });
+
+      await waitFor(() => {
+        expect(sut.lastFrame()).toContain('Ready to start?');
+        expect(sut.lastFrame()).toContain('Start onboarding?');
       });
     });
   });

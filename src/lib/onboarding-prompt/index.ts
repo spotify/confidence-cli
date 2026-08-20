@@ -4,14 +4,8 @@ import { preflight, scaffold } from './preflight.js';
 import { determineSDK, resolveClient } from './sdk.js';
 import { integrateSDK, integrateViaSkill } from './integrate.js';
 import { determineRecordingSDK, integrateRecording } from './session-recording.js';
-import { migrateFlags } from './migration.js';
 import { generateReport, summary, rules } from './report.js';
 import { buildToolVars } from './tool-vars.js';
-
-type MigrationOption = {
-  providerName: string;
-  skillName: string;
-};
 
 type PromptOptions = {
   framework: string;
@@ -19,8 +13,8 @@ type PromptOptions = {
   ide?: ChosenIde;
   isEmptyProject?: boolean;
   goal?: OnboardingGoal;
-  migrations?: MigrationOption[];
   hasPlugins?: boolean;
+  hasProviders?: boolean;
 };
 
 export function buildOnboardingPrompt({
@@ -29,8 +23,8 @@ export function buildOnboardingPrompt({
   ide = 'claude',
   isEmptyProject = false,
   goal = 'feature-flags',
-  migrations = [],
   hasPlugins = false,
+  hasProviders = false,
 }: PromptOptions): string {
   const steps = new StepCounter(isEmptyProject ? 2 : 1);
   const tools = buildToolVars(ide);
@@ -44,7 +38,7 @@ export function buildOnboardingPrompt({
     preflight(tools),
     addIf(isEmptyProject, () => scaffold(framework, steps.next())),
 
-    viaSkill
+    ...(viaSkill
       ? [integrateViaSkill(framework, steps.next(), isEmptyProject, ide)]
       : [
           addIf(withFlags, () => determineSDK(framework, steps.next(), tools)),
@@ -52,19 +46,17 @@ export function buildOnboardingPrompt({
           addIf(withFlags, () =>
             integrateSDK(steps.next(), steps.current - 2, isEmptyProject, tools),
           ),
-        ],
+        ]),
 
     addIf(withRecordings, () => determineRecordingSDK(framework, steps.next(), tools)),
     addIf(withRecordings, () => integrateRecording(steps.next(), isEmptyProject)),
-
-    ...migrations.map((m) => migrateFlags(m, steps.next())),
 
     generateReport({
       step: steps.next(),
       isEmptyProject,
       goal,
       hasPlugins,
-      hasMigrations: migrations.length > 0,
+      hasProviders,
     }),
     summary(steps.next()),
     rules(),

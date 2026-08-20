@@ -8,7 +8,6 @@ function buildChatPrompt(session: WizardSession): string {
       ? [`I'd like to integrate Confidence into this project.`]
       : [
           `I just set up Confidence in this project using the quickstart wizard.`,
-          '',
           'Changes made:',
           ...session.codeChanges.map((change) => `- ${change}`),
         ];
@@ -26,9 +25,19 @@ function buildChatPrompt(session: WizardSession): string {
 
   if (session.codeChanges.length > 0) {
     lines.push(
-      '',
-      "I'd like to continue working on my Confidence integration. Help me with next steps — creating feature flags, adding targeting rules, setting up experiments, or anything else I need.",
+      'Help me with next steps — creating feature flags, adding targeting rules, setting up experiments, etc.',
     );
+
+    if (session.installedPlugins.length) {
+      lines.push(
+        'I have installed Confidence AI plugin that contains useful skills and commands for working with Confidence,',
+        'e.g., `/setup-warehouse` for setting up a data warehouse',
+
+        session.detectedProviders.length
+          ? "or `/migrate-<provider>` to migrate another provider's flags to Confidence."
+          : '.',
+      );
+    }
   }
 
   return lines.join('\n');

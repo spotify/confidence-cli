@@ -1,6 +1,6 @@
 import type { OnboardingGoal } from '../session.js';
 import { CONFIDENCE_DOCS_URL } from '../constants.js';
-import { buildReportTemplate, MIGRATION_REPORT_SECTION } from './report-templates.js';
+import { buildReportTemplate } from './report-templates.js';
 import { loadStep } from './steps/load.js';
 
 const HOW_TO_RUN = `
@@ -9,21 +9,27 @@ const HOW_TO_RUN = `
 <exact commands to run the sample app>
 `;
 
-const SKILLS_NOTE = `
-> **Tip:** We left a set of Confidence skills for your AI coding assistant. Use the slash commands above (like \`/setup-warehouse\`) to continue setting up your project with guided help.`;
+function buildSkillsNote(hasProviders: boolean): string {
+  const examples = hasProviders
+    ? '`/setup-warehouse` or `/migrate-<provider>`'
+    : '`/setup-warehouse`';
+
+  return `
+> **Tip:** We left a set of Confidence skills for your AI coding assistant. Use the slash commands above (like ${examples}) to continue setting up your project with guided help.`;
+}
 
 export function generateReport({
   step,
   isEmptyProject,
   goal = 'feature-flags',
   hasPlugins = false,
-  hasMigrations = false,
+  hasProviders = false,
 }: {
   step: number;
   isEmptyProject: boolean;
   goal?: OnboardingGoal;
   hasPlugins?: boolean;
-  hasMigrations?: boolean;
+  hasProviders?: boolean;
 }): string {
   const template = buildReportTemplate(goal);
 
@@ -31,9 +37,8 @@ export function generateReport({
     STEP: step,
     REPORT_START: template.start,
     HOW_TO_RUN: isEmptyProject ? HOW_TO_RUN : '',
-    MIGRATION_REPORT: hasMigrations ? MIGRATION_REPORT_SECTION : '',
     REPORT_END: template.end,
-    SKILLS_NOTE: hasPlugins ? SKILLS_NOTE : '',
+    SKILLS_NOTE: hasPlugins ? buildSkillsNote(hasProviders) : '',
     DOCS_URL: CONFIDENCE_DOCS_URL,
   });
 }

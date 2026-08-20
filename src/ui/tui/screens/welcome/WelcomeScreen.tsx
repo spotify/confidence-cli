@@ -5,7 +5,7 @@ import { SDK_OPTIONS } from '@lib/sdk-options.js';
 import { ScreenId } from '@lib/session.js';
 import { useLogger } from '../../hooks/useLog.js';
 import { useNavigation } from '../../hooks/useNavigation.js';
-import { useFrameworkDetection } from '../../hooks/useFrameworkDetection.js';
+import { useProjectDetection } from '../../hooks/useProjectDetection.js';
 import { useIsNarrow } from '../../hooks/useIsNarrow.js';
 import { useIsShort } from '../../hooks/useIsShort.js';
 import { useSession } from '../../store.js';
@@ -26,7 +26,7 @@ export function WelcomeScreen() {
   const session = useSession();
   const navigate = useNavigation(ScreenId.Welcome);
   const log = useLogger(ScreenId.Welcome);
-  const detectionAttempted = useFrameworkDetection();
+  const detectionAttempted = useProjectDetection();
   const dir = session.projectDir;
 
   const frameworkId = session.framework;

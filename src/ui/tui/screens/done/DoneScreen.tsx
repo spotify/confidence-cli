@@ -5,24 +5,29 @@ import { PromptPanel } from '../../components/PromptPanel.js';
 import { CONFIDENCE_DASHBOARD_URL, CONFIDENCE_DOCS_URL } from '@lib/constants.js';
 import { TerminalLink } from '../../components/TerminalLink.js';
 import { useIsNarrow } from '../../hooks/useIsNarrow.js';
-import { launchChatSession, getIntegration } from '@integrations/index.js';
+import { launchChatSession } from '@integrations/index.js';
 import { useSession, $session } from '../../store.js';
 import { track } from '@lib/telemetry.js';
 import { doneActionSelected } from './telemetry-events.js';
 import { useIsShort } from '@ui/tui/hooks/useIsShort.js';
 import { doneOptions } from './actions.js';
+import { useScreenDescription } from './useScreenDescription.js';
+import { useSkippedOnboarding } from './useSkippedOnboarding.js';
+import { useChosenIdeName } from './useChosenIdeName.js';
 
 const MAX_SHOWN_CHANGES = 5;
 
 export function DoneScreen() {
-  const session = useSession();
   const { exit } = useApp();
+  const { reportFile, codeChanges, projectDir } = useSession();
+
+  const skipped = useSkippedOnboarding();
+  const ideName = useChosenIdeName();
+  const description = useScreenDescription();
+
   const isShort = useIsShort();
   const narrow = useIsNarrow();
-  const { reportFile, codeChanges, projectDir, ide } = session;
   const align = narrow ? HAlign.Left : HAlign.Center;
-  const skipped = codeChanges.length === 0;
-  const ideName = ide ? getIntegration(ide).name : null;
 
   return (
     <Box flexDirection="column" flexGrow={1} justifyContent="space-between">
@@ -34,11 +39,9 @@ export function DoneScreen() {
           </Text>
         </Box>
 
-        {skipped && !isShort && (
+        {!isShort && (
           <Box marginBottom={1}>
-            <Text color={Colors.muted}>
-              You can always use Confidence AI plugin to run onboarding yourself later.
-            </Text>
+            <Text color={Colors.muted}>{description}</Text>
           </Box>
         )}
 

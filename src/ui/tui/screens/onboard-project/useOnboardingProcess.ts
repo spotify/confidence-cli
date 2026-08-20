@@ -4,7 +4,6 @@ import { buildOnboardingPrompt } from '@lib/onboarding-prompt/index.js';
 import { detectFramework } from '@frameworks/index.js';
 import { ScreenId, type OnboardingGoal } from '@lib/session.js';
 import { type IdeId, getIntegration, normalizeStatusLine } from '@integrations/index.js';
-import type { DetectedProvider } from '@providers/types.js';
 import { useLogger } from '../../hooks/useLog.js';
 import { $session, store, isStaleSession } from '../../store.js';
 import { useInitialOnboarding } from './useInitialOnboarding.js';
@@ -87,7 +86,7 @@ export function useOnboardingProcess(): OnboardingProcess {
 
       function startDryRun() {
         log(onboardingDryRun(fw));
-        const steps = buildDryRunSteps(fw, isEmpty, goal, s.migrationTargets);
+        const steps = buildDryRunSteps(fw, isEmpty, goal);
 
         let i = 0;
         const interval = setInterval(() => {
@@ -111,7 +110,6 @@ export function useOnboardingProcess(): OnboardingProcess {
             : 'Analyzing project...',
         );
 
-        const targets = s.migrationTargets;
         const ide = (s.ide ?? 'claude') as IdeId;
         const prompt = buildOnboardingPrompt({
           framework: fw,
@@ -119,11 +117,8 @@ export function useOnboardingProcess(): OnboardingProcess {
           ide,
           isEmptyProject: isEmpty,
           goal,
-          migrations:
-            targets.length > 0
-              ? targets.map((t) => ({ providerName: t.name, skillName: t.skillName }))
-              : undefined,
           hasPlugins: s.installedPlugins.length > 0,
+          hasProviders: s.detectedProviders.length > 0,
         });
 
         log(onboardingStarted(fw, prompt));
@@ -227,12 +222,7 @@ export function useOnboardingProcess(): OnboardingProcess {
   };
 }
 
-function buildDryRunSteps(
-  fw: string,
-  isEmpty: boolean,
-  goal: OnboardingGoal,
-  targets: DetectedProvider[],
-): string[] {
+function buildDryRunSteps(fw: string, isEmpty: boolean, goal: OnboardingGoal): string[] {
   const detect = isEmpty ? ['Scaffolding sample app...'] : [`Detected framework: ${fw}`];
   const flagSteps = [
     'Determining appropriate SDK...',
@@ -245,10 +235,6 @@ function buildDryRunSteps(
     'Adding session recording provider...',
     'Configuring privacy settings...',
   ];
-  const migrationSteps = targets.flatMap((t) => [
-    `Migrating ${t.name} flags to Confidence...`,
-    `Removed ${t.name} SDK dependency`,
-  ]);
 
   const goalSteps =
     goal === 'feature-flags'
@@ -257,12 +243,7 @@ function buildDryRunSteps(
         ? recordingSteps
         : [...flagSteps, ...recordingSteps];
 
-  return [
-    ...detect,
-    ...goalSteps,
-    ...migrationSteps,
-    'Generating CONFIDENCE_QUICKSTART.md report...',
-  ];
+  return [...detect, ...goalSteps, 'Generating CONFIDENCE_QUICKSTART.md report...'];
 }
 
 function dryRunCodeChanges(goal: OnboardingGoal): string[] {

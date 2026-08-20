@@ -51,6 +51,55 @@ describe('DoneScreen', () => {
         expect(sut.lastFrame()).toContain('confidence.config.ts');
       });
     });
+
+    it('shows continuation hint without plugins', async () => {
+      using sut = renderScreen(<DoneScreen />, { screen: ScreenId.Done, ide: 'claude' });
+      store.setCodeChanges(['Added @spotify-confidence/sdk']);
+      await waitFor(() => {
+        expect(sut.lastFrame()).toContain('Continue working in Claude Code');
+      });
+    });
+
+    it('shows skills hint when plugins are installed', async () => {
+      using sut = renderScreen(<DoneScreen />, {
+        screen: ScreenId.Done,
+        ide: 'claude',
+        plugins: ['claude'],
+      });
+      store.setCodeChanges(['Added @spotify-confidence/sdk']);
+      await waitFor(() => {
+        expect(sut.lastFrame()).toContain('Confidence skills');
+        expect(sut.lastFrame()).toContain('slash commands');
+      });
+    });
+
+    it('includes migration hint when providers are detected', async () => {
+      using sut = renderScreen(<DoneScreen />, {
+        screen: ScreenId.Done,
+        ide: 'claude',
+        plugins: ['claude'],
+      });
+      store.setDetectedProviders([
+        { id: 'statsig', name: 'Statsig', skillName: 'migrate-statsig' },
+      ]);
+      store.setCodeChanges(['Added @spotify-confidence/sdk']);
+      await waitFor(() => {
+        expect(sut.lastFrame()).toContain('/migrate-statsig');
+      });
+    });
+
+    it('omits migration hint when no providers are detected', async () => {
+      using sut = renderScreen(<DoneScreen />, {
+        screen: ScreenId.Done,
+        ide: 'claude',
+        plugins: ['claude'],
+      });
+      store.setCodeChanges(['Added @spotify-confidence/sdk']);
+      await waitFor(() => {
+        expect(sut.lastFrame()).toContain('slash commands');
+        expect(sut.lastFrame()).not.toContain('/migrate-');
+      });
+    });
   });
 
   describe('when a report file is generated', () => {

@@ -1,8 +1,9 @@
 import { useEffect, useState } from 'react';
 import { detectFramework } from '@frameworks/index.js';
+import { detectProviders } from '@providers/index.js';
 import { useSession, store, isStaleSession } from '../store.js';
 
-export function useFrameworkDetection(): boolean {
+export function useProjectDetection(): boolean {
   const session = useSession();
   const [attempted, setAttempted] = useState(() => session.frameworkSource !== null);
 
@@ -24,6 +25,16 @@ export function useFrameworkDetection(): boolean {
         });
     },
     [session.projectDir, session.frameworkSource, session.sessionId],
+  );
+
+  useEffect(
+    function tryDetectProviders() {
+      if (session.dryRun || session.detectedProviders.length > 0) return;
+
+      const providers = detectProviders(session.projectDir);
+      if (providers.length > 0) store.setDetectedProviders(providers);
+    },
+    [session.projectDir, session.dryRun, session.detectedProviders.length],
   );
 
   return attempted;
