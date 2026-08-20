@@ -99,11 +99,6 @@ export const store = {
       detectedProviders: providers,
     }),
 
-  setMigrationTargets: (targets: DetectedProvider[]): void =>
-    updateSession({
-      migrationTargets: targets,
-    }),
-
   setOnboardingGoal: (goal: OnboardingGoal): void =>
     updateSession({
       onboardingGoal: goal,

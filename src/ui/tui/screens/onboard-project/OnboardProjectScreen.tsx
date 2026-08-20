@@ -83,7 +83,6 @@ export function OnboardProjectScreen() {
           statusLines={onboarding.statusLines}
           error={onboarding.error}
           goal={session.onboardingGoal ?? DEFAULT_GOAL}
-          migrations={session.migrationTargets}
           showTips={showTips}
           tip={tip}
         />

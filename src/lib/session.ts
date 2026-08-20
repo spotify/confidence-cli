@@ -30,7 +30,6 @@ export type WizardSession = {
   connectedMcps: string[];
   isEmptyProject: boolean;
   detectedProviders: DetectedProvider[];
-  migrationTargets: DetectedProvider[];
   onboardingGoal: OnboardingGoal | null;
   onboardingStatus: string;
   reportFile: string | null;
@@ -87,7 +86,6 @@ export function createSession(opts?: {
     connectedMcps: [],
     isEmptyProject: false,
     detectedProviders: [],
-    migrationTargets: [],
     onboardingGoal: null,
     onboardingStatus: '',
     reportFile: null,

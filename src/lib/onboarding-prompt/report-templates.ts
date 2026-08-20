@@ -97,30 +97,6 @@ const ALL_TEMPLATE_START = `\
 - \`<feature flags SDK package name>\`
 - \`<session recording SDK package name>\``;
 
-export const MIGRATION_REPORT_SECTION = `\
-
-## Flag migration
-
-**Migrated flags:**
-
-| Flag | Source | Status | Notes |
-|------|--------|--------|-------|
-<!-- One row per flag. Status: ✅ Migrated, ⚠️ Partial rollout, ❌ Failed, ⏭️ Skipped (blocked) -->
-
-<!-- If any flags used a partial rollout, include this section: -->
-### ⚠️ Partial-rollout warnings
-
-<!-- For each partial-rollout flag: -->
-- \`<flag-name>\` — migrated at <X>% rollout. Confidence uses a different bucketing hash than <PROVIDER>, so the exact user cohort will change: users currently in the rollout may drop out, and new users may enter. Verify rollout behavior after shipping.
-
-<!-- If any flags failed to migrate, include this section: -->
-### ❌ Failed migrations
-
-<!-- For each failed flag: -->
-- \`<flag-name>\` — <error reason>. Retry manually with \`/<SKILL_NAME> execute\`.
-
-<!-- Omit the subsections above entirely if there are no partial-rollout or failed flags -->`;
-
 const COMMON_TEMPLATE_END = `\
 ## How to use it
 
@@ -140,6 +116,7 @@ const COMMON_TEMPLATE_END = `\
 - [Manage your setup](https://app.confidence.spotify.com)
 - [SDK reference](<link from docs MCP for detected platform>)
 - Set up a data warehouse → \`/setup-warehouse\`
+- Migrate flags from another provider → \`/migrate-<provider>\` (e.g. \`/migrate-statsig\`, \`/migrate-eppo\`)
 - Invite your team → \`/onboard-confidence invite-user\`
 - Run an A/B experiment → \`/onboard-confidence learn\`
 

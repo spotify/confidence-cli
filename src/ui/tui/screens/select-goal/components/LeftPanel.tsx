@@ -1,7 +1,6 @@
 import { Box, Text } from 'ink';
 import { Colors, Icons } from '../../../styles.js';
 import type { GoalSelection } from '../useGoalSelection.js';
-import { formatProviderNames } from '../utils.js';
 
 type GoalSelectionProps = {
   goalSelection: GoalSelection;
@@ -14,9 +13,7 @@ export function LeftPanel({ goalSelection }: GoalSelectionProps) {
         <Text color={Colors.primary} bold>
           {goalSelection.phase === 'select-goal'
             ? 'Which features would you like to set up?'
-            : goalSelection.phase === 'select-migration'
-              ? 'Migrate existing flags?'
-              : 'Set up your project'}
+            : 'Set up your project'}
         </Text>
       </Box>
 
@@ -33,15 +30,6 @@ export function LeftPanel({ goalSelection }: GoalSelectionProps) {
               </Text>
             </Box>
           )}
-        </Box>
-      )}
-
-      {goalSelection.phase === 'select-migration' && (
-        <Box marginBottom={1}>
-          <Text color={Colors.muted}>
-            Found {formatProviderNames(goalSelection.detectedProviders)} in your project. Would you
-            like to migrate their flags to Confidence?
-          </Text>
         </Box>
       )}
     </Box>
