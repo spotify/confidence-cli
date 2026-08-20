@@ -38,7 +38,7 @@ export function buildOnboardingPrompt({
     preflight(tools),
     addIf(isEmptyProject, () => scaffold(framework, steps.next())),
 
-    viaSkill
+    ...(viaSkill
       ? [integrateViaSkill(framework, steps.next(), isEmptyProject, ide)]
       : [
           addIf(withFlags, () => determineSDK(framework, steps.next(), tools)),
@@ -46,7 +46,7 @@ export function buildOnboardingPrompt({
           addIf(withFlags, () =>
             integrateSDK(steps.next(), steps.current - 2, isEmptyProject, tools),
           ),
-        ],
+        ]),
 
     addIf(withRecordings, () => determineRecordingSDK(framework, steps.next(), tools)),
     addIf(withRecordings, () => integrateRecording(steps.next(), isEmptyProject)),
