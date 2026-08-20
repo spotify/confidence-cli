@@ -1,5 +1,5 @@
 import { Box, Text, useInput } from 'ink';
-import { Select, TextInput } from '@inkjs/ui';
+import { MultiSelect, Select, TextInput } from '@inkjs/ui';
 import { APP_VERSION } from '@lib/meta.js';
 import { Colors, HAlign } from '../styles.js';
 import { useIsNarrow } from '../hooks/useIsNarrow.js';
@@ -27,13 +27,23 @@ type PromptPanelInputProps = PromptPanelBase & {
   onSubmit: (value: string) => void;
 };
 
+type PromptPanelMultiSelectProps<T extends string = string> = PromptPanelBase & {
+  mode: 'multi-select';
+  status: string;
+  options: PromptOption<T>[];
+  onSubmit: (values: T[]) => void;
+};
+
 type PromptPanelInfoProps = PromptPanelBase & {
   mode: 'info';
   status: string;
 };
 
 type PromptPanelProps<T extends string = string> =
-  PromptPanelSelectProps<T> | PromptPanelInputProps | PromptPanelInfoProps;
+  | PromptPanelSelectProps<T>
+  | PromptPanelMultiSelectProps<T>
+  | PromptPanelInputProps
+  | PromptPanelInfoProps;
 
 const MAX_VISIBLE_OPTIONS = 8;
 
@@ -70,6 +80,13 @@ export function PromptPanel<T extends string = string>(props: PromptPanelProps<T
               visibleOptionCount={Math.min(props.options.length, MAX_VISIBLE_OPTIONS)}
             />
           )}
+          {props.mode === 'multi-select' && (
+            <MultiSelect
+              options={props.options}
+              onSubmit={props.onSubmit as (values: string[]) => void}
+              visibleOptionCount={Math.min(props.options.length, MAX_VISIBLE_OPTIONS)}
+            />
+          )}
           {props.mode === 'input' && (
             <TextInput placeholder={props.placeholder} onSubmit={props.onSubmit} />
           )}
@@ -77,12 +94,20 @@ export function PromptPanel<T extends string = string>(props: PromptPanelProps<T
       )}
 
       <Box flexDirection="row" gap={3}>
-        {props.mode === 'select' && props.options.length > 1 && (
+        {(props.mode === 'select' || props.mode === 'multi-select') && props.options.length > 1 && (
           <Box gap={1}>
             <Text color={Colors.accent} bold>
               ↑↓
             </Text>
             <Text color={Colors.muted}>navigate</Text>
+          </Box>
+        )}
+        {props.mode === 'multi-select' && (
+          <Box gap={1}>
+            <Text color={Colors.accent} bold>
+              space
+            </Text>
+            <Text color={Colors.muted}>toggle</Text>
           </Box>
         )}
         {props.mode !== 'info' && (
