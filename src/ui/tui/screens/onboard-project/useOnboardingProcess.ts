@@ -118,6 +118,7 @@ export function useOnboardingProcess(): OnboardingProcess {
           isEmptyProject: isEmpty,
           goal,
           hasPlugins: s.installedPlugins.length > 0,
+          hasProviders: s.detectedProviders.length > 0,
         });
 
         log(onboardingStarted(fw, prompt));

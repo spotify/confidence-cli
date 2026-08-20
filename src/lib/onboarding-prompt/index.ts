@@ -14,6 +14,7 @@ type PromptOptions = {
   isEmptyProject?: boolean;
   goal?: OnboardingGoal;
   hasPlugins?: boolean;
+  hasProviders?: boolean;
 };
 
 export function buildOnboardingPrompt({
@@ -23,6 +24,7 @@ export function buildOnboardingPrompt({
   isEmptyProject = false,
   goal = 'feature-flags',
   hasPlugins = false,
+  hasProviders = false,
 }: PromptOptions): string {
   const steps = new StepCounter(isEmptyProject ? 2 : 1);
   const tools = buildToolVars(ide);
@@ -54,6 +56,7 @@ export function buildOnboardingPrompt({
       isEmptyProject,
       goal,
       hasPlugins,
+      hasProviders,
     }),
     summary(steps.next()),
     rules(),

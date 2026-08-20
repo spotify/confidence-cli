@@ -11,6 +11,7 @@ import { track } from '@lib/telemetry.js';
 import { doneActionSelected } from './telemetry-events.js';
 import { useIsShort } from '@ui/tui/hooks/useIsShort.js';
 import { doneOptions } from './actions.js';
+import { useScreenDescription } from './useScreenDescription.js';
 
 const MAX_SHOWN_CHANGES = 5;
 
@@ -23,6 +24,7 @@ export function DoneScreen() {
   const align = narrow ? HAlign.Left : HAlign.Center;
   const skipped = codeChanges.length === 0;
   const ideName = ide ? getIntegration(ide).name : null;
+  const description = useScreenDescription();
 
   return (
     <Box flexDirection="column" flexGrow={1} justifyContent="space-between">
@@ -34,11 +36,9 @@ export function DoneScreen() {
           </Text>
         </Box>
 
-        {skipped && !isShort && (
+        {!isShort && (
           <Box marginBottom={1}>
-            <Text color={Colors.muted}>
-              You can always use Confidence AI plugin to run onboarding yourself later.
-            </Text>
+            <Text color={Colors.muted}>{description}</Text>
           </Box>
         )}
 

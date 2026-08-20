@@ -25,9 +25,14 @@ function buildChatPrompt(session: WizardSession): string {
   }
 
   if (session.codeChanges.length > 0) {
+    const migration =
+      session.detectedProviders.length > 0
+        ? ', or migrating flags from another provider (`/migrate-<provider>`)'
+        : '';
+
     lines.push(
       '',
-      "I'd like to continue working on my Confidence integration. Help me with next steps — creating feature flags, adding targeting rules, setting up experiments, or anything else I need.",
+      `I'd like to continue working on my Confidence integration. Help me with next steps — creating feature flags, adding targeting rules, setting up experiments, setting up a data warehouse (\`/setup-warehouse\`)${migration}.`,
     );
   }
 
