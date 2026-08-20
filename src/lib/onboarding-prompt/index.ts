@@ -4,6 +4,7 @@ import { preflight, scaffold } from './preflight.js';
 import { determineSDK, resolveClient } from './sdk.js';
 import { integrateSDK, integrateViaSkill } from './integrate.js';
 import { determineRecordingSDK, integrateRecording } from './session-recording.js';
+import { instrumentEvents } from './event-tracking.js';
 import { generateReport, summary, rules } from './report.js';
 import { buildToolVars } from './tool-vars.js';
 
@@ -31,6 +32,7 @@ export function buildOnboardingPrompt({
 
   const withFlags = ['feature-flags', 'all'].includes(goal);
   const withRecordings = ['session-recordings', 'all'].includes(goal);
+  const withEventTracking = ['event-tracking', 'all'].includes(goal);
   const viaSkill = withFlags && hasPlugins;
 
   const sections = [
@@ -50,6 +52,8 @@ export function buildOnboardingPrompt({
 
     addIf(withRecordings, () => determineRecordingSDK(framework, steps.next(), tools)),
     addIf(withRecordings, () => integrateRecording(steps.next(), isEmptyProject)),
+
+    addIf(withEventTracking, () => instrumentEvents(framework, steps.next(), isEmptyProject, ide)),
 
     generateReport({
       step: steps.next(),
@@ -78,7 +82,8 @@ class StepCounter {
 const GOAL_PREAMBLE: Record<OnboardingGoal, string> = {
   'feature-flags': 'the Confidence SDK',
   'session-recordings': 'Confidence Session Recording',
-  all: 'the Confidence SDK and Session Recording',
+  'event-tracking': 'Confidence Event Tracking',
+  all: 'the Confidence SDK, Session Recording, and Event Tracking',
 };
 
 function preamble(

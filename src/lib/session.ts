@@ -3,7 +3,7 @@ import type { DetectedProvider } from '@providers/types.js';
 
 export type ChosenIde = 'claude' | 'cursor' | 'codex';
 
-export type OnboardingGoal = 'feature-flags' | 'session-recordings' | 'all';
+export type OnboardingGoal = 'feature-flags' | 'session-recordings' | 'event-tracking' | 'all';
 
 export type FrameworkSource = 'detected' | 'selected';
 

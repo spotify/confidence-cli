@@ -22,10 +22,16 @@ export function LeftPanel({ goalSelection }: GoalSelectionProps) {
           <Text color={Colors.muted}>
             Choose the Confidence features to integrate with your project.
           </Text>
+          <Box marginTop={1}>
+            <Text color={Colors.warning}>
+              {Icons.star} Event Tracking works best with a managed warehouse or an existing
+              warehouse setup.
+            </Text>
+          </Box>
           {goalSelection.recordingAvailable && (
             <Box marginTop={1}>
               <Text color={Colors.warning}>
-                {Icons.diamond} Session Recordings (β) require the feature to be enabled on your
+                {Icons.star} Session Recordings (β) require the feature to be enabled on your
                 Confidence account.
               </Text>
             </Box>

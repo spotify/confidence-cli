@@ -10,6 +10,9 @@ export function buildReportTemplate(goal: OnboardingGoal): ReportTemplate {
     case 'session-recordings':
       return { start: RECORDING_TEMPLATE_START, end: COMMON_TEMPLATE_END };
 
+    case 'event-tracking':
+      return { start: EVENT_TRACKING_TEMPLATE_START, end: COMMON_TEMPLATE_END };
+
     case 'all':
       return { start: ALL_TEMPLATE_START, end: COMMON_TEMPLATE_END };
 
@@ -69,6 +72,32 @@ const RECORDING_TEMPLATE_START = `\
 
 - \`<session recording SDK package name>\``;
 
+const EVENT_TRACKING_TEMPLATE_START = `\
+\`\`\`markdown
+# Confidence Quickstart Report
+
+## What was set up
+
+| | |
+|---|---|
+| Integration | Event Tracking |
+| Client | <CLIENT_NAME> |
+| Event Definitions | <EVENT_COUNT> created |
+| Fact Tables | <FACT_TABLE_COUNT> auto-created |
+
+## What changed in your codebase
+
+**New/modified files:**
+
+- \`<.env file>\` — added \`CONFIDENCE_CLIENT_SECRET\`
+- \`<entry point file>\` — added SDK initialization
+- \`<files with track() calls>\` — added event tracking calls
+<!-- Only list files that were actually created or modified -->
+
+**New dependencies:**
+
+- \`<SDK package name>\``;
+
 const ALL_TEMPLATE_START = `\
 \`\`\`markdown
 # Confidence Quickstart Report
@@ -82,14 +111,17 @@ const ALL_TEMPLATE_START = `\
 | Variants | <VARIANT_LIST> |
 | Default | <DEFAULT_VARIANT> (100% allocation) |
 | Session Recording | Enabled |
+| Event Definitions | <EVENT_COUNT> created |
+| Fact Tables | <FACT_TABLE_COUNT> auto-created |
 
 ## What changed in your codebase
 
 **New/modified files:**
 
 - \`<.env file>\` — added \`CONFIDENCE_CLIENT_SECRET\`
-- \`<entry point file>\` — added SDK initialization and session recording provider
+- \`<entry point file>\` — added SDK initialization, session recording provider, and event tracking
 - \`<aha target file>\` — added flag evaluation
+- \`<files with track() calls>\` — added event tracking calls
 <!-- Only list files that were actually created or modified -->
 
 **New dependencies:**
@@ -117,6 +149,7 @@ const COMMON_TEMPLATE_END = `\
 - [SDK reference](<link from docs MCP for detected platform>)
 - Set up a data warehouse → \`/setup-warehouse\`
 - Migrate flags from another provider → \`/migrate-<provider>\` (e.g. \`/migrate-statsig\`, \`/migrate-eppo\`)
+- Preview and create metrics → \`/confidence:explore-metric\`
 - Invite your team → \`/onboard-confidence invite-user\`
 - Run an A/B experiment → \`/onboard-confidence learn\`
 

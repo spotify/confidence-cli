@@ -120,15 +120,18 @@ exports[`happy-path flow > navigates Welcome → SystemCheck → Authenticate �
 
  Choose the Confidence features to integrate with your project.       ● Check system
                                                                       ● Sign in to Confidence
- ◆ Session Recordings (β) require the feature to be enabled on your   ● Set up your agent
- Confidence account.                                                  ● Connect tools
+ ✱ Event Tracking works best with a managed warehouse or an           ● Set up your agent
+ existing warehouse setup.                                            ● Connect tools
                                                                       ▶ Onboard project
+ ✱ Session Recordings (β) require the feature to be enabled on your
+ Confidence account.
 
 
  ──────────────────────────────────────────────────────────────────────────────────────────────────
  Select features to set up:
 
  ❯ Feature Flags
+   Event Tracking
    Session Recordings (β)
    YOLO! Set up everything
    Skip setup

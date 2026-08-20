@@ -90,7 +90,12 @@ export function OnboardingLeftPanel({
 const GOAL_STEPS: Record<OnboardingGoal, string[]> = {
   'feature-flags': ['create your first feature flag'],
   'session-recordings': ['set up session recordings to capture user sessions'],
-  all: ['set up feature flags', 'set up session recordings to capture user sessions'],
+  'event-tracking': ['instrument event tracking to measure user behavior'],
+  all: [
+    'set up feature flags',
+    'set up session recordings to capture user sessions',
+    'instrument event tracking to measure user behavior',
+  ],
 };
 
 function onboardingSteps(goal: OnboardingGoal): string[] {

@@ -235,15 +235,22 @@ function buildDryRunSteps(fw: string, isEmpty: boolean, goal: OnboardingGoal): s
     'Adding session recording provider...',
     'Configuring privacy settings...',
   ];
+  const eventTrackingSteps = [
+    'Scanning for existing event tracking...',
+    'Identifying trackable events...',
+    'Creating event definitions...',
+    'Adding track() calls...',
+    'Verifying event pipeline...',
+  ];
 
-  const goalSteps =
-    goal === 'feature-flags'
-      ? flagSteps
-      : goal === 'session-recordings'
-        ? recordingSteps
-        : [...flagSteps, ...recordingSteps];
+  const goalSteps: Record<OnboardingGoal, string[]> = {
+    'feature-flags': flagSteps,
+    'session-recordings': recordingSteps,
+    'event-tracking': eventTrackingSteps,
+    all: [...flagSteps, ...recordingSteps, ...eventTrackingSteps],
+  };
 
-  return [...detect, ...goalSteps, 'Generating CONFIDENCE_QUICKSTART.md report...'];
+  return [...detect, ...goalSteps[goal], 'Generating CONFIDENCE_QUICKSTART.md report...'];
 }
 
 function dryRunCodeChanges(goal: OnboardingGoal): string[] {
@@ -256,8 +263,17 @@ function dryRunCodeChanges(goal: OnboardingGoal): string[] {
     'Added @spotify-confidence/session-recording dependency',
     'Added session recording provider',
   ];
+  const eventTrackingChanges = [
+    'Created event definitions with entity references',
+    'Added confidence.track() calls',
+  ];
 
-  if (goal === 'feature-flags') return flagChanges;
-  if (goal === 'session-recordings') return recordingChanges;
-  return [...flagChanges, ...recordingChanges];
+  const goalChanges: Record<OnboardingGoal, string[]> = {
+    'feature-flags': flagChanges,
+    'session-recordings': recordingChanges,
+    'event-tracking': eventTrackingChanges,
+    all: [...flagChanges, ...recordingChanges, ...eventTrackingChanges],
+  };
+
+  return goalChanges[goal];
 }

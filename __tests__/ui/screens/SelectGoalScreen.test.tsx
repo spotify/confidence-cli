@@ -24,6 +24,7 @@ describe('SelectGoalScreen', () => {
         expect(frame).toContain('Which features would you like to set up?');
         expect(frame).toContain('Feature Flags');
         expect(frame).toContain('Session Recording');
+        expect(frame).toContain('Event Tracking');
         expect(frame).toContain('YOLO');
         expect(frame).toContain('Skip setup');
       });
@@ -44,7 +45,22 @@ describe('SelectGoalScreen', () => {
       });
     });
 
-    it('auto-skips to OnboardProject for unknown framework', async () => {
+    it('shows warehouse note for event tracking', async () => {
+      using project = createProjectDir();
+
+      using sut = renderApp({
+        screen: ScreenId.SelectGoal,
+        dir: project.path,
+        framework: 'react',
+      });
+
+      await waitFor(() => {
+        expect(sut.lastFrame()).toContain('managed warehouse');
+        expect(sut.lastFrame()).toContain('warehouse setup');
+      });
+    });
+
+    it('shows goal selection for non-browser project without recording option', async () => {
       using project = createProjectDir('empty');
 
       using sut = renderApp({
@@ -53,8 +69,11 @@ describe('SelectGoalScreen', () => {
       });
 
       await waitFor(() => {
-        expect(sut.lastFrame()).toContain('Ready to start?');
-        expect(sut.lastFrame()).toContain('Start onboarding?');
+        const frame = sut.lastFrame()!;
+        expect(frame).toContain('Feature Flags');
+        expect(frame).toContain('Event Tracking');
+        expect(frame).toContain('Skip setup');
+        expect(frame).not.toContain('Session Recording');
       });
     });
 
@@ -92,14 +111,37 @@ describe('SelectGoalScreen', () => {
         expect(sut.lastFrame()).toContain('Skip setup');
       });
 
-      await act(() => sut.stdin.write(ARROW_DOWN.repeat(3) + ENTER));
+      // Skip is the 5th option for browser projects (flags, events, recordings, yolo, skip)
+      await act(() => sut.stdin.write(ARROW_DOWN.repeat(4) + ENTER));
 
       await waitFor(() => {
         expect(sut.lastFrame()).toContain('Onboarding skipped');
       });
     });
 
-    it('auto-skips for non-browser project with competitors', async () => {
+    it('shows event tracking steps after selecting Event Tracking', async () => {
+      using project = createProjectDir();
+
+      using sut = renderApp({
+        screen: ScreenId.SelectGoal,
+        dir: project.path,
+        framework: 'react',
+      });
+
+      await waitFor(() => {
+        expect(sut.lastFrame()).toContain('Event Tracking');
+      });
+
+      // Event Tracking is the 2nd option for browser projects
+      await act(() => sut.stdin.write(ARROW_DOWN + ENTER));
+
+      await waitFor(() => {
+        expect(sut.lastFrame()).toContain('Ready to start?');
+        expect(sut.lastFrame()).toContain('instrument event tracking');
+      });
+    });
+
+    it('shows goal selection for non-browser project with competitors', async () => {
       using project = createProjectDir('statsig-node');
 
       using sut = renderApp({
@@ -110,23 +152,10 @@ describe('SelectGoalScreen', () => {
       });
 
       await waitFor(() => {
-        expect(sut.lastFrame()).toContain('Ready to start?');
-        expect(sut.lastFrame()).toContain('Start onboarding?');
-      });
-    });
-
-    it('skips directly to OnboardProject for non-browser project without competitors', async () => {
-      using project = createProjectDir('empty');
-
-      using sut = renderApp({
-        screen: ScreenId.SelectGoal,
-        dir: project.path,
-        framework: 'node',
-      });
-
-      await waitFor(() => {
-        expect(sut.lastFrame()).toContain('Ready to start?');
-        expect(sut.lastFrame()).toContain('Start onboarding?');
+        const frame = sut.lastFrame()!;
+        expect(frame).toContain('Feature Flags');
+        expect(frame).toContain('Event Tracking');
+        expect(frame).not.toContain('Session Recording');
       });
     });
   });

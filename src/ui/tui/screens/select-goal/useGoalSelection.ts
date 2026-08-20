@@ -1,7 +1,6 @@
 import { ScreenId } from '@lib/session.js';
 import { useNavigation } from '../../hooks/useNavigation.js';
 import { useLogger } from '../../hooks/useLog.js';
-import { useAutoAdvance } from '../../hooks/useAutoAdvance.js';
 import { store } from '../../store.js';
 import { track } from '@lib/telemetry.js';
 import { skipped } from '../../lib/log-messages.js';
@@ -20,16 +19,6 @@ export function useGoalSelection(): GoalSelection {
   const navigate = useNavigation(ScreenId.SelectGoal);
   const log = useLogger(ScreenId.SelectGoal);
   const initial = useInitialGoalSelection();
-
-  useAutoAdvance({
-    screen: ScreenId.SelectGoal,
-    when: initial.phase === 'done',
-    delay: 0,
-    onAdvance: () => {
-      store.setOnboardingGoal('feature-flags');
-      log(goalChosen('feature-flags (auto — framework)'));
-    },
-  });
 
   function selectGoal(value: GoalValue) {
     if (value === 'skip') {

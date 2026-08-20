@@ -18,6 +18,5 @@ export function useInitialGoalSelection(): InitialGoalSelection {
 
 function resolveInitialGoalSelection(session: WizardSession): InitialGoalSelection {
   const supportsRecordings = !!session.framework && BROWSER_PLATFORMS.has(session.framework);
-  const phase = supportsRecordings ? 'select-goal' : 'done';
-  return { phase, supportsRecordings };
+  return { phase: 'select-goal', supportsRecordings };
 }
