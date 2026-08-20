@@ -17,7 +17,7 @@ export function useScreenDescription() {
     `We've taught ${ideName} Confidence skills—try them out with slash commands.`,
 
     hasProviders
-      ? `For example, run /migrate-${detectedProviders[0].id} to migrate existing feature flags to Confidence.`
+      ? `For example, run /${detectedProviders[0].skillName} to migrate existing feature flags to Confidence.`
       : null,
   ];
 
