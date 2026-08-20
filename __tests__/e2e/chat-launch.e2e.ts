@@ -25,7 +25,8 @@ describe('when the user starts chat after onboarding', () => {
     expect(prompt).toContain('I just set up Confidence');
     expect(prompt).toContain('Changes made:');
     expect(prompt).toContain('CONFIDENCE_QUICKSTART.md');
-    expect(prompt).toContain('continue working on my Confidence integration');
+    expect(prompt).toContain('Help me with next steps');
+    expect(prompt).toContain('Confidence AI plugin');
     expect(prompt).toContain('/setup-warehouse');
     expect(prompt).not.toContain('/migrate-');
   });
@@ -44,6 +45,7 @@ describe('when the user starts chat after onboarding', () => {
     expect(exitCode).toBe(0);
 
     const prompt = readFileSync(join(session.cwd, CHAT_PROMPT_FILE), 'utf-8');
+    expect(prompt).toContain('Confidence AI plugin');
     expect(prompt).toContain('/setup-warehouse');
     expect(prompt).toContain('/migrate-');
   });
