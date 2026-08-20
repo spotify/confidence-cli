@@ -8,6 +8,16 @@ const TOOL_FORMATTERS: Record<ChosenIde, ToolFormatter> = {
   cursor: (server, tool) => `mcp__${server}__${tool}`,
 };
 
+const SKILLS_DIRS: Record<ChosenIde, string> = {
+  claude: '.claude/skills',
+  cursor: '.cursor/skills',
+  codex: '.agents/skills',
+};
+
+export function skillsDir(ide: ChosenIde): string {
+  return SKILLS_DIRS[ide];
+}
+
 export function buildToolVars(ide: ChosenIde): Record<string, string> {
   const fmt = TOOL_FORMATTERS[ide];
   const flags = (tool: string) => fmt('confidence-flags', tool);

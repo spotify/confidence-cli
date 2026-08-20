@@ -1,12 +1,7 @@
 import type { ChosenIde } from '../session.js';
 import { CONFIDENCE_DOCS_URL } from '../constants.js';
 import { loadStep } from './steps/load.js';
-
-const SKILLS_DIR: Record<ChosenIde, string> = {
-  claude: '.claude/skills',
-  cursor: '.cursor/skills',
-  codex: '.agents/skills',
-};
+import { skillsDir } from './tool-vars.js';
 
 export function integrateViaSkill(
   framework: string,
@@ -19,7 +14,7 @@ export function integrateViaSkill(
   return loadStep('integrate-via-skill.md', {
     STEP: step,
     FRAMEWORK: framework,
-    SKILLS_DIR: SKILLS_DIR[ide],
+    SKILLS_DIR: skillsDir(ide),
 
     DOMAIN_CONTEXT: isEmptyProject
       ? "The project was just scaffolded — treat the sample app's features as the domain."
