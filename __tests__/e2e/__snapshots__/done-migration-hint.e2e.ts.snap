@@ -1,12 +1,13 @@
 // Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
 
-exports[`when the user skips connecting tools > shows skip message and proceeds to onboarding > done-tools-skipped 1`] = `
+exports[`Done screen migration hint > shows /migrate-statsig hint when competitor is detected > done-with-migration-hint 1`] = `
 " Confidence by Spotify                                              https://confidence.spotify.com/
 
 
                                        ✔ Confidence is ready!
 
-            We've taught Claude Code Confidence skills—try them out with slash commands.
+         We've taught Claude Code Confidence skills—try them out with slash commands.
+         For example, run /migrate-statsig to migrate existing feature flags to Confidence.
 
                                         What we have set up:
                                    ● Added feature flag example

@@ -71,16 +71,16 @@ describe('SelectGoal screen', () => {
     await session.waitForText('Onboarding skipped');
   });
 
-  it('shows migration directly for non-browser project with competitors', async () => {
+  it('auto-advances for non-browser project', async () => {
     using session = createSession({ project: 'statsig-node' });
 
     await navigateToConnectTools(session);
     session.checkpoint();
     await session.press('Enter');
 
-    // Non-browser project with competitor + plugins → migration sub-phase
-    await session.waitForText('Migrate existing flags?');
-    await session.waitForText("Integrate and migrate Statsig's flags");
-    expect(session.snapshot()).toMatchSnapshot('select-goal-migration');
+    // Non-browser project auto-advances past goal selection to onboarding
+    await session.waitForText('Start onboarding?');
+    expect(session.snapshot()).toContain('add the Confidence SDK');
+    expect(session.snapshot()).toContain('create your first feature flag');
   });
 });

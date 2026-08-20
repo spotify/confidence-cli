@@ -47,6 +47,8 @@ exports[`happy-path flow > navigates Welcome → SystemCheck → Authenticate �
 
                                        ✔ Confidence is ready!
 
+            We've taught Claude Code Confidence skills—try them out with slash commands.
+
                                         What we have set up:
                                    ● Added feature flag example
                                    ● Created confidence.config.ts

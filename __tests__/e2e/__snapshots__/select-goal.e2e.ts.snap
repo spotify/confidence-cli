@@ -22,24 +22,3 @@ exports[`SelectGoal screen > shows goal options for a browser framework > select
 
  ↑↓ navigate   enter confirm                                                                 vX.Y.Z"
 `;
-
-exports[`SelectGoal screen > shows migration directly for non-browser project with competitors > select-goal-migration 1`] = `
-" Confidence by Spotify                                              https://confidence.spotify.com/
-
- Migrate existing flags?                                              Todo (4/5)
-
- Found Statsig in your project. Would you like to migrate their       ● Check system
- flags to Confidence?                                                 ● Sign in to Confidence
-                                                                      ● Set up your agent
-                                                                      ● Connect tools
-                                                                      ▶ Onboard project
-
-
- ──────────────────────────────────────────────────────────────────────────────────────────────────
- Found Statsig flags in code. How would you like to proceed?
-
- ❯ Just integrate Confidence
-   Integrate and migrate Statsig's flags
-
- ↑↓ navigate   enter confirm                                                                 vX.Y.Z"
-`;
