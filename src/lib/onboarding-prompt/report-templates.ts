@@ -7,43 +7,37 @@ export function buildReportTemplate(goals: OnboardingGoal[]): ReportTemplate {
 }
 
 function buildTemplateStart(goals: OnboardingGoal[]): string {
-  const tableRows: string[] = [];
-  const fileEntries: string[] = [];
-  const deps: string[] = [];
+  const tableRowEntries: string[] = [];
+  const dependencyEntries: string[] = [];
+  const fileChangeEntries = [
+    '- `<.env file>` — added `CONFIDENCE_CLIENT_SECRET`',
+    '- `<entry point file>` — added SDK initialization',
+  ];
 
   if (goals.includes('feature-flags')) {
-    tableRows.push(
+    tableRowEntries.push(
       '| Client | <CLIENT_NAME> |',
       '| Flag | <FLAG_NAME> |',
       '| Variants | <VARIANT_LIST> |',
       '| Default | <DEFAULT_VARIANT> (100% allocation) |',
     );
-    fileEntries.push(
-      '- `<.env file>` — added `CONFIDENCE_CLIENT_SECRET`',
-      '- `<entry point file>` — added SDK initialization',
-      '- `<aha target file>` — added flag evaluation',
-    );
-    deps.push('- `<feature flags SDK package name>`');
+    fileChangeEntries.push('- `<aha target file>` — added flag evaluation');
+    dependencyEntries.push('- `<feature flags SDK package name>`');
   }
 
   if (goals.includes('session-recordings')) {
-    tableRows.push('| Session Recording | Enabled |');
-    fileEntries.push('- `<entry point file>` — added session recording provider');
-    deps.push('- `<session recording SDK package name>`');
+    tableRowEntries.push('| Session Recording | Enabled |');
+    fileChangeEntries.push('- `<entry point file>` — added session recording provider');
+    dependencyEntries.push('- `<session recording SDK package name>`');
   }
 
   if (goals.includes('event-tracking')) {
-    tableRows.push(
+    tableRowEntries.push(
       '| Event Definitions | <EVENT_COUNT> created |',
       '| Fact Tables | <FACT_TABLE_COUNT> auto-created |',
     );
-    fileEntries.push('- `<files with track() calls>` — added event tracking calls');
-    deps.push('- `<SDK package name>`');
-  }
-
-  if (!goals.includes('feature-flags')) {
-    fileEntries.unshift('- `<.env file>` — added `CONFIDENCE_CLIENT_SECRET`');
-    fileEntries.push('- `<entry point file>` — added SDK initialization');
+    fileChangeEntries.push('- `<files with track() calls>` — added event tracking calls');
+    dependencyEntries.push('- `<event tracking SDK package name>`');
   }
 
   return `\
@@ -54,18 +48,18 @@ function buildTemplateStart(goals: OnboardingGoal[]): string {
 
 | | |
 |---|---|
-${tableRows.join('\n')}
+${tableRowEntries.join('\n')}
 
 ## What changed in your codebase
 
 **New/modified files:**
 
-${fileEntries.join('\n')}
+${fileChangeEntries.join('\n')}
 <!-- Only list files that were actually created or modified -->
 
 **New dependencies:**
 
-${deps.join('\n')}`;
+${dependencyEntries.join('\n')}`;
 }
 
 const TEMPLATE_END = `\
