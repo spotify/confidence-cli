@@ -40,8 +40,9 @@ removed=0
 if $clean_auth; then
   token_file="${TMPDIR:-/tmp}/confidence_token"
   refresh_file="${TMPDIR:-/tmp}/confidence_refresh_token"
+  org_file="${TMPDIR:-/tmp}/confidence_organization"
 
-  for f in "$token_file" "$refresh_file"; do
+  for f in "$token_file" "$refresh_file" "$org_file"; do
     if [[ -f "$f" ]]; then
       rm "$f"
       echo "Removed $f"
