@@ -16,7 +16,8 @@ describe('when the user skips installing AI plugin', () => {
     await session.waitForText('Connected successfully');
 
     // SelectGoal
-    await session.waitForText('Which features would you like to set up?');
+    await session.waitForText("Select the features you'd like to set up");
+    await session.press('Space');
     await session.press('Enter');
 
     // OnboardProject
@@ -50,7 +51,8 @@ describe('when the user skips installing AI plugin', () => {
     await session.waitForText('Connected successfully');
 
     // SelectGoal
-    await session.waitForText('Which features would you like to set up?');
+    await session.waitForText("Select the features you'd like to set up");
+    await session.press('Space');
     await session.press('Enter');
 
     await session.waitForText('Start onboarding?');

@@ -53,7 +53,7 @@ export function useOnboardingProcess(): OnboardingProcess {
   }, []);
 
   const markComplete = useCallback(
-    function markComplete(goal: OnboardingGoal, lines?: string[]) {
+    function markComplete(goals: OnboardingGoal[], lines?: string[]) {
       addStatus('', 'blank');
       addStatus('Project onboarding complete!', 'success');
       store.setReportFile('CONFIDENCE_QUICKSTART.md');
@@ -65,7 +65,7 @@ export function useOnboardingProcess(): OnboardingProcess {
                   line.includes('Created') || line.includes('Modified') || line.includes('Added'),
               )
               .map(normalizeStatusLine)
-          : dryRunCodeChanges(goal),
+          : dryRunCodeChanges(goals),
       );
       setPhase('done');
     },
@@ -76,7 +76,7 @@ export function useOnboardingProcess(): OnboardingProcess {
     function start(fwName: string | null) {
       const s = $session.get();
       const isEmpty = s.isEmptyProject;
-      const goal = s.onboardingGoal ?? 'feature-flags';
+      const goals = s.onboardingGoals;
       const fw = fwName ?? 'React';
       setPhase('onboarding');
       addStatus(isEmpty ? 'Scaffolding sample app...' : 'Setting up Confidence...');
@@ -86,7 +86,7 @@ export function useOnboardingProcess(): OnboardingProcess {
 
       function startDryRun() {
         log(onboardingDryRun(fw));
-        const steps = buildDryRunSteps(fw, isEmpty, goal);
+        const steps = buildDryRunSteps(fw, isEmpty, goals);
 
         let i = 0;
         const interval = setInterval(() => {
@@ -96,7 +96,7 @@ export function useOnboardingProcess(): OnboardingProcess {
             i++;
           } else {
             clearInterval(interval);
-            markComplete(goal);
+            markComplete(goals);
           }
         }, 3000);
       }
@@ -116,7 +116,7 @@ export function useOnboardingProcess(): OnboardingProcess {
           projectDir: s.projectDir,
           ide,
           isEmptyProject: isEmpty,
-          goal,
+          goals,
           hasPlugins: s.installedPlugins.length > 0,
           hasProviders: s.detectedProviders.length > 0,
         });
@@ -139,7 +139,7 @@ export function useOnboardingProcess(): OnboardingProcess {
             onComplete(lines) {
               childRef.current = null;
               log(onboardingExitSuccess(lines.length));
-              markComplete(goal, lines);
+              markComplete(goals, lines);
             },
             onError(message) {
               childRef.current = null;
@@ -222,42 +222,52 @@ export function useOnboardingProcess(): OnboardingProcess {
   };
 }
 
-function buildDryRunSteps(fw: string, isEmpty: boolean, goal: OnboardingGoal): string[] {
-  const detect = isEmpty ? ['Scaffolding sample app...'] : [`Detected framework: ${fw}`];
-  const flagSteps = [
+const DRY_RUN_STEPS: Record<OnboardingGoal, string[]> = {
+  'feature-flags': [
     'Determining appropriate SDK...',
     'Installing @spotify-confidence/sdk...',
     'Generating Confidence configuration...',
     'Creating feature flag example...',
-  ];
-  const recordingSteps = [
+  ],
+  'session-recordings': [
     'Installing session recording SDK...',
     'Adding session recording provider...',
     'Configuring privacy settings...',
+  ],
+  'event-tracking': [
+    'Scanning for existing event tracking...',
+    'Identifying trackable events...',
+    'Creating event definitions...',
+    'Adding track() calls...',
+    'Verifying event pipeline...',
+  ],
+};
+
+function buildDryRunSteps(fw: string, isEmpty: boolean, goals: OnboardingGoal[]): string[] {
+  const detect = isEmpty ? ['Scaffolding sample app...'] : [`Detected framework: ${fw}`];
+  return [
+    ...detect,
+    ...goals.flatMap((g) => DRY_RUN_STEPS[g]),
+    'Generating CONFIDENCE_QUICKSTART.md report...',
   ];
-
-  const goalSteps =
-    goal === 'feature-flags'
-      ? flagSteps
-      : goal === 'session-recordings'
-        ? recordingSteps
-        : [...flagSteps, ...recordingSteps];
-
-  return [...detect, ...goalSteps, 'Generating CONFIDENCE_QUICKSTART.md report...'];
 }
 
-function dryRunCodeChanges(goal: OnboardingGoal): string[] {
-  const flagChanges = [
+const DRY_RUN_CODE_CHANGES: Record<OnboardingGoal, string[]> = {
+  'feature-flags': [
     'Added @spotify-confidence/sdk',
     'Created confidence.config.ts — SDK configuration',
     'Created feature flag example',
-  ];
-  const recordingChanges = [
+  ],
+  'session-recordings': [
     'Added @spotify-confidence/session-recording',
     'Added session recording provider',
-  ];
+  ],
+  'event-tracking': [
+    'Created event definitions with entity references',
+    'Added confidence.track() calls',
+  ],
+};
 
-  if (goal === 'feature-flags') return flagChanges;
-  if (goal === 'session-recordings') return recordingChanges;
-  return [...flagChanges, ...recordingChanges];
+function dryRunCodeChanges(goals: OnboardingGoal[]): string[] {
+  return goals.flatMap((g) => DRY_RUN_CODE_CHANGES[g]);
 }

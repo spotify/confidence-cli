@@ -5,8 +5,8 @@ import { SKILLS_BASE_URL } from '@lib/constants.js';
 
 export const PLUGIN_SKILLS = [
   'analyze-project',
+  'instrument-events',
   'onboard-confidence',
-  'onboard-confidence-dry-run',
   'setup-warehouse',
   'setup-warehouse-bigquery',
   'setup-warehouse-databricks',

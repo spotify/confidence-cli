@@ -2,25 +2,45 @@ import type { OnboardingGoal } from '../session.js';
 
 export type ReportTemplate = { start: string; end: string };
 
-export function buildReportTemplate(goal: OnboardingGoal): ReportTemplate {
-  switch (goal) {
-    case 'feature-flags':
-      return { start: FLAGS_TEMPLATE_START, end: COMMON_TEMPLATE_END };
-
-    case 'session-recordings':
-      return { start: RECORDING_TEMPLATE_START, end: COMMON_TEMPLATE_END };
-
-    case 'all':
-      return { start: ALL_TEMPLATE_START, end: COMMON_TEMPLATE_END };
-
-    default: {
-      const _exhaustive: never = goal satisfies never;
-      throw new Error(`Unhandled goal: ${_exhaustive}`);
-    }
-  }
+export function buildReportTemplate(goals: OnboardingGoal[]): ReportTemplate {
+  return { start: buildTemplateStart(goals), end: TEMPLATE_END };
 }
 
-const FLAGS_TEMPLATE_START = `\
+function buildTemplateStart(goals: OnboardingGoal[]): string {
+  const tableRowEntries: string[] = [];
+  const dependencyEntries: string[] = [];
+  const fileChangeEntries = [
+    '- `<.env file>` — added `CONFIDENCE_CLIENT_SECRET`',
+    '- `<entry point file>` — added SDK initialization',
+  ];
+
+  if (goals.includes('feature-flags')) {
+    tableRowEntries.push(
+      '| Client | <CLIENT_NAME> |',
+      '| Flag | <FLAG_NAME> |',
+      '| Variants | <VARIANT_LIST> |',
+      '| Default | <DEFAULT_VARIANT> (100% allocation) |',
+    );
+    fileChangeEntries.push('- `<aha target file>` — added flag evaluation');
+    dependencyEntries.push('- `<feature flags SDK package name>`');
+  }
+
+  if (goals.includes('session-recordings')) {
+    tableRowEntries.push('| Session Recording | Enabled |');
+    fileChangeEntries.push('- `<entry point file>` — added session recording provider');
+    dependencyEntries.push('- `<session recording SDK package name>`');
+  }
+
+  if (goals.includes('event-tracking')) {
+    tableRowEntries.push(
+      '| Event Definitions | <EVENT_COUNT> created |',
+      '| Fact Tables | <FACT_TABLE_COUNT> auto-created |',
+    );
+    fileChangeEntries.push('- `<files with track() calls>` — added event tracking calls');
+    dependencyEntries.push('- `<event tracking SDK package name>`');
+  }
+
+  return `\
 \`\`\`markdown
 # Confidence Quickstart Report
 
@@ -28,76 +48,21 @@ const FLAGS_TEMPLATE_START = `\
 
 | | |
 |---|---|
-| Client | <CLIENT_NAME> |
-| Flag | <FLAG_NAME> |
-| Variants | <VARIANT_LIST> |
-| Default | <DEFAULT_VARIANT> (100% allocation) |
+${tableRowEntries.join('\n')}
 
 ## What changed in your codebase
 
 **New/modified files:**
 
-- \`<.env file>\` — added \`CONFIDENCE_CLIENT_SECRET\`
-- \`<entry point file>\` — added SDK initialization
-- \`<aha target file>\` — added flag evaluation
+${fileChangeEntries.join('\n')}
 <!-- Only list files that were actually created or modified -->
 
 **New dependencies:**
 
-- \`<SDK package name>\``;
+${dependencyEntries.join('\n')}`;
+}
 
-const RECORDING_TEMPLATE_START = `\
-\`\`\`markdown
-# Confidence Quickstart Report
-
-## What was set up
-
-| | |
-|---|---|
-| Integration | Session Recording |
-| Client | <CLIENT_NAME> |
-
-## What changed in your codebase
-
-**New/modified files:**
-
-- \`<.env file>\` — added \`CONFIDENCE_CLIENT_SECRET\`
-- \`<entry point file>\` — added session recording provider
-<!-- Only list files that were actually created or modified -->
-
-**New dependencies:**
-
-- \`<session recording SDK package name>\``;
-
-const ALL_TEMPLATE_START = `\
-\`\`\`markdown
-# Confidence Quickstart Report
-
-## What was created in Confidence
-
-| | |
-|---|---|
-| Client | <CLIENT_NAME> |
-| Flag | <FLAG_NAME> |
-| Variants | <VARIANT_LIST> |
-| Default | <DEFAULT_VARIANT> (100% allocation) |
-| Session Recording | Enabled |
-
-## What changed in your codebase
-
-**New/modified files:**
-
-- \`<.env file>\` — added \`CONFIDENCE_CLIENT_SECRET\`
-- \`<entry point file>\` — added SDK initialization and session recording provider
-- \`<aha target file>\` — added flag evaluation
-<!-- Only list files that were actually created or modified -->
-
-**New dependencies:**
-
-- \`<feature flags SDK package name>\`
-- \`<session recording SDK package name>\``;
-
-const COMMON_TEMPLATE_END = `\
+const TEMPLATE_END = `\
 ## How to use it
 
 - Manage your setup at https://app.confidence.spotify.com
@@ -117,6 +82,7 @@ const COMMON_TEMPLATE_END = `\
 - [SDK reference](<link from docs MCP for detected platform>)
 - Set up a data warehouse → \`/setup-warehouse\`
 - Migrate flags from another provider → \`/migrate-<provider>\` (e.g. \`/migrate-statsig\`, \`/migrate-eppo\`)
+- Preview and create metrics → \`/confidence:explore-metric\`
 - Invite your team → \`/onboard-confidence invite-user\`
 - Run an A/B experiment → \`/onboard-confidence learn\`
 

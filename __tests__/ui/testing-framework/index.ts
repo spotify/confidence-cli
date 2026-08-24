@@ -21,3 +21,5 @@ export const ARROW_UP = KEY_MAP.ArrowUp;
 export const ENTER = KEY_MAP.Enter;
 /** @see {@link KEY_MAP.Escape} */
 export const ESCAPE = KEY_MAP.Escape;
+/** @see {@link KEY_MAP.Space} */
+export const SPACE = KEY_MAP.Space;
