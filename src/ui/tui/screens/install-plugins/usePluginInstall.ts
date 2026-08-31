@@ -2,9 +2,9 @@ import { useState } from 'react';
 import type { IdeId } from '@integrations/index.js';
 import { prepareIde, installPlugin } from '@integrations/index.js';
 import type { ChosenIde } from '@lib/session.js';
+import { track } from '@lib/telemetry.js';
 import { $session, store } from '../../store.js';
 import { useInitialDetection } from './useInitialDetection.js';
-import { track } from '@lib/telemetry.js';
 import { pluginInstallFailed } from './telemetry-events.js';
 
 export type PluginPhase =
