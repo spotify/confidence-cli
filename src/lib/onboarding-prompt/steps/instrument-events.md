@@ -4,7 +4,7 @@ Print "STATUS: Analyzing project for event tracking..."
 
 The detected framework is **{{FRAMEWORK}}**.
 
-Read `{{SKILLS_DIR}}/instrument-events/SKILL.md` as a **methodology reference** — use it for what to scan, how to identify trackable events, how to create event definitions with entity references, and how to add `track()` calls. Ignore its output formatting entirely: no step tracker, no EDUCATE blocks, no AskUserQuestion calls.
+{{SKILL_READ_INSTRUCTION}} — use it for what to scan, how to identify trackable events, how to create event definitions with entity references, and how to add `track()` calls. Ignore its output formatting entirely: no step tracker, no EDUCATE blocks, no AskUserQuestion calls.
 
 Execute the skill's workflow automatically, without pausing for user input:
 

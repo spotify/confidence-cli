@@ -1,7 +1,7 @@
-import type { OnboardingGoal } from '../session.js';
-import { CONFIDENCE_DOCS_URL } from '../constants.js';
-import { buildReportTemplate } from './report-templates.js';
-import { loadStep } from './steps/load.js';
+import type { OnboardingGoal } from '../../session.js';
+import { CONFIDENCE_DOCS_URL } from '../../constants.js';
+import { buildReportTemplate } from '../report-templates.js';
+import { loadStep } from '../steps/load.js';
 
 const HOW_TO_RUN = `
 ## How to run
@@ -22,13 +22,11 @@ export function generateReport({
   step,
   isEmptyProject,
   goals = ['feature-flags'],
-  hasPlugins = false,
   hasProviders = false,
 }: {
   step: number;
   isEmptyProject: boolean;
   goals?: OnboardingGoal[];
-  hasPlugins?: boolean;
   hasProviders?: boolean;
 }): string {
   const template = buildReportTemplate(goals);
@@ -38,15 +36,7 @@ export function generateReport({
     REPORT_START: template.start,
     HOW_TO_RUN: isEmptyProject ? HOW_TO_RUN : '',
     REPORT_END: template.end,
-    SKILLS_NOTE: hasPlugins ? buildSkillsNote(hasProviders) : '',
+    SKILLS_NOTE: buildSkillsNote(hasProviders),
     DOCS_URL: CONFIDENCE_DOCS_URL,
   });
-}
-
-export function summary(step: number): string {
-  return loadStep('summary.md', { STEP: step });
-}
-
-export function rules(): string {
-  return loadStep('rules.md');
 }

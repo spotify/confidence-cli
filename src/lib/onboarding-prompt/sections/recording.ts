@@ -1,5 +1,5 @@
-import { CONFIDENCE_DOCS_URL } from '../constants.js';
-import { loadStep } from './steps/load.js';
+import { CONFIDENCE_DOCS_URL } from '../../constants.js';
+import { loadStep } from '../steps/load.js';
 
 export function determineRecordingSDK(
   framework: string,

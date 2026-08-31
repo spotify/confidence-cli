@@ -1,3 +1,4 @@
+import type { PluginInstallationMethod } from '@integrations/types.js';
 import type { ChosenIde } from '../session.js';
 
 type ToolFormatter = (server: string, tool: string) => string;
@@ -14,8 +15,14 @@ const SKILLS_DIRS: Record<ChosenIde, string> = {
   codex: '.agents/skills',
 };
 
-export function skillsDir(ide: ChosenIde): string {
-  return SKILLS_DIRS[ide];
+export function referenceInstruction(
+  skillName: string,
+  ide: ChosenIde,
+  method?: PluginInstallationMethod | null,
+): string {
+  return method === 'cli'
+    ? `Invoke the \`/${skillName}\` skill as a **methodology reference**`
+    : `Read \`${SKILLS_DIRS[ide]}/${skillName}/SKILL.md\` as a **methodology reference**`;
 }
 
 export function buildToolVars(ide: ChosenIde): Record<string, string> {
