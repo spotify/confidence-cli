@@ -32,9 +32,11 @@ export function integrateViaSkill(
 
 const REACT_GOTCHAS = `
 
-**React/Next.js gotchas:**
-- Use \`@spotify-confidence/openfeature-server-provider-local\` for React/Next.js — the client SDKs (\`@spotify-confidence/react\`, \`@spotify-confidence/sdk\`, \`@openfeature/react-sdk\`) are being phased out.
-- Never call \`useFlag\` in a Server Component — use \`getFlag\` or wrap in a Client Component.
+**React/Next.js — MANDATORY SDK selection:**
+- DO NOT install \`@spotify-confidence/react\`, \`@spotify-confidence/sdk\`, or \`@openfeature/react-sdk\` — these are deprecated and must not be used even if other sources mention them.
+- Use \`@spotify-confidence/openfeature-server-provider-local\` — it is the recommended SDK for both React and Next.js. It uses local evaluation via WebAssembly for fast flag resolution.
+- For Next.js: import \`ConfidenceProvider\` from \`@spotify-confidence/openfeature-server-provider-local/react-server\`, use \`getFlag\` in Server Components and \`useFlag\` in Client Components.
+- Only fall back to \`@spotify-confidence/openfeature-web-provider\` when the project requires client-side context modifications that local resolve cannot support.
 - Place the provider above any \`<Suspense>\` boundary.
 - If using the client provider, the rendering file must be a Client Component — extract into \`providers.tsx\` with \`"use client"\` if needed.`;
 
