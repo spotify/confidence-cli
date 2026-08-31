@@ -1,20 +1,19 @@
 import type { ChosenIde } from '@lib/session.js';
 import type { PromptOption } from '../../components/PromptPanel.js';
 
-export type IdeSelectValue = ChosenIde | 'skip';
+export type IdeSelectValue = ChosenIde;
 
 export type DetectedSelectValue = IdeSelectValue | 'continue';
 
-export const IDE_SELECT_OPTIONS: PromptOption<IdeSelectValue>[] = [
+export const IDE_SELECT_OPTIONS: PromptOption<ChosenIde>[] = [
   { label: 'Claude Code', value: 'claude' },
   { label: 'Cursor', value: 'cursor' },
   { label: 'Codex', value: 'codex' },
-  { label: 'Skip (install manually later)', value: 'skip' },
 ];
 
-export type ErrorAction = 'retry' | 'skip';
+export type ErrorAction = 'retry' | 'exit';
 
 export const ERROR_OPTIONS: PromptOption<ErrorAction>[] = [
   { label: 'Retry', value: 'retry' },
-  { label: 'Skip', value: 'skip' },
+  { label: 'Exit', value: 'exit' },
 ];

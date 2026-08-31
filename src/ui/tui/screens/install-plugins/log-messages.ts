@@ -8,6 +8,6 @@ export function pluginInstalled(ide: string | null | undefined): LogMessage {
   return { input: ide ?? 'unknown', output: `Installed for ${ide}` };
 }
 
-export function pluginSkippedAfterError(error: string | null): LogMessage {
-  return { input: 'Skip (after error)', output: error ?? 'Installation failed' };
+export function pluginExitedAfterError(error: string | null): LogMessage {
+  return { input: 'Exit (after error)', output: error ?? 'Setup failed' };
 }
