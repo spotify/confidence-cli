@@ -26,7 +26,7 @@ export function useInitialDetection(): InitialDetection {
   }, []);
 
   useEffect(
-    function runInitialDetection() {
+    function resolveInitialDetection() {
       if (session.dryRun) return;
       detectInstalledPlugins(session.projectDir).then(applyResults);
     },
