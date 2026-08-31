@@ -1,2 +1,1 @@
-export * from './local.js';
-export * from './plugin.js';
+export { detectInstalledPlugins, prepareIde, installPlugin } from './plugin.js';
