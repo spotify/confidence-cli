@@ -25,10 +25,10 @@ exports[`when MCP config has expired auth tokens > allows skipping when auth is 
 exports[`when MCP config has expired auth tokens > shows auth-expired status and reconnects successfully > connect-tools-expired 1`] = `
 " Confidence by Spotify                                              https://confidence.spotify.com/
 
- Connect your AI to Confidence                                        Todo (3/5)
+ Teach your AI Confidence                                             Todo (3/5)
 
  Give your AI assistant direct access to flags, docs, and             ● Check system
- integration tools. With it, you'll be able to:                       ● Sign in to Confidence
+ integration tools via Confidence MCP. With it, you'll be able to:    ● Sign in to Confidence
                                                                       ● Set up your agent
  ● Ask your agent to create and manage feature flags.                 ▶ Connect tools
  ● Search docs and generate code, all from your IDE.                  ○ Onboard project
@@ -57,10 +57,10 @@ exports[`when MCP config has expired auth tokens > shows auth-expired status and
 exports[`when MCP config has expired auth tokens > shows auth-expired status and reconnects successfully > connect-tools-reconnected 1`] = `
 " Confidence by Spotify                                              https://confidence.spotify.com/
 
- Connect your AI to Confidence                                        Todo (4/5)
+ Teach your AI Confidence                                             Todo (4/5)
 
  Give your AI assistant direct access to flags, docs, and             ● Check system
- integration tools. With it, you'll be able to:                       ● Sign in to Confidence
+ integration tools via Confidence MCP. With it, you'll be able to:    ● Sign in to Confidence
                                                                       ● Set up your agent
  ● Ask your agent to create and manage feature flags.                 ● Connect tools
  ● Search docs and generate code, all from your IDE.                  ○ Onboard project

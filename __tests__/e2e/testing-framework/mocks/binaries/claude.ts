@@ -9,6 +9,11 @@ if (args[0] === 'mcp') {
   process.exit(0);
 }
 
+if (args[0] === 'plugin') {
+  if (process.env.E2E_PLUGIN_INSTALL_FAIL) process.exit(1);
+  process.exit(0);
+}
+
 if (args.includes('--append-system-prompt')) {
   const idx = args.indexOf('--append-system-prompt');
   const prompt = args[idx + 1] || '';

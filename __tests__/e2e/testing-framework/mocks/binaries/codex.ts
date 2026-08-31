@@ -18,6 +18,11 @@ if (args[0] === 'mcp') {
   process.exit(0);
 }
 
+if (args[0] === 'plugin') {
+  if (process.env.E2E_PLUGIN_INSTALL_FAIL) process.exit(1);
+  process.exit(0);
+}
+
 if (args[0] === 'exec') {
   let input = '';
   process.stdin.setEncoding('utf-8');

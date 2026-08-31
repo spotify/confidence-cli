@@ -28,14 +28,14 @@ describe('happy-path flow', () => {
     session.checkpoint();
 
     // InstallPlugins
-    await session.waitForText('Teach your AI');
+    await session.waitForText('Select agent to set up');
     await session.waitForText('Which CLI agent would you like to use?');
     expect(session.snapshot()).toMatchSnapshot('install-plugins');
     session.checkpoint();
     await session.press('Enter');
 
     // ConnectTools
-    await session.waitForText('Connect your AI to Confidence');
+    await session.waitForText('Teach your AI Confidence');
     await session.waitForText('Connect Confidence tools?');
     expect(session.snapshot()).toMatchSnapshot('connect-tools');
     session.checkpoint();

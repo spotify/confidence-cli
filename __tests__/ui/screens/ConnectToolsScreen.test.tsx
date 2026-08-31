@@ -20,7 +20,7 @@ describe('ConnectToolsScreen', () => {
       dir: project.path,
     });
     await waitFor(() => {
-      expect(sut.lastFrame()).toContain('Connect your AI to Confidence');
+      expect(sut.lastFrame()).toContain('Teach your AI Confidence');
     });
   });
 
