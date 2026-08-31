@@ -2,7 +2,8 @@ import type { IdeIntegration } from '../types.js';
 import { launchChat } from './chat.js';
 import { detectMcpStatuses, connectMcpServer } from './mcp.js';
 import { runOnboarding } from './onboarding.js';
-import { detectPlugins, installPlugins } from './plugins.js';
+import { detectPlugin, installPlugin } from './plugins.js';
+import { skillsDir } from './paths.js';
 import { prepare } from './prepare.js';
 
 export const cursorIntegration: IdeIntegration = {
@@ -12,8 +13,9 @@ export const cursorIntegration: IdeIntegration = {
   launchChat,
   runOnboarding,
   prepare,
-  detectPlugins,
-  installPlugins,
+  skillsDir,
+  detectPlugin,
+  installPlugin,
   detectMcpStatuses,
   connectMcpServer,
 };

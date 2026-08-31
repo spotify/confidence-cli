@@ -1,3 +1,4 @@
+import type { PluginInstallationMethod } from '@integrations/types.js';
 import type { ChosenIde, OnboardingGoal } from '../session.js';
 import { addIf } from '../prompt-utils.js';
 import { preflight, scaffold } from './preflight.js';
@@ -14,8 +15,8 @@ type PromptOptions = {
   ide?: ChosenIde;
   isEmptyProject?: boolean;
   goals?: OnboardingGoal[];
-  hasPlugins?: boolean;
   hasProviders?: boolean;
+  pluginInstallMethod?: PluginInstallationMethod | null;
 };
 
 export function buildOnboardingPrompt({
@@ -24,8 +25,8 @@ export function buildOnboardingPrompt({
   ide = 'claude',
   isEmptyProject = false,
   goals = ['feature-flags'],
-  hasPlugins = false,
   hasProviders = false,
+  pluginInstallMethod = null,
 }: PromptOptions): string {
   const steps = new StepCounter(isEmptyProject ? 2 : 1);
   const tools = buildToolVars(ide);

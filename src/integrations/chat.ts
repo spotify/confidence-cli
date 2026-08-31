@@ -28,7 +28,7 @@ function buildChatPrompt(session: WizardSession): string {
       'Help me with next steps — creating feature flags, adding targeting rules, setting up experiments, etc.',
     );
 
-    if (session.installedPlugins.length) {
+    if (session.pluginTargets.length) {
       lines.push(
         'I have installed Confidence AI plugin that contains useful skills and commands for working with Confidence,',
         'e.g., `/setup-warehouse` for setting up a data warehouse',

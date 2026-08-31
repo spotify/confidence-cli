@@ -1,20 +1,8 @@
-import { useEffect, useState } from 'react';
-import { detectInstalledPlugins } from '@integrations/index.js';
+import { useCallback, useEffect, useState } from 'react';
+import { type InstalledPlugin, detectInstalledPlugins } from '@integrations/index.js';
 import type { ChosenIde } from '@lib/session.js';
 import { useSession, store } from '../../store.js';
 import type { PluginPhase } from './usePluginInstall.js';
-
-function resolveDetection(
-  dryRun: boolean,
-  projectDir: string,
-): { phase: PluginPhase; detected: ChosenIde[] } {
-  if (dryRun) return { phase: 'choose-ide', detected: [] };
-  const found = detectInstalledPlugins(projectDir);
-  return {
-    phase: found.length > 0 ? 'already-installed' : 'choose-ide',
-    detected: found,
-  };
-}
 
 export type InitialDetection = {
   phase: PluginPhase;
@@ -23,15 +11,27 @@ export type InitialDetection = {
 
 export function useInitialDetection(): InitialDetection {
   const session = useSession();
-  const [resolved] = useState(() => resolveDetection(session.dryRun, session.projectDir));
+  const [phase, setPhase] = useState<PluginPhase>(session.dryRun ? 'choose-ide' : 'detecting');
+  const [detected, setDetected] = useState<ChosenIde[]>([]);
+
+  const applyResults = useCallback(function applyResults(found: InstalledPlugin[]) {
+    const ides = found.map((d) => d.ide);
+    setDetected(ides);
+    setPhase(found.length > 0 ? 'already-installed' : 'choose-ide');
+
+    if (found.length > 0) {
+      store.setPluginTargets(ides);
+      store.setPluginInstallMethod(found[0].via);
+    }
+  }, []);
 
   useEffect(
-    function syncDetectedPlugins() {
-      if (resolved.detected.length === 0) return;
-      store.setInstalledPlugins(resolved.detected);
+    function runInitialDetection() {
+      if (session.dryRun) return;
+      detectInstalledPlugins(session.projectDir).then(applyResults);
     },
-    [resolved.detected],
+    [session.dryRun, session.projectDir, applyResults],
   );
 
-  return resolved;
+  return { phase, detected };
 }

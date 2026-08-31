@@ -117,7 +117,7 @@ export function useOnboardingProcess(): OnboardingProcess {
           ide,
           isEmptyProject: isEmpty,
           goals,
-          hasPlugins: s.installedPlugins.length > 0,
+          pluginInstallMethod: s.pluginInstallMethod,
           hasProviders: s.detectedProviders.length > 0,
         });
 
