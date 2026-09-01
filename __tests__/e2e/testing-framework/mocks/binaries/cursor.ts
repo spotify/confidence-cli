@@ -12,6 +12,9 @@ if (args[0] === 'agent' && args[1] === '--version') {
   process.exit(0);
 } else if (args[0] === 'agent' && args[1] === 'mcp') {
   process.exit(0);
+} else if (args[0] === 'agent' && args[1] === 'plugin') {
+  if (process.env.E2E_PLUGIN_INSTALL_FAIL) process.exit(1);
+  process.exit(0);
 } else if (args[0] === 'agent' && args.includes('--print')) {
   fs.writeFileSync(
     path.join(process.cwd(), '.e2e-onboarding-invocation'),

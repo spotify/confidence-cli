@@ -3,6 +3,12 @@ import type { McpServerName, McpServerStatus } from './mcp/servers.js';
 
 export type IdeId = 'claude' | 'cursor' | 'codex';
 
+export type PluginInstallationMethod = 'cli' | 'download';
+export type InstalledPlugin = {
+  ide: IdeId;
+  via: PluginInstallationMethod;
+};
+
 export type McpConnectOpts = {
   serverName: string;
   serverUrl: string;
@@ -36,15 +42,16 @@ export type IdeIntegration = {
   id: IdeId;
   name: string;
 
-  launchChat: (opts: ChatOpts) => void;
-
-  runOnboarding: (opts: OnboardingOpts, callbacks: OnboardingCallbacks) => ChildProcess | null;
-
   prepare: () => Promise<void>;
 
-  detectPlugins: (projectDir: string) => boolean;
-  installPlugins: (projectDir: string) => Promise<void>;
+  skillsDir: (projectDir: string) => string;
+  detectPlugin: (projectDir: string) => Promise<PluginInstallationMethod | null>;
+  installPlugin: (projectDir: string) => Promise<void>;
 
   detectMcpStatuses: (projectDir: string) => Promise<Record<McpServerName, McpServerStatus>>;
   connectMcpServer: (opts: McpConnectOpts) => Promise<void>;
+
+  runOnboarding: (opts: OnboardingOpts, callbacks: OnboardingCallbacks) => ChildProcess | null;
+
+  launchChat: (opts: ChatOpts) => void;
 };

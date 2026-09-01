@@ -1,12 +1,14 @@
+import type { PluginInstallationMethod } from '@integrations/types.js';
 import type { ChosenIde, OnboardingGoal } from '../session.js';
 import { addIf } from '../prompt-utils.js';
-import { preflight, scaffold } from './preflight.js';
-import { determineSDK, resolveClient } from './sdk.js';
-import { integrateSDK, integrateViaSkill } from './integrate.js';
-import { determineRecordingSDK, integrateRecording } from './session-recording.js';
-import { instrumentEvents } from './event-tracking.js';
-import { generateReport, summary, rules } from './report.js';
 import { buildToolVars } from './tool-vars.js';
+import { preflight } from './sections/preflight.js';
+import { scaffold } from './sections/scaffold.js';
+import { integrateViaSkill } from './sections/integrate.js';
+import { determineRecordingSDK, integrateRecording } from './sections/recording.js';
+import { instrumentEvents } from './sections/event-tracking.js';
+import { generateReport } from './sections/report.js';
+import { summary, rules } from './sections/summary.js';
 
 type PromptOptions = {
   framework: string;
@@ -14,8 +16,8 @@ type PromptOptions = {
   ide?: ChosenIde;
   isEmptyProject?: boolean;
   goals?: OnboardingGoal[];
-  hasPlugins?: boolean;
   hasProviders?: boolean;
+  pluginInstallMethod?: PluginInstallationMethod | null;
 };
 
 export function buildOnboardingPrompt({
@@ -24,8 +26,8 @@ export function buildOnboardingPrompt({
   ide = 'claude',
   isEmptyProject = false,
   goals = ['feature-flags'],
-  hasPlugins = false,
   hasProviders = false,
+  pluginInstallMethod = null,
 }: PromptOptions): string {
   const steps = new StepCounter(isEmptyProject ? 2 : 1);
   const tools = buildToolVars(ide);
@@ -33,33 +35,27 @@ export function buildOnboardingPrompt({
   const withFlags = goals.includes('feature-flags');
   const withRecordings = goals.includes('session-recordings');
   const withEventTracking = goals.includes('event-tracking');
-  const viaSkill = withFlags && hasPlugins;
 
   const sections = [
     preamble(framework, projectDir, isEmptyProject, goals),
     preflight(tools),
     addIf(isEmptyProject, () => scaffold(framework, steps.next())),
 
-    ...(viaSkill
-      ? [integrateViaSkill(framework, steps.next(), isEmptyProject, ide)]
-      : [
-          addIf(withFlags, () => determineSDK(framework, steps.next(), tools)),
-          addIf(withFlags, () => resolveClient(framework, steps.next(), tools)),
-          addIf(withFlags, () =>
-            integrateSDK(steps.next(), steps.current - 2, isEmptyProject, tools),
-          ),
-        ]),
+    addIf(withFlags, () =>
+      integrateViaSkill(framework, steps.next(), isEmptyProject, ide, pluginInstallMethod),
+    ),
 
     addIf(withRecordings, () => determineRecordingSDK(framework, steps.next(), tools)),
     addIf(withRecordings, () => integrateRecording(steps.next(), isEmptyProject)),
 
-    addIf(withEventTracking, () => instrumentEvents(framework, steps.next(), isEmptyProject, ide)),
+    addIf(withEventTracking, () =>
+      instrumentEvents(framework, steps.next(), isEmptyProject, ide, pluginInstallMethod),
+    ),
 
     generateReport({
       step: steps.next(),
       isEmptyProject,
       goals,
-      hasPlugins,
       hasProviders,
     }),
     summary(steps.next()),

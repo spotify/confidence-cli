@@ -1,17 +1,27 @@
-import { existsSync } from 'node:fs';
-import { join } from 'node:path';
-import { PLUGIN_SKILLS, installSkills } from '../shared.js';
+import { execFile as execFileCb } from 'node:child_process';
+import { promisify } from 'node:util';
+import { PLUGIN_MARKETPLACE_REPO, PLUGIN_MARKETPLACE_NAME, PLUGIN_NAME } from '@lib/constants.js';
+import type { PluginInstallationMethod } from '../types.js';
+import { hasDownloadedSkills } from '../skills/local.js';
 import { skillsDir } from './paths.js';
 
-export function detectPlugins(projectDir: string): boolean {
-  return hasSkillFiles(projectDir);
+const execFile = promisify(execFileCb);
+
+export async function detectPlugin(projectDir: string): Promise<PluginInstallationMethod | null> {
+  try {
+    const cwd = projectDir;
+    const { stdout } = await execFile('codex', ['plugin', 'list', '--json'], { cwd });
+    const { installed } = JSON.parse(stdout) as { installed: Array<{ pluginId: string }> };
+    if (installed.some((p) => p.pluginId.startsWith(`${PLUGIN_NAME}@`))) return 'cli';
+  } catch {
+    // CLI unavailable; fallback to locally downloaded files.
+  }
+
+  return hasDownloadedSkills(skillsDir(projectDir)) ? 'download' : null;
 }
 
-export async function installPlugins(projectDir: string): Promise<void> {
-  await installSkills(skillsDir(projectDir));
-}
-
-function hasSkillFiles(projectDir: string): boolean {
-  const dir = skillsDir(projectDir);
-  return PLUGIN_SKILLS.some((name) => existsSync(join(dir, name, 'SKILL.md')));
+export async function installPlugin(projectDir: string): Promise<void> {
+  const cwd = projectDir;
+  await execFile('codex', ['plugin', 'marketplace', 'add', PLUGIN_MARKETPLACE_REPO], { cwd });
+  await execFile('codex', ['plugin', 'add', `${PLUGIN_NAME}@${PLUGIN_MARKETPLACE_NAME}`], { cwd });
 }

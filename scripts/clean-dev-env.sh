@@ -46,7 +46,7 @@ if $clean_auth; then
     if [[ -f "$f" ]]; then
       rm "$f"
       echo "Removed $f"
-      ((removed++))
+      ((removed++)) || true
     fi
   done
 fi
@@ -61,15 +61,16 @@ if $clean_mcp; then
   if [[ -f "$mcp_pref_file" ]]; then
     rm "$mcp_pref_file"
     echo "Removed $mcp_pref_file"
-    ((removed++))
+    ((removed++)) || true
   fi
 
   # --- Confidence AI plugin skills ---
 
   skills_dirs=("$PROJECT_DIR/.claude/skills" "$PROJECT_DIR/.cursor/skills" "$PROJECT_DIR/.agents/skills")
   confidence_skills=(
+    analyze-project
+    instrument-events
     onboard-confidence
-    onboard-confidence-dry-run
     setup-warehouse
     setup-warehouse-bigquery
     setup-warehouse-databricks
@@ -87,10 +88,44 @@ if $clean_mcp; then
       if [[ -d "$skill_dir" ]]; then
         rm -rf "$skill_dir"
         echo "Removed skill $skill from $skills_dir"
-        ((removed++))
+        ((removed++)) || true
       fi
     done
   done
+
+  # --- CLI-installed plugins ---
+
+  plugin_name="confidence"
+  marketplace_repo="spotify/confidence-ai-plugins"
+  marketplace_name="confidence"
+
+  # Claude Code: uninstall plugin (may be from official or custom marketplace)
+  for scope in project user; do
+    if (cd "$PROJECT_DIR" && claude plugin uninstall "$plugin_name" --scope "$scope") 2>/dev/null; then
+      echo "Uninstalled Claude plugin ($scope scope)"
+      ((removed++)) || true
+    fi
+  done
+  if (cd "$PROJECT_DIR" && claude plugin marketplace remove "$marketplace_name") 2>/dev/null; then
+    echo "Removed Claude marketplace $marketplace_name"
+    ((removed++)) || true
+  fi
+
+  # Codex: remove plugin and marketplace
+  if codex plugin remove "$plugin_name@$marketplace_name" 2>/dev/null; then
+    echo "Removed Codex plugin"
+    ((removed++)) || true
+  fi
+  if codex plugin marketplace remove "$marketplace_name" 2>/dev/null; then
+    echo "Removed Codex marketplace $marketplace_name"
+    ((removed++)) || true
+  fi
+
+  # Cursor: remove marketplace (no CLI plugin install to undo)
+  if cursor agent plugin marketplace remove "$marketplace_repo" 2>/dev/null; then
+    echo "Removed Cursor marketplace $marketplace_repo"
+    ((removed++)) || true
+  fi
 
   # --- MCP server entries from config files ---
 
@@ -105,10 +140,10 @@ if $clean_mcp; then
     local names="${result#*:}"
     if [[ "$action" == "deleted" ]]; then
       echo "Deleted $config_path (empty after removing MCP servers: $names)"
-      ((removed++))
+      ((removed++)) || true
     elif [[ "$action" == "cleaned" ]]; then
       echo "Removed all MCP entries from $config_path ($names)"
-      ((removed++))
+      ((removed++)) || true
     fi
   }
 
@@ -129,7 +164,7 @@ if $clean_mcp; then
     for scope in local project user; do
       if (cd "$PROJECT_DIR" && claude mcp remove --scope "$scope" "$server") 2>/dev/null; then
         echo "Removed MCP server $server from $scope scope"
-        ((removed++))
+        ((removed++)) || true
       fi
     done
   done
@@ -138,7 +173,7 @@ if $clean_mcp; then
   if [[ -f "$PROJECT_DIR/.mcp.json" ]]; then
     rm "$PROJECT_DIR/.mcp.json"
     echo "Removed $PROJECT_DIR/.mcp.json"
-    ((removed++))
+    ((removed++)) || true
   fi
 
   # Clean Cursor MCP configs, CLI permissions, and agent state
@@ -147,12 +182,12 @@ if $clean_mcp; then
   if [[ -f "$PROJECT_DIR/.cursor/cli.json" ]]; then
     rm "$PROJECT_DIR/.cursor/cli.json"
     echo "Removed $PROJECT_DIR/.cursor/cli.json"
-    ((removed++))
+    ((removed++)) || true
   fi
   for server in confidence-flags confidence-docs; do
     if cursor agent mcp disable "$server" 2>/dev/null; then
       echo "Disabled Cursor agent MCP server $server"
-      ((removed++))
+      ((removed++)) || true
     fi
   done
 
@@ -172,10 +207,10 @@ if $clean_mcp; then
         if [[ "$remaining" -eq 0 ]]; then
           rm "$codex_config"
           echo "Deleted $codex_config (empty after cleanup)"
-          ((removed++))
+          ((removed++)) || true
         else
           echo "Cleaned Codex MCP entries from $codex_config"
-          ((removed++))
+          ((removed++)) || true
         fi
       fi
     fi
@@ -192,10 +227,10 @@ if $clean_mcp; then
 
     if [[ "$settings_result" == "deleted" ]]; then
       echo "Deleted $settings_path (empty after cleanup)"
-      ((removed++))
+      ((removed++)) || true
     elif [[ "$settings_result" == "cleaned" ]]; then
       echo "Removed MCP settings from $settings_path"
-      ((removed++))
+      ((removed++)) || true
     fi
   }
 

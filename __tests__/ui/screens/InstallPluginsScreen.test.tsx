@@ -1,30 +1,27 @@
-import { http, HttpResponse } from 'msw';
 import {
   renderScreen,
   renderApp,
   createProjectDir,
+  act,
   ENTER,
   ARROW_DOWN,
   waitFor,
 } from '../testing-framework/index.js';
 import { InstallPluginsScreen } from '@ui/tui/screens/install-plugins/index.js';
 import { ScreenId } from '@lib/session.js';
-import { server } from '../../msw/server.js';
 
-vi.mock('../../../src/integrations/plugins.js', async (importOriginal) => {
-  const actual = await importOriginal<typeof import('../../../src/integrations/plugins.js')>();
-  return {
-    ...actual,
-    detectInstalledPlugins: vi.fn().mockReturnValue([]),
-    prepareIde: vi.fn().mockResolvedValue(undefined),
-  };
-});
+vi.mock('../../../src/integrations/skills/plugin.js', async (importOriginal) => ({
+  ...(await importOriginal<typeof import('../../../src/integrations/skills/plugin.js')>()),
+  detectInstalledPlugins: vi.fn().mockResolvedValue([]),
+  prepareIde: vi.fn().mockResolvedValue(undefined),
+  installPlugin: vi.fn().mockResolvedValue('download'),
+}));
 
 describe('InstallPluginsScreen', () => {
   it('renders title', async () => {
     using sut = renderScreen(<InstallPluginsScreen />, { screen: ScreenId.InstallPlugins });
     await waitFor(() => {
-      expect(sut.lastFrame()).toContain('Teach your AI Confidence');
+      expect(sut.lastFrame()).toContain('Select agent to set up');
     });
   });
 
@@ -34,17 +31,6 @@ describe('InstallPluginsScreen', () => {
       expect(sut.lastFrame()).toContain('Claude Code');
       expect(sut.lastFrame()).toContain('Cursor');
       expect(sut.lastFrame()).toContain('Codex');
-      expect(sut.lastFrame()).toContain('Skip');
-    });
-  });
-
-  it('advances to ConnectTools on Skip', async () => {
-    using sut = renderApp({ screen: ScreenId.InstallPlugins });
-
-    sut.stdin.write(ARROW_DOWN + ARROW_DOWN + ARROW_DOWN + ENTER);
-
-    await waitFor(() => {
-      expect(sut.lastFrame()).toContain('Connect your AI to Confidence');
     });
   });
 
@@ -59,7 +45,7 @@ describe('InstallPluginsScreen', () => {
       expect(sut.lastFrame()).toContain('Claude Code');
     });
 
-    sut.stdin.write(ARROW_DOWN + ENTER);
+    await act(() => sut.stdin.write(ARROW_DOWN + ENTER));
 
     await waitFor(() => {
       expect(sut.lastFrame()).toContain('Plugin installed successfully');
@@ -74,16 +60,16 @@ describe('InstallPluginsScreen', () => {
       expect(sut.lastFrame()).toContain('Claude Code');
     });
 
-    sut.stdin.write(ARROW_DOWN + ENTER);
+    await act(() => sut.stdin.write(ARROW_DOWN + ENTER));
 
     await waitFor(() => {
-      expect(sut.lastFrame()).toContain('Connect your AI to Confidence');
+      expect(sut.lastFrame()).toContain('Teach your AI Confidence');
     });
   });
 
   it('shows continue option when plugins already installed', async () => {
-    const { detectInstalledPlugins } = await import('../../../src/integrations/plugins.js');
-    vi.mocked(detectInstalledPlugins).mockReturnValueOnce(['claude']);
+    const { detectInstalledPlugins } = await import('../../../src/integrations/skills/plugin.js');
+    vi.mocked(detectInstalledPlugins).mockResolvedValueOnce([{ ide: 'claude', via: 'cli' }]);
 
     using sut = renderApp({ screen: ScreenId.InstallPlugins });
 
@@ -92,20 +78,16 @@ describe('InstallPluginsScreen', () => {
       expect(sut.lastFrame()).toContain('Continue with Claude Code');
     });
 
-    sut.stdin.write(ENTER);
+    await act(() => sut.stdin.write(ENTER));
 
     await waitFor(() => {
-      expect(sut.lastFrame()).toContain('Connect your AI to Confidence');
+      expect(sut.lastFrame()).toContain('Teach your AI Confidence');
     });
   });
 
   it('shows error and retry option on install failure', async () => {
-    server.use(
-      http.get(
-        'https://raw.githubusercontent.com/spotify/confidence-ai-plugins/main/skills/:skill/SKILL.md',
-        () => HttpResponse.error(),
-      ),
-    );
+    const { installPlugin } = await import('../../../src/integrations/skills/plugin.js');
+    vi.mocked(installPlugin).mockRejectedValueOnce(new Error('Installation failed'));
 
     using project = createProjectDir();
     using sut = renderScreen(<InstallPluginsScreen />, {
@@ -117,7 +99,7 @@ describe('InstallPluginsScreen', () => {
       expect(sut.lastFrame()).toContain('Claude Code');
     });
 
-    sut.stdin.write(ARROW_DOWN + ENTER);
+    await act(() => sut.stdin.write(ARROW_DOWN + ENTER));
 
     await waitFor(() => {
       expect(sut.lastFrame()).toContain('Failed to install');

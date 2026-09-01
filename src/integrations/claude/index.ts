@@ -1,7 +1,8 @@
 import type { IdeIntegration } from '../types.js';
 import { noop as prepare } from '@lib/noop.js';
 import { launchChat } from './chat.js';
-import { detectPlugins, installPlugins } from './plugins.js';
+import { detectPlugin, installPlugin } from './plugins.js';
+import { skillsDir } from './paths.js';
 import { detectMcpStatuses, connectMcpServer } from './mcp.js';
 import { runOnboarding } from './onboarding.js';
 
@@ -12,8 +13,9 @@ export const claudeIntegration: IdeIntegration = {
   launchChat,
   runOnboarding,
   prepare,
-  detectPlugins,
-  installPlugins,
+  skillsDir,
+  detectPlugin,
+  installPlugin,
   detectMcpStatuses,
   connectMcpServer,
 };

@@ -40,7 +40,7 @@ export function BottomPrompt({
       return (
         <PromptPanel
           mode="select"
-          status="Plugin installation failed."
+          status="Agent setup failed."
           options={ERROR_OPTIONS}
           onSelect={onError}
         />
@@ -58,7 +58,6 @@ export function BottomPrompt({
           options={[
             { label: `Continue with ${preferredLabel}`, value: 'continue' },
             ...otherOptions,
-            { label: 'Skip (install manually later)', value: 'skip' },
           ]}
           onSelect={onDetectedSelect}
         />

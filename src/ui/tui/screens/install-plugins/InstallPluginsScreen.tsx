@@ -5,19 +5,18 @@ import { MainLayout } from '../../components/MainLayout.js';
 import { TaskList } from '../../components/TaskList.js';
 import { buildWizardTasks } from '../../lib/wizard-tasks.js';
 import { type IdeId, getIntegrations } from '@integrations/index.js';
-import { PLUGINS_REPO_URL } from '@lib/constants.js';
+import { PLUGIN_REPO_URL } from '@lib/constants.js';
 import { ScreenId } from '@lib/session.js';
 import { useAutoAdvance } from '../../hooks/useAutoAdvance.js';
 import { useLogger } from '../../hooks/useLog.js';
 import { useNavigation } from '../../hooks/useNavigation.js';
-import { skipped } from '../../lib/log-messages.js';
 import { $session, store } from '../../store.js';
 import { usePluginInstall } from './usePluginInstall.js';
 import { track } from '@lib/telemetry.js';
 import {
   pluginsAlreadyInstalled,
   pluginInstalled,
-  pluginSkippedAfterError,
+  pluginExitedAfterError,
 } from './log-messages.js';
 import * as te from './telemetry-events.js';
 import { type IdeSelectValue, type DetectedSelectValue, type ErrorAction } from './actions.js';
@@ -46,12 +45,6 @@ export function InstallPluginsScreen() {
   });
 
   function handleIdeSelect(value: IdeSelectValue) {
-    if (value === 'skip') {
-      track(te.pluginSkipped());
-      log(skipped());
-      navigate.to('next');
-      return;
-    }
     track(te.pluginIdeSelected(value));
     selectIde(value);
   }
@@ -71,15 +64,14 @@ export function InstallPluginsScreen() {
   }
 
   function handleError(value: ErrorAction) {
-    if (value === 'retry') {
-      const ide = $session.get().ide;
-      if (ide) selectIde(ide);
+    if (value === 'exit') {
+      log(pluginExitedAfterError(error));
+      track(te.pluginExitedAfterError());
+      process.exit(1);
       return;
     }
-
-    track(te.pluginSkippedAfterError());
-    log(pluginSkippedAfterError(error));
-    navigate.to('next');
+    const ide = $session.get().ide;
+    if (ide) selectIde(ide);
   }
 
   const tasks = buildWizardTasks(
@@ -95,13 +87,13 @@ export function InstallPluginsScreen() {
     <Box flexDirection="column">
       <Box marginBottom={1}>
         <Text color={Colors.primary} bold>
-          Teach your AI Confidence
+          Select agent to set up
         </Text>
       </Box>
       <Box marginBottom={1}>
         <Text color={Colors.muted}>
-          Plugins give your agent tool Confidence-specific skills — flag management, warehouse
-          setup, migrations, onboarding — no more searching docs yourself.
+          Your agent will get Confidence skills for flag management, warehouse setup, migrations,
+          and onboarding — so it can help without searching the docs.
         </Text>
       </Box>
 
@@ -132,7 +124,7 @@ export function InstallPluginsScreen() {
           <Text color={Colors.error}>Failed to install plugin: {error}</Text>
           <Box marginTop={1}>
             <Text color={Colors.muted}>
-              You can install manually from: <Text color={Colors.primary}>{PLUGINS_REPO_URL}</Text>
+              You can install manually from: <Text color={Colors.primary}>{PLUGIN_REPO_URL}</Text>
             </Text>
           </Box>
         </Box>

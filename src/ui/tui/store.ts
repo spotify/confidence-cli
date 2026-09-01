@@ -11,6 +11,7 @@ import {
   createSession,
 } from '@lib/session.js';
 import type { ChosenIde } from '@lib/session.js';
+import type { PluginInstallationMethod } from '@integrations/types.js';
 import type { DetectedProvider } from '@providers/types.js';
 
 export type StoreOptions = {
@@ -79,9 +80,14 @@ export const store = {
       ide,
     }),
 
-  setInstalledPlugins: (plugins: ChosenIde[]): void =>
+  setPluginTargets: (plugins: ChosenIde[]): void =>
     updateSession({
-      installedPlugins: plugins,
+      pluginTargets: plugins,
+    }),
+
+  setPluginInstallMethod: (method: PluginInstallationMethod): void =>
+    updateSession({
+      pluginInstallMethod: method,
     }),
 
   setConnectedMcps: (mcps: string[]): void =>

@@ -126,10 +126,12 @@ Each init hook follows the same shape:
 
 The parent hook consumes it as `const initial = useInitial*()` and initializes its own state: `useState<Phase>(initial.phase)`.
 
+**Async variant.** When resolution requires async work (e.g. shelling out to a CLI), seed `useState` with a pending phase and run the async operation in a `useEffect` named `resolveInitial*`. The parent hook overlays its own phase: `installPhase ?? initial.phase`.
+
 Existing init hooks:
 
 - `useInitialAuth` — resolves persisted credentials, syncs auth state to store
-- `useInitialDetection` — resolves installed plugins, syncs to store
+- `useInitialDetection` — async; detects installed plugins via CLI, syncs to store
 - `useInitialOnboarding` — resolves project emptiness / framework, syncs empty-project flag
 - `useInitialMcpDetection` — resolves dry-run phase for MCP detection
 - `useInitialSystemCheck` — resolves dry-run checks, syncs check results to store

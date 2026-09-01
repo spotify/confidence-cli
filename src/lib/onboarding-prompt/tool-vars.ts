@@ -1,4 +1,6 @@
+import type { PluginInstallationMethod } from '@integrations/types.js';
 import type { ChosenIde } from '../session.js';
+import { PLUGIN_NAME } from '../constants.js';
 
 type ToolFormatter = (server: string, tool: string) => string;
 
@@ -8,14 +10,30 @@ const TOOL_FORMATTERS: Record<ChosenIde, ToolFormatter> = {
   cursor: (server, tool) => `mcp__${server}__${tool}`,
 };
 
+const SKILL_INVOCATIONS: Record<ChosenIde, (skill: string) => string> = {
+  claude: (skill) => `/${PLUGIN_NAME}:${skill}`,
+  codex: (skill) => `$${skill}`,
+  cursor: (skill) => `/${skill}`,
+};
+
 const SKILLS_DIRS: Record<ChosenIde, string> = {
   claude: '.claude/skills',
   cursor: '.cursor/skills',
   codex: '.agents/skills',
 };
 
-export function skillsDir(ide: ChosenIde): string {
-  return SKILLS_DIRS[ide];
+export function skillInvocation(skillName: string, ide: ChosenIde): string {
+  return SKILL_INVOCATIONS[ide](skillName);
+}
+
+export function referenceInstruction(
+  skillName: string,
+  ide: ChosenIde,
+  method?: PluginInstallationMethod | null,
+): string {
+  return method === 'cli'
+    ? `Invoke the \`${skillInvocation(skillName, ide)}\` skill as a **methodology reference**`
+    : `Read \`${SKILLS_DIRS[ide]}/${skillName}/SKILL.md\` as a **methodology reference**`;
 }
 
 export function buildToolVars(ide: ChosenIde): Record<string, string> {

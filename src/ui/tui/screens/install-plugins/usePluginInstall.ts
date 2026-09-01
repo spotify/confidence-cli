@@ -2,9 +2,9 @@ import { useState } from 'react';
 import type { IdeId } from '@integrations/index.js';
 import { prepareIde, installPlugin } from '@integrations/index.js';
 import type { ChosenIde } from '@lib/session.js';
+import { track } from '@lib/telemetry.js';
 import { $session, store } from '../../store.js';
 import { useInitialDetection } from './useInitialDetection.js';
-import { track } from '@lib/telemetry.js';
 import { pluginInstallFailed } from './telemetry-events.js';
 
 export type PluginPhase =
@@ -19,12 +19,14 @@ export type PluginInstallState = {
 
 export function usePluginInstall(): PluginInstallState {
   const initial = useInitialDetection();
-  const [phase, setPhase] = useState<PluginPhase>(initial.phase);
+  const [installPhase, setInstallPhase] = useState<PluginPhase | null>(null);
   const [error, setError] = useState<string | null>(null);
+
+  const phase = installPhase ?? initial.phase;
 
   function selectIde(ide: IdeId) {
     store.setIde(ide);
-    setPhase('installing');
+    setInstallPhase('installing');
 
     if ($session.get().dryRun) return installDryRun(ide);
     installReal(ide);
@@ -32,22 +34,24 @@ export function usePluginInstall(): PluginInstallState {
 
   function installDryRun(ide: IdeId) {
     setTimeout(() => {
-      store.setInstalledPlugins([ide]);
-      setPhase('installed');
+      store.setPluginTargets([ide]);
+      store.setPluginInstallMethod('download');
+      setInstallPhase('installed');
     }, 1000);
   }
 
   function installReal(ide: IdeId) {
     prepareIde(ide)
       .then(() => installPlugin(ide, $session.get().projectDir))
-      .then(() => {
-        store.setInstalledPlugins([ide]);
-        setPhase('installed');
+      .then((method) => {
+        store.setPluginTargets([ide]);
+        store.setPluginInstallMethod(method);
+        setInstallPhase('installed');
       })
       .catch((err) => {
         setError(err instanceof Error ? err.message : 'Installation failed');
         track(pluginInstallFailed());
-        setPhase('error');
+        setInstallPhase('error');
       });
   }
 

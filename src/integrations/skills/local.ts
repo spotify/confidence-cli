@@ -3,7 +3,7 @@ import { mkdir, writeFile } from 'node:fs/promises';
 import { join } from 'node:path';
 import { SKILLS_BASE_URL } from '@lib/constants.js';
 
-export const PLUGIN_SKILLS = [
+const SKILL_NAMES = [
   'analyze-project',
   'instrument-events',
   'onboard-confidence',
@@ -18,9 +18,13 @@ export const PLUGIN_SKILLS = [
   'migrate-statsig',
 ] as const;
 
-export async function installSkills(skillsDir: string): Promise<void> {
+export function hasDownloadedSkills(skillsDir: string): boolean {
+  return SKILL_NAMES.some((name) => existsSync(join(skillsDir, name, 'SKILL.md')));
+}
+
+export async function downloadSkills(skillsDir: string): Promise<void> {
   await Promise.all(
-    PLUGIN_SKILLS.map(async (name) => {
+    SKILL_NAMES.map(async (name) => {
       const destDir = join(skillsDir, name);
       const destFile = join(destDir, 'SKILL.md');
       if (existsSync(destFile)) return;

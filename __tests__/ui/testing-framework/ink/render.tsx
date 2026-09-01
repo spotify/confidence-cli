@@ -58,7 +58,7 @@ function setupStore(opts: RenderOptions = {}): void {
 
   if (opts.screen) store.navigateTo(opts.screen);
   if (opts.ide) store.setIde(opts.ide);
-  if (opts.plugins) store.setInstalledPlugins(opts.plugins);
+  if (opts.plugins) store.setPluginTargets(opts.plugins);
   if (opts.framework) store.setFramework(opts.framework);
   if (opts.authState) store.setAuthState(opts.authState);
   if (opts.goals) store.setOnboardingGoals(opts.goals);

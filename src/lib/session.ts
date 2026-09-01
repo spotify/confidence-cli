@@ -1,5 +1,6 @@
 import { randomUUID } from 'node:crypto';
 import type { DetectedProvider } from '@providers/types.js';
+import type { PluginInstallationMethod } from '@integrations/types.js';
 
 export type ChosenIde = 'claude' | 'cursor' | 'codex';
 
@@ -26,7 +27,8 @@ export type WizardSession = {
   systemChecks: Record<string, CheckResult>;
   authState: AuthState;
   ide: ChosenIde | null;
-  installedPlugins: ChosenIde[];
+  pluginTargets: ChosenIde[];
+  pluginInstallMethod: PluginInstallationMethod | null;
   connectedMcps: string[];
   isEmptyProject: boolean;
   detectedProviders: DetectedProvider[];
@@ -82,7 +84,8 @@ export function createSession(opts?: {
     systemChecks: {},
     authState: { status: 'idle' },
     ide: null,
-    installedPlugins: [],
+    pluginTargets: [],
+    pluginInstallMethod: null,
     connectedMcps: [],
     isEmptyProject: false,
     detectedProviders: [],

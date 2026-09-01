@@ -54,10 +54,10 @@ export async function navigateToPlugins(session: TerminalSession): Promise<void>
  */
 export async function navigateToConnectTools(session: TerminalSession): Promise<void> {
   await navigateToPlugins(session);
-  await session.waitForText('Skip (install manually later)');
   session.checkpoint();
   await session.press('Enter');
-  await session.waitForText('Connect Confidence tools?');
+  await session.waitForText('Plugin installed successfully');
+  await session.waitForText('Teach your AI Confidence');
 }
 
 /**

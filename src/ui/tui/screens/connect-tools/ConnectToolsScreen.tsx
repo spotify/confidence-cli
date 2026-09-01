@@ -72,13 +72,13 @@ export function ConnectToolsScreen() {
     <Box flexDirection="column">
       <Box marginBottom={1}>
         <Text color={Colors.primary} bold>
-          Connect your AI to Confidence
+          Teach your AI Confidence
         </Text>
       </Box>
       <Box marginBottom={1} flexDirection="column">
         <Text color={Colors.muted}>
-          Give your AI assistant direct access to flags, docs, and integration tools. With it,
-          you'll be able to:
+          Give your AI assistant direct access to flags, docs, and integration tools via Confidence
+          MCP. With it, you'll be able to:
         </Text>
         {showBullets && (
           <>

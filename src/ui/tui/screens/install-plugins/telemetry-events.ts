@@ -1,11 +1,16 @@
+import type { PluginInstallationMethod } from '@integrations/types.js';
 import type { TelemetryEvent } from '@lib/telemetry.js';
 
 export function pluginsAlreadyDetected(): TelemetryEvent {
   return { step: 'install-plugins.detect', action: 'already-installed', sentiment: 'positive' };
 }
 
-export function pluginInstallCompleted(): TelemetryEvent {
-  return { step: 'install-plugins.install', action: 'completed', sentiment: 'positive' };
+export function pluginInstallCompleted(method?: PluginInstallationMethod | null): TelemetryEvent {
+  return {
+    step: 'install-plugins.install',
+    action: method ? `completed:${method}` : 'completed',
+    sentiment: 'positive',
+  };
 }
 
 export function pluginInstallFailed(): TelemetryEvent {
@@ -16,10 +21,6 @@ export function pluginIdeSelected(ide: string): TelemetryEvent {
   return { step: 'install-plugins.ide', action: ide };
 }
 
-export function pluginSkipped(): TelemetryEvent {
-  return { step: 'install-plugins.skip', action: 'skipped' };
-}
-
-export function pluginSkippedAfterError(): TelemetryEvent {
-  return { step: 'install-plugins.skip', action: 'skipped-after-error', sentiment: 'confused' };
+export function pluginExitedAfterError(): TelemetryEvent {
+  return { step: 'install-plugins.exit', action: 'exited-after-error', sentiment: 'frustrated' };
 }

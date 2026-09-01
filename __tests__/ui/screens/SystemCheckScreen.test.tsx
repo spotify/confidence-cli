@@ -8,13 +8,10 @@ vi.mock('../../../src/lib/system-check.js', () => ({
   runAllChecks: (...args: unknown[]) => mockRunAllChecks(...args),
 }));
 
-vi.mock('../../../src/integrations/plugins.js', async (importOriginal) => {
-  const actual = await importOriginal<typeof import('../../../src/integrations/plugins.js')>();
-  return {
-    ...actual,
-    detectInstalledPlugins: vi.fn().mockReturnValue([]),
-  };
-});
+vi.mock('../../../src/integrations/skills/plugin.js', async (importOriginal) => ({
+  ...(await importOriginal<typeof import('../../../src/integrations/skills/plugin.js')>()),
+  detectInstalledPlugins: vi.fn().mockResolvedValue([]),
+}));
 
 describe('SystemCheckScreen', () => {
   beforeEach(() => {

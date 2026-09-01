@@ -20,6 +20,7 @@ export function runOnboarding(
     'stream-json',
     '--approve-mcps',
     '--auto-review',
+    '--trust',
     opts.prompt,
   ];
   let child: ChildProcess;

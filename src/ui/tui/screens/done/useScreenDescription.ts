@@ -3,11 +3,11 @@ import { useChosenIdeName } from './useChosenIdeName.js';
 import { useSkippedOnboarding } from './useSkippedOnboarding.js';
 
 export function useScreenDescription() {
-  const { detectedProviders, installedPlugins } = useSession();
+  const { detectedProviders, pluginTargets } = useSession();
 
   const skipped = useSkippedOnboarding();
   const ideName = useChosenIdeName();
-  const hasPlugins = installedPlugins.length > 0;
+  const hasPlugins = pluginTargets.length > 0;
   const hasProviders = detectedProviders.length > 0;
 
   if (skipped) return 'You can always use Confidence AI plugin to run onboarding yourself later.';

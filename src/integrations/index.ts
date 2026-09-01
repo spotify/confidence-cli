@@ -4,8 +4,14 @@ export type {
   McpConnectOpts,
   OnboardingOpts,
   OnboardingCallbacks,
+  PluginInstallationMethod,
+  InstalledPlugin,
 } from './types.js';
+
 export { getIntegrations, getIntegration } from './registry.js';
+export { normalizeStatusLine } from './utils.js';
+
+export { launchChatSession } from './chat.js';
 export {
   type McpServer,
   type McpServerName,
@@ -18,6 +24,4 @@ export {
   persistMcpPreference,
   clearMcpPreference,
 } from './mcp/index.js';
-export { launchChatSession } from './chat.js';
-export { detectInstalledPlugins, prepareIde, installPlugin } from './plugins.js';
-export { normalizeStatusLine } from './utils.js';
+export { detectInstalledPlugins, prepareIde, installPlugin } from './skills/index.js';
