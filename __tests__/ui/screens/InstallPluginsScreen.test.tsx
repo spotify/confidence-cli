@@ -2,6 +2,7 @@ import {
   renderScreen,
   renderApp,
   createProjectDir,
+  act,
   ENTER,
   ARROW_DOWN,
   waitFor,
@@ -44,7 +45,7 @@ describe('InstallPluginsScreen', () => {
       expect(sut.lastFrame()).toContain('Claude Code');
     });
 
-    sut.stdin.write(ARROW_DOWN + ENTER);
+    await act(() => sut.stdin.write(ARROW_DOWN + ENTER));
 
     await waitFor(() => {
       expect(sut.lastFrame()).toContain('Plugin installed successfully');
@@ -59,7 +60,7 @@ describe('InstallPluginsScreen', () => {
       expect(sut.lastFrame()).toContain('Claude Code');
     });
 
-    sut.stdin.write(ARROW_DOWN + ENTER);
+    await act(() => sut.stdin.write(ARROW_DOWN + ENTER));
 
     await waitFor(() => {
       expect(sut.lastFrame()).toContain('Teach your AI Confidence');
@@ -77,7 +78,7 @@ describe('InstallPluginsScreen', () => {
       expect(sut.lastFrame()).toContain('Continue with Claude Code');
     });
 
-    sut.stdin.write(ENTER);
+    await act(() => sut.stdin.write(ENTER));
 
     await waitFor(() => {
       expect(sut.lastFrame()).toContain('Teach your AI Confidence');
@@ -98,7 +99,7 @@ describe('InstallPluginsScreen', () => {
       expect(sut.lastFrame()).toContain('Claude Code');
     });
 
-    sut.stdin.write(ARROW_DOWN + ENTER);
+    await act(() => sut.stdin.write(ARROW_DOWN + ENTER));
 
     await waitFor(() => {
       expect(sut.lastFrame()).toContain('Failed to install');
