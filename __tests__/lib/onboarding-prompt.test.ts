@@ -112,9 +112,7 @@ describe('buildOnboardingPrompt', () => {
         pluginInstallMethod: 'cli',
       });
 
-      expect(sut).toContain(
-        'Invoke the `/analyze-project` skill as a **methodology reference**',
-      );
+      expect(sut).toContain('Invoke the `/analyze-project` skill as a **methodology reference**');
     });
   });
 });
