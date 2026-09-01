@@ -9,13 +9,15 @@ describe('buildOnboardingPrompt', () => {
   };
 
   describe('when plugins are installed via CLI', () => {
-    it('references analyze-project skill as a slash command', () => {
+    it('references analyze-project skill with plugin namespace for claude', () => {
       const sut = buildOnboardingPrompt({
         ...baseOpts,
         pluginInstallMethod: 'cli',
       });
 
-      expect(sut).toContain('Invoke the `/analyze-project` skill as a **methodology reference**');
+      expect(sut).toContain(
+        'Invoke the `/confidence:analyze-project` skill as a **methodology reference**',
+      );
       expect(sut).not.toContain('Read `.claude/skills/analyze-project/SKILL.md`');
     });
   });
@@ -51,13 +53,15 @@ describe('buildOnboardingPrompt', () => {
       goals: ['feature-flags' as const, 'event-tracking' as const],
     };
 
-    it('uses slash command when installed via CLI', () => {
+    it('uses namespaced slash command when installed via CLI', () => {
       const sut = buildOnboardingPrompt({
         ...eventOpts,
         pluginInstallMethod: 'cli',
       });
 
-      expect(sut).toContain('Invoke the `/instrument-events` skill as a **methodology reference**');
+      expect(sut).toContain(
+        'Invoke the `/confidence:instrument-events` skill as a **methodology reference**',
+      );
     });
 
     it('uses file path when installed via download', () => {
@@ -89,6 +93,28 @@ describe('buildOnboardingPrompt', () => {
       });
 
       expect(sut).toContain('Read `.agents/skills/analyze-project/SKILL.md`');
+    });
+
+    it('uses $ prefix for codex skill invocations via CLI', () => {
+      const sut = buildOnboardingPrompt({
+        ...baseOpts,
+        ide: 'codex',
+        pluginInstallMethod: 'cli',
+      });
+
+      expect(sut).toContain('Invoke the `$analyze-project` skill as a **methodology reference**');
+    });
+
+    it('uses bare slash for cursor skill invocations via CLI', () => {
+      const sut = buildOnboardingPrompt({
+        ...baseOpts,
+        ide: 'cursor',
+        pluginInstallMethod: 'cli',
+      });
+
+      expect(sut).toContain(
+        'Invoke the `/analyze-project` skill as a **methodology reference**',
+      );
     });
   });
 });
