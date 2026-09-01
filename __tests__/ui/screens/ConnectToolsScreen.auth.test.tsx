@@ -14,7 +14,7 @@ import { ConnectToolsScreen } from '@ui/tui/screens/connect-tools/index.js';
 import { ScreenId } from '@lib/session.js';
 import { persistMcpPreference, clearMcpPreference, MCP_SERVERS } from '@integrations/index.js';
 import type { McpServerName } from '@integrations/index.js';
-import type { IdeId } from '@lib/session.js';
+import type { IdeId } from '@shared-kernel/types.js';
 import { server } from '../../msw/server.js';
 
 type IntegrationTestCase = {

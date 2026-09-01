@@ -1,4 +1,4 @@
-import type { PluginInstallationMethod } from '@integrations/types.js';
+import type { PluginInstallationMethod } from '@shared-kernel/types.js';
 import type { TelemetryEvent } from '@lib/telemetry.js';
 
 export function pluginsAlreadyDetected(): TelemetryEvent {

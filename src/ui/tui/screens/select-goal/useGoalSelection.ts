@@ -1,4 +1,4 @@
-import type { OnboardingGoal } from '@lib/session.js';
+import type { OnboardingGoal } from '@shared-kernel/types.js';
 import { ScreenId } from '@lib/session.js';
 import { BROWSER_PLATFORMS } from '@lib/sdk-options.js';
 import { track } from '@lib/telemetry.js';

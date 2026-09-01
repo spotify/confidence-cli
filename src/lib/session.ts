@@ -6,16 +6,6 @@ import type {
   DetectedProvider,
 } from '@shared-kernel/types.js';
 
-export type { IdeId, OnboardingGoal, PluginInstallationMethod, DetectedProvider };
-
-export type FrameworkSource = 'detected' | 'selected';
-
-export type DebugEntry = {
-  screen: ScreenId;
-  input: string;
-  output: string;
-};
-
 export type WizardSession = {
   sessionId: string;
   currentScreen: ScreenId;
@@ -38,6 +28,14 @@ export type WizardSession = {
   onboardingStatus: string;
   reportFile: string | null;
   codeChanges: string[];
+};
+
+export type FrameworkSource = 'detected' | 'selected';
+
+export type DebugEntry = {
+  screen: ScreenId;
+  input: string;
+  output: string;
 };
 
 export type CheckResult = {

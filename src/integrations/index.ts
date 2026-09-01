@@ -1,10 +1,8 @@
 export type {
-  IdeId,
   IdeIntegration,
   McpConnectOpts,
   OnboardingOpts,
   OnboardingCallbacks,
-  PluginInstallationMethod,
   InstalledPlugin,
 } from './types.js';
 

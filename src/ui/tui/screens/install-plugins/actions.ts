@@ -1,4 +1,4 @@
-import type { IdeId } from '@lib/session.js';
+import type { IdeId } from '@shared-kernel/types.js';
 import type { PromptOption } from '../../components/PromptPanel.js';
 
 export type IdeSelectValue = IdeId;

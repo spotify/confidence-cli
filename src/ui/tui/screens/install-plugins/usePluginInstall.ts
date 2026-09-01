@@ -1,7 +1,6 @@
 import { useState } from 'react';
-import type { IdeId } from '@integrations/index.js';
+import type { IdeId } from '@shared-kernel/types.js';
 import { prepareIde, installPlugin } from '@integrations/index.js';
-import type { IdeId } from '@lib/session.js';
 import { track } from '@lib/telemetry.js';
 import { $session, store } from '../../store.js';
 import { useInitialDetection } from './useInitialDetection.js';

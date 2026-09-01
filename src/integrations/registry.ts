@@ -1,4 +1,4 @@
-import type { IdeId } from './types.js';
+import type { IdeId } from '@shared-kernel/types.js';
 import type { IdeIntegration } from './types.js';
 import { claudeIntegration } from './claude/index.js';
 import { cursorIntegration } from './cursor/index.js';

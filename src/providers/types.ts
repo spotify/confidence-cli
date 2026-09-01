@@ -1,6 +1,4 @@
-import type { ProviderId, DetectedProvider } from '@shared-kernel/types.js';
-
-export type { ProviderId, DetectedProvider };
+import type { ProviderId } from '@shared-kernel/types.js';
 
 export type ProviderConfig = {
   id: ProviderId;

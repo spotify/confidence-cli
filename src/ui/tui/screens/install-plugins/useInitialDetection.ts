@@ -1,6 +1,6 @@
 import { useCallback, useEffect, useState } from 'react';
 import { type InstalledPlugin, detectInstalledPlugins } from '@integrations/index.js';
-import type { IdeId } from '@lib/session.js';
+import type { IdeId } from '@shared-kernel/types.js';
 import { useSession, store } from '../../store.js';
 import type { PluginPhase } from './usePluginInstall.js';
 

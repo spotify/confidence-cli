@@ -1,6 +1,5 @@
 export type {
   IdeId,
-  IdeId,
   OnboardingGoal,
   PluginInstallationMethod,
   ProviderId,
