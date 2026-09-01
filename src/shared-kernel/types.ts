@@ -1,8 +1,5 @@
 export type IdeId = 'claude' | 'cursor' | 'codex';
 
-/** @deprecated Use IdeId — kept for backward compatibility. */
-export type ChosenIde = IdeId;
-
 export type OnboardingGoal = 'feature-flags' | 'session-recordings' | 'event-tracking';
 
 export type PluginInstallationMethod = 'cli' | 'download';

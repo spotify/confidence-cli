@@ -1,4 +1,4 @@
-import type { ChosenIde, PluginInstallationMethod } from '@shared-kernel/types.js';
+import type { IdeId, PluginInstallationMethod } from '@shared-kernel/types.js';
 import { loadStep } from '../steps/load.js';
 import { referenceInstruction } from '../tool-vars.js';
 
@@ -6,7 +6,7 @@ export function integrateViaSkill(
   framework: string,
   step: number,
   isEmptyProject: boolean,
-  ide: ChosenIde,
+  ide: IdeId,
   pluginInstallMethod?: PluginInstallationMethod | null,
 ): string {
   const needsReactGotchas = /react|nextjs|next/i.test(framework);

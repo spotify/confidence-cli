@@ -10,7 +10,7 @@ import {
   ScreenId,
   createSession,
 } from '@lib/session.js';
-import type { ChosenIde } from '@lib/session.js';
+import type { IdeId } from '@lib/session.js';
 import type { PluginInstallationMethod } from '@integrations/types.js';
 import type { DetectedProvider } from '@providers/types.js';
 
@@ -75,12 +75,12 @@ export const store = {
       authState,
     }),
 
-  setIde: (ide: ChosenIde): void =>
+  setIde: (ide: IdeId): void =>
     updateSession({
       ide,
     }),
 
-  setPluginTargets: (plugins: ChosenIde[]): void =>
+  setPluginTargets: (plugins: IdeId[]): void =>
     updateSession({
       pluginTargets: plugins,
     }),

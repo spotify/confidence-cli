@@ -1,33 +1,33 @@
-import type { ChosenIde, PluginInstallationMethod } from '@shared-kernel/types.js';
+import type { IdeId, PluginInstallationMethod } from '@shared-kernel/types.js';
 import { PLUGIN_NAME } from '@lib/constants.js';
 
 type ToolFormatter = (server: string, tool: string) => string;
 
-const TOOL_FORMATTERS: Record<ChosenIde, ToolFormatter> = {
+const TOOL_FORMATTERS: Record<IdeId, ToolFormatter> = {
   claude: (server, tool) => `mcp__${server}__${tool}`,
   codex: (server, tool) => `${server}:${tool}`,
   cursor: (server, tool) => `mcp__${server}__${tool}`,
 };
 
-const SKILL_INVOCATIONS: Record<ChosenIde, (skill: string) => string> = {
+const SKILL_INVOCATIONS: Record<IdeId, (skill: string) => string> = {
   claude: (skill) => `/${PLUGIN_NAME}:${skill}`,
   codex: (skill) => `$${skill}`,
   cursor: (skill) => `/${skill}`,
 };
 
-const SKILLS_DIRS: Record<ChosenIde, string> = {
+const SKILLS_DIRS: Record<IdeId, string> = {
   claude: '.claude/skills',
   cursor: '.cursor/skills',
   codex: '.agents/skills',
 };
 
-export function skillInvocation(skillName: string, ide: ChosenIde): string {
+export function skillInvocation(skillName: string, ide: IdeId): string {
   return SKILL_INVOCATIONS[ide](skillName);
 }
 
 export function referenceInstruction(
   skillName: string,
-  ide: ChosenIde,
+  ide: IdeId,
   method?: PluginInstallationMethod | null,
 ): string {
   return method === 'cli'
@@ -35,7 +35,7 @@ export function referenceInstruction(
     : `Read \`${SKILLS_DIRS[ide]}/${skillName}/SKILL.md\` as a **methodology reference**`;
 }
 
-export function buildToolVars(ide: ChosenIde): Record<string, string> {
+export function buildToolVars(ide: IdeId): Record<string, string> {
   const fmt = TOOL_FORMATTERS[ide];
   const flags = (tool: string) => fmt('confidence-flags', tool);
   const docs = (tool: string) => fmt('confidence-docs', tool);

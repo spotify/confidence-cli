@@ -1,12 +1,12 @@
 import { randomUUID } from 'node:crypto';
 import type {
-  ChosenIde,
+  IdeId,
   OnboardingGoal,
   PluginInstallationMethod,
   DetectedProvider,
 } from '@shared-kernel/types.js';
 
-export type { ChosenIde, OnboardingGoal, PluginInstallationMethod, DetectedProvider };
+export type { IdeId, OnboardingGoal, PluginInstallationMethod, DetectedProvider };
 
 export type FrameworkSource = 'detected' | 'selected';
 
@@ -28,8 +28,8 @@ export type WizardSession = {
   projectDir: string;
   systemChecks: Record<string, CheckResult>;
   authState: AuthState;
-  ide: ChosenIde | null;
-  pluginTargets: ChosenIde[];
+  ide: IdeId | null;
+  pluginTargets: IdeId[];
   pluginInstallMethod: PluginInstallationMethod | null;
   connectedMcps: string[];
   isEmptyProject: boolean;

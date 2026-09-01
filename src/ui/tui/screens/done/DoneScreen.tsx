@@ -13,7 +13,7 @@ import { useIsShort } from '@ui/tui/hooks/useIsShort.js';
 import { doneOptions } from './actions.js';
 import { useScreenDescription } from './useScreenDescription.js';
 import { useSkippedOnboarding } from './useSkippedOnboarding.js';
-import { useChosenIdeName } from './useChosenIdeName.js';
+import { useIdeIdName } from './useIdeIdName.js';
 
 const MAX_SHOWN_CHANGES = 5;
 
@@ -22,7 +22,7 @@ export function DoneScreen() {
   const { reportFile, codeChanges, projectDir } = useSession();
 
   const skipped = useSkippedOnboarding();
-  const ideName = useChosenIdeName();
+  const ideName = useIdeIdName();
   const description = useScreenDescription();
 
   const isShort = useIsShort();

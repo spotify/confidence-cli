@@ -271,7 +271,7 @@ import { ScreenId } from '@lib/session.js';
 - In `useEffect`, use named functions instead of anonymous lambdas for the effect callback.
 - Prefer `AbortController` for removing event listeners instead of manually calling `removeEventListener`. Pass `{ signal: controller.signal }` to `addEventListener` and call `controller.abort()` in cleanup. This avoids needing to keep a reference to the exact same handler function and scales cleanly when multiple listeners share a lifetime.
 - Prefer "UI as a function of state" — derive values from state and props in the render body rather than stashing them in refs. Resort to `useRef` only when there is no pure-function alternative (e.g. holding a DOM node, a timer ID, or an instance that must survive re-renders without triggering one).
-- No ad-hoc union extensions at call sites. When a function parameter or callback needs a union type (e.g. `ChosenIde | 'skip'`), define a named type in the slice's `actions.ts` and reference it — don't write inline unions like `value: SomeType | 'extra'` in function signatures. Composition is fine (`type DetectedSelectValue = IdeSelectValue | 'continue'`), but it must be named and exported from `actions.ts`.
+- No ad-hoc union extensions at call sites. When a function parameter or callback needs a union type (e.g. `IdeId | 'skip'`), define a named type in the slice's `actions.ts` and reference it — don't write inline unions like `value: SomeType | 'extra'` in function signatures. Composition is fine (`type DetectedSelectValue = IdeSelectValue | 'continue'`), but it must be named and exported from `actions.ts`.
 - In `switch` statements, the `default` case must use an exhaustive check via `satisfies never` to catch unhandled variants at compile time:
   ```ts
   default: {

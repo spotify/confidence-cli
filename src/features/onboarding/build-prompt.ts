@@ -1,4 +1,4 @@
-import type { ChosenIde, OnboardingGoal, PluginInstallationMethod } from '@shared-kernel/types.js';
+import type { IdeId, OnboardingGoal, PluginInstallationMethod } from '@shared-kernel/types.js';
 import { addIf } from '@lib/prompt-utils.js';
 import { buildToolVars } from './tool-vars.js';
 import { preflight } from './sections/preflight.js';
@@ -12,7 +12,7 @@ import { summary, rules } from './sections/summary.js';
 type PromptOptions = {
   framework: string;
   projectDir: string;
-  ide?: ChosenIde;
+  ide?: IdeId;
   isEmptyProject?: boolean;
   goals?: OnboardingGoal[];
   hasProviders?: boolean;
