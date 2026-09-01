@@ -1,10 +1,12 @@
 import { randomUUID } from 'node:crypto';
-import type { DetectedProvider } from '@providers/types.js';
-import type { PluginInstallationMethod } from '@integrations/types.js';
+import type {
+  ChosenIde,
+  OnboardingGoal,
+  PluginInstallationMethod,
+  DetectedProvider,
+} from '@shared-kernel/types.js';
 
-export type ChosenIde = 'claude' | 'cursor' | 'codex';
-
-export type OnboardingGoal = 'feature-flags' | 'session-recordings' | 'event-tracking';
+export type { ChosenIde, OnboardingGoal, PluginInstallationMethod, DetectedProvider };
 
 export type FrameworkSource = 'detected' | 'selected';
 

@@ -1,6 +1,5 @@
-import type { PluginInstallationMethod } from '@integrations/types.js';
-import type { ChosenIde, OnboardingGoal } from '../session.js';
-import { addIf } from '../prompt-utils.js';
+import type { ChosenIde, OnboardingGoal, PluginInstallationMethod } from '@shared-kernel/types.js';
+import { addIf } from '@lib/prompt-utils.js';
 import { buildToolVars } from './tool-vars.js';
 import { preflight } from './sections/preflight.js';
 import { scaffold } from './sections/scaffold.js';

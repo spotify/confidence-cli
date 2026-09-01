@@ -1,6 +1,6 @@
 import { useCallback, useRef, useState } from 'react';
 import { type ChildProcess } from 'node:child_process';
-import { buildOnboardingPrompt } from '@lib/onboarding-prompt/index.js';
+import { buildOnboardingPrompt } from '@features/onboarding/index.js';
 import { detectFramework } from '@frameworks/index.js';
 import { ScreenId, type OnboardingGoal } from '@lib/session.js';
 import { type IdeId, getIntegration, normalizeStatusLine } from '@integrations/index.js';

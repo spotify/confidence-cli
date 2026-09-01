@@ -1,7 +1,7 @@
 import { readFileSync } from 'node:fs';
 import { join, dirname } from 'node:path';
 import { fileURLToPath } from 'node:url';
-import { interpolate } from '../../prompt-utils.js';
+import { interpolate } from '@lib/prompt-utils.js';
 
 const STEPS_DIR = dirname(fileURLToPath(import.meta.url));
 

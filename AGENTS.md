@@ -4,9 +4,11 @@ CLI wizard for setting up and integrating [Confidence](https://confidence.spotif
 
 ## Architecture
 
-The project has five decoupled domains:
+The project has five decoupled domains plus a shared kernel and a features layer:
 
+- **`src/shared-kernel/`** — Cross-domain vocabulary types (`IdeId`, `OnboardingGoal`, `PluginInstallationMethod`, `DetectedProvider`). Type definitions only, no runtime logic.
 - **`src/commands/`** — CLI command definitions (yargs-based). Currently: default (launches TUI) and help.
+- **`src/features/`** — Vertical feature slices. Currently: `onboarding/` (prompt builder for the onboarding flow).
 - **`src/frameworks/`** — Framework integration configs. One subdir per framework (react, nextjs, node). Each exports a `FrameworkConfig` with detection, SDK package, and docs URL.
 - **`src/integrations/`** — IDE integration strategies. One subdir per supported IDE (claude, cursor, codex). Each exports an `IdeIntegration` object implementing the strategy pattern. Also contains IDE-agnostic MCP, plugin, and chat-session logic.
 - **`src/providers/`** — Provider detection for competing feature flag platforms (Statsig, Eppo, PostHog, Optimizely). One subdir per provider.
@@ -69,7 +71,7 @@ The stable `node-pty` release (v1.1.0) doesn't ship prebuilt binaries for Node.j
 
 ## Conventions
 
-- Use path aliases (`@commands/`, `@frameworks/`, `@integrations/`, `@providers/`, `@ui/`, `@lib/`) for cross-domain imports. Keep relative imports within the same domain.
+- Use path aliases (`@commands/`, `@features/`, `@frameworks/`, `@integrations/`, `@providers/`, `@shared-kernel/`, `@ui/`, `@lib/`) for cross-domain imports. Keep relative imports within the same domain.
 - Use `@inkjs/ui` components over standalone `ink-*` packages.
 - Screens go in `src/ui/tui/screens/` (as slices or flat files), reusable components in `components/`.
 - Shared modules (`hooks/`, `lib/`, `components/`) must never import from screen slices. If a type is needed by both, put it in `tui/lib/`.

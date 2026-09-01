@@ -1,4 +1,4 @@
-import type { OnboardingGoal } from '../session.js';
+import type { OnboardingGoal } from '@shared-kernel/types.js';
 
 export type ReportTemplate = { start: string; end: string };
 

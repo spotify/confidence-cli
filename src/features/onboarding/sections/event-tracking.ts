@@ -1,5 +1,4 @@
-import type { PluginInstallationMethod } from '@integrations/types.js';
-import type { ChosenIde } from '../../session.js';
+import type { ChosenIde, PluginInstallationMethod } from '@shared-kernel/types.js';
 import { loadStep } from '../steps/load.js';
 import { referenceInstruction } from '../tool-vars.js';
 

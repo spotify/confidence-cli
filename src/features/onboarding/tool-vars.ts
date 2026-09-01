@@ -1,6 +1,5 @@
-import type { PluginInstallationMethod } from '@integrations/types.js';
-import type { ChosenIde } from '../session.js';
-import { PLUGIN_NAME } from '../constants.js';
+import type { ChosenIde, PluginInstallationMethod } from '@shared-kernel/types.js';
+import { PLUGIN_NAME } from '@lib/constants.js';
 
 type ToolFormatter = (server: string, tool: string) => string;
 

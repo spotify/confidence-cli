@@ -1,5 +1,5 @@
-import { skillInvocation, referenceInstruction } from '@lib/onboarding-prompt/tool-vars.js';
-import type { ChosenIde } from '@lib/session.js';
+import { skillInvocation, referenceInstruction } from '@features/onboarding/tool-vars.js';
+import type { ChosenIde } from '@shared-kernel/types.js';
 
 describe('skillInvocation', () => {
   it.each<{ ide: ChosenIde; expected: string }>([
