@@ -33,12 +33,9 @@ export function integrateViaSkill(
 const REACT_GOTCHAS = `
 
 **React/Next.js — MANDATORY SDK selection:**
-- DO NOT install \`@spotify-confidence/react\`, \`@spotify-confidence/sdk\`, or \`@openfeature/react-sdk\` — these are deprecated and must not be used even if other sources mention them.
-- Use \`@spotify-confidence/openfeature-server-provider-local\` — it is the recommended SDK for both React and Next.js. It uses local evaluation via WebAssembly for fast flag resolution.
-- For Next.js: import \`ConfidenceProvider\` from \`@spotify-confidence/openfeature-server-provider-local/react-server\`, use \`getFlag\` in Server Components and \`useFlag\` in Client Components.
-- Only fall back to \`@spotify-confidence/openfeature-web-provider\` when the project requires client-side context modifications that local resolve cannot support.
-- Place the provider above any \`<Suspense>\` boundary.
-- If using the client provider, the rendering file must be a Client Component — extract into \`providers.tsx\` with \`"use client"\` if needed.`;
+- **Next.js** — use \`@spotify-confidence/openfeature-server-provider-local\`. It uses local evaluation via WebAssembly for fast flag resolution. Import \`ConfidenceProvider\` from \`@spotify-confidence/openfeature-server-provider-local/react-server\`, use \`getFlag\` in Server Components and \`useFlag\` in Client Components. Place the provider above any \`<Suspense>\` boundary.
+- **React (browser SPA, e.g. Vite/CRA)** — use \`@openfeature/web-sdk\` + \`@openfeature/react-sdk\` + \`@spotify-confidence/openfeature-web-provider\`. The web provider resolves flags client-side. Use \`OpenFeatureProvider\` from \`@openfeature/react-sdk\` and the \`useFlag\` hook for flag evaluation.
+- If using the web provider, the rendering file must be a Client Component — extract into \`providers.tsx\` with \`"use client"\` if needed.`;
 
 const FLAG_GUIDANCE_EMPTY =
   '   - Wire each flag into the sample app so running it demonstrates the flag in action (e.g. the app outputs different text, enables a feature, or changes its behavior based on the flag value).\n   - The sample app should be a self-contained working example of Confidence flag evaluation — a user running it should immediately see that flags control behavior.';
