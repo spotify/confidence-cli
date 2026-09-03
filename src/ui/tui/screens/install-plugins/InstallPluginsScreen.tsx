@@ -1,16 +1,11 @@
-import { Box, Text } from 'ink';
-import { Spinner } from '@inkjs/ui';
-import { Colors, Icons } from '../../styles.js';
+import { getIntegrations } from '@integrations/index.js';
+import { ScreenId } from '@lib/session.js';
 import { MainLayout } from '../../components/MainLayout.js';
 import { TaskList } from '../../components/TaskList.js';
-import { buildWizardTasks } from '../../lib/wizard-tasks.js';
-import type { IdeId } from '@shared-kernel/types.js';
-import { getIntegrations } from '@integrations/index.js';
-import { PLUGIN_REPO_URL } from '@lib/constants.js';
-import { ScreenId } from '@lib/session.js';
 import { useAutoAdvance } from '../../hooks/useAutoAdvance.js';
 import { useLogger } from '../../hooks/useLog.js';
 import { useNavigation } from '../../hooks/useNavigation.js';
+import { buildWizardTasks } from '../../lib/wizard-tasks.js';
 import { $session, store } from '../../store.js';
 import { usePluginInstall } from './usePluginInstall.js';
 import { track } from '@lib/telemetry.js';
@@ -21,12 +16,9 @@ import {
 } from './log-messages.js';
 import * as te from './telemetry-events.js';
 import { type IdeSelectValue, type DetectedSelectValue, type ErrorAction } from './actions.js';
-import { BottomPrompt } from './components/index.js';
-
-type IdeLabels = Record<IdeId, string>;
+import { BottomPrompt, MainContent } from './components/index.js';
 
 const ALL_INTEGRATIONS = getIntegrations();
-const IDE_LABELS = Object.fromEntries(ALL_INTEGRATIONS.map((i) => [i.id, i.name])) as IdeLabels;
 
 export function InstallPluginsScreen() {
   const navigate = useNavigation(ScreenId.InstallPlugins);
@@ -83,58 +75,9 @@ export function InstallPluginsScreen() {
         : 'active',
   );
 
-  const main = (
-    <Box flexDirection="column">
-      <Box marginBottom={1}>
-        <Text color={Colors.primary} bold>
-          Select agent to set up
-        </Text>
-      </Box>
-      <Box marginBottom={1}>
-        <Text color={Colors.muted}>
-          Your agent will get Confidence skills for flag management, warehouse setup, migrations,
-          and onboarding — so it can help without searching the docs.
-        </Text>
-      </Box>
-
-      {phase === 'detecting' && <Spinner label="Checking for Confidence AI plugins..." />}
-
-      {phase === 'already-installed' && (
-        <>
-          <Text>Detected Confidence plugins for:</Text>
-          {detected.map((d) => (
-            <Box key={d} gap={1}>
-              <Text color={Colors.success}>{Icons.check}</Text>
-              <Text>{IDE_LABELS[d] ?? d}</Text>
-            </Box>
-          ))}
-        </>
-      )}
-
-      {phase === 'installing' && <Spinner label="Installing Confidence plugin..." />}
-
-      {phase === 'installed' && (
-        <Box>
-          <Text color={Colors.success}>Plugin installed successfully. Continuing...</Text>
-        </Box>
-      )}
-
-      {phase === 'error' && (
-        <Box flexDirection="column">
-          <Text color={Colors.error}>Failed to install plugin: {error}</Text>
-          <Box marginTop={1}>
-            <Text color={Colors.muted}>
-              You can install manually from: <Text color={Colors.primary}>{PLUGIN_REPO_URL}</Text>
-            </Text>
-          </Box>
-        </Box>
-      )}
-    </Box>
-  );
-
   return (
     <MainLayout
-      main={main}
+      main={<MainContent phase={phase} detected={detected} error={error} />}
       aside={<TaskList tasks={tasks} />}
       prompt={
         <BottomPrompt
