@@ -31,7 +31,7 @@
   "dependencies": {
     "@inkjs/ui": "^2.0.0",
     "@nanostores/react": "^1.1.0",
-    "ink": "^6.8.0",
+    "ink": "^7.1.1",
     "nanostores": "^1.5.2",
     "react": "^19.2.8",
     "yargs": "^17.7.3"
