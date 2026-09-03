@@ -23,12 +23,10 @@ import * as te from './telemetry-events.js';
 import { type IdeSelectValue, type DetectedSelectValue, type ErrorAction } from './actions.js';
 import { BottomPrompt } from './components/index.js';
 
-const ALL_INTEGRATIONS = getIntegrations();
+type IdeLabels = Record<IdeId, string>;
 
-const IDE_LABELS = Object.fromEntries(ALL_INTEGRATIONS.map((i) => [i.id, i.name])) as Record<
-  IdeId,
-  string
->;
+const ALL_INTEGRATIONS = getIntegrations();
+const IDE_LABELS = Object.fromEntries(ALL_INTEGRATIONS.map((i) => [i.id, i.name])) as IdeLabels;
 
 export function InstallPluginsScreen() {
   const navigate = useNavigation(ScreenId.InstallPlugins);
@@ -55,6 +53,7 @@ export function InstallPluginsScreen() {
   function handleDetectedSelect(value: DetectedSelectValue) {
     if (value === 'continue') {
       if (!preferredIndex) return;
+
       store.setIde(preferredIndex);
       log(pluginsAlreadyInstalled(detected));
       track(te.pluginsAlreadyDetected());
@@ -68,9 +67,9 @@ export function InstallPluginsScreen() {
     if (value === 'exit') {
       log(pluginExitedAfterError(error));
       track(te.pluginExitedAfterError());
-      process.exit(1);
-      return;
+      return process.exit(1);
     }
+
     const ide = $session.get().ide;
     if (ide) selectIde(ide);
   }
@@ -133,9 +132,6 @@ export function InstallPluginsScreen() {
     </Box>
   );
 
-  const preferredLabel = preferredIndex ? IDE_LABELS[preferredIndex] : null;
-  const otherIntegrations = ALL_INTEGRATIONS.filter((i) => i.id !== preferredIndex);
-
   return (
     <MainLayout
       main={main}
@@ -143,8 +139,6 @@ export function InstallPluginsScreen() {
       prompt={
         <BottomPrompt
           phase={phase}
-          preferredLabel={preferredLabel}
-          otherIntegrations={otherIntegrations}
           detected={detected}
           onIdeSelect={handleIdeSelect}
           onDetectedSelect={handleDetectedSelect}

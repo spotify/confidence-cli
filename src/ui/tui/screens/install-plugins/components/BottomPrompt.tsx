@@ -1,5 +1,5 @@
 import type { IdeId } from '@shared-kernel/types.js';
-import type { IdeIntegration } from '@integrations/index.js';
+import { getIntegrations } from '@integrations/index.js';
 import { PromptPanel } from '../../../components/PromptPanel.js';
 import type { PluginPhase } from '../usePluginInstall.js';
 import {
@@ -10,10 +10,10 @@ import {
   type ErrorAction,
 } from '../actions.js';
 
+const ALL_INTEGRATIONS = getIntegrations();
+
 type BottomPromptProps = {
   phase: PluginPhase;
-  preferredLabel: string | null;
-  otherIntegrations: IdeIntegration[];
   detected: IdeId[];
   onIdeSelect: (value: IdeSelectValue) => void;
   onDetectedSelect: (value: DetectedSelectValue) => void;
@@ -22,8 +22,6 @@ type BottomPromptProps = {
 
 export function BottomPrompt({
   phase,
-  preferredLabel,
-  otherIntegrations,
   detected,
   onIdeSelect,
   onDetectedSelect,
@@ -50,7 +48,8 @@ export function BottomPrompt({
       );
     case 'already-installed': {
       const detectedSet = new Set(detected);
-      const otherOptions = otherIntegrations
+      const preferred = ALL_INTEGRATIONS.find((i) => detectedSet.has(i.id));
+      const otherOptions = ALL_INTEGRATIONS.filter((i) => i.id !== preferred?.id)
         .toSorted((a, b) => Number(detectedSet.has(b.id)) - Number(detectedSet.has(a.id)))
         .map((i) => ({
           label: i.name,
@@ -60,9 +59,9 @@ export function BottomPrompt({
       return (
         <PromptPanel
           mode="select"
-          status={`Confidence plugin detected for ${preferredLabel}. Continue with this agent tool?`}
+          status={`Confidence plugin detected for ${preferred?.name}. Continue with this agent tool?`}
           options={[
-            { label: `Continue with ${preferredLabel}`, value: 'continue' },
+            { label: `Continue with ${preferred?.name}`, value: 'continue' },
             ...otherOptions,
           ]}
           onSelect={onDetectedSelect}
