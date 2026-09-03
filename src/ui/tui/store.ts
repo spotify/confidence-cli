@@ -1,18 +1,20 @@
 import { atom } from 'nanostores';
 import { useStore } from '@nanostores/react';
+import type {
+  IdeId,
+  OnboardingGoal,
+  PluginInstallationMethod,
+  DetectedProvider,
+} from '@shared-kernel/types.js';
 import {
   type WizardSession,
   type CheckResult,
   type AuthState,
   type DebugEntry,
   type FrameworkSource,
-  type OnboardingGoal,
   ScreenId,
   createSession,
 } from '@lib/session.js';
-import type { ChosenIde } from '@lib/session.js';
-import type { PluginInstallationMethod } from '@integrations/types.js';
-import type { DetectedProvider } from '@providers/types.js';
 
 export type StoreOptions = {
   dryRun?: boolean;
@@ -75,12 +77,12 @@ export const store = {
       authState,
     }),
 
-  setIde: (ide: ChosenIde): void =>
+  setIde: (ide: IdeId): void =>
     updateSession({
       ide,
     }),
 
-  setPluginTargets: (plugins: ChosenIde[]): void =>
+  setPluginTargets: (plugins: IdeId[]): void =>
     updateSession({
       pluginTargets: plugins,
     }),

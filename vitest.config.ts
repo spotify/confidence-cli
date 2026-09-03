@@ -6,9 +6,11 @@ export default defineConfig({
   resolve: {
     alias: {
       '@commands': new URL('./src/commands', import.meta.url).pathname,
+      '@features': new URL('./src/features', import.meta.url).pathname,
       '@frameworks': new URL('./src/frameworks', import.meta.url).pathname,
       '@integrations': new URL('./src/integrations', import.meta.url).pathname,
       '@providers': new URL('./src/providers', import.meta.url).pathname,
+      '@shared-kernel': new URL('./src/shared-kernel', import.meta.url).pathname,
       '@ui': new URL('./src/ui', import.meta.url).pathname,
       '@lib': new URL('./src/lib', import.meta.url).pathname,
     },

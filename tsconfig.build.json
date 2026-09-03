@@ -15,9 +15,11 @@
     "rootDir": ".",
     "paths": {
       "@commands/*": ["./src/commands/*"],
+      "@features/*": ["./src/features/*"],
       "@frameworks/*": ["./src/frameworks/*"],
       "@integrations/*": ["./src/integrations/*"],
       "@providers/*": ["./src/providers/*"],
+      "@shared-kernel/*": ["./src/shared-kernel/*"],
       "@ui/*": ["./src/ui/*"],
       "@lib/*": ["./src/lib/*"]
     }

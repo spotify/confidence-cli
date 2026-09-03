@@ -14,11 +14,11 @@ import { ConnectToolsScreen } from '@ui/tui/screens/connect-tools/index.js';
 import { ScreenId } from '@lib/session.js';
 import { persistMcpPreference, clearMcpPreference, MCP_SERVERS } from '@integrations/index.js';
 import type { McpServerName } from '@integrations/index.js';
-import type { ChosenIde } from '@lib/session.js';
+import type { IdeId } from '@shared-kernel/types.js';
 import { server } from '../../msw/server.js';
 
 type IntegrationTestCase = {
-  ide: ChosenIde;
+  ide: IdeId;
 };
 
 describe('ConnectToolsScreen', () => {
@@ -201,7 +201,7 @@ type McpConfigOpts = {
   token?: string;
 };
 
-function writeMcpConfig(projectDir: string, ide: ChosenIde, opts?: McpConfigOpts): void {
+function writeMcpConfig(projectDir: string, ide: IdeId, opts?: McpConfigOpts): void {
   switch (ide) {
     case 'claude':
       return writeJsonMcpConfig(join(projectDir, '.mcp.json'), opts);

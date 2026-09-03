@@ -1,11 +1,12 @@
-import type { ProviderConfig, DetectedProvider } from './types.js';
+import type { DetectedProvider } from '@shared-kernel/types.js';
+import type { ProviderConfig } from './types.js';
 import { readNpmDeps, readPypiDeps, readGoModDeps } from './deps/index.js';
 import { eppoProvider } from './eppo/index.js';
 import { optimizelyProvider } from './optimizely/index.js';
 import { posthogProvider } from './posthog/index.js';
 import { statsigProvider } from './statsig/index.js';
 
-export type { ProviderConfig, DetectedProvider } from './types.js';
+export type { ProviderConfig } from './types.js';
 
 const PROVIDERS: ProviderConfig[] = [
   eppoProvider,

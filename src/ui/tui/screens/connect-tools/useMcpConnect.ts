@@ -1,6 +1,6 @@
 import { useCallback, useEffect, useMemo, useState } from 'react';
+import type { IdeId } from '@shared-kernel/types.js';
 import {
-  type IdeId,
   type McpServer,
   type McpServerName,
   type McpServerStatus,

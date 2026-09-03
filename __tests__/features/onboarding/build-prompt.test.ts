@@ -1,4 +1,4 @@
-import { buildOnboardingPrompt } from '@lib/onboarding-prompt/index.js';
+import { buildOnboardingPrompt } from '@features/onboarding/index.js';
 
 describe('buildOnboardingPrompt', () => {
   const baseOpts = {

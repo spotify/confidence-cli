@@ -1,8 +1,8 @@
-import { skillInvocation, referenceInstruction } from '@lib/onboarding-prompt/tool-vars.js';
-import type { ChosenIde } from '@lib/session.js';
+import { skillInvocation, referenceInstruction } from '@features/onboarding/tool-vars.js';
+import type { IdeId } from '@shared-kernel/types.js';
 
 describe('skillInvocation', () => {
-  it.each<{ ide: ChosenIde; expected: string }>([
+  it.each<{ ide: IdeId; expected: string }>([
     { ide: 'claude', expected: '/confidence:analyze-project' },
     { ide: 'codex', expected: '$analyze-project' },
     { ide: 'cursor', expected: '/analyze-project' },
@@ -14,7 +14,7 @@ describe('skillInvocation', () => {
 
 describe('referenceInstruction', () => {
   describe('when method is cli', () => {
-    it.each<{ ide: ChosenIde; expected: string }>([
+    it.each<{ ide: IdeId; expected: string }>([
       {
         ide: 'claude',
         expected: 'Invoke the `/confidence:analyze-project` skill as a **methodology reference**',
@@ -34,7 +34,7 @@ describe('referenceInstruction', () => {
   });
 
   describe('when method is download', () => {
-    it.each<{ ide: ChosenIde; expected: string }>([
+    it.each<{ ide: IdeId; expected: string }>([
       {
         ide: 'claude',
         expected: 'Read `.claude/skills/analyze-project/SKILL.md` as a **methodology reference**',

@@ -1,4 +1,5 @@
-import type { IdeId, PluginInstallationMethod, InstalledPlugin } from '../types.js';
+import type { IdeId, PluginInstallationMethod } from '@shared-kernel/types.js';
+import type { InstalledPlugin } from '../types.js';
 import { getIntegration, getIntegrations } from '../registry.js';
 import { downloadSkills } from './local.js';
 

@@ -1,9 +1,7 @@
 import type { ChildProcess } from 'node:child_process';
+import type { IdeId, PluginInstallationMethod } from '@shared-kernel/types.js';
 import type { McpServerName, McpServerStatus } from './mcp/servers.js';
 
-export type IdeId = 'claude' | 'cursor' | 'codex';
-
-export type PluginInstallationMethod = 'cli' | 'download';
 export type InstalledPlugin = {
   ide: IdeId;
   via: PluginInstallationMethod;

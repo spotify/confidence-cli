@@ -1,5 +1,5 @@
-import type { OnboardingGoal } from '../../session.js';
-import { CONFIDENCE_DOCS_URL } from '../../constants.js';
+import type { OnboardingGoal } from '@shared-kernel/types.js';
+import { CONFIDENCE_DOCS_URL } from '@lib/constants.js';
 import { buildReportTemplate } from '../report-templates.js';
 import { loadStep } from '../steps/load.js';
 

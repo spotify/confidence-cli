@@ -1,11 +1,11 @@
-import type { ChosenIde } from '@lib/session.js';
+import type { IdeId } from '@shared-kernel/types.js';
 import type { PromptOption } from '../../components/PromptPanel.js';
 
-export type IdeSelectValue = ChosenIde;
+export type IdeSelectValue = IdeId;
 
 export type DetectedSelectValue = IdeSelectValue | 'continue';
 
-export const IDE_SELECT_OPTIONS: PromptOption<ChosenIde>[] = [
+export const IDE_SELECT_OPTIONS: PromptOption<IdeId>[] = [
   { label: 'Claude Code', value: 'claude' },
   { label: 'Cursor', value: 'cursor' },
   { label: 'Codex', value: 'codex' },

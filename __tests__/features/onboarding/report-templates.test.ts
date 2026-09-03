@@ -1,5 +1,5 @@
-import { buildReportTemplate } from '@lib/onboarding-prompt/report-templates.js';
-import type { OnboardingGoal } from '@lib/session.js';
+import { buildReportTemplate } from '@features/onboarding/report-templates.js';
+import type { OnboardingGoal } from '@shared-kernel/types.js';
 
 function fileEntries(goals: OnboardingGoal[]): string[] {
   const { start } = buildReportTemplate(goals);

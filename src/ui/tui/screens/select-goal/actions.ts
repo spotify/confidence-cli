@@ -1,4 +1,4 @@
-import type { OnboardingGoal } from '@lib/session.js';
+import type { OnboardingGoal } from '@shared-kernel/types.js';
 import type { PromptOption } from '../../components/PromptPanel.js';
 
 const BASE_GOALS: PromptOption<OnboardingGoal>[] = [

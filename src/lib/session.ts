@@ -1,10 +1,123 @@
 import { randomUUID } from 'node:crypto';
-import type { DetectedProvider } from '@providers/types.js';
-import type { PluginInstallationMethod } from '@integrations/types.js';
+import type {
+  IdeId,
+  OnboardingGoal,
+  PluginInstallationMethod,
+  DetectedProvider,
+} from '@shared-kernel/types.js';
 
-export type ChosenIde = 'claude' | 'cursor' | 'codex';
-
-export type OnboardingGoal = 'feature-flags' | 'session-recordings' | 'event-tracking';
+export type WizardSession = {
+  /**
+   * Unique identifier for this wizard run.
+   * @default crypto.randomUUID()
+   */
+  sessionId: string;
+  /**
+   * Screen the wizard is currently displaying.
+   * @default ScreenId.Welcome
+   */
+  currentScreen: ScreenId;
+  /**
+   * Detected or user-selected framework identifier.
+   * @default null
+   * @example "react", "nextjs", "node"
+   */
+  framework: string | null;
+  /**
+   * How the framework value was obtained — auto-detected or manually selected.
+   * @default null
+   */
+  frameworkSource: FrameworkSource | null;
+  /**
+   * Screens the user has already passed through in this session.
+   * @default new Set()
+   */
+  completedScreens: Set<ScreenId>;
+  /**
+   * Chronological log of user interactions, used by the debug overlay.
+   * @default []
+   */
+  debugLog: DebugEntry[];
+  /**
+   * When true, all side effects (auth, installs, onboarding) are simulated.
+   * @default false
+   */
+  dryRun: boolean;
+  /**
+   * When true, the debug log overlay is visible.
+   * @default false
+   */
+  debug: boolean;
+  /**
+   * Absolute path to the project being onboarded.
+   * @default process.cwd()
+   */
+  projectDir: string;
+  /**
+   * Results of prerequisite checks keyed by check name.
+   * @default {}
+   * @example { "node": { name: "node", found: true, version: "24.1.0" } }
+   */
+  systemChecks: Record<string, CheckResult>;
+  /**
+   * Current authentication state and credentials.
+   * @default { status: 'idle' }
+   */
+  authState: AuthState;
+  /**
+   * IDE the user chose for the onboarding flow.
+   * @default null
+   */
+  ide: IdeId | null;
+  /**
+   * IDEs that received plugin installations during this session.
+   * @default []
+   */
+  pluginTargets: IdeId[];
+  /**
+   * How plugins were installed — via CLI marketplace or local download.
+   * @default null
+   */
+  pluginInstallMethod: PluginInstallationMethod | null;
+  /**
+   * MCP server names that were successfully connected.
+   * @default []
+   * @see {@link ScreenId.ConnectTools}
+   */
+  connectedMcps: string[];
+  /**
+   * Whether the project directory was empty at the start of onboarding.
+   * @default false
+   */
+  isEmptyProject: boolean;
+  /**
+   * Competing feature-flag providers found in the project's dependencies.
+   * @default []
+   */
+  detectedProviders: DetectedProvider[];
+  /**
+   * Goals the user selected for the onboarding session.
+   * @default []
+   */
+  onboardingGoals: OnboardingGoal[];
+  /**
+   * Latest status line emitted by the onboarding process.
+   * @default ""
+   */
+  onboardingStatus: string;
+  /**
+   * Path to the generated quickstart report, relative to the project dir.
+   * @default null
+   * @example "CONFIDENCE_QUICKSTART.md"
+   */
+  reportFile: string | null;
+  /**
+   * Human-readable summaries of files created or modified during onboarding.
+   * @default []
+   * @example ["Added @spotify-confidence/sdk", "Created confidence.config.ts"]
+   */
+  codeChanges: string[];
+};
 
 export type FrameworkSource = 'detected' | 'selected';
 
@@ -12,30 +125,6 @@ export type DebugEntry = {
   screen: ScreenId;
   input: string;
   output: string;
-};
-
-export type WizardSession = {
-  sessionId: string;
-  currentScreen: ScreenId;
-  framework: string | null;
-  frameworkSource: FrameworkSource | null;
-  completedScreens: Set<ScreenId>;
-  debugLog: DebugEntry[];
-  dryRun: boolean;
-  debug: boolean;
-  projectDir: string;
-  systemChecks: Record<string, CheckResult>;
-  authState: AuthState;
-  ide: ChosenIde | null;
-  pluginTargets: ChosenIde[];
-  pluginInstallMethod: PluginInstallationMethod | null;
-  connectedMcps: string[];
-  isEmptyProject: boolean;
-  detectedProviders: DetectedProvider[];
-  onboardingGoals: OnboardingGoal[];
-  onboardingStatus: string;
-  reportFile: string | null;
-  codeChanges: string[];
 };
 
 export type CheckResult = {

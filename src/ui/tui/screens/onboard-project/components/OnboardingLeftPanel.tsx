@@ -3,7 +3,7 @@ import { Spinner } from '@inkjs/ui';
 import { Colors, Emoji, Icons } from '../../../styles.js';
 import { StatusFeed } from '../../../components/StatusFeed.js';
 import { TipCard } from '../../../components/TipCard.js';
-import type { OnboardingGoal } from '@lib/session.js';
+import type { OnboardingGoal } from '@shared-kernel/types.js';
 import type { OnboardingPhase } from '../useOnboardingProcess.js';
 import type { StatusLine } from '../../../lib/status-line.js';
 import type { Tip } from '../../../lib/tips.js';

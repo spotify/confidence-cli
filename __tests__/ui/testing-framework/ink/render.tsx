@@ -5,8 +5,8 @@ import { WizardRouter } from '@ui/tui/router.js';
 import { SCREEN_TRANSITIONS } from '@ui/tui/screen-transitions.js';
 import { RouterContext } from '@ui/tui/hooks/useRouter.js';
 import { App } from '@ui/tui/App.js';
-import type { AuthState, OnboardingGoal, ScreenId } from '@lib/session.js';
-import type { ChosenIde } from '@lib/session.js';
+import type { IdeId, OnboardingGoal } from '@shared-kernel/types.js';
+import type { AuthState, ScreenId } from '@lib/session.js';
 
 // ink-testing-library's Stdout provides columns (100) but not rows,
 // so useTerminalSize defaults to 24 — below SHORT_THRESHOLD (28).
@@ -20,8 +20,8 @@ type RenderOptions = StoreOptions & {
   screen?: ScreenId;
   authState?: AuthState;
 
-  ide?: ChosenIde;
-  plugins?: ChosenIde[];
+  ide?: IdeId;
+  plugins?: IdeId[];
 
   framework?: string;
 

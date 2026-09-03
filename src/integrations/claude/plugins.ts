@@ -2,7 +2,7 @@ import { execFile as execFileCb } from 'node:child_process';
 import { resolve } from 'node:path';
 import { promisify } from 'node:util';
 import { PLUGIN_NAME } from '@lib/constants.js';
-import type { PluginInstallationMethod } from '../types.js';
+import type { PluginInstallationMethod } from '@shared-kernel/types.js';
 import { hasDownloadedSkills } from '../skills/local.js';
 import { skillsDir } from './paths.js';
 

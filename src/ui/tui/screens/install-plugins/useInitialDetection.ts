@@ -1,18 +1,18 @@
 import { useCallback, useEffect, useState } from 'react';
 import { type InstalledPlugin, detectInstalledPlugins } from '@integrations/index.js';
-import type { ChosenIde } from '@lib/session.js';
+import type { IdeId } from '@shared-kernel/types.js';
 import { useSession, store } from '../../store.js';
 import type { PluginPhase } from './usePluginInstall.js';
 
 export type InitialDetection = {
   phase: PluginPhase;
-  detected: ChosenIde[];
+  detected: IdeId[];
 };
 
 export function useInitialDetection(): InitialDetection {
   const session = useSession();
   const [phase, setPhase] = useState<PluginPhase>(session.dryRun ? 'choose-ide' : 'detecting');
-  const [detected, setDetected] = useState<ChosenIde[]>([]);
+  const [detected, setDetected] = useState<IdeId[]>([]);
 
   const applyResults = useCallback(function applyResults(found: InstalledPlugin[]) {
     const ides = found.map((d) => d.ide);

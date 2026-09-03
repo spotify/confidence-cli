@@ -1,4 +1,4 @@
-import type { IdeId } from './types.js';
+import type { IdeId } from '@shared-kernel/types.js';
 import type { WizardSession } from '@lib/session.js';
 import { getIntegration } from './registry.js';
 

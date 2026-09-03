@@ -1,12 +1,12 @@
 import { useSession } from '../../store.js';
-import { useChosenIdeName } from './useChosenIdeName.js';
+import { useIdeIdName } from './useIdeIdName.js';
 import { useSkippedOnboarding } from './useSkippedOnboarding.js';
 
 export function useScreenDescription() {
   const { detectedProviders, pluginTargets } = useSession();
 
   const skipped = useSkippedOnboarding();
-  const ideName = useChosenIdeName();
+  const ideName = useIdeIdName();
   const hasPlugins = pluginTargets.length > 0;
   const hasProviders = detectedProviders.length > 0;
 

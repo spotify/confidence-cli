@@ -1,4 +1,4 @@
-export type ProviderId = 'eppo' | 'optimizely' | 'posthog' | 'statsig';
+import type { ProviderId } from '@shared-kernel/types.js';
 
 export type ProviderConfig = {
   id: ProviderId;
@@ -10,5 +10,3 @@ export type ProviderConfig = {
     gomod?: string[];
   };
 };
-
-export type DetectedProvider = Pick<ProviderConfig, 'id' | 'name' | 'skillName'>;

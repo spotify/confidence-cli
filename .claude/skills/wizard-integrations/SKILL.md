@@ -57,7 +57,7 @@ Each IDE owns the full implementation of all these methods. Shared helpers (`ver
 
 ### Shared types
 
-`IdeId` is defined in `src/integrations/types.ts` — it belongs to the integrations module. `WizardSession` uses its own `ChosenIde` type (same string union, defined in `src/lib/session.ts`) to stay decoupled from the integrations module. This keeps the dependency direction clean: integrations never imports from lib/session for its own type definitions, and session never imports from integrations.
+`IdeId` is defined in `src/integrations/types.ts` — it belongs to the integrations module. `WizardSession` uses its own `IdeId` type (same string union, defined in `src/lib/session.ts`) to stay decoupled from the integrations module. This keeps the dependency direction clean: integrations never imports from lib/session for its own type definitions, and session never imports from integrations.
 
 ### Orchestrators
 

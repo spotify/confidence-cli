@@ -16,6 +16,15 @@ The Confidence Wizard is a CLI tool for quickly setting up and integrating [Conf
 
 The project is organized into decoupled top-level concerns. Each has its own subdirectory and must not depend on the others' internals.
 
+### Shared Kernel (`src/shared-kernel/`)
+
+Cross-domain vocabulary types that multiple domains depend on. Contains only type definitions — no runtime logic, no functions.
+
+- Types here form the ubiquitous language of the project: identifiers and enums that appear in function signatures across domain boundaries (e.g. `IdeId`, `OnboardingGoal`, `PluginInstallationMethod`, `DetectedProvider`).
+- If a type is used by three or more domains, it belongs here. If it's used by only one domain, it stays in that domain's `types.ts`.
+- The shared kernel depends on nothing in `src/`. Every other domain may import from it.
+- Adding a new shared type: define in `types.ts`, re-export from `index.ts`.
+
 ### 1. Commands (`src/commands/`)
 
 CLI command definitions using yargs. Each command is a self-contained module exporting a `Command` object.
@@ -58,6 +67,16 @@ Terminal user interface built with Ink and React. Organized into:
 
 UI modules must not import from `src/commands/`. They may import from `src/frameworks/` only to read framework metadata for display.
 
+### 6. Features (`src/features/`)
+
+Vertical feature slices that compose logic from multiple domains. Each feature gets its own subdirectory (e.g. `features/onboarding/`).
+
+- Currently: `onboarding/` — prompt builder for the project onboarding flow.
+- Features may import from `src/lib/`, `src/shared-kernel/`, and (via type-only imports) from other domains.
+- Features must not import from `src/ui/` or `src/commands/`.
+- Each feature exports through a barrel `index.ts` with a compact public API.
+- Adding a new feature: create a subdir under `features/`, add a barrel, document in this skill and CLAUDE.md.
+
 ## Hard Constraints
 
 ### No product knowledge in the TUI
@@ -76,14 +95,17 @@ All of this belongs in the Claude Code Skill and is delivered via Confidence MCP
 ### Dependency direction
 
 ```
-commands → ui, frameworks, lib
-ui       → lib, providers (and frameworks for display metadata only)
-frameworks → lib
-providers  → lib
-lib        → nothing in src/
+commands     → ui, features, frameworks, lib, shared-kernel
+features     → lib, shared-kernel
+ui           → features, lib, providers, shared-kernel (and frameworks for display metadata only)
+frameworks   → lib, shared-kernel
+providers    → lib, shared-kernel
+integrations → lib, shared-kernel
+lib          → shared-kernel
+shared-kernel → nothing in src/
 ```
 
-No circular dependencies. No upward imports. If two domains need to communicate, it flows through `src/lib/` shared types.
+No circular dependencies. No upward imports. Cross-domain vocabulary types live in `src/shared-kernel/`. Runtime utilities and session infrastructure live in `src/lib/`.
 
 Within the UI layer, the same principle applies at a finer grain:
 
@@ -218,7 +240,7 @@ function applyStatuses(updated: Record<string, Status>) {
 
 ### Path Aliases
 
-Use path aliases (`@commands/`, `@frameworks/`, `@integrations/`, `@providers/`, `@ui/`, `@lib/`) for all imports that cross top-level domain boundaries under `src/`. Keep relative imports for references within the same domain.
+Use path aliases (`@commands/`, `@features/`, `@frameworks/`, `@integrations/`, `@providers/`, `@shared-kernel/`, `@ui/`, `@lib/`) for all imports that cross top-level domain boundaries under `src/`. Keep relative imports for references within the same domain.
 
 Aliases are configured in `tsconfig.build.json` (`paths`) and `vitest.config.ts` (`resolve.alias`). When adding a new top-level domain under `src/`, add its alias to both files.
 
@@ -249,7 +271,7 @@ import { ScreenId } from '@lib/session.js';
 - In `useEffect`, use named functions instead of anonymous lambdas for the effect callback.
 - Prefer `AbortController` for removing event listeners instead of manually calling `removeEventListener`. Pass `{ signal: controller.signal }` to `addEventListener` and call `controller.abort()` in cleanup. This avoids needing to keep a reference to the exact same handler function and scales cleanly when multiple listeners share a lifetime.
 - Prefer "UI as a function of state" — derive values from state and props in the render body rather than stashing them in refs. Resort to `useRef` only when there is no pure-function alternative (e.g. holding a DOM node, a timer ID, or an instance that must survive re-renders without triggering one).
-- No ad-hoc union extensions at call sites. When a function parameter or callback needs a union type (e.g. `ChosenIde | 'skip'`), define a named type in the slice's `actions.ts` and reference it — don't write inline unions like `value: SomeType | 'extra'` in function signatures. Composition is fine (`type DetectedSelectValue = IdeSelectValue | 'continue'`), but it must be named and exported from `actions.ts`.
+- No ad-hoc union extensions at call sites. When a function parameter or callback needs a union type (e.g. `IdeId | 'skip'`), define a named type in the slice's `actions.ts` and reference it — don't write inline unions like `value: SomeType | 'extra'` in function signatures. Composition is fine (`type DetectedSelectValue = IdeSelectValue | 'continue'`), but it must be named and exported from `actions.ts`.
 - In `switch` statements, the `default` case must use an exhaustive check via `satisfies never` to catch unhandled variants at compile time:
   ```ts
   default: {
@@ -279,7 +301,7 @@ Never suppress, silence, or filter runtime warnings (e.g. `--no-warnings`, `--di
 When the project grows, new top-level concerns (e.g. `src/agent/` for agent harness logic, `src/detection/` for project analysis) follow the same pattern:
 
 - Own subdirectory under `src/`
-- Shared types in `src/lib/` or own `types.ts`
+- Cross-domain vocabulary types in `src/shared-kernel/types.ts`; domain-specific types in a local `types.ts`
 - Exported through a barrel `index.ts`
 - No circular dependencies with existing domains
 - Documented in this skill and CLAUDE.md
