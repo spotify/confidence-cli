@@ -10,7 +10,7 @@ export const SCREEN_TRANSITIONS = {
   [ScreenId.Authenticate]: { next: ScreenId.InstallPlugins },
   [ScreenId.InstallPlugins]: { next: ScreenId.ConnectTools },
   [ScreenId.ConnectTools]: { next: ScreenId.SelectGoal },
-  [ScreenId.SelectGoal]: { next: ScreenId.OnboardProject, skip: ScreenId.Done },
+  [ScreenId.SelectGoal]: { next: ScreenId.OnboardProject },
   [ScreenId.OnboardProject]: { next: ScreenId.Done, skip: ScreenId.Done },
   [ScreenId.Done]: {},
   [ScreenId.About]: {},

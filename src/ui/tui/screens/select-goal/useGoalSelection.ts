@@ -4,7 +4,6 @@ import { BROWSER_PLATFORMS } from '@lib/sdk-options.js';
 import { track } from '@lib/telemetry.js';
 import { useNavigation } from '../../hooks/useNavigation.js';
 import { useLogger } from '../../hooks/useLog.js';
-import { skipped } from '../../lib/log-messages.js';
 import { store, useSession } from '../../store.js';
 import { goalLabel } from './actions.js';
 import { goalsChosen } from './log-messages.js';
@@ -23,12 +22,7 @@ export function useGoalSelection(): GoalSelection {
   const recordingAvailable = !!session.framework && BROWSER_PLATFORMS.has(session.framework);
 
   function submitGoals(values: OnboardingGoal[]) {
-    if (values.length === 0) {
-      track(te.goalSkipped());
-      log(skipped());
-      navigate.to('skip');
-      return;
-    }
+    if (values.length === 0) return;
 
     store.setOnboardingGoals(values);
     track(te.goalsSelected(values));

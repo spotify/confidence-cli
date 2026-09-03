@@ -15,7 +15,7 @@ exports[`SelectGoal screen > shows goal options for a browser framework > select
 
 
  ──────────────────────────────────────────────────────────────────────────────────────────────────
- Toggle features to set up (select none to skip):
+ Toggle features to set up:
 
  ❯ Feature Flags
    Event Tracking
