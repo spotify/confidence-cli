@@ -85,6 +85,25 @@ describe('InstallPluginsScreen', () => {
     });
   });
 
+  it('sorts detected IDEs above non-detected ones', async () => {
+    const { detectInstalledPlugins } = await import('../../../src/integrations/skills/plugin.js');
+    vi.mocked(detectInstalledPlugins).mockResolvedValueOnce([
+      { ide: 'claude', via: 'cli' },
+      { ide: 'codex', via: 'cli' },
+    ]);
+
+    using sut = renderScreen(<InstallPluginsScreen />, { screen: ScreenId.InstallPlugins });
+
+    await waitFor(() => {
+      const frame = sut.lastFrame()!;
+      const codexPos = frame.indexOf('Codex');
+      const cursorPos = frame.indexOf('Cursor');
+      expect(codexPos).toBeGreaterThan(-1);
+      expect(cursorPos).toBeGreaterThan(-1);
+      expect(codexPos).toBeLessThan(cursorPos);
+    });
+  });
+
   it('shows error and retry option on install failure', async () => {
     const { installPlugin } = await import('../../../src/integrations/skills/plugin.js');
     vi.mocked(installPlugin).mockRejectedValueOnce(new Error('Installation failed'));
