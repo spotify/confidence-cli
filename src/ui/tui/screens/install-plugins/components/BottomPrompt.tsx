@@ -59,7 +59,7 @@ export function BottomPrompt({
       return (
         <PromptPanel
           mode="select"
-          status={`Confidence plugin detected for ${preferred?.name}. Continue with this agent tool?`}
+          status={`Confidence plugin detected for ${preferred?.name}. Continue with it?`}
           options={[
             { label: `Continue with ${preferred?.name}`, value: 'continue' },
             ...otherOptions,
