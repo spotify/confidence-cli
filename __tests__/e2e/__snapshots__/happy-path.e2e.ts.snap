@@ -119,10 +119,10 @@ exports[`happy-path flow > navigates Welcome → SystemCheck → Authenticate �
 
  Toggle Confidence features to integrate with your project.           ● Check system
                                                                       ● Sign in to Confidence
- ✱ Event Tracking works best with a managed warehouse or an           ● Set up your agent
+ ◆ Event Tracking works best with a managed warehouse or an           ● Set up your agent
  existing warehouse setup.                                            ● Connect tools
                                                                       ▶ Onboard project
- ✱ Session Recordings (β) require the feature to be enabled on your
+ ◆ Session Recordings (β) require the feature to be enabled on your
  Confidence account.
 
 
