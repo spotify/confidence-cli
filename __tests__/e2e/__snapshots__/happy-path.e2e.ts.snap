@@ -41,6 +41,33 @@ exports[`happy-path flow > navigates Welcome → SystemCheck → Authenticate �
  ↑↓ navigate   enter confirm                                                                 vX.Y.Z"
 `;
 
+exports[`happy-path flow > navigates Welcome → SystemCheck → Authenticate → InstallPlugins → ConnectTools → SelectGoal → OnboardProject → Done > done 1`] = `
+" Confidence by Spotify                                              https://confidence.spotify.com/
+
+
+                                       ✔ Confidence is ready!
+
+            We've taught Claude Code Confidence skills—try them out with slash commands.
+
+                                        What we have set up:
+                                   ● Added feature flag example
+                                   ● Created confidence.config.ts
+
+
+                           Full report: [CONFIDENCE_QUICKSTART.md]
+                         Documentation: https://confidence.spotify.com/docs
+                             Dashboard: https://app.confidence.spotify.com
+
+
+ ──────────────────────────────────────────────────────────────────────────────────────────────────
+ What's next?
+
+ ❯ Continue work with Claude Code
+   Exit
+
+ ↑↓ navigate   enter confirm   esc cancel                                                    vX.Y.Z"
+`;
+
 exports[`happy-path flow > navigates Welcome → SystemCheck → Authenticate → InstallPlugins → ConnectTools → SelectGoal → OnboardProject → Done > install-plugins 1`] = `
 " Confidence by Spotify                                              https://confidence.spotify.com/
 
