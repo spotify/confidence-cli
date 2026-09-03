@@ -1,4 +1,5 @@
-import type { IdeIntegration } from '@integrations/index.js';
+import type { IdeId } from '@shared-kernel/types.js';
+import { getIntegrations } from '@integrations/index.js';
 import { PromptPanel } from '../../../components/PromptPanel.js';
 import type { PluginPhase } from '../usePluginInstall.js';
 import {
@@ -9,10 +10,11 @@ import {
   type ErrorAction,
 } from '../actions.js';
 
+const ALL_INTEGRATIONS = getIntegrations();
+
 type BottomPromptProps = {
   phase: PluginPhase;
-  preferredLabel: string | null;
-  otherIntegrations: IdeIntegration[];
+  detected: IdeId[];
   onIdeSelect: (value: IdeSelectValue) => void;
   onDetectedSelect: (value: DetectedSelectValue) => void;
   onError: (value: ErrorAction) => void;
@@ -20,8 +22,7 @@ type BottomPromptProps = {
 
 export function BottomPrompt({
   phase,
-  preferredLabel,
-  otherIntegrations,
+  detected,
   onIdeSelect,
   onDetectedSelect,
   onError,
@@ -46,17 +47,21 @@ export function BottomPrompt({
         />
       );
     case 'already-installed': {
-      const otherOptions = otherIntegrations.map((i) => ({
-        label: i.name,
-        value: i.id,
-      }));
+      const detectedSet = new Set(detected);
+      const preferred = ALL_INTEGRATIONS.find((i) => detectedSet.has(i.id));
+      const otherOptions = ALL_INTEGRATIONS.filter((i) => i.id !== preferred?.id)
+        .toSorted((a, b) => Number(detectedSet.has(b.id)) - Number(detectedSet.has(a.id)))
+        .map((i) => ({
+          label: i.name,
+          value: i.id,
+        }));
 
       return (
         <PromptPanel
           mode="select"
-          status={`Confidence plugin detected for ${preferredLabel}. Continue with this agent tool?`}
+          status={`Confidence plugin detected for ${preferred?.name}. Continue with it?`}
           options={[
-            { label: `Continue with ${preferredLabel}`, value: 'continue' },
+            { label: `Continue with ${preferred?.name}`, value: 'continue' },
             ...otherOptions,
           ]}
           onSelect={onDetectedSelect}
