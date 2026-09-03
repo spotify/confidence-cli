@@ -40,13 +40,13 @@ export function InstallPluginsScreen() {
     selectIde(value);
   }
 
-  const preferredIndex = ALL_INTEGRATIONS.map((i) => i.id).find((id) => detected.includes(id));
+  const preferredIde = ALL_INTEGRATIONS.map((i) => i.id).find((id) => detected.includes(id));
 
   function handleDetectedSelect(value: DetectedSelectValue) {
     if (value === 'continue') {
-      if (!preferredIndex) return;
+      if (!preferredIde) return;
 
-      store.setIde(preferredIndex);
+      store.setIde(preferredIde);
       log(pluginsAlreadyInstalled(detected));
       track(te.pluginsAlreadyDetected());
       navigate.to('next');
