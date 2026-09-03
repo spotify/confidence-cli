@@ -96,8 +96,8 @@ describe('InstallPluginsScreen', () => {
 
     await waitFor(() => {
       const frame = sut.lastFrame()!;
-      const codexPos = frame.indexOf('Codex');
-      const cursorPos = frame.indexOf('Cursor');
+      const codexPos = frame.lastIndexOf('Codex');
+      const cursorPos = frame.lastIndexOf('Cursor');
       expect(codexPos).toBeGreaterThan(-1);
       expect(cursorPos).toBeGreaterThan(-1);
       expect(codexPos).toBeLessThan(cursorPos);

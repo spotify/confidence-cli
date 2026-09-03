@@ -1,5 +1,7 @@
-import { getIntegrations } from '@integrations/index.js';
 import { ScreenId } from '@lib/session.js';
+import { track } from '@lib/telemetry.js';
+import type { IdeId } from '@shared-kernel/types.js';
+
 import { MainLayout } from '../../components/MainLayout.js';
 import { TaskList } from '../../components/TaskList.js';
 import { useAutoAdvance } from '../../hooks/useAutoAdvance.js';
@@ -8,17 +10,14 @@ import { useNavigation } from '../../hooks/useNavigation.js';
 import { buildWizardTasks } from '../../lib/wizard-tasks.js';
 import { $session, store } from '../../store.js';
 import { usePluginInstall } from './usePluginInstall.js';
-import { track } from '@lib/telemetry.js';
 import {
   pluginsAlreadyInstalled,
   pluginInstalled,
   pluginExitedAfterError,
 } from './log-messages.js';
 import * as te from './telemetry-events.js';
-import { type IdeSelectValue, type DetectedSelectValue, type ErrorAction } from './actions.js';
+import { type ErrorAction } from './actions.js';
 import { BottomPrompt, MainContent } from './components/index.js';
-
-const ALL_INTEGRATIONS = getIntegrations();
 
 export function InstallPluginsScreen() {
   const navigate = useNavigation(ScreenId.InstallPlugins);
@@ -35,24 +34,18 @@ export function InstallPluginsScreen() {
     },
   });
 
-  function handleIdeSelect(value: IdeSelectValue) {
-    track(te.pluginIdeSelected(value));
-    selectIde(value);
-  }
+  function handleIdeSelect(value: IdeId) {
+    if (detected.includes(value)) {
+      store.setIde(value);
 
-  const preferredIndex = ALL_INTEGRATIONS.map((i) => i.id).find((id) => detected.includes(id));
-
-  function handleDetectedSelect(value: DetectedSelectValue) {
-    if (value === 'continue') {
-      if (!preferredIndex) return;
-
-      store.setIde(preferredIndex);
       log(pluginsAlreadyInstalled(detected));
       track(te.pluginsAlreadyDetected());
       navigate.to('next');
       return;
     }
-    handleIdeSelect(value);
+
+    track(te.pluginIdeSelected(value));
+    selectIde(value);
   }
 
   function handleError(value: ErrorAction) {
@@ -83,8 +76,7 @@ export function InstallPluginsScreen() {
         <BottomPrompt
           phase={phase}
           detected={detected}
-          onIdeSelect={handleIdeSelect}
-          onDetectedSelect={handleDetectedSelect}
+          onSelect={handleIdeSelect}
           onError={handleError}
         />
       }

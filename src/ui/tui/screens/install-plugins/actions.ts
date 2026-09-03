@@ -1,10 +1,6 @@
 import type { IdeId } from '@shared-kernel/types.js';
 import type { PromptOption } from '../../components/PromptPanel.js';
 
-export type IdeSelectValue = IdeId;
-
-export type DetectedSelectValue = IdeSelectValue | 'continue';
-
 export const IDE_SELECT_OPTIONS: PromptOption<IdeId>[] = [
   { label: 'Claude Code', value: 'claude' },
   { label: 'Cursor', value: 'cursor' },
