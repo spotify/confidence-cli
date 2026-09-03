@@ -83,13 +83,14 @@ describe('SelectGoal screen', () => {
     expect(session.snapshot()).toContain('instrument event tracking');
   });
 
-  it('advances to Done when submitting with nothing selected', async () => {
+  it('stays on goal screen when submitting with nothing selected', async () => {
     using session = createSession();
 
     await navigateToGoalSelection(session);
     await session.press('Enter');
 
-    await session.waitForText('Onboarding skipped');
+    await session.waitForText('Feature Flags');
+    await session.waitForText('Toggle features to set up');
   });
 
   it('shows goal selection for non-browser project without recording option', async () => {

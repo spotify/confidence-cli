@@ -99,7 +99,7 @@ describe('SelectGoalScreen', () => {
       });
     });
 
-    it('advances to Done when submitting with nothing selected', async () => {
+    it('stays on goal screen when submitting with nothing selected', async () => {
       using project = createProjectDir();
 
       using sut = renderApp({
@@ -115,7 +115,8 @@ describe('SelectGoalScreen', () => {
       await act(() => sut.stdin.write(ENTER));
 
       await waitFor(() => {
-        expect(sut.lastFrame()).toContain('Onboarding skipped');
+        expect(sut.lastFrame()).toContain('Feature Flags');
+        expect(sut.lastFrame()).toContain('Toggle features to set up');
       });
     });
 

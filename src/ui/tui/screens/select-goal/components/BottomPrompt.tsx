@@ -10,7 +10,7 @@ export function BottomPrompt({ goalSelection }: GoalSelectionProps) {
   return (
     <PromptPanel
       mode="multi-select"
-      status="Toggle features to set up (select none to skip):"
+      status="Toggle features to set up:"
       options={goalOptionsFor(goalSelection.recordingAvailable)}
       onSubmit={goalSelection.submitGoals}
     />
