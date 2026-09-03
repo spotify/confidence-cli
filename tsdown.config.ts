@@ -13,7 +13,10 @@ export default defineConfig({
   target: 'node24',
   clean: true,
   dts: false,
-  external: ['react', 'ink', '@inkjs/ui'],
+  fixedExtension: false,
+  deps: {
+    neverBundle: ['react', 'ink', '@inkjs/ui'],
+  },
 
   onSuccess() {
     mkdirSync(STEPS_DIST, { recursive: true });
