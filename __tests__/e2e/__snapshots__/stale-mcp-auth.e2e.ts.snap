@@ -9,8 +9,8 @@ exports[`when MCP config has expired auth tokens > allows skipping when auth is 
  ✔ add the Confidence SDK                                             ● Sign in to Confidence
  ✔ create your first feature flag                                     ● Set up your agent
                                                                       ● Connect tools
- ◆ The AI agent will be able to read and write files in your          ▶ Onboard project
- project.
+ ◆ The AI agent will be able to run commands, install packages, and   ▶ Onboard project
+ modify files in your project.
 
 
  ──────────────────────────────────────────────────────────────────────────────────────────────────
