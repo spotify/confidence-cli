@@ -127,7 +127,7 @@ exports[`happy-path flow > navigates Welcome → SystemCheck → Authenticate �
 
 
  ──────────────────────────────────────────────────────────────────────────────────────────────────
- Toggle features to set up (select none to skip):
+ Toggle features to set up:
 
  ❯ Feature Flags
    Event Tracking
