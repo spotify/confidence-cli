@@ -145,6 +145,7 @@ export function InstallPluginsScreen() {
           phase={phase}
           preferredLabel={preferredLabel}
           otherIntegrations={otherIntegrations}
+          detected={detected}
           onIdeSelect={handleIdeSelect}
           onDetectedSelect={handleDetectedSelect}
           onError={handleError}

@@ -1,3 +1,4 @@
+import type { IdeId } from '@shared-kernel/types.js';
 import type { IdeIntegration } from '@integrations/index.js';
 import { PromptPanel } from '../../../components/PromptPanel.js';
 import type { PluginPhase } from '../usePluginInstall.js';
@@ -13,6 +14,7 @@ type BottomPromptProps = {
   phase: PluginPhase;
   preferredLabel: string | null;
   otherIntegrations: IdeIntegration[];
+  detected: IdeId[];
   onIdeSelect: (value: IdeSelectValue) => void;
   onDetectedSelect: (value: DetectedSelectValue) => void;
   onError: (value: ErrorAction) => void;
@@ -22,6 +24,7 @@ export function BottomPrompt({
   phase,
   preferredLabel,
   otherIntegrations,
+  detected,
   onIdeSelect,
   onDetectedSelect,
   onError,
@@ -46,10 +49,13 @@ export function BottomPrompt({
         />
       );
     case 'already-installed': {
-      const otherOptions = otherIntegrations.map((i) => ({
-        label: i.name,
-        value: i.id,
-      }));
+      const detectedSet = new Set(detected);
+      const otherOptions = otherIntegrations
+        .toSorted((a, b) => Number(detectedSet.has(b.id)) - Number(detectedSet.has(a.id)))
+        .map((i) => ({
+          label: i.name,
+          value: i.id,
+        }));
 
       return (
         <PromptPanel
