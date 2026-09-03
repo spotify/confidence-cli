@@ -22,7 +22,7 @@ export function runOnboarding(
 
   let child: ChildProcess;
   try {
-    child = spawn('codex', ['exec', '--json', '--sandbox', 'workspace-write', '-'], {
+    child = spawn('codex', ['exec', '--json', '--sandbox', 'danger-full-access', '-'], {
       cwd: opts.projectDir,
       timeout: ONBOARDING_TIMEOUT_MS,
       stdio: ['pipe', 'pipe', 'pipe'],

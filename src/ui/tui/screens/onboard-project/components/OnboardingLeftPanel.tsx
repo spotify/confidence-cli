@@ -10,7 +10,8 @@ import type { Tip } from '../../../lib/tips.js';
 
 export const MAX_VISIBLE_STATUS = 3;
 
-const SANDBOX_WARNING = 'The AI agent will be able to read and write files in your project.';
+const SANDBOX_WARNING =
+  'The AI agent will be able to run commands, install packages, and modify files in your project.';
 
 type OnboardingLeftPanelProps = {
   phase: OnboardingPhase;

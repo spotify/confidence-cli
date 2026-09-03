@@ -35,7 +35,7 @@ const IDE_CASES = [
     name: 'Codex',
     downPresses: 2,
     command: 'codex',
-    expectedArgs: ['exec', '--json', '--sandbox', 'workspace-write', '-'],
+    expectedArgs: ['exec', '--json', '--sandbox', 'danger-full-access', '-'],
     expectedPromptSnippets: [
       'Confidence SDK',
       '$analyze-project',
