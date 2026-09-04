@@ -34,6 +34,13 @@ describe('InstallPluginsScreen', () => {
     });
   });
 
+  it('shows file system access warning during IDE selection', async () => {
+    using sut = renderScreen(<InstallPluginsScreen />, { screen: ScreenId.InstallPlugins });
+    await waitFor(() => {
+      expect(sut.lastFrame()).toContain('full file system access');
+    });
+  });
+
   it('installs plugin and shows success', async () => {
     using project = createProjectDir();
     using sut = renderScreen(<InstallPluginsScreen />, {

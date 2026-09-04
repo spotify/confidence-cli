@@ -3,21 +3,19 @@ import { Spinner } from '@inkjs/ui';
 import { Colors, Emoji, Icons } from '../../../styles.js';
 import { StatusFeed } from '../../../components/StatusFeed.js';
 import { TipCard } from '../../../components/TipCard.js';
-import type { OnboardingGoal } from '@shared-kernel/types.js';
+import type { IdeId, OnboardingGoal } from '@shared-kernel/types.js';
 import type { OnboardingPhase } from '../useOnboardingProcess.js';
 import type { StatusLine } from '../../../lib/status-line.js';
 import type { Tip } from '../../../lib/tips.js';
 
 export const MAX_VISIBLE_STATUS = 3;
 
-const SANDBOX_WARNING =
-  'The AI agent will be able to run commands, install packages, and modify files in your project.';
-
 type OnboardingLeftPanelProps = {
   phase: OnboardingPhase;
   statusLines: StatusLine[];
   error: string | null;
   goals: OnboardingGoal[];
+  ide: IdeId | null;
   showTips: boolean;
   tip: Tip;
 };
@@ -27,6 +25,7 @@ export function OnboardingLeftPanel({
   statusLines,
   error,
   goals,
+  ide,
   showTips,
   tip,
 }: OnboardingLeftPanelProps) {
@@ -50,7 +49,7 @@ export function OnboardingLeftPanel({
           </Box>
           <Box marginBottom={1}>
             <Text color={Colors.warning}>
-              {Icons.diamond} {SANDBOX_WARNING}
+              {Icons.diamond} {sandboxWarning(ide)}
             </Text>
           </Box>
         </>
@@ -96,4 +95,15 @@ const GOAL_STEPS: Record<OnboardingGoal, string[]> = {
 
 function onboardingSteps(goals: OnboardingGoal[]): string[] {
   return ['add the Confidence SDK', ...goals.flatMap((g) => GOAL_STEPS[g])];
+}
+
+const WARNING_MSG = {
+  sandbox:
+    'The AI agent will be able to run commands, install packages, and modify files in your project.',
+  relaxed:
+    'The AI agent will have access to your entire file system as well as run commands and install packages in your project.',
+} as const;
+
+function sandboxWarning(ide: IdeId | null): string {
+  return ide === 'claude' ? WARNING_MSG.sandbox : WARNING_MSG.relaxed;
 }

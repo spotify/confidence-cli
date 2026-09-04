@@ -227,6 +227,55 @@ describe('Onboarding flow', () => {
     });
   });
 
+  describe('IDE-specific sandbox warning', () => {
+    it('shows standard warning when IDE is Claude Code', async () => {
+      using project = createProjectDir();
+
+      using sut = renderScreen(<OnboardProjectScreen />, {
+        screen: ScreenId.OnboardProject,
+        dir: project.path,
+        ide: 'claude',
+        goals: ['feature-flags'],
+      });
+
+      await waitFor(() => {
+        const frame = sut.lastFrame()!;
+        expect(frame).toContain('run commands, install packages');
+        expect(frame).not.toContain('entire file system');
+      });
+    });
+
+    it('shows elevated warning when IDE is Cursor', async () => {
+      using project = createProjectDir();
+
+      using sut = renderScreen(<OnboardProjectScreen />, {
+        screen: ScreenId.OnboardProject,
+        dir: project.path,
+        ide: 'cursor',
+        goals: ['feature-flags'],
+      });
+
+      await waitFor(() => {
+        expect(sut.lastFrame()).toContain('entire file system');
+      });
+    });
+
+    it('shows elevated warning when IDE is Codex', async () => {
+      using project = createProjectDir();
+
+      using sut = renderScreen(<OnboardProjectScreen />, {
+        screen: ScreenId.OnboardProject,
+        dir: project.path,
+        ide: 'codex',
+        goals: ['feature-flags'],
+      });
+
+      await waitFor(() => {
+        expect(sut.lastFrame()).toContain('entire file system');
+      });
+    });
+  });
+
   describe('selected goal display', () => {
     it('shows feature flag steps when goal is feature-flags', async () => {
       using project = createProjectDir();

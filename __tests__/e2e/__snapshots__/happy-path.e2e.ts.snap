@@ -77,7 +77,8 @@ exports[`happy-path flow > navigates Welcome → SystemCheck → Authenticate �
  warehouse setup, migrations, and onboarding — so it can help         ● Sign in to Confidence
  without searching the docs.                                          ▶ Set up your agent
                                                                       ○ Connect tools
-                                                                      ○ Onboard project
+ ◆ Cursor and Codex require full file system access to run            ○ Onboard project
+ onboarding.
 
 
  ──────────────────────────────────────────────────────────────────────────────────────────────────

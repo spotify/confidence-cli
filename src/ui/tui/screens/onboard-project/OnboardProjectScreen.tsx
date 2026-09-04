@@ -81,6 +81,7 @@ export function OnboardProjectScreen() {
           statusLines={onboarding.statusLines}
           error={onboarding.error}
           goals={session.onboardingGoals}
+          ide={session.ide}
           showTips={showTips}
           tip={tip}
         />
