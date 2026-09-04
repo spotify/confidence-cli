@@ -1,12 +1,7 @@
 import { Box, Text } from 'ink';
 import { Colors, Icons } from '../../../styles.js';
-import type { GoalSelection } from '../useGoalSelection.js';
 
-type GoalSelectionProps = {
-  goalSelection: GoalSelection;
-};
-
-export function LeftPanel({ goalSelection }: GoalSelectionProps) {
+export function LeftPanel() {
   return (
     <Box flexDirection="column">
       <Box marginBottom={1}>
@@ -23,14 +18,6 @@ export function LeftPanel({ goalSelection }: GoalSelectionProps) {
             warehouse setup.
           </Text>
         </Box>
-        {goalSelection.recordingAvailable && (
-          <Box marginTop={1}>
-            <Text color={Colors.warning}>
-              {Icons.diamond} Session Recordings (β) require the feature to be enabled on your
-              Confidence account.
-            </Text>
-          </Box>
-        )}
       </Box>
     </Box>
   );
