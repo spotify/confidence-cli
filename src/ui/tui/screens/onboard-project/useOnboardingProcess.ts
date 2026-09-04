@@ -105,11 +105,7 @@ export function useOnboardingProcess(): OnboardingProcess {
       function startReal() {
         if (!isEmpty) addStatus(`Framework: ${fw}`);
 
-        addStatus(
-          isEmpty
-            ? 'Scaffolding sample app and integrating Confidence SDK...'
-            : 'Analyzing project...',
-        );
+        addStatus(isEmpty ? 'Integrating Confidence SDK...' : 'Analyzing project...');
 
         const ide = (s.ide ?? 'claude') as IdeId;
         const prompt = buildOnboardingPrompt({
