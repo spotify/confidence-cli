@@ -28,9 +28,16 @@ describe('InstallPluginsScreen', () => {
   it('shows IDE selection when no plugins detected', async () => {
     using sut = renderScreen(<InstallPluginsScreen />, { screen: ScreenId.InstallPlugins });
     await waitFor(() => {
-      expect(sut.lastFrame()).toContain('Claude Code');
+      expect(sut.lastFrame()).toContain('Claude Code (Recommended)');
       expect(sut.lastFrame()).toContain('Cursor');
       expect(sut.lastFrame()).toContain('Codex');
+    });
+  });
+
+  it('shows Claude Code recommendation note during IDE selection', async () => {
+    using sut = renderScreen(<InstallPluginsScreen />, { screen: ScreenId.InstallPlugins });
+    await waitFor(() => {
+      expect(sut.lastFrame()).toContain('safer and more controlled');
     });
   });
 

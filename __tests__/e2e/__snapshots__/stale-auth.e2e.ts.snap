@@ -9,13 +9,14 @@ exports[`when auth token is stale > allows re-authentication after expired token
  warehouse setup, migrations, and onboarding — so it can help         ● Sign in to Confidence
  without searching the docs.                                          ▶ Set up your agent
                                                                       ○ Connect tools
-                                                                      ○ Onboard project
+ ◆ For a safer and more controlled experience, we recommend Claude    ○ Onboard project
+ Code.
 
 
  ──────────────────────────────────────────────────────────────────────────────────────────────────
  Which CLI agent would you like to use?
 
- ❯ Claude Code
+ ❯ Claude Code (Recommended)
    Cursor
    Codex
 
@@ -31,13 +32,14 @@ exports[`when auth token is stale > allows signing in after failed refresh and p
  warehouse setup, migrations, and onboarding — so it can help         ● Sign in to Confidence
  without searching the docs.                                          ▶ Set up your agent
                                                                       ○ Connect tools
-                                                                      ○ Onboard project
+ ◆ For a safer and more controlled experience, we recommend Claude    ○ Onboard project
+ Code.
 
 
  ──────────────────────────────────────────────────────────────────────────────────────────────────
  Which CLI agent would you like to use?
 
- ❯ Claude Code
+ ❯ Claude Code (Recommended)
    Cursor
    Codex
 
@@ -93,13 +95,14 @@ exports[`when auth token is stale > refreshes and authenticates when choosing ex
  warehouse setup, migrations, and onboarding — so it can help         ● Sign in to Confidence
  without searching the docs.                                          ▶ Set up your agent
                                                                       ○ Connect tools
-                                                                      ○ Onboard project
+ ◆ For a safer and more controlled experience, we recommend Claude    ○ Onboard project
+ Code.
 
 
  ──────────────────────────────────────────────────────────────────────────────────────────────────
  Which CLI agent would you like to use?
 
- ❯ Claude Code
+ ❯ Claude Code (Recommended)
    Cursor
    Codex
 
