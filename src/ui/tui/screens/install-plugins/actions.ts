@@ -2,7 +2,7 @@ import type { IdeId } from '@shared-kernel/types.js';
 import type { PromptOption } from '../../components/PromptPanel.js';
 
 export const IDE_SELECT_OPTIONS: PromptOption<IdeId>[] = [
-  { label: 'Claude Code (Recommended)', value: 'claude' },
+  { label: 'Claude Code', value: 'claude' },
   { label: 'Cursor', value: 'cursor' },
   { label: 'Codex', value: 'codex' },
 ];

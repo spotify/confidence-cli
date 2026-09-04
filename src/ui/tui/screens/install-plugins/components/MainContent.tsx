@@ -34,7 +34,7 @@ export function MainContent({ phase, detected, error }: MainContentProps) {
       {phase === 'choose-ide' && (
         <Box marginBottom={1}>
           <Text color={Colors.warning}>
-            {Icons.diamond} For a safer and more controlled experience, we recommend Claude Code.
+            {Icons.diamond} Cursor and Codex require full file system access to run onboarding.
           </Text>
         </Box>
       )}

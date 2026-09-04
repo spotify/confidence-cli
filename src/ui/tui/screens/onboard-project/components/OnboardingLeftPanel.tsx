@@ -101,7 +101,7 @@ const WARNING_MSG = {
   sandbox:
     'The AI agent will be able to run commands, install packages, and modify files in your project.',
   relaxed:
-    'The AI agent will have to access your entire file system as well as run commands, install packages, and modify files in your project.',
+    'The AI agent will have access to your entire file system as well as run commands and install packages in your project.',
 } as const;
 
 function sandboxWarning(ide: IdeId | null): string {
