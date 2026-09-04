@@ -1,9 +1,9 @@
 import { type ChildProcess, spawn } from 'node:child_process';
 import { createInterface } from 'node:readline';
 import type { OnboardingOpts, OnboardingCallbacks } from '../types.js';
-import { ONBOARDING_TIMEOUT_MS, STATUS_PREFIX } from '../constants.js';
+import { ONBOARDING_TIMEOUT_MS } from '../constants.js';
 import { type StreamEvent, extractTextLines } from '../stream-json.js';
-import { spawnErrorMessage } from '../utils.js';
+import { isStatusLine, normalizeStatusLine, spawnErrorMessage } from '../utils.js';
 
 export function runOnboarding(
   opts: OnboardingOpts,
@@ -48,12 +48,14 @@ export function runOnboarding(
     }
 
     for (const textLine of extractTextLines(event)) {
-      const stripped = textLine.trim();
-      if (!stripped) continue;
-      allLines.push(stripped);
-      callbacks.onStdout(stripped);
-      if (stripped.startsWith(STATUS_PREFIX)) {
-        callbacks.onStatus(stripped.slice(STATUS_PREFIX.length));
+      const line = textLine.trim();
+      if (!line) continue;
+
+      allLines.push(line);
+      callbacks.onStdout(line);
+
+      if (isStatusLine(line)) {
+        callbacks.onStatus(normalizeStatusLine(line));
       }
     }
   });
