@@ -31,21 +31,6 @@ describe('SelectGoalScreen', () => {
       });
     });
 
-    it('shows account access note when recording is available', async () => {
-      using project = createProjectDir();
-
-      using sut = renderApp({
-        screen: ScreenId.SelectGoal,
-        dir: project.path,
-        framework: 'react',
-      });
-
-      await waitFor(() => {
-        expect(sut.lastFrame()).toContain('require the feature to be enabled');
-        expect(sut.lastFrame()).toContain('Confidence account');
-      });
-    });
-
     it('shows warehouse note for event tracking', async () => {
       using project = createProjectDir();
 

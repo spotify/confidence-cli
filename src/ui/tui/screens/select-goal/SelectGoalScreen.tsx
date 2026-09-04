@@ -11,7 +11,7 @@ export function SelectGoalScreen() {
 
   return (
     <MainLayout
-      main={<LeftPanel goalSelection={goalSelection} />}
+      main={<LeftPanel />}
       aside={<TaskList tasks={WIZARD_TASKS} />}
       prompt={<BottomPrompt goalSelection={goalSelection} />}
     />
