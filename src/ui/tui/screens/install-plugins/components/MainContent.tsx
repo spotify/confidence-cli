@@ -31,6 +31,14 @@ export function MainContent({ phase, detected, error }: MainContentProps) {
         </Text>
       </Box>
 
+      {phase === 'choose-ide' && (
+        <Box marginBottom={1}>
+          <Text color={Colors.warning}>
+            {Icons.diamond} For a safer and more controlled experience, we recommend Claude Code.
+          </Text>
+        </Box>
+      )}
+
       {phase === 'detecting' && <Spinner label="Checking for Confidence AI plugins..." />}
 
       {phase === 'already-installed' && (
