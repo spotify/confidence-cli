@@ -1,5 +1,24 @@
 # Changelog
 
+## [1.3.0](https://github.com/spotify/confidence-cli/compare/quickstart-v1.2.0...quickstart-v1.3.0) (2026-09-04)
+
+
+### Features
+
+* init git repo if not present when scaffolding ([#49](https://github.com/spotify/confidence-cli/issues/49)) ([cea860b](https://github.com/spotify/confidence-cli/commit/cea860bd1da4fe351e7011ae95bd905afecd63ea))
+* make warnings about agent access clearer, recommend Claude Code ([#52](https://github.com/spotify/confidence-cli/issues/52)) ([be0a995](https://github.com/spotify/confidence-cli/commit/be0a99524f08683180b4482ffb27194eecfa4387))
+* mark session recordings as generally available ([#51](https://github.com/spotify/confidence-cli/issues/51)) ([0c6e95b](https://github.com/spotify/confidence-cli/commit/0c6e95bc53b3d2ef55786f58ad48f722f0565517))
+* use CLI commands for plugin installation when possible ([#39](https://github.com/spotify/confidence-cli/issues/39)) ([cd32210](https://github.com/spotify/confidence-cli/commit/cd32210254d0c724e7228c3c3b897dff3328ceb4))
+
+
+### Bug Fixes
+
+* allow Codex network access ([#50](https://github.com/spotify/confidence-cli/issues/50)) ([ad0b876](https://github.com/spotify/confidence-cli/commit/ad0b876be96873de6cbf8ae302aef3300ef52650))
+* make goal selection mandatory ([#48](https://github.com/spotify/confidence-cli/issues/48)) ([57260d4](https://github.com/spotify/confidence-cli/commit/57260d465996b57a0cc7bd0012d9f71a45f868b5))
+* make UI warning icons consistent across screens ([#44](https://github.com/spotify/confidence-cli/issues/44)) ([da34bd4](https://github.com/spotify/confidence-cli/commit/da34bd49d95dfd85a1b8f16a1b6a51374e12a273))
+* remove factually incorrect package mention ([#42](https://github.com/spotify/confidence-cli/issues/42)) ([f6cbbcd](https://github.com/spotify/confidence-cli/commit/f6cbbcdbd18a82df6eae1af346766009ee18a50f))
+* render all configured IDEs above the non-configured ([#46](https://github.com/spotify/confidence-cli/issues/46)) ([c4957c9](https://github.com/spotify/confidence-cli/commit/c4957c9fb93f385ffd23e54d8638d51c57a70f2d))
+
 ## [1.2.0](https://github.com/spotify/confidence-cli/compare/quickstart-v1.1.0...quickstart-v1.2.0) (2026-08-24)
 
 
