@@ -3,7 +3,7 @@ import { createInterface } from 'node:readline';
 import type { OnboardingOpts, OnboardingCallbacks } from '../types.js';
 import { ONBOARDING_TIMEOUT_MS } from '../constants.js';
 import { type StreamEvent, extractTextLines } from '../stream-json.js';
-import { normalizeStatusLine, spawnErrorMessage } from '../utils.js';
+import { isStatusLine, normalizeStatusLine, spawnErrorMessage } from '../utils.js';
 
 export function runOnboarding(
   opts: OnboardingOpts,
@@ -54,11 +54,15 @@ export function runOnboarding(
     }
 
     for (const textLine of extractTextLines(event)) {
-      const stripped = textLine.trim();
-      if (!stripped) continue;
-      allLines.push(stripped);
-      callbacks.onStdout(stripped);
-      callbacks.onStatus(normalizeStatusLine(stripped));
+      const line = textLine.trim();
+      if (!line) continue;
+
+      allLines.push(line);
+      callbacks.onStdout(line);
+
+      if (isStatusLine(line)) {
+        callbacks.onStatus(normalizeStatusLine(line));
+      }
     }
   });
 

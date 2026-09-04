@@ -1,7 +1,17 @@
 import { STATUS_PREFIX } from './constants.js';
 
-export function normalizeStatusLine(line: string) {
-  return line.startsWith(STATUS_PREFIX) ? line.slice(STATUS_PREFIX.length) : line;
+type StatusLine = `STATUS: ${string}`;
+
+export function isStatusLine(line: string): line is StatusLine {
+  return line.startsWith(STATUS_PREFIX);
+}
+
+export function normalizeStatusLine(line: StatusLine) {
+  return line.slice(STATUS_PREFIX.length);
+}
+
+export function normalizeReportLine(line: string) {
+  return isStatusLine(line) ? normalizeStatusLine(line) : line;
 }
 
 export function spawnErrorMessage(bin: string, err: NodeJS.ErrnoException): string {
