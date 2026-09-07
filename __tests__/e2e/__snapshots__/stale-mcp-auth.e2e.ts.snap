@@ -40,7 +40,8 @@ exports[`when MCP config has expired auth tokens > shows auth-expired status and
  ○ confidence-docs (auth expired)
 
 
- Authentication expired — reconnect to refresh your credentials.
+ Some tools are already installed but authentication has expired —
+ reconnect to refresh.
 
 
  ──────────────────────────────────────────────────────────────────────────────────────────────────

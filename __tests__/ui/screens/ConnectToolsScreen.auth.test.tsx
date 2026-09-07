@@ -84,7 +84,9 @@ describe('ConnectToolsScreen', () => {
       });
 
       await waitFor(() => {
-        expect(sut.lastFrame()).toContain('Authentication expired');
+        expect(sut.lastFrame()).toContain(
+          'tools are already installed but authentication has expired',
+        );
         expect(sut.lastFrame()).toContain('Reconnect to refresh credentials?');
       });
     }, 10000);
