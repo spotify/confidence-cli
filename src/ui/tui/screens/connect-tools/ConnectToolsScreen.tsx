@@ -145,7 +145,7 @@ export function ConnectToolsScreen() {
       {phase === 'auth-expired' && (
         <Box marginTop={1}>
           <Text color={Colors.warning}>
-            Authentication expired — reconnect to refresh your credentials.
+            Some tools are already installed but authentication has expired — reconnect to refresh.
           </Text>
         </Box>
       )}
