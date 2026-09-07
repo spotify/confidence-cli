@@ -4,7 +4,7 @@ import { buildOnboardingPrompt } from '@features/onboarding/index.js';
 import { detectFramework } from '@frameworks/index.js';
 import type { IdeId, OnboardingGoal } from '@shared-kernel/types.js';
 import { ScreenId } from '@lib/session.js';
-import { getIntegration, normalizeStatusLine } from '@integrations/index.js';
+import { getIntegration, normalizeReportLine } from '@integrations/index.js';
 import { useLogger } from '../../hooks/useLog.js';
 import { $session, store, isStaleSession } from '../../store.js';
 import { useInitialOnboarding } from './useInitialOnboarding.js';
@@ -65,7 +65,7 @@ export function useOnboardingProcess(): OnboardingProcess {
                 (line) =>
                   line.includes('Created') || line.includes('Modified') || line.includes('Added'),
               )
-              .map(normalizeStatusLine)
+              .map(normalizeReportLine)
           : dryRunCodeChanges(goals),
       );
       setPhase('done');
@@ -105,11 +105,7 @@ export function useOnboardingProcess(): OnboardingProcess {
       function startReal() {
         if (!isEmpty) addStatus(`Framework: ${fw}`);
 
-        addStatus(
-          isEmpty
-            ? 'Scaffolding sample app and integrating Confidence SDK...'
-            : 'Analyzing project...',
-        );
+        addStatus(isEmpty ? 'Integrating Confidence SDK...' : 'Analyzing project...');
 
         const ide = (s.ide ?? 'claude') as IdeId;
         const prompt = buildOnboardingPrompt({

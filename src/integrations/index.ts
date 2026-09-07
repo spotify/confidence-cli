@@ -7,7 +7,7 @@ export type {
 } from './types.js';
 
 export { getIntegrations, getIntegration } from './registry.js';
-export { normalizeStatusLine } from './utils.js';
+export { normalizeStatusLine, normalizeReportLine } from './utils.js';
 
 export { launchChatSession } from './chat.js';
 export {
