@@ -17,7 +17,7 @@ export async function prepare(): Promise<void> {
   const version = extractVersion(stdout);
   if (!version || !isAtLeast(version, MIN_VERSION)) {
     throw new Error(
-      `Codex CLI ${MIN_VERSION.join('.')} or later is required (found ${stdout.trim()}). Update with: npm update -g @openai/codex`,
+      `Codex CLI ${MIN_VERSION.join('.')} or later is required (found ${stdout.trim()}).\nUpdate with: npm update -g @openai/codex`,
     );
   }
 

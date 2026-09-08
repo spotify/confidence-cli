@@ -19,7 +19,7 @@ export async function prepare(): Promise<void> {
   const version = extractVersion(stdout);
   if (!version || !isAtLeast(version, MIN_VERSION)) {
     throw new Error(
-      `Claude Code ${MIN_VERSION.join('.')} or later is required (found ${stdout.trim()}). Update with: npm update -g @anthropic-ai/claude-code`,
+      `Claude Code ${MIN_VERSION.join('.')} or later is required (found ${stdout.trim()}).\nUpdate with: npm update -g @anthropic-ai/claude-code`,
     );
   }
 }

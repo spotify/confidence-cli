@@ -17,7 +17,7 @@ export async function prepare(): Promise<void> {
   const version = extractVersion(stdout);
   if (!version || !isAtLeast(version, MIN_VERSION)) {
     throw new Error(
-      `Cursor ${MIN_VERSION.join('.')} or later is required (found ${stdout.trim()}). Update Cursor to the latest version from: https://cursor.com`,
+      `Cursor ${MIN_VERSION.join('.')} or later is required (found ${stdout.trim()}).\nUpdate Cursor to the latest version from: https://cursor.com`,
     );
   }
 
