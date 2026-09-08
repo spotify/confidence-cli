@@ -35,7 +35,15 @@ const IDE_CASES = [
     name: 'Codex',
     downPresses: 2,
     command: 'codex',
-    expectedArgs: ['exec', '--json', '--sandbox', 'danger-full-access', '-'],
+    expectedArgs: [
+      'exec',
+      '--json',
+      '--sandbox',
+      'danger-full-access',
+      '-c',
+      'shell_environment_policy.inherit="core"',
+      '-',
+    ],
     expectedPromptSnippets: [
       'Confidence SDK',
       '$analyze-project',

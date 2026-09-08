@@ -27,12 +27,24 @@ export function runOnboarding(
 
   let child: ChildProcess;
   try {
-    child = spawn('codex', ['exec', '--json', '--sandbox', 'danger-full-access', '-'], {
-      cwd: opts.projectDir,
-      timeout: ONBOARDING_TIMEOUT_MS,
-      stdio: ['pipe', 'pipe', 'pipe'],
-      env,
-    });
+    child = spawn(
+      'codex',
+      [
+        'exec',
+        '--json',
+        '--sandbox',
+        'danger-full-access',
+        '-c',
+        'shell_environment_policy.inherit="core"',
+        '-',
+      ],
+      {
+        cwd: opts.projectDir,
+        timeout: ONBOARDING_TIMEOUT_MS,
+        stdio: ['pipe', 'pipe', 'pipe'],
+        env,
+      },
+    );
   } catch (err) {
     callbacks.onError(spawnErrorMessage('codex', err as NodeJS.ErrnoException));
     return null;
