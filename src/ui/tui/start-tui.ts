@@ -12,20 +12,8 @@ export async function startTui(opts?: StoreOptions) {
 
   const instance = render(React.createElement(App), {
     exitOnCtrlC: true,
+    alternateScreen: !debug,
   });
 
-  if (!debug) {
-    process.stdout.write('\x1B[2J\x1B[H');
-  }
-
-  function cleanup() {
-    instance.unmount();
-    if (!debug) {
-      process.stdout.write('\x1B[2J\x1B[H');
-    }
-  }
-
   await instance.waitUntilExit();
-
-  return { cleanup };
 }

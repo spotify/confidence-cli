@@ -15,11 +15,6 @@ export const defaultCommand: Command = {
       process.env.CONFIDENCE_TELEMETRY = 'false';
     }
 
-    const { cleanup } = await startTui({ dryRun, debug, dir });
-
-    process.on('SIGINT', () => {
-      cleanup();
-      process.exit(0);
-    });
+    await startTui({ dryRun, debug, dir });
   },
 };
