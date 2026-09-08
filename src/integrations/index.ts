@@ -22,4 +22,4 @@ export {
   persistMcpPreference,
   clearMcpPreference,
 } from './mcp/index.js';
-export { detectInstalledPlugins, prepareIde, installPlugin } from './skills/index.js';
+export { detectInstalledPlugins, prepareIde, installPlugin, updatePlugin } from './skills/index.js';

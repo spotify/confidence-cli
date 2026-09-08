@@ -53,7 +53,8 @@ export function BottomPrompt({ phase, detected, onSelect, onError }: BottomPromp
 
     case 'detecting':
     case 'installing':
-    case 'installed':
+    case 'updating':
+    case 'done':
       return null;
 
     default: {

@@ -25,3 +25,9 @@ export async function installPlugin(projectDir: string): Promise<void> {
   await execFile('codex', ['plugin', 'marketplace', 'add', PLUGIN_MARKETPLACE_REPO], { cwd });
   await execFile('codex', ['plugin', 'add', `${PLUGIN_NAME}@${PLUGIN_MARKETPLACE_NAME}`], { cwd });
 }
+
+export async function updatePlugin(projectDir: string): Promise<void> {
+  await execFile('codex', ['plugin', 'update', `${PLUGIN_NAME}@${PLUGIN_MARKETPLACE_NAME}`], {
+    cwd: projectDir,
+  });
+}

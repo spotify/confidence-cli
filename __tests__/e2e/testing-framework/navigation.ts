@@ -56,7 +56,7 @@ export async function navigateToConnectTools(session: TerminalSession): Promise<
   await navigateToPlugins(session);
   session.checkpoint();
   await session.press('Enter');
-  await session.waitForText('Plugin installed successfully');
+  await session.waitForText('Plugin set up successfully');
   await session.waitForText('Teach your AI Confidence');
 }
 

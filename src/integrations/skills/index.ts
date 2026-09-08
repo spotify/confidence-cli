@@ -1,1 +1,1 @@
-export { detectInstalledPlugins, prepareIde, installPlugin } from './plugin.js';
+export { detectInstalledPlugins, prepareIde, installPlugin, updatePlugin } from './plugin.js';

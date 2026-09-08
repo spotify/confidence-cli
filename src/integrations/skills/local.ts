@@ -22,12 +22,12 @@ export function hasDownloadedSkills(skillsDir: string): boolean {
   return SKILL_NAMES.some((name) => existsSync(join(skillsDir, name, 'SKILL.md')));
 }
 
-export async function downloadSkills(skillsDir: string): Promise<void> {
+export async function downloadSkills(skillsDir: string, force = false): Promise<void> {
   await Promise.all(
     SKILL_NAMES.map(async (name) => {
       const destDir = join(skillsDir, name);
       const destFile = join(destDir, 'SKILL.md');
-      if (existsSync(destFile)) return;
+      if (existsSync(destFile) && !force) return;
 
       const url = `${SKILLS_BASE_URL}/${name}/SKILL.md`;
       const res = await fetch(url);

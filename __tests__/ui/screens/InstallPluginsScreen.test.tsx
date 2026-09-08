@@ -15,6 +15,7 @@ vi.mock('../../../src/integrations/skills/plugin.js', async (importOriginal) => 
   detectInstalledPlugins: vi.fn().mockResolvedValue([]),
   prepareIde: vi.fn().mockResolvedValue(undefined),
   installPlugin: vi.fn().mockResolvedValue('download'),
+  updatePlugin: vi.fn().mockResolvedValue('download'),
 }));
 
 describe('InstallPluginsScreen', () => {
@@ -55,7 +56,7 @@ describe('InstallPluginsScreen', () => {
     await act(() => sut.stdin.write(ARROW_DOWN + ENTER));
 
     await waitFor(() => {
-      expect(sut.lastFrame()).toContain('Plugin installed successfully');
+      expect(sut.lastFrame()).toContain('Plugin set up successfully');
     });
   });
 

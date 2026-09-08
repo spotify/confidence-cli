@@ -29,3 +29,18 @@ export async function installPlugin(
     return 'download';
   }
 }
+
+export async function updatePlugin(
+  ide: IdeId,
+  projectDir: string,
+): Promise<PluginInstallationMethod> {
+  const integration = getIntegration(ide);
+
+  try {
+    await integration.updatePlugin(projectDir);
+    return 'cli';
+  } catch {
+    await downloadSkills(integration.skillsDir(projectDir), true);
+    return 'download';
+  }
+}

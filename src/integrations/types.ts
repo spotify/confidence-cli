@@ -45,6 +45,7 @@ export type IdeIntegration = {
   skillsDir: (projectDir: string) => string;
   detectPlugin: (projectDir: string) => Promise<PluginInstallationMethod | null>;
   installPlugin: (projectDir: string) => Promise<void>;
+  updatePlugin: (projectDir: string) => Promise<void>;
 
   detectMcpStatuses: (projectDir: string) => Promise<Record<McpServerName, McpServerStatus>>;
   connectMcpServer: (opts: McpConnectOpts) => Promise<void>;
