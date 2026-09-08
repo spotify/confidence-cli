@@ -1,4 +1,4 @@
-import { installPlugin } from '@integrations/skills/plugin.js';
+import { installPlugin, updatePlugin } from '@integrations/skills/plugin.js';
 import type { IdeIntegration } from '@integrations/types.js';
 
 vi.mock('../../src/integrations/skills/local.js', () => ({
@@ -15,6 +15,7 @@ const mockIntegration: IdeIntegration = {
   skillsDir: vi.fn().mockReturnValue('/project/.claude/skills'),
   detectPlugin: vi.fn().mockResolvedValue(null),
   installPlugin: vi.fn().mockResolvedValue(undefined),
+  updatePlugin: vi.fn().mockResolvedValue(undefined),
   detectMcpStatuses: vi.fn().mockResolvedValue({}),
   connectMcpServer: vi.fn().mockResolvedValue(undefined),
 };
@@ -44,6 +45,26 @@ describe('installPlugin', () => {
 
     expect(sut).toBe('download');
     expect(mockIntegration.installPlugin).toHaveBeenCalledWith('/project');
+    expect(downloadSkills).toHaveBeenCalledWith('/project/.claude/skills');
+  });
+});
+
+describe('updatePlugin', () => {
+  it('returns cli when IDE update succeeds', async () => {
+    const sut = await updatePlugin('claude', '/project');
+
+    expect(sut).toBe('cli');
+    expect(mockIntegration.updatePlugin).toHaveBeenCalledWith('/project');
+  });
+
+  it('falls back to download when CLI update throws', async () => {
+    const { downloadSkills } = await import('../../src/integrations/skills/local.js');
+    vi.mocked(mockIntegration.updatePlugin).mockRejectedValueOnce(new Error('not supported'));
+
+    const sut = await updatePlugin('claude', '/project');
+
+    expect(sut).toBe('download');
+    expect(mockIntegration.updatePlugin).toHaveBeenCalledWith('/project');
     expect(downloadSkills).toHaveBeenCalledWith('/project/.claude/skills');
   });
 });
