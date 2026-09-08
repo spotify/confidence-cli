@@ -23,7 +23,7 @@ export function AboutScreen() {
         </Box>
 
         <Box marginBottom={1} flexDirection="column" alignItems={align}>
-          <Text>Confidence is Spotify's feature flagging and experimentation platform.</Text>
+          <Text>Confidence is Spotify's product platform.</Text>
           <Text>Run experiments in your data warehouse — BigQuery, Snowflake,</Text>
           <Text>Redshift, Databricks. Your data stays under your control.</Text>
           <Text>OpenFeature-compliant SDKs mean no vendor lock-in.</Text>
