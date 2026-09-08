@@ -10,8 +10,18 @@ export function normalizeStatusLine(line: StatusLine) {
   return line.slice(STATUS_PREFIX.length);
 }
 
+const MAX_REPORT_LINE_LENGTH = 60;
+
 export function normalizeReportLine(line: string) {
-  return isStatusLine(line) ? normalizeStatusLine(line) : line;
+  const stripped = isStatusLine(line) ? normalizeStatusLine(line) : line;
+  const clean = stripMarkdown(stripped);
+  return clean.length > MAX_REPORT_LINE_LENGTH
+    ? clean.slice(0, MAX_REPORT_LINE_LENGTH - 1) + '…'
+    : clean;
+}
+
+function stripMarkdown(text: string) {
+  return text.replace(/\*\*(.*?)\*\*/g, '$1').replace(/`([^`]+)`/g, '$1');
 }
 
 export function spawnErrorMessage(bin: string, err: NodeJS.ErrnoException): string {
