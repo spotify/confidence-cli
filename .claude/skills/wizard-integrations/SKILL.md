@@ -120,6 +120,18 @@ The barrel `src/integrations/index.ts` exports:
 
 Only import from the barrel or from specific submodules — never reach into an IDE's `index.ts` directly from outside the integrations module.
 
+## IDE-Specific Runtime Constraints
+
+### Codex: shell environment policy
+
+Codex `exec` mode defaults to a restricted shell environment — commands the agent runs do not inherit proxy settings, npm auth tokens, or registry config from the parent process. Without `shell_environment_policy.inherit="core"`, `npm install` falls back to direct connections that time out on corporate networks, turning a 15-second install into minutes of waiting.
+
+Always pass `-c 'shell_environment_policy.inherit="core"'` in Codex `exec` spawn args so the agent's commands see the core parent environment (PATH, HOME, proxy settings, etc.).
+
+### Codex: `item.completed` event batching
+
+Codex `exec --json` only emits `item.completed` events — not incremental text deltas. Status lines only surface after the agent finishes an entire message turn. If the agent does MCP calls, file reads, or package installs between messages, the user sees nothing until the next completed message. Claude Code and Cursor stream incrementally via `stream-json`, so their status updates appear in real time.
+
 ## Coding Conventions
 
 Follow all conventions from the `wizard-architecture` skill. Additionally:
