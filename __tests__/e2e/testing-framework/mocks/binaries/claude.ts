@@ -5,6 +5,11 @@ const fs = require('fs');
 const path = require('path');
 const args = process.argv.slice(2);
 
+if (args[0] === '--version') {
+  process.stdout.write('99.0.0 (Claude Code)\\n');
+  process.exit(0);
+}
+
 if (args[0] === 'mcp') {
   process.exit(0);
 }
