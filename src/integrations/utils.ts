@@ -20,3 +20,23 @@ export function spawnErrorMessage(bin: string, err: NodeJS.ErrnoException): stri
   }
   return err.message;
 }
+
+const STDERR_MAX_LINES = 5;
+
+export function formatOnboardingError(bin: string, stderr: string, code: number | null): string {
+  const codeHint = code != null ? ` (code ${code})` : '';
+  const headline =
+    `${bin} exited with an error${codeHint}. ` +
+    `This may be caused by your ${bin} setup (e.g. MCP server auth or stale cache). ` +
+    `Please, check your configuration and retry.`;
+
+  const trimmed = stderr.trim();
+  if (!trimmed) return headline;
+
+  const lines = trimmed.split('\n');
+  const detail = lines.slice(0, STDERR_MAX_LINES).join('\n');
+  const overflow =
+    lines.length > STDERR_MAX_LINES ? `\n... (${lines.length - STDERR_MAX_LINES} more lines)` : '';
+
+  return `${headline}\n\n${detail}${overflow}`;
+}

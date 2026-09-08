@@ -3,7 +3,12 @@ import { createInterface } from 'node:readline';
 import type { OnboardingOpts, OnboardingCallbacks } from '../types.js';
 import { ONBOARDING_TIMEOUT_MS } from '../constants.js';
 import { type StreamEvent, extractTextLines } from '../stream-json.js';
-import { isStatusLine, normalizeStatusLine, spawnErrorMessage } from '../utils.js';
+import {
+  isStatusLine,
+  normalizeStatusLine,
+  spawnErrorMessage,
+  formatOnboardingError,
+} from '../utils.js';
 
 export function runOnboarding(
   opts: OnboardingOpts,
@@ -75,7 +80,7 @@ export function runOnboarding(
   child.on('close', (code: number | null) => {
     rl.close();
     if (code !== 0) {
-      callbacks.onError(stderrBuf.trim() || `Process exited with code ${code}`);
+      callbacks.onError(formatOnboardingError('cursor', stderrBuf, code));
       return;
     }
     callbacks.onComplete(allLines);
