@@ -38,9 +38,9 @@ exports[`welcome screen navigation > navigates to About screen > about 1`] = `
 
                                           About Confidence
 
-               Confidence is Spotify's feature flagging and experimentation platform.
-                   Run experiments in your data warehouse — BigQuery, Snowflake,
-                     Redshift, Databricks. Your data stays under your control.
+                              Confidence is Spotify's product platform.
+                    Run experiments in your data warehouse — BigQuery, Snowflake,
+                      Redshift, Databricks. Your data stays under your control.
                          OpenFeature-compliant SDKs mean no vendor lock-in.
 
 

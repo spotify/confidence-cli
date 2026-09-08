@@ -84,7 +84,7 @@ describe('SelectGoalScreen', () => {
       });
     });
 
-    it('stays on goal screen when submitting with nothing selected', async () => {
+    it('shows validation message when submitting with nothing selected', async () => {
       using project = createProjectDir();
 
       using sut = renderApp({
@@ -100,7 +100,7 @@ describe('SelectGoalScreen', () => {
       await act(() => sut.stdin.write(ENTER));
 
       await waitFor(() => {
-        expect(sut.lastFrame()).toContain('Feature Flags');
+        expect(sut.lastFrame()).toContain('Please toggle at least one option to continue.');
         expect(sut.lastFrame()).toContain('Toggle features to set up');
       });
     });

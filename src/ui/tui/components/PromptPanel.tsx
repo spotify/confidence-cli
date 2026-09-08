@@ -1,3 +1,4 @@
+import { useState } from 'react';
 import { Box, Text, useInput } from 'ink';
 import { MultiSelect, Select, TextInput } from '@inkjs/ui';
 import { APP_VERSION } from '@lib/meta.js';
@@ -46,9 +47,11 @@ type PromptPanelProps<T extends string = string> =
   | PromptPanelInfoProps;
 
 const MAX_VISIBLE_OPTIONS = 8;
+const EMPTY_SELECTION_MESSAGE = 'Please toggle at least one option to continue.';
 
 export function PromptPanel<T extends string = string>(props: PromptPanelProps<T>) {
   const narrow = useIsNarrow();
+  const [isValid, setIsValid] = useState(true);
 
   useInput((_input, key) => {
     if (key.escape && props.onCancel) {
@@ -83,13 +86,24 @@ export function PromptPanel<T extends string = string>(props: PromptPanelProps<T
           {props.mode === 'multi-select' && (
             <MultiSelect
               options={props.options}
-              onSubmit={props.onSubmit as (values: string[]) => void}
+              onSubmit={(values: string[]) => {
+                setIsValid(values.length > 0);
+                if (values.length > 0) {
+                  props.onSubmit(values as T[]);
+                }
+              }}
               visibleOptionCount={Math.min(props.options.length, MAX_VISIBLE_OPTIONS)}
             />
           )}
           {props.mode === 'input' && (
             <TextInput placeholder={props.placeholder} onSubmit={props.onSubmit} />
           )}
+        </Box>
+      )}
+
+      {props.mode === 'multi-select' && !isValid && (
+        <Box marginBottom={1}>
+          <Text color={Colors.warning}>{EMPTY_SELECTION_MESSAGE}</Text>
         </Box>
       )}
 

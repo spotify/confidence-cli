@@ -20,8 +20,7 @@ describe('AboutScreen', () => {
   it('shows platform description', async () => {
     using sut = renderScreen(<AboutScreen />, { screen: ScreenId.About });
     await waitFor(() => {
-      expect(sut.lastFrame()).toContain('feature flagging');
-      expect(sut.lastFrame()).toContain('experimentation platform');
+      expect(sut.lastFrame()).toContain('product platform');
     });
   });
 
