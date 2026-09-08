@@ -40,7 +40,7 @@ export async function updatePlugin(
     await integration.updatePlugin(projectDir);
     return 'cli';
   } catch {
-    await downloadSkills(integration.skillsDir(projectDir));
+    await downloadSkills(integration.skillsDir(projectDir), true);
     return 'download';
   }
 }

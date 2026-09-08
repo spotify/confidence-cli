@@ -65,6 +65,6 @@ describe('updatePlugin', () => {
 
     expect(sut).toBe('download');
     expect(mockIntegration.updatePlugin).toHaveBeenCalledWith('/project');
-    expect(downloadSkills).toHaveBeenCalledWith('/project/.claude/skills');
+    expect(downloadSkills).toHaveBeenCalledWith('/project/.claude/skills', true);
   });
 });
