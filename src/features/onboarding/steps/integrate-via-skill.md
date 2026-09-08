@@ -17,17 +17,23 @@ Execute the skill's workflow automatically, without pausing for user input:
 
 **Output format — use this instead of the skill's formatting:**
 
-The only user-visible output is STATUS-prefixed lines (~60 chars max). No step tracker boxes, no EDUCATE blocks, no headers, no AskUserQuestion. Print STATUS lines before each phase and periodically within longer phases:
+The only user-visible output is STATUS-prefixed lines (~60 chars max). No step tracker boxes, no EDUCATE blocks, no headers, no AskUserQuestion. Print STATUS lines before each phase and after completing each discrete action:
 
 - "STATUS: Scanning for existing flag usage..."
+- "STATUS: Reading <file>..."
 - "STATUS: Determining the right Confidence SDK..."
+- "STATUS: Querying docs for SDK integration guide..."
 - "STATUS: Resolving SDK client and secret..."
 - "STATUS: Creating feature flags..."
 - After each flag: "STATUS: Created flag: <flag-name>"
 - "STATUS: Installing Confidence SDK packages..."
 - "STATUS: Adding provider and flag evaluation code..."
+- "STATUS: Writing <file>..."
 - After wiring each flag: "STATUS: Integrated flag: <flag-name>"
 - "STATUS: Verifying project builds..."
+- "STATUS: Fixing build errors..." (if the build fails and you're correcting)
+
+Note: when naming project files, use file name only, no path.
 
 **Guardrails — apply regardless of what the skill says:**
 

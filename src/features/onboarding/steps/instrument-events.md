@@ -17,14 +17,20 @@ Execute the skill's workflow automatically, without pausing for user input:
 **Example STATUS lines for this step:**
 
 - "STATUS: Scanning for existing event tracking..."
+- "STATUS: Reading <file>..."
 - "STATUS: Checking registered event definitions..."
+- "STATUS: Querying existing event definitions..."
 - "STATUS: Identifying trackable events..."
+- "STATUS: Analyzing <file> for events..."
 - "STATUS: Selected <N> events to instrument"
 - "STATUS: Creating event definitions..."
 - "STATUS: Created event: <event-name>"
 - "STATUS: Adding track() calls..."
+- "STATUS: Writing <file>..."
 - "STATUS: Modified <file> with track() call"
 - "STATUS: Verifying event pipeline..."
+
+Note: when naming project files, use file name only, no path.
 
 **Event-tracking guardrails:**
 
