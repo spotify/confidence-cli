@@ -27,7 +27,18 @@ export function runOnboarding(
 
   let child: ChildProcess;
   try {
-    child = spawn('codex', ['exec', '--json', '--sandbox', 'danger-full-access', '-'], {
+    child = spawn(
+      'codex',
+      [
+        'exec',
+        '--json',
+        '--sandbox',
+        'danger-full-access',
+        '-c',
+        'shell_environment_policy.inherit="core"',
+        '-',
+      ],
+      {
       cwd: opts.projectDir,
       timeout: ONBOARDING_TIMEOUT_MS,
       stdio: ['pipe', 'pipe', 'pipe'],
