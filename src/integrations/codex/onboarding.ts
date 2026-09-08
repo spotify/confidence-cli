@@ -39,11 +39,12 @@ export function runOnboarding(
         '-',
       ],
       {
-      cwd: opts.projectDir,
-      timeout: ONBOARDING_TIMEOUT_MS,
-      stdio: ['pipe', 'pipe', 'pipe'],
-      env,
-    });
+        cwd: opts.projectDir,
+        timeout: ONBOARDING_TIMEOUT_MS,
+        stdio: ['pipe', 'pipe', 'pipe'],
+        env,
+      },
+    );
   } catch (err) {
     callbacks.onError(spawnErrorMessage('codex', err as NodeJS.ErrnoException));
     return null;
