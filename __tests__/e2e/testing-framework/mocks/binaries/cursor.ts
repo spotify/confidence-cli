@@ -5,8 +5,8 @@ const fs = require('fs');
 const path = require('path');
 const args = process.argv.slice(2);
 
-if (args[0] === 'agent' && args[1] === '--version') {
-  process.stdout.write('1.0.0\\n');
+if (args[0] === '-v') {
+  process.stdout.write('99.0.0\\n');
   process.exit(0);
 } else if (args[0] === 'agent' && args[1] === 'status') {
   process.exit(0);
