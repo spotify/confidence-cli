@@ -83,13 +83,13 @@ describe('SelectGoal screen', () => {
     expect(session.snapshot()).toContain('instrument event tracking');
   });
 
-  it('stays on goal screen when submitting with nothing selected', async () => {
+  it('shows validation message when submitting with nothing selected', async () => {
     using session = createSession();
 
     await navigateToGoalSelection(session);
     await session.press('Enter');
 
-    await session.waitForText('Feature Flags');
+    await session.waitForText('Please toggle at least one option to continue.');
     await session.waitForText('Toggle features to set up');
   });
 
