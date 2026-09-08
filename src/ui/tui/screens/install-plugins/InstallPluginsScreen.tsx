@@ -24,7 +24,7 @@ export function InstallPluginsScreen() {
 
   useAutoAdvance({
     screen: ScreenId.InstallPlugins,
-    when: phase === 'installed',
+    when: phase === 'done',
     delay: 1500,
     onAdvance() {
       log(pluginInstalled($session.get().ide));
@@ -55,7 +55,7 @@ export function InstallPluginsScreen() {
 
   const tasks = buildWizardTasks(
     'installPlugins',
-    phase === 'installed' || phase === 'already-installed'
+    phase === 'done' || phase === 'already-installed'
       ? 'done'
       : phase === 'error'
         ? 'error'

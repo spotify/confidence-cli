@@ -56,7 +56,7 @@ export function MainContent({ phase, detected, error }: MainContentProps) {
       {phase === 'installing' && <Spinner label="Installing Confidence plugin..." />}
       {phase === 'updating' && <Spinner label="Updating Confidence plugin..." />}
 
-      {phase === 'installed' && (
+      {phase === 'done' && (
         <Box>
           <Text color={Colors.success}>Plugin set up successfully. Continuing...</Text>
         </Box>
