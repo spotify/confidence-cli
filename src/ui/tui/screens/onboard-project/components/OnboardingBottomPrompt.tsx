@@ -1,10 +1,12 @@
 import { SDK_OPTIONS } from '@lib/sdk-options.js';
+import type { OnboardingGoal } from '@shared-kernel/types.js';
 import { PromptPanel } from '../../../components/PromptPanel.js';
 import type { OnboardingPhase } from '../useOnboardingProcess.js';
 import { CONFIRM_OPTIONS, ERROR_OPTIONS } from '../actions.js';
 
 type OnboardingBottomPromptProps = {
   phase: OnboardingPhase;
+  goals: OnboardingGoal[];
   selectSdk: (id: string, label: string) => void;
   onConfirmStart: () => void;
   onConfirmSkip: () => void;
@@ -15,6 +17,7 @@ type OnboardingBottomPromptProps = {
 
 export function OnboardingBottomPrompt({
   phase,
+  goals,
   selectSdk,
   onConfirmStart,
   onConfirmSkip,
@@ -52,7 +55,13 @@ export function OnboardingBottomPrompt({
         />
       );
     case 'onboarding':
-      return <PromptPanel mode="info" status="This usually takes 3–5 min." onCancel={onCancel} />;
+      return (
+        <PromptPanel
+          mode="info"
+          status={`This usually takes 3–5 min${goals.length > 1 ? ' per feature' : ''}.`}
+          onCancel={onCancel}
+        />
+      );
     case 'error':
       return (
         <PromptPanel

@@ -93,6 +93,41 @@ describe('SelectGoal screen', () => {
     await session.waitForText('Toggle features to set up');
   });
 
+  it('shows plain time estimate for a single goal', async () => {
+    using session = createSession();
+
+    await navigateToGoalSelection(session);
+    session.checkpoint();
+    await session.press('Space');
+    await session.press('Enter');
+
+    // OnboardProject — confirm start
+    await session.waitForText('Start onboarding?');
+    await session.press('Enter');
+
+    await session.waitForText('3–5 min.');
+    expect(session.snapshot()).not.toContain('per feature');
+  });
+
+  it('shows per-feature time estimate for multiple goals', async () => {
+    using session = createSession();
+
+    await navigateToGoalSelection(session);
+    session.checkpoint();
+
+    // Toggle Feature Flags (1st) and Event Tracking (2nd)
+    await session.press('Space');
+    await session.press('ArrowDown');
+    await session.press('Space');
+    await session.press('Enter');
+
+    // OnboardProject — confirm start
+    await session.waitForText('Start onboarding?');
+    await session.press('Enter');
+
+    await session.waitForText('3–5 min per feature');
+  });
+
   it('shows goal selection for non-browser project without recording option', async () => {
     using session = createSession({ project: 'statsig-node' });
 

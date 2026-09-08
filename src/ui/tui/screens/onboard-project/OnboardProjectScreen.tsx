@@ -90,6 +90,7 @@ export function OnboardProjectScreen() {
       prompt={
         <OnboardingBottomPrompt
           phase={onboarding.phase}
+          goals={session.onboardingGoals}
           selectSdk={onboarding.selectSdk}
           onConfirmStart={handleConfirmStart}
           onConfirmSkip={handleConfirmSkip}
