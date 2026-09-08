@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 import { CONFIDENCE_TIPS, type Tip } from '../lib/tips.js';
 
-export function useTipRotation(active: boolean, intervalMs = 15000): Tip {
+export function useTipRotation(active: boolean, intervalMs = 25000): Tip {
   const [index, setIndex] = useState(0);
 
   useEffect(
