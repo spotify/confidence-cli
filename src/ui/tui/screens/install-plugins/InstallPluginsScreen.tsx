@@ -6,9 +6,8 @@ import { MainLayout } from '../../components/MainLayout.js';
 import { TaskList } from '../../components/TaskList.js';
 import { useAutoAdvance } from '../../hooks/useAutoAdvance.js';
 import { useLogger } from '../../hooks/useLog.js';
-import { useNavigation } from '../../hooks/useNavigation.js';
 import { buildWizardTasks } from '../../lib/wizard-tasks.js';
-import { $session, store } from '../../store.js';
+import { $session } from '../../store.js';
 import { usePluginInstall } from './usePluginInstall.js';
 import {
   pluginsAlreadyInstalled,
@@ -20,7 +19,6 @@ import { type ErrorAction } from './actions.js';
 import { BottomPrompt, MainContent } from './components/index.js';
 
 export function InstallPluginsScreen() {
-  const navigate = useNavigation(ScreenId.InstallPlugins);
   const log = useLogger(ScreenId.InstallPlugins);
   const { phase, detected, error, selectIde } = usePluginInstall();
 
@@ -36,12 +34,8 @@ export function InstallPluginsScreen() {
 
   function handleIdeSelect(value: IdeId) {
     if (detected.includes(value)) {
-      store.setIde(value);
-
       log(pluginsAlreadyInstalled(detected));
       track(te.pluginsAlreadyDetected());
-      navigate.to('next');
-      return;
     }
 
     track(te.pluginIdeSelected(value));
