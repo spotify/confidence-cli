@@ -2,7 +2,12 @@ import { type ChildProcess, spawn } from 'node:child_process';
 import { createInterface } from 'node:readline';
 import type { OnboardingOpts, OnboardingCallbacks } from '../types.js';
 import { ONBOARDING_TIMEOUT_MS } from '../constants.js';
-import { isStatusLine, normalizeStatusLine, spawnErrorMessage } from '../utils.js';
+import {
+  isStatusLine,
+  normalizeStatusLine,
+  spawnErrorMessage,
+  formatOnboardingError,
+} from '../utils.js';
 
 type CodexEvent = {
   type: string;
@@ -77,7 +82,7 @@ export function runOnboarding(
   child.on('close', (code: number | null) => {
     rl.close();
     if (code !== 0) {
-      callbacks.onError(stderrBuf.trim() || `Process exited with code ${code}`);
+      callbacks.onError(formatOnboardingError('codex', stderrBuf, code));
       return;
     }
     callbacks.onComplete(allLines);
