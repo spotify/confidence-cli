@@ -206,6 +206,50 @@ describe('Onboarding flow', () => {
       });
     });
 
+    it('shows plain time estimate for a single goal', async () => {
+      using project = createProjectDir();
+      mockNextSpawn({ hang: true });
+
+      using sut = renderScreen(<OnboardProjectScreen />, {
+        screen: ScreenId.OnboardProject,
+        dir: project.path,
+        goals: ['feature-flags'],
+      });
+
+      await waitFor(() => {
+        expect(sut.lastFrame()).toContain('Start onboarding?');
+      });
+
+      sut.stdin.write(ENTER);
+
+      await waitFor(() => {
+        const frame = sut.lastFrame()!;
+        expect(frame).toContain('3–5 min.');
+        expect(frame).not.toContain('per feature');
+      });
+    });
+
+    it('shows per-feature time estimate for multiple goals', async () => {
+      using project = createProjectDir();
+      mockNextSpawn({ hang: true });
+
+      using sut = renderScreen(<OnboardProjectScreen />, {
+        screen: ScreenId.OnboardProject,
+        dir: project.path,
+        goals: ['feature-flags', 'session-recordings'],
+      });
+
+      await waitFor(() => {
+        expect(sut.lastFrame()).toContain('Start onboarding?');
+      });
+
+      sut.stdin.write(ENTER);
+
+      await waitFor(() => {
+        expect(sut.lastFrame()).toContain('3–5 min per feature');
+      });
+    });
+
     it('shows choose-sdk prompt for empty project', async () => {
       using project = createProjectDir('empty');
       mockNextSpawn({ hang: true });
