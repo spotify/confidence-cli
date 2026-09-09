@@ -72,7 +72,13 @@ confidence-quickstart [command] [options]
 
 ## Security Note
 
-During the **project onboarding** step, the wizard spawns your chosen AI agent (Claude Code, Cursor, or Codex) to integrate the Confidence SDK into your project. The spawned agent can read and write files within your project directory — this is required for it to install dependencies, create configuration files, and modify source code. You will be prompted to confirm before this step begins.
+During the **project onboarding** step, the wizard spawns your chosen AI agent to integrate the Confidence SDK into your project. You will be prompted to confirm before this step begins. Each agent runs with different permissions:
+
+- **Claude Code** — Spawned in non-interactive (`--print`) mode using its standard permission model. It can read files and execute tools within your project directory as allowed by your existing Claude Code settings. No elevated trust flags are applied.
+- **Cursor** — Spawned in agent mode with `--trust`, which grants full read/write access to files in your project directory and allows it to run shell commands (e.g. `npm install`) without individual approval prompts. MCP server connections are also auto-approved (`--approve-mcps`).
+- **Codex** — Spawned in `exec` mode with `--sandbox danger-full-access`, which grants unrestricted filesystem and network access. It can read and write any file, run shell commands, and make network requests without sandboxing restrictions. Full access is required because the onboarding agent needs to install npm packages, modify project configuration files, and download SDK dependencies — operations that Codex's default sandbox would block.
+
+All agents are scoped to your project directory and run with a timeout. The wizard installs a Confidence skill/plugin and connects MCP servers _before_ spawning the agent, so configuration files may already be written to your project at that point.
 
 ## Telemetry
 
