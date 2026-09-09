@@ -1,5 +1,29 @@
 # Changelog
 
+## [1.4.0](https://github.com/spotify/confidence-cli/compare/quickstart-v1.3.0...quickstart-v1.4.0) (2026-09-08)
+
+
+### Features
+
+* gate minimal required CLI versions ([#57](https://github.com/spotify/confidence-cli/issues/57)) ([3b2ce32](https://github.com/spotify/confidence-cli/commit/3b2ce32eeb3eab9fe0b65c389ef89d33d334cfcd))
+* improve UI ([#62](https://github.com/spotify/confidence-cli/issues/62)) ([f2d8da7](https://github.com/spotify/confidence-cli/commit/f2d8da79f26a943fa84793dd698c110b8ea2e427))
+* improve UI descriptions ([#54](https://github.com/spotify/confidence-cli/issues/54)) ([9fe2f0a](https://github.com/spotify/confidence-cli/commit/9fe2f0a3e4f1ed65031991fb60cd857ef407801b))
+* more frequent status updates ([#59](https://github.com/spotify/confidence-cli/issues/59)) ([859c563](https://github.com/spotify/confidence-cli/commit/859c563013873e6b9e3f9498b715beb0044a4708))
+* update plugin when selecting a detected IDE ([#58](https://github.com/spotify/confidence-cli/issues/58)) ([1721e7a](https://github.com/spotify/confidence-cli/commit/1721e7a12f52134e5b2162252050846cfd5c37ef))
+* UX and phrasing ([#56](https://github.com/spotify/confidence-cli/issues/56)) ([845b57e](https://github.com/spotify/confidence-cli/commit/845b57e995881efa2cbdda57ff5bce00417e4f08))
+
+
+### Bug Fixes
+
+* make error messages more user-friendly ([#60](https://github.com/spotify/confidence-cli/issues/60)) ([c6fca44](https://github.com/spotify/confidence-cli/commit/c6fca443d38f481a5a5f2cd359216858f3d3f89b))
+* trigger `onStatus` for status lines only; adjust report formatting ([#53](https://github.com/spotify/confidence-cli/issues/53)) ([9308aa7](https://github.com/spotify/confidence-cli/commit/9308aa7d82a0f47320baa6ecb5fcc4a4b5671afd))
+* use Ink 7's `alternateScreen` to prevent scroll during session ([#61](https://github.com/spotify/confidence-cli/issues/61)) ([907a301](https://github.com/spotify/confidence-cli/commit/907a301a6c3f7dcc595ba37b940592bab9135700))
+
+
+### Performance Improvements
+
+* improve codex onboarding speed ([#63](https://github.com/spotify/confidence-cli/issues/63)) ([476c3cb](https://github.com/spotify/confidence-cli/commit/476c3cb5b30055071f58550ac52ab920dd2908af))
+
 ## [1.3.0](https://github.com/spotify/confidence-cli/compare/quickstart-v1.2.0...quickstart-v1.3.0) (2026-09-04)
 
 
