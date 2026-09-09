@@ -23,10 +23,10 @@ const cli = yargs(hideBin(process.argv))
     describe: 'Project directory to run the wizard in',
     normalize: true,
   })
-  .option('no-telemetry', {
+  .option('telemetry', {
     type: 'boolean',
-    default: false,
-    describe: 'Disable anonymous usage telemetry',
+    default: true,
+    describe: 'Collect anonymous usage telemetry (disable with --no-telemetry)',
   })
   .command(defaultCommand.name, defaultCommand.description, () => {}, defaultCommand.handler)
   .command('start', defaultCommand.description, () => {}, defaultCommand.handler)
