@@ -6,4 +6,5 @@
 - Never show raw JSON payloads, MCP tool names, or secrets in output.
 - Read the client secret from CONFIDENCE_CLIENT_SECRET env var in all generated code.
 - Use the OpenFeature API with local resolve where supported. Access flag values via dot notation: `flag-name.property`.
+- Only create or modify files inside the project directory. Never write to paths outside it (e.g. home directory dotfiles, global configs, `/tmp`).
 - If a step fails, print the error and continue with remaining steps where possible. The report file must always be generated — if steps failed, document what succeeded and what needs to be completed manually.
