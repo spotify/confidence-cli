@@ -9,7 +9,7 @@ export const defaultCommand: Command = {
     const dryRun = Boolean(args['dry-run'] ?? args.dryRun);
     const debug = Boolean(args.debug);
     const dir = args.dir as string | undefined;
-    const noTelemetry = Boolean(args['no-telemetry'] ?? args.noTelemetry);
+    const noTelemetry = args.telemetry === false;
 
     if (noTelemetry) {
       process.env.CONFIDENCE_TELEMETRY = 'false';
