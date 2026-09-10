@@ -1,14 +1,15 @@
+import { fileURLToPath } from 'node:url';
 import { defineConfig } from 'vitest/config';
 
 export default defineConfig({
   resolve: {
     alias: {
-      '@commands': new URL('./src/commands', import.meta.url).pathname,
-      '@frameworks': new URL('./src/frameworks', import.meta.url).pathname,
-      '@integrations': new URL('./src/integrations', import.meta.url).pathname,
-      '@providers': new URL('./src/providers', import.meta.url).pathname,
-      '@ui': new URL('./src/ui', import.meta.url).pathname,
-      '@lib': new URL('./src/lib', import.meta.url).pathname,
+      '@commands': fileURLToPath(new URL('./src/commands', import.meta.url)),
+      '@frameworks': fileURLToPath(new URL('./src/frameworks', import.meta.url)),
+      '@integrations': fileURLToPath(new URL('./src/integrations', import.meta.url)),
+      '@providers': fileURLToPath(new URL('./src/providers', import.meta.url)),
+      '@ui': fileURLToPath(new URL('./src/ui', import.meta.url)),
+      '@lib': fileURLToPath(new URL('./src/lib', import.meta.url)),
     },
   },
   test: {

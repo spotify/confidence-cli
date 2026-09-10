@@ -1,5 +1,8 @@
 export { AUTH_CALLBACK_PORT } from '@lib/auth.js';
 
+/** `true` when the test suite is running on Windows. */
+export const IS_WINDOWS = process.platform === 'win32';
+
 /**
  * Baseline environment variables injected into every e2e terminal session.
  *
