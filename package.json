@@ -26,7 +26,7 @@
     "typecheck": "tsc --noEmit",
     "qa": "pnpm typecheck && pnpm lint && pnpm test",
     "clear": "./scripts/clean-dev-env.sh",
-    "prepare": "husky"
+    "prepare": "git config --local core.symlinks true && husky"
   },
   "dependencies": {
     "@inkjs/ui": "^2.0.0",
