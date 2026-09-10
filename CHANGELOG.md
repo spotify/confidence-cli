@@ -1,5 +1,17 @@
 # Changelog
 
+## [1.5.0](https://github.com/spotify/confidence-cli/compare/quickstart-v1.4.0...quickstart-v1.5.0) (2026-09-09)
+
+
+### Features
+
+* add fallback prompt guardrail for Codex ([#65](https://github.com/spotify/confidence-cli/issues/65)) ([3e6e75a](https://github.com/spotify/confidence-cli/commit/3e6e75a3dc4c00a8d8da2ef2d5b794085fe82a94))
+
+
+### Bug Fixes
+
+* honor the --no-telemetry CLI flag ([#67](https://github.com/spotify/confidence-cli/issues/67)) ([37b8984](https://github.com/spotify/confidence-cli/commit/37b89841260166062432ca5b661ee55e7bab9662))
+
 ## [1.4.0](https://github.com/spotify/confidence-cli/compare/quickstart-v1.3.0...quickstart-v1.4.0) (2026-09-08)
 
 
