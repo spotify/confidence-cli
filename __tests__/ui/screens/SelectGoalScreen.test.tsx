@@ -41,7 +41,7 @@ describe('SelectGoalScreen', () => {
       });
 
       await waitFor(() => {
-        expect(sut.lastFrame()).toContain('managed warehouse');
+        expect(sut.lastFrame()).toContain('Confidence Cloud');
         expect(sut.lastFrame()).toContain('warehouse setup');
       });
     });
