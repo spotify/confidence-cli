@@ -46,6 +46,14 @@ describe('buildOnboardingPrompt', () => {
       expect(sut).toContain('Read `.claude/skills/analyze-project/SKILL.md`');
     });
 
+    it('asks the summary to list Confidence resources next to file changes', () => {
+      const sut = buildOnboardingPrompt(baseOpts);
+
+      expect(sut).toContain('List the resources you created in Confidence as well');
+      expect(sut).toContain('not only files and packages');
+      expect(sut).toContain('use that wording so the same change is not listed twice');
+    });
+
     it('requires a persisted identity for feature flag evaluation', () => {
       const sut = buildOnboardingPrompt(baseOpts);
 
