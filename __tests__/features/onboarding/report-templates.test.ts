@@ -23,6 +23,50 @@ function depEntries(goals: OnboardingGoal[]): string[] {
     : [];
 }
 
+function usageEntries(goals: OnboardingGoal[]): string[] {
+  const { end } = buildReportTemplate(goals);
+  const section = end.split('## How to use it')[1]?.split('## Before you merge')[0];
+  return section
+    ? section
+        .split('\n')
+        .map((l) => l.trim())
+        .filter((l) => l.startsWith('- '))
+    : [];
+}
+
+function checklistEntries(goals: OnboardingGoal[]): string[] {
+  const { end } = buildReportTemplate(goals);
+  const section = end.split('## Before you merge')[1]?.split('## Next steps')[0];
+  return section
+    ? section
+        .split('\n')
+        .map((l) => l.trim())
+        .filter((l) => l.startsWith('- [ ]'))
+    : [];
+}
+
+function undoEntries(goals: OnboardingGoal[]): string[] {
+  const { end } = buildReportTemplate(goals);
+  const section = end.split('## To undo everything')[1]?.split('```')[0];
+  return section
+    ? section
+        .split('\n')
+        .map((l) => l.trim())
+        .filter((l) => l.startsWith('- '))
+    : [];
+}
+
+function tableRows(goals: OnboardingGoal[]): string[] {
+  const { start } = buildReportTemplate(goals);
+  const section = start.split('| | |')[1]?.split('## What changed')[0];
+  return section
+    ? section
+        .split('\n')
+        .map((l) => l.trim())
+        .filter((l) => l.startsWith('|') && !l.startsWith('|---'))
+    : [];
+}
+
 describe('when only feature-flags is selected', () => {
   const goals: OnboardingGoal[] = ['feature-flags'];
 
@@ -39,6 +83,13 @@ describe('when only feature-flags is selected', () => {
   it('lists the feature flags SDK dependency', () => {
     const sut = depEntries(goals);
     expect(sut).toEqual(['- `<feature flags SDK package name>`']);
+  });
+
+  it('explains that flags keep their default variant without mentioning recordings', () => {
+    const sut = usageEntries(goals).join('\n');
+
+    expect(sut).toContain('default variant');
+    expect(sut).not.toContain('recording');
   });
 });
 
@@ -58,6 +109,37 @@ describe('when only session-recordings is selected', () => {
   it('lists the session recording SDK dependency', () => {
     const sut = depEntries(goals);
     expect(sut).toEqual(['- `<session recording SDK package name>`']);
+  });
+
+  it('lists the client, recording policy, and targeting key', () => {
+    const sut = tableRows(goals);
+
+    expect(sut).toEqual([
+      '| Client | <CLIENT_NAME> |',
+      '| Recording policy | <POLICY_NAME> |',
+      '| Targeting key | <TARGETING_KEY> |',
+    ]);
+  });
+
+  it('states that recording is already active rather than pending', () => {
+    const sut = usageEntries(goals).join('\n');
+
+    expect(sut).toContain('recording rule is enabled');
+    expect(sut).not.toContain('nothing changes');
+  });
+
+  it('asks the user to verify captured sessions instead of unchanged behavior', () => {
+    const sut = checklistEntries(goals).join('\n');
+
+    expect(sut).toContain('confirm a session appears');
+    expect(sut).not.toContain('default behavior is unchanged');
+  });
+
+  it('explains how to undo the recording resources', () => {
+    const sut = undoEntries(goals).join('\n');
+
+    expect(sut).toContain('Disable the recording rule or archive the recording policy');
+    expect(sut).not.toContain('Archive the flag');
   });
 });
 
@@ -107,5 +189,14 @@ describe('when all goals are selected', () => {
   it('lists all three SDK dependencies', () => {
     const sut = depEntries(goals);
     expect(sut).toHaveLength(3);
+  });
+
+  it('lists one client row plus recording policy details', () => {
+    const sut = tableRows(goals);
+    const clientRows = sut.filter((l) => l.includes('Client'));
+
+    expect(clientRows).toHaveLength(1);
+    expect(sut).toContainEqual('| Recording policy | <POLICY_NAME> |');
+    expect(sut).toContainEqual('| Targeting key | <TARGETING_KEY> |');
   });
 });

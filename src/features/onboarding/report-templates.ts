@@ -3,7 +3,7 @@ import type { OnboardingGoal } from '@shared-kernel/types.js';
 export type ReportTemplate = { start: string; end: string };
 
 export function buildReportTemplate(goals: OnboardingGoal[]): ReportTemplate {
-  return { start: buildTemplateStart(goals), end: TEMPLATE_END };
+  return { start: buildTemplateStart(goals), end: buildTemplateEnd(goals) };
 }
 
 function buildTemplateStart(goals: OnboardingGoal[]): string {
@@ -14,9 +14,15 @@ function buildTemplateStart(goals: OnboardingGoal[]): string {
     '- `<entry point file>` — added SDK initialization',
   ];
 
-  if (goals.includes('feature-flags')) {
+  const withFlags = goals.includes('feature-flags');
+  const withRecordings = goals.includes('session-recordings');
+
+  if (withFlags || withRecordings) {
+    tableRowEntries.push('| Client | <CLIENT_NAME> |');
+  }
+
+  if (withFlags) {
     tableRowEntries.push(
-      '| Client | <CLIENT_NAME> |',
       '| Flag | <FLAG_NAME> |',
       '| Variants | <VARIANT_LIST> |',
       '| Default | <DEFAULT_VARIANT> (100% allocation) |',
@@ -25,8 +31,11 @@ function buildTemplateStart(goals: OnboardingGoal[]): string {
     dependencyEntries.push('- `<feature flags SDK package name>`');
   }
 
-  if (goals.includes('session-recordings')) {
-    tableRowEntries.push('| Session Recording | Enabled |');
+  if (withRecordings) {
+    tableRowEntries.push(
+      '| Recording policy | <POLICY_NAME> |',
+      '| Targeting key | <TARGETING_KEY> |',
+    );
     fileChangeEntries.push('- `<entry point file>` — added session recording provider');
     dependencyEntries.push('- `<session recording SDK package name>`');
   }
@@ -62,19 +71,56 @@ ${fileChangeEntries.join('\n')}
 ${dependencyEntries.join('\n')}`;
 }
 
-const TEMPLATE_END = `\
+function buildTemplateEnd(goals: OnboardingGoal[]): string {
+  const usageEntries = ['- Manage your setup at https://app.confidence.spotify.com'];
+  const checklistEntries = [
+    '- [ ] Check that `.env` is in `.gitignore` (so the secret stays out of git)',
+    '- [ ] Add `CONFIDENCE_CLIENT_SECRET` to your CI/staging/prod environment',
+  ];
+  const undoEntries = ['- Revert the changed files (`git checkout` / `git stash`)'];
+
+  if (goals.includes('feature-flags')) {
+    usageEntries.push('- Flags stay on their default variant until you change them in Confidence');
+    undoEntries.push('- Archive the flag in the Confidence UI');
+  }
+
+  if (goals.includes('session-recordings')) {
+    usageEntries.push(
+      '- The recording rule is enabled — sessions are captured once the app runs with the client secret',
+      '- Recordings show up under **Recordings** in the Confidence UI',
+    );
+    checklistEntries.push('- [ ] Run the app and confirm a session appears under **Recordings**');
+    undoEntries.push(
+      '- Disable the recording rule or archive the recording policy in the Confidence UI',
+    );
+  }
+
+  if (goals.includes('event-tracking')) {
+    usageEntries.push('- Events are sent once the app runs with the client secret');
+    checklistEntries.push('- [ ] Run the app and confirm events appear in Confidence');
+    undoEntries.push('- Archive generated event definitions in the Confidence UI (if applicable)');
+  }
+
+  if (goals.includes('feature-flags') || goals.includes('session-recordings')) {
+    checklistEntries.push(
+      '- [ ] Verify the evaluation context supplies a stable value for the selected targeting key',
+    );
+  }
+
+  if (goals.includes('feature-flags')) {
+    checklistEntries.push('- [ ] Confirm flags still resolve to their intended default variants');
+  }
+
+  checklistEntries.push('- [ ] Review the diff — make sure nothing unexpected was modified');
+
+  return `\
 ## How to use it
 
-- Manage your setup at https://app.confidence.spotify.com
-- The default configuration is safe to merge — nothing changes until you flip a flag or enable recording
+${usageEntries.join('\n')}
 
 ## Before you merge
 
-- [ ] Check that \`.env\` is in \`.gitignore\` (so the secret stays out of git)
-- [ ] Add \`CONFIDENCE_CLIENT_SECRET\` to your CI/staging/prod environment
-- [ ] Verify the evaluation context sets a stable \`targeting_key\` for consistent variant assignment
-- [ ] Run the app locally and confirm the default behavior is unchanged
-- [ ] Review the diff — make sure nothing unexpected was modified
+${checklistEntries.join('\n')}
 
 ## Next steps
 
@@ -88,6 +134,6 @@ const TEMPLATE_END = `\
 
 ## To undo everything
 
-- Revert the changed files (\`git checkout\` / \`git stash\`)
-- Archive the flag in the Confidence UI (if applicable)
+${undoEntries.join('\n')}
 \`\`\``;
+}

@@ -1,4 +1,58 @@
-import { formatOnboardingError, spawnErrorMessage } from '@integrations/utils.js';
+import {
+  extractCodeChanges,
+  formatOnboardingError,
+  spawnErrorMessage,
+} from '@integrations/utils.js';
+
+describe('extractCodeChanges', () => {
+  it('keeps only lines describing a change', () => {
+    const sut = extractCodeChanges([
+      'Analyzing the project structure',
+      'Created confidence.config.ts',
+      'Added @spotify-confidence/sdk',
+      'Modified src/main.tsx',
+    ]);
+
+    expect(sut).toEqual([
+      'Created confidence.config.ts',
+      'Added @spotify-confidence/sdk',
+      'Modified src/main.tsx',
+    ]);
+  });
+
+  it('reports a change once when the agent repeats its summary', () => {
+    const sut = extractCodeChanges([
+      'Created confidence.config.ts',
+      'Added @spotify-confidence/sdk',
+      'Created confidence.config.ts',
+      'Added @spotify-confidence/sdk',
+    ]);
+
+    expect(sut).toEqual(['Created confidence.config.ts', 'Added @spotify-confidence/sdk']);
+  });
+
+  it('ignores status lines already shown as progress', () => {
+    const sut = extractCodeChanges(['STATUS: Created recording policy: my-app']);
+    expect(sut).toEqual([]);
+  });
+
+  it('strips list markers and markdown emphasis', () => {
+    const sut = extractCodeChanges(['- **Created** `confidence.config.ts`']);
+    expect(sut).toEqual(['Created confidence.config.ts']);
+  });
+
+  it('ignores prose that merely mentions a change verb', () => {
+    const sut = extractCodeChanges(['I have Created the config for you']);
+    expect(sut).toEqual([]);
+  });
+
+  it('truncates long descriptions', () => {
+    const sut = extractCodeChanges([`Created ${'a'.repeat(80)}`]);
+
+    expect(sut[0]).toHaveLength(60);
+    expect(sut[0]).toMatch(/…$/);
+  });
+});
 
 describe('spawnErrorMessage', () => {
   it('returns a helpful message for ENOENT', () => {

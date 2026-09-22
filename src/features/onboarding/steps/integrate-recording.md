@@ -10,7 +10,38 @@ Print "STATUS: Analyzing project for session recording..."
 
 **Detect the source root** — check for `src`, `app`, `lib`, `pages`, `server` and use the first match (or `.`). Exclude `node_modules`, `.venv`, `vendor`, `target`, `build`, `dist`, `.next`, `__pycache__` from scans.
 
-### {{STEP}}b. Install the session recording SDK
+### {{STEP}}b. Resolve client and recording policy
+
+Print "STATUS: Setting up recording policy..."
+
+If flag management is unavailable from preflight, skip MCP calls in this substep. Write placeholders for the client secret and document in the report that the user must create a recording policy under Recordings > Settings. If they need setup details, search {{DOCS_URL}}.
+
+If flag management is available:
+
+1. **Client** — reuse the Confidence client from an earlier feature-flags step if one was created. Otherwise call `{{FLAGS_createClient}}` with the display name "{{PROJECT_NAME}}" and `clientType` `Frontend`. Name it after this project, never after the framework — a framework name collides with clients from unrelated projects and attaches this policy to the wrong app. Keep the returned resource name (`clients/<id>` from `name:`). If the tool says that display name already exists, keep the resource name from that message and call `{{FLAGS_getClientSecret}}` for that client. Write the secret only to `.env` as `CONFIDENCE_CLIENT_SECRET`, ensure `.env` is in `.gitignore`, and never echo it in STATUS lines, the report, or generated source.
+
+2. **Targeting key** — same as flags. Call `{{FLAGS_getContextSchema}}` with the client's display name. Use the first available entity field (typically `visitor_id`). Do not assume `user_id` or `targeting_key`. If feature flags were integrated earlier, reuse that entity field. If the schema has no entity field, call `{{FLAGS_addContextField}}` with `fieldName` `visitor_id`, `fieldType` `string`, and `isEntity` `"true"` (string, not boolean). Fill it with a persisted visitor ID: reuse the flag identity if present, otherwise an existing anonymous/device ID, or generate once and store where the app already persists client state (`localStorage` only in a browser entrypoint).
+
+3. **Policy** — never reuse a policy because its display name looks similar. Call `{{FLAGS_listRecordingPolicies}}` and inspect every page: pass each non-empty `nextPageToken` back as `pageToken` until `nextPageToken` is empty. Reuse a policy only when its `clients` list contains this client's resource name (`clients/<id>`). If nothing matches, call `{{FLAGS_createRecordingPolicy}}` with `displayName` "{{PROJECT_NAME}} Session Recording" and `clientName` set to this client's resource name. Keep the returned policy resource name.
+
+4. **Rule** — call `{{FLAGS_getRecordingPolicy}}` with `recordingPolicy` set to that resource name. If the policy has no rule yet, call `{{FLAGS_addRecordingRule}}` like this:
+
+   Good: `targetingKeySelector` from step 2, omit `targetingJson`, `stableAudiencePercentage`: 100, `sessionSampleRate`: 1, `enabled`: true
+   Bad: omitting the percentages (agents often send `0`, which records nobody)
+
+   Pass `recordingPolicy` (the resource name from step 3) and `displayName` "Record all visitors".
+
+   Selecting Session Recordings in the wizard is explicit confirmation to start recording, so enable the rule immediately without asking another question. The MCP creates an unrestricted `segments/<id>` audience even though `targetingJson` is omitted. Tell the user afterward that the rule is enabled and records 100% of visitors and sessions.
+
+   If the policy already has a rule that is not enabled, call `{{FLAGS_setRecordingRuleEnabled}}` with that rule's resource name and `enabled` true.
+
+   When reusing an existing rule, read its audience from the `{{FLAGS_getRecordingPolicy}}` output. An audience segment (`segments/<id>`) is the healthy 100%-of-visitors representation, including rules with no targeting conditions. An audience of "all users" means the pre-fix rule has no segment, which records nobody and no MCP tool can repair — print "STATUS: Existing recording rule records nobody" and add a "Before you merge" item telling the user to delete that rule under Recordings > Settings and add a new one.
+
+Print "STATUS: Created recording policy: <policy-name>" after a new policy, or "STATUS: Reusing recording policy: <policy-name>" when reusing. Print "STATUS: Enabled recording rule" after the rule is active.
+
+In the final change summary, include "Created recording policy with targeting key" and "Created recording rule (Record all visitors, 100% audience, 100% sessions, enabled)" when those resources were created.
+
+### {{STEP}}c. Install the session recording SDK
 
 Print "STATUS: Installing session recording SDK..."
 
@@ -19,7 +50,7 @@ npm install @spotify-confidence/session-recording
 # or: yarn add / pnpm add
 ```
 
-### {{STEP}}c. Initialize the recorder
+### {{STEP}}d. Initialize the recorder
 
 Print "STATUS: Adding session recording provider..."
 
@@ -36,9 +67,11 @@ const recorder = initSessionRecorder({
 });
 ```
 
+Use the same field name as `targetingKeySelector`, filled with the identity from step 2. Rename `visitor_id` in this snippet if the schema's first entity field is different.
+
 The function always returns a `SessionRecorder` — safe to call, never throws. Recording starts automatically by default. For manual control, pass `mode: 'manual'` and call `recorder.start()`.
 
-### {{STEP}}d. Configure privacy and capture settings
+### {{STEP}}e. Configure privacy and capture settings
 
 Print "STATUS: Configuring privacy and capture settings..."
 
@@ -69,9 +102,9 @@ Analyze the project to decide:
 
 Merge the chosen settings into the `initSessionRecorder` call from the previous step. Only include options that differ from defaults — don't add `maskInputs: true` or `captureRouteChanges: true` since they're already on.
 
-If the project already uses Confidence feature flags, pass the same `targeting_key` / `visitor_id` in `context` so sessions correlate with flag evaluations.
+If the project already uses Confidence feature flags, pass the same identity field in `context` so sessions correlate with flag evaluations.
 
-### {{STEP}}e. Verify the project builds
+### {{STEP}}f. Verify the project builds
 
 Print "STATUS: Verifying project builds..."
 

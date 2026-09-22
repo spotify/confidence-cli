@@ -45,7 +45,15 @@ export function buildOnboardingPrompt({
     ),
 
     addIf(withRecordings, () => determineRecordingSDK(framework, steps.next(), tools)),
-    addIf(withRecordings, () => integrateRecording(steps.next(), isEmptyProject)),
+    addIf(withRecordings, () =>
+      integrateRecording({
+        step: steps.next(),
+        isEmptyProject,
+        framework,
+        projectDir,
+        toolVars: tools,
+      }),
+    ),
 
     addIf(withEventTracking, () =>
       instrumentEvents(framework, steps.next(), isEmptyProject, ide, pluginInstallMethod),

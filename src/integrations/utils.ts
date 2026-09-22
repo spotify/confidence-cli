@@ -11,13 +11,34 @@ export function normalizeStatusLine(line: StatusLine) {
 }
 
 const MAX_REPORT_LINE_LENGTH = 60;
+const CHANGE_PREFIXES = ['Created', 'Modified', 'Added'];
 
-export function normalizeReportLine(line: string) {
-  const stripped = isStatusLine(line) ? normalizeStatusLine(line) : line;
-  const clean = stripMarkdown(stripped);
-  return clean.length > MAX_REPORT_LINE_LENGTH
-    ? clean.slice(0, MAX_REPORT_LINE_LENGTH - 1) + '…'
-    : clean;
+// Agents repeat their final summary (once while streaming, once in the closing
+// event), so the same change can arrive several times.
+export function extractCodeChanges(lines: string[]): string[] {
+  const changes = new Map<string, string>();
+
+  for (const line of lines) {
+    if (isStatusLine(line)) continue;
+
+    const change = stripMarkdown(stripListMarker(line)).trim();
+    if (!CHANGE_PREFIXES.some((prefix) => change.startsWith(prefix))) continue;
+
+    const key = change.toLowerCase();
+    if (!changes.has(key)) changes.set(key, truncate(change));
+  }
+
+  return [...changes.values()];
+}
+
+function truncate(text: string) {
+  return text.length > MAX_REPORT_LINE_LENGTH
+    ? text.slice(0, MAX_REPORT_LINE_LENGTH - 1) + '…'
+    : text;
+}
+
+function stripListMarker(text: string) {
+  return text.replace(/^\s*(?:[-*•]|\d+\.)\s+/, '');
 }
 
 function stripMarkdown(text: string) {
