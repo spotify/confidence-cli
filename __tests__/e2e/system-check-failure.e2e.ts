@@ -1,6 +1,6 @@
-import { createSession } from './testing-framework/index.js';
-import { IS_WINDOWS } from './testing-framework/env.js';
 import { dirname } from 'node:path';
+import { isWindows } from '../shared/platform.js';
+import { createSession } from './testing-framework/index.js';
 
 describe('when system check fails', () => {
   it('shows error when git is missing', async () => {
@@ -25,7 +25,7 @@ describe('when system check fails', () => {
    * equivalent. Constructing one portably is non-trivial because git's
    * install location varies across Windows setups.
    */
-  it.skipIf(IS_WINDOWS)('shows error when node is not on PATH', async () => {
+  it.skipIf(isWindows)('shows error when node is not on PATH', async () => {
     using session = createSession({ systemPath: '/usr/bin' });
 
     await session.waitForText('Start setup');

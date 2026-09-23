@@ -2,24 +2,8 @@ import { vi } from 'vitest';
 
 const execFile = vi.fn();
 
-vi.mock('node:child_process', () => ({
-  execFile: (
-    _cmd: string,
-    _args: string[],
-    cb: (err: Error | null, stdout?: string, stderr?: string) => void,
-  ) => {
-    const result = execFile(_cmd, _args) as Promise<{ stdout: string }>;
-    result.then(
-      (val) => cb(null, val.stdout, ''),
-      (err: Error) => cb(err),
-    );
-    return {};
-  },
-}));
-
-vi.mock('node:util', () => ({
-  promisify: () => (cmd: string, args: string[]) =>
-    execFile(cmd, args) as Promise<{ stdout: string }>,
+vi.mock('@lib/exec.js', () => ({
+  execFile: (cmd: string, args: string[]) => execFile(cmd, args) as Promise<{ stdout: string }>,
 }));
 
 beforeEach(() => {

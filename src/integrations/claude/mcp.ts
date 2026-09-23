@@ -1,7 +1,6 @@
-import { execFile as execFileCb } from 'node:child_process';
-import { promisify } from 'node:util';
 import { existsSync, readFileSync, writeFileSync, mkdirSync } from 'node:fs';
 import { join } from 'node:path';
+import { execFile } from '@lib/exec.js';
 import type { McpConnectOpts } from '../types.js';
 import {
   type McpServerName,
@@ -10,8 +9,6 @@ import {
 } from '../mcp/servers.js';
 import { getRegisteredMcpNames, getStoredAuthToken } from '../mcp/config.js';
 import { projectConfigPath } from './paths.js';
-
-const execFile = promisify(execFileCb);
 
 export function detectMcpStatuses(
   projectDir: string,

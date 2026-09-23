@@ -1,8 +1,8 @@
 import { writeFileSync, chmodSync } from 'node:fs';
 import { join } from 'node:path';
-import { IS_WINDOWS } from '../../env.js';
+import { isWindows } from '../../../../shared/platform.js';
 
-export const writeMockBinary = IS_WINDOWS ? writeWindowsBinary : writeUnixBinary;
+export const writeMockBinary = isWindows ? writeWindowsBinary : writeUnixBinary;
 
 function writeUnixBinary(dir: string, name: string, script: string): void {
   const filePath = join(dir, name);
@@ -13,9 +13,11 @@ function writeUnixBinary(dir: string, name: string, script: string): void {
 function writeWindowsBinary(dir: string, name: string, script: string): void {
   const jsPath = join(dir, `${name}.js`);
   writeFileSync(jsPath, script.replace(/^#!.*\n/, ''), 'utf-8');
+  // `.cmd` is for cmd.exe; CreateProcess cannot run it. The CLI resolves
+  // `{name}.js` on PATH and runs it with Node instead (`resolveBin`).
   writeFileSync(join(dir, `${name}.cmd`), `@node "%~dp0${name}.js" %*\r\n`, 'utf-8');
 }
 
-export const writeMockOpenStub = IS_WINDOWS
+export const writeMockOpenStub = isWindows
   ? (dir: string) => writeFileSync(join(dir, 'open.cmd'), '@exit /b 0\r\n', 'utf-8')
   : (dir: string) => writeUnixBinary(dir, 'open', '#!/bin/sh\nexit 0\n');
