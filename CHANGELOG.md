@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.5.1](https://github.com/spotify/confidence-cli/compare/quickstart-v1.5.0...quickstart-v1.5.1) (2026-09-23)
+
+
+### Bug Fixes
+
+* **ui:** rename Managed warehouse to Confidence Cloud ([#70](https://github.com/spotify/confidence-cli/issues/70)) ([b7ab439](https://github.com/spotify/confidence-cli/commit/b7ab439b5ee1d12020628322621ffef67736a697))
+
 ## [1.5.0](https://github.com/spotify/confidence-cli/compare/quickstart-v1.4.0...quickstart-v1.5.0) (2026-09-09)
 
 
