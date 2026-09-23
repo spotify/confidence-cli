@@ -100,6 +100,14 @@ Telemetry is automatically disabled in CI environments and during development.
 
 ## Development
 
+On Windows, clone with symlinks enabled so `CLAUDE.md` is not checked out as a copy (which breaks Prettier):
+
+```bash
+git clone -c core.symlinks=true https://github.com/spotify/confidence-cli.git
+```
+
+If the repo is already cloned, run `git checkout -- CLAUDE.md` after `git config core.symlinks true`.
+
 ```bash
 pnpm install
 pnpm try          # Run the wizard locally via tsx

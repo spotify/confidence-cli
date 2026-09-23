@@ -6,6 +6,8 @@ import { join } from 'node:path';
 import { stripAnsi } from './strip-ansi.js';
 import { renderScreen, normalizeSnapshot } from './screen-buffer.js';
 import { E2E_BASE_ENV } from '../env.js';
+import { overlayEnv } from '../../../shared/overlay-env.js';
+import { isWindows } from '../../../shared/platform.js';
 import { resolveKey, type Modifiers } from '../../../shared/key-map.js';
 
 const CLI_PATH = resolve(import.meta.dirname, '../../../../dist/bin/cli.js');
@@ -81,13 +83,13 @@ export class TerminalSession {
       cols,
       rows,
       cwd: this.cwd,
-      env: {
-        ...process.env,
-        ...E2E_BASE_ENV,
-        ...env,
+      env: overlayEnv(process.env, E2E_BASE_ENV, env, {
         HOME: isolatedTmpDir,
         TMPDIR: isolatedTmpDir,
-      },
+        ...(isWindows
+          ? { USERPROFILE: isolatedTmpDir, TEMP: isolatedTmpDir, TMP: isolatedTmpDir }
+          : {}),
+      }),
     });
 
     this.pty.onData((data) => {

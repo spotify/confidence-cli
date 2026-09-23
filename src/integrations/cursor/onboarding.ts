@@ -1,5 +1,6 @@
-import { type ChildProcess, spawn } from 'node:child_process';
+import type { ChildProcess } from 'node:child_process';
 import { createInterface } from 'node:readline';
+import { spawn } from '@lib/exec.js';
 import type { OnboardingOpts, OnboardingCallbacks } from '../types.js';
 import { ONBOARDING_TIMEOUT_MS } from '../constants.js';
 import { type StreamEvent, extractTextLines } from '../stream-json.js';

@@ -1,12 +1,9 @@
-import { execFile as execFileCb } from 'node:child_process';
 import { resolve } from 'node:path';
-import { promisify } from 'node:util';
+import { execFile } from '@lib/exec.js';
 import { PLUGIN_NAME } from '@lib/constants.js';
 import type { PluginInstallationMethod } from '@shared-kernel/types.js';
 import { hasDownloadedSkills } from '../skills/local.js';
 import { skillsDir } from './paths.js';
-
-const execFile = promisify(execFileCb);
 
 type PluginEntry = {
   id: string;

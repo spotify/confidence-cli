@@ -1,5 +1,6 @@
-import { createSession } from './testing-framework/index.js';
 import { dirname } from 'node:path';
+import { isWindows } from '../shared/platform.js';
+import { createSession } from './testing-framework/index.js';
 
 describe('when system check fails', () => {
   it('shows error when git is missing', async () => {
@@ -18,8 +19,13 @@ describe('when system check fails', () => {
     expect(session.snapshot()).toMatchSnapshot('system-check-failure');
   });
 
-  it('shows error when node is not on PATH', async () => {
-    // PATH with git but not node — CLI still runs via absolute path
+  /**
+   * @todo Make this test work on Windows. It currently relies on `/usr/bin`
+   * as a PATH that contains git but not node, which has no direct Windows
+   * equivalent. Constructing one portably is non-trivial because git's
+   * install location varies across Windows setups.
+   */
+  it.skipIf(isWindows)('shows error when node is not on PATH', async () => {
     using session = createSession({ systemPath: '/usr/bin' });
 
     await session.waitForText('Start setup');

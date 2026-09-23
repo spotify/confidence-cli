@@ -1,6 +1,6 @@
 import { mkdtempSync, writeFileSync } from 'node:fs';
-import { join } from 'node:path';
 import { tmpdir } from 'node:os';
+import { delimiter, join } from 'node:path';
 import { TerminalSession } from './terminal/index.js';
 import { createProjectDir, type ProjectType } from '../../shared/project-scaffold/index.js';
 
@@ -56,7 +56,7 @@ export function createSession({
   const { path: projectDir } = createProjectDir(project);
 
   const sessionEnv: Record<string, string> = {
-    PATH: `${mockBinDir}:${systemPath ?? process.env.PATH}`,
+    PATH: `${mockBinDir}${delimiter}${systemPath ?? process.env.PATH}`,
     ...env,
   };
 

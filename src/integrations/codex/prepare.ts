@@ -1,8 +1,5 @@
-import { execFile as execFileCb } from 'node:child_process';
-import { promisify } from 'node:util';
+import { execFile } from '@lib/exec.js';
 import { extractVersion, isAtLeast } from '../version.js';
-
-const execFile = promisify(execFileCb);
 
 const MIN_VERSION = [0, 146, 0];
 

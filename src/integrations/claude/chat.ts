@@ -1,4 +1,4 @@
-import { spawn } from 'node:child_process';
+import { spawn } from '@lib/exec.js';
 import type { ChatOpts } from '../types.js';
 
 export function launchChat({ prompt, cwd }: ChatOpts): void {
