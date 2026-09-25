@@ -74,7 +74,7 @@ describe('when only feature-flags is selected', () => {
     const sut = fileEntries(goals);
 
     expect(sut).toEqual([
-      '- `<.env file>` — added `CONFIDENCE_CLIENT_SECRET`',
+      '- `<.env file>` — added `<CLIENT_SECRET_ENV>`',
       '- `<entry point file>` — added SDK initialization',
       '- `<aha target file>` — added flag evaluation',
     ]);
@@ -100,7 +100,7 @@ describe('when only session-recordings is selected', () => {
     const sut = fileEntries(goals);
 
     expect(sut).toEqual([
-      '- `<.env file>` — added `CONFIDENCE_CLIENT_SECRET`',
+      '- `<.env file>` — added `<CLIENT_SECRET_ENV>`',
       '- `<entry point file>` — added SDK initialization',
       '- `<entry point file>` — added session recording provider',
     ]);
@@ -121,10 +121,12 @@ describe('when only session-recordings is selected', () => {
     ]);
   });
 
-  it('states that recording is already active rather than pending', () => {
+  it('leaves recording rule and consent status for the agent to fill', () => {
     const sut = usageEntries(goals).join('\n');
 
-    expect(sut).toContain('recording rule is enabled');
+    expect(sut).toContain('<RECORDING_RULE_STATUS>');
+    expect(sut).toContain('<RECORDING_CONSENT_STATUS>');
+    expect(sut).not.toContain('The recording rule is enabled');
     expect(sut).not.toContain('nothing changes');
   });
 
@@ -133,6 +135,22 @@ describe('when only session-recordings is selected', () => {
 
     expect(sut).toContain('confirm a session appears');
     expect(sut).not.toContain('default behavior is unchanged');
+  });
+
+  it('asks the user to cover privacy, consent, and production sampling', () => {
+    const sut = checklistEntries(goals).join('\n');
+
+    expect(sut).toContain('Mention session recording in your privacy policy');
+    expect(sut).toContain('gate it behind user consent where required');
+    expect(sut).toContain("Lower the rule's session sample rate");
+    expect(sut).toContain('before rolling out to production traffic');
+  });
+
+  it('describes the recorder context rather than only flag evaluation', () => {
+    const sut = checklistEntries(goals).join('\n');
+
+    expect(sut).toContain('flag evaluation / recorder context');
+    expect(sut).toContain('<CLIENT_SECRET_ENV>');
   });
 
   it('explains how to undo the recording resources', () => {
@@ -150,7 +168,7 @@ describe('when only event-tracking is selected', () => {
     const sut = fileEntries(goals);
 
     expect(sut).toEqual([
-      '- `<.env file>` — added `CONFIDENCE_CLIENT_SECRET`',
+      '- `<.env file>` — added `<CLIENT_SECRET_ENV>`',
       '- `<entry point file>` — added SDK initialization',
       '- `<files with track() calls>` — added event tracking calls',
     ]);

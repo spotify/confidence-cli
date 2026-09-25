@@ -10,7 +10,7 @@ function buildTemplateStart(goals: OnboardingGoal[]): string {
   const tableRowEntries: string[] = [];
   const dependencyEntries: string[] = [];
   const fileChangeEntries = [
-    '- `<.env file>` — added `CONFIDENCE_CLIENT_SECRET`',
+    '- `<.env file>` — added `<CLIENT_SECRET_ENV>`',
     '- `<entry point file>` — added SDK initialization',
   ];
 
@@ -75,7 +75,7 @@ function buildTemplateEnd(goals: OnboardingGoal[]): string {
   const usageEntries = ['- Manage your setup at https://app.confidence.spotify.com'];
   const checklistEntries = [
     '- [ ] Check that `.env` is in `.gitignore` (so the secret stays out of git)',
-    '- [ ] Add `CONFIDENCE_CLIENT_SECRET` to your CI/staging/prod environment',
+    '- [ ] Add `<CLIENT_SECRET_ENV>` to your CI/staging/prod environment',
   ];
   const undoEntries = ['- Revert the changed files (`git checkout` / `git stash`)'];
 
@@ -86,10 +86,15 @@ function buildTemplateEnd(goals: OnboardingGoal[]): string {
 
   if (goals.includes('session-recordings')) {
     usageEntries.push(
-      '- The recording rule is enabled — sessions are captured once the app runs with the client secret',
+      '- <RECORDING_RULE_STATUS>',
       '- Recordings show up under **Recordings** in the Confidence UI',
+      '- <RECORDING_CONSENT_STATUS>',
     );
-    checklistEntries.push('- [ ] Run the app and confirm a session appears under **Recordings**');
+    checklistEntries.push(
+      '- [ ] Run the app and confirm a session appears under **Recordings**',
+      '- [ ] Mention session recording in your privacy policy and gate it behind user consent where required (e.g. EU)',
+      "- [ ] Lower the rule's session sample rate in Confidence before rolling out to production traffic",
+    );
     undoEntries.push(
       '- Disable the recording rule or archive the recording policy in the Confidence UI',
     );
@@ -103,7 +108,7 @@ function buildTemplateEnd(goals: OnboardingGoal[]): string {
 
   if (goals.includes('feature-flags') || goals.includes('session-recordings')) {
     checklistEntries.push(
-      '- [ ] Verify the evaluation context supplies a stable value for the selected targeting key',
+      '- [ ] Verify the flag evaluation / recorder context supplies a stable value for the selected targeting key',
     );
   }
 

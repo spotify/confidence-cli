@@ -1,3 +1,4 @@
+import { basename, resolve } from 'node:path';
 import { buildOnboardingPrompt } from '@features/onboarding/index.js';
 
 describe('buildOnboardingPrompt', () => {
@@ -186,13 +187,74 @@ describe('buildOnboardingPrompt', () => {
       expect(sut).toContain('Tell the user afterward that the rule is enabled');
     });
 
-    it('names the client and policy after the project, not the framework', () => {
+    it('names the client and policy after the resolved project dir, not the framework', () => {
       const sut = buildOnboardingPrompt({ ...recordingOpts, projectDir: '/tmp/checkout-web' });
 
       expect(sut).toContain('with the display name "checkout-web"');
       expect(sut).toContain('with `displayName` "checkout-web Session Recording"');
       expect(sut).toContain('never after the framework');
       expect(sut).not.toContain('react Session Recording');
+    });
+
+    it('resolves --dir . so the client is not named "."', () => {
+      const sut = buildOnboardingPrompt({ ...recordingOpts, projectDir: '.' });
+      const name = basename(resolve('.'));
+
+      expect(sut).toContain(`with the display name "${name}"`);
+      expect(sut).not.toContain('with the display name "."');
+    });
+
+    it('does not reuse a colliding client from another project', () => {
+      const sut = buildOnboardingPrompt(recordingOpts);
+
+      expect(sut).toContain('Do not reuse a client solely because its display name already exists');
+      expect(sut).toContain(
+        'unless the colliding client is the one created earlier in this same run',
+      );
+      expect(sut).toContain(
+        'Never call `mcp__confidence-flags__getClientSecret` for a colliding client',
+      );
+      expect(sut).not.toContain(
+        'If the tool says that display name already exists, keep the resource name',
+      );
+    });
+
+    it('refers to targeting key and policy by name instead of numbered steps', () => {
+      const sut = buildOnboardingPrompt(recordingOpts);
+
+      expect(sut).toContain('from the **Targeting key** item in');
+      expect(sut).toContain('the resource name from the **Policy** item in');
+      expect(sut).not.toContain('from step 2');
+      expect(sut).not.toContain('from step 3');
+    });
+
+    it('uses the framework public env var so the browser can read the client secret', () => {
+      const sut = buildOnboardingPrompt(recordingOpts);
+
+      expect(sut).toContain('VITE_CONFIDENCE_CLIENT_SECRET');
+      expect(sut).toContain('NEXT_PUBLIC_CONFIDENCE_CLIENT_SECRET');
+      expect(sut).toContain('REACT_APP_CONFIDENCE_CLIENT_SECRET');
+      expect(sut).toContain('import.meta.env.VITE_CONFIDENCE_CLIENT_SECRET');
+      expect(sut).toContain('fill `<CLIENT_SECRET_ENV>`');
+    });
+
+    it('gates recording behind an existing consent tool when one is found', () => {
+      const sut = buildOnboardingPrompt(recordingOpts);
+
+      expect(sut).toContain('OneTrust, Cookiebot, Usercentrics, Didomi');
+      expect(sut).toContain("`mode: 'manual'`");
+      expect(sut).toContain('only after analytics or recording consent is granted');
+      expect(sut).toContain('Fill `<RECORDING_CONSENT_STATUS>`');
+    });
+
+    it('tells the agent what recording-rule status to write for each path', () => {
+      const sut = buildOnboardingPrompt(recordingOpts);
+
+      expect(sut).toContain('Fill `<RECORDING_RULE_STATUS>` with "No recording rule was created');
+      expect(sut).toContain('Fill `<RECORDING_RULE_STATUS>` with "The recording rule is enabled');
+      expect(sut).toContain(
+        'Fill `<RECORDING_RULE_STATUS>` with "The existing recording rule records nobody',
+      );
     });
 
     it('flags a reused rule that has no audience segment', () => {
@@ -207,9 +269,11 @@ describe('buildOnboardingPrompt', () => {
     it('keeps the client secret out of output and source', () => {
       const sut = buildOnboardingPrompt(recordingOpts);
 
-      expect(sut).toContain('Write the secret only to `.env`');
-      expect(sut).toContain('ensure `.env` is in `.gitignore`');
-      expect(sut).toContain('never echo it in STATUS lines, the report, or generated source');
+      expect(sut).toContain('write the Frontend client secret to `.env` under that exact name');
+      expect(sut).toContain('Ensure `.env` is in `.gitignore`');
+      expect(sut).toContain(
+        'never echo the secret in STATUS lines, the report, or generated source',
+      );
     });
 
     it('picks the targeting key from the context schema like flags', () => {

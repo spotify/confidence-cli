@@ -41,6 +41,16 @@ describe('extractCodeChanges', () => {
     expect(sut).toEqual(['Created confidence.config.ts']);
   });
 
+  it('keeps checkmark-prefixed change lines', () => {
+    const sut = extractCodeChanges(['✓ Created recording policy with targeting key']);
+    expect(sut).toEqual(['Created recording policy with targeting key']);
+  });
+
+  it('drops change lines wrapped in other prefixes', () => {
+    const sut = extractCodeChanges(['> Created foo']);
+    expect(sut).toEqual([]);
+  });
+
   it('ignores prose that merely mentions a change verb', () => {
     const sut = extractCodeChanges(['I have Created the config for you']);
     expect(sut).toEqual([]);

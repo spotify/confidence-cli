@@ -4,7 +4,7 @@
 - **Timing: print a STATUS line at least every 30–60 seconds.** If a sub-task takes more than a minute (reading files, calling MCP tools, writing code, running builds), print intermediate STATUS lines describing what you're currently doing — e.g. "STATUS: Reading layout.tsx...", "STATUS: Querying docs for SDK setup...", "STATUS: Writing flag evaluation code...". The user has no other way to know you're still working.
 - Keep STATUS text short **(~60 characters max)**.
 - Never show raw JSON payloads, MCP tool names, or secrets in output.
-- Read the client secret from CONFIDENCE_CLIENT_SECRET env var in all generated code.
+- Read the client secret from the env var chosen for this project (`CONFIDENCE_CLIENT_SECRET`, or the framework's public prefix such as `VITE_`, `NEXT_PUBLIC_`, or `REACT_APP_` in browser code).
 - Use the OpenFeature API with local resolve where supported. Access flag values via dot notation: `flag-name.property`.
 - Only create or modify files inside the project directory. Never write to paths outside it (e.g. home directory dotfiles, global configs, `/tmp`).
 - If a step fails, print the error and continue with remaining steps where possible. The report file must always be generated — if steps failed, document what succeeded and what needs to be completed manually.

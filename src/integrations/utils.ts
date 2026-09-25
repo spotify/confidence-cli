@@ -38,7 +38,7 @@ function truncate(text: string) {
 }
 
 function stripListMarker(text: string) {
-  return text.replace(/^\s*(?:[-*•]|\d+\.)\s+/, '');
+  return text.replace(/^\s*(?:[-*•✓]|\d+\.)\s+/, '');
 }
 
 function stripMarkdown(text: string) {

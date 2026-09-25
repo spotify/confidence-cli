@@ -49,7 +49,6 @@ export function buildOnboardingPrompt({
       integrateRecording({
         step: steps.next(),
         isEmptyProject,
-        framework,
         projectDir,
         toolVars: tools,
       }),
