@@ -234,7 +234,7 @@ describe('buildOnboardingPrompt', () => {
       expect(sut).toContain('VITE_CONFIDENCE_CLIENT_SECRET');
       expect(sut).toContain('NEXT_PUBLIC_CONFIDENCE_CLIENT_SECRET');
       expect(sut).toContain('REACT_APP_CONFIDENCE_CLIENT_SECRET');
-      expect(sut).toContain('import.meta.env.VITE_CONFIDENCE_CLIENT_SECRET');
+      expect(sut).toContain('clientSecret: <CLIENT_SECRET_ACCESS>');
       expect(sut).toContain('fill `<CLIENT_SECRET_ENV>`');
     });
 

@@ -68,13 +68,13 @@ Pick the env var the browser can actually read, then write the Frontend client s
 
 Ensure `.env` is in `.gitignore`, and never echo the secret in STATUS lines, the report, or generated source.
 
-Add to the app's entry point (e.g. `main.ts`, `index.tsx`, root layout). Replace the clientSecret access with the pattern from above:
+Add to the app's entry point (e.g. `main.ts`, `index.tsx`, root layout):
 
 ```ts
 import { initSessionRecorder } from '@spotify-confidence/session-recording';
 
 const recorder = initSessionRecorder({
-  clientSecret: import.meta.env.VITE_CONFIDENCE_CLIENT_SECRET,
+  clientSecret: <CLIENT_SECRET_ACCESS>,
   context: {
     visitor_id: '<stable user or visitor id>',
   },
