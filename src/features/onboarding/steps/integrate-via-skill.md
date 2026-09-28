@@ -39,7 +39,7 @@ Note: when naming project files, use file name only, no path.
 
 - Read the client secret from CONFIDENCE_CLIENT_SECRET env var in all generated code — never hardcode it. Write the secret to `.env` and ensure `.env` is listed in `.gitignore`.
 - Use the OpenFeature API with local resolve where supported. Access flag values via dot notation: `flag-name.property`.
-- Set up the evaluation context with a stable `targeting_key` (user ID, session ID, or anonymous ID) and any attributes the app already has (`country`, `plan`, `device`). Don't fabricate attributes.
+- Set the evaluation context to the first entity field from the client's context schema and a stable value. Reuse an existing Confidence identity if the app has one. For `user_id`, use the authenticated user ID. For `visitor_id` or another anonymous field, reuse a persisted anonymous/device ID, or generate one UUID and persist it where the app already stores client state (`localStorage` only in a browser entrypoint). Include attributes the app already has (`country`, `plan`, `device`); don't fabricate them or mint a new ID per page load.
 - Use only SDK APIs from the docs integration guide — do not improvise method names or signatures from memory.
   {{FLAG_GUIDANCE}}
   {{REACT_GOTCHAS}}

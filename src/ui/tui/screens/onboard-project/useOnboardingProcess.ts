@@ -4,7 +4,7 @@ import { buildOnboardingPrompt } from '@features/onboarding/index.js';
 import { detectFramework } from '@frameworks/index.js';
 import type { IdeId, OnboardingGoal } from '@shared-kernel/types.js';
 import { ScreenId } from '@lib/session.js';
-import { getIntegration, normalizeReportLine } from '@integrations/index.js';
+import { getIntegration, extractCodeChanges } from '@integrations/index.js';
 import { useLogger } from '../../hooks/useLog.js';
 import { $session, store, isStaleSession } from '../../store.js';
 import { useInitialOnboarding } from './useInitialOnboarding.js';
@@ -58,16 +58,7 @@ export function useOnboardingProcess(): OnboardingProcess {
       addStatus('', 'blank');
       addStatus('Project onboarding complete!', 'success');
       store.setReportFile('CONFIDENCE_QUICKSTART.md');
-      store.setCodeChanges(
-        lines
-          ? lines
-              .filter(
-                (line) =>
-                  line.includes('Created') || line.includes('Modified') || line.includes('Added'),
-              )
-              .map(normalizeReportLine)
-          : dryRunCodeChanges(goals),
-      );
+      store.setCodeChanges(lines ? extractCodeChanges(lines) : dryRunCodeChanges(goals));
       setPhase('done');
     },
     [addStatus],
@@ -227,6 +218,7 @@ const DRY_RUN_STEPS: Record<OnboardingGoal, string[]> = {
     'Creating feature flag example...',
   ],
   'session-recordings': [
+    'Setting up recording policy...',
     'Installing session recording SDK...',
     'Adding session recording provider...',
     'Configuring privacy settings...',
@@ -256,6 +248,7 @@ const DRY_RUN_CODE_CHANGES: Record<OnboardingGoal, string[]> = {
     'Created feature flag example',
   ],
   'session-recordings': [
+    'Created recording policy with targeting key',
     'Added @spotify-confidence/session-recording',
     'Added session recording provider',
   ],
