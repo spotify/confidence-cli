@@ -1,5 +1,17 @@
 # Changelog
 
+## [1.6.0](https://github.com/spotify/confidence-cli/compare/quickstart-v1.5.0...quickstart-v1.6.0) (2026-09-28)
+
+
+### Features
+
+* **onboarding:** create recording policy and targeting-key rule ([#69](https://github.com/spotify/confidence-cli/issues/69)) ([0115232](https://github.com/spotify/confidence-cli/commit/01152326d5021cf88f9656723b4c2875c9caf2f2))
+
+
+### Bug Fixes
+
+* **ui:** rename Managed warehouse to Confidence Cloud ([#70](https://github.com/spotify/confidence-cli/issues/70)) ([b7ab439](https://github.com/spotify/confidence-cli/commit/b7ab439b5ee1d12020628322621ffef67736a697))
+
 ## [1.5.0](https://github.com/spotify/confidence-cli/compare/quickstart-v1.4.0...quickstart-v1.5.0) (2026-09-09)
 
 
