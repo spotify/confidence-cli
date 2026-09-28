@@ -23,7 +23,9 @@ describe('when the user skips connecting tools', () => {
     await session.press('Enter');
     await session.waitForText('onboarding complete', { timeout: 30_000 });
 
+    session.checkpoint();
     await session.waitForText('Confidence is ready');
+    await session.waitForText("What's next?");
     expect(session.snapshot()).toMatchSnapshot('done-tools-skipped');
   });
 });
