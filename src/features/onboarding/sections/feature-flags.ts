@@ -2,7 +2,7 @@ import type { IdeId, PluginInstallationMethod } from '@shared-kernel/types.js';
 import { loadStep } from '../steps/load.js';
 import { referenceInstruction } from '../tool-vars.js';
 
-export function integrateViaSkill(
+export function integrateFeatureFlags(
   framework: string,
   step: number,
   isEmptyProject: boolean,
@@ -11,7 +11,7 @@ export function integrateViaSkill(
 ): string {
   const needsReactGotchas = /react|nextjs|next/i.test(framework);
 
-  return loadStep('integrate-via-skill.md', {
+  return loadStep('integrate-feature-flags.md', {
     STEP: step,
     FRAMEWORK: framework,
     SKILL_READ_INSTRUCTION: referenceInstruction('analyze-project', ide, pluginInstallMethod),

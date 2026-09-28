@@ -3,7 +3,7 @@ import { addIf } from '@lib/prompt-utils.js';
 import { buildToolVars } from './tool-vars.js';
 import { preflight } from './sections/preflight.js';
 import { scaffold } from './sections/scaffold.js';
-import { integrateViaSkill } from './sections/integrate.js';
+import { integrateFeatureFlags } from './sections/feature-flags.js';
 import { integrateRecording } from './sections/recording.js';
 import { instrumentEvents } from './sections/event-tracking.js';
 import { generateReport } from './sections/report.js';
@@ -41,7 +41,7 @@ export function buildOnboardingPrompt({
     addIf(isEmptyProject, () => scaffold(framework, steps.next())),
 
     addIf(withFlags, () =>
-      integrateViaSkill(framework, steps.next(), isEmptyProject, ide, pluginInstallMethod),
+      integrateFeatureFlags(framework, steps.next(), isEmptyProject, ide, pluginInstallMethod),
     ),
 
     addIf(withRecordings, () =>
