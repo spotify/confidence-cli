@@ -35,7 +35,7 @@ describe('AuthenticateScreen', () => {
     using sut = renderScreen(<AuthenticateScreen />, testOpts);
 
     await waitFor(() => {
-      expect(sut.lastFrame()).toContain('Sign in to Confidence');
+      expect(sut.lastFrame()).toContain('Log in to Confidence');
     });
   });
 
@@ -45,7 +45,7 @@ describe('AuthenticateScreen', () => {
       using sut = renderScreen(<AuthenticateScreen />, testOpts);
 
       await waitFor(() => {
-        expect(sut.lastFrame()).toContain('Sign in to a Confidence account');
+        expect(sut.lastFrame()).toContain('Log in to a Confidence account');
       });
     });
 
@@ -144,8 +144,8 @@ describe('AuthenticateScreen', () => {
 
       // Assert
       await waitFor(() => {
-        expect(sut.lastFrame()).toContain('session seems to be expired');
-        expect(sut.lastFrame()).toContain('Sign in to a Confidence account');
+        expect(sut.lastFrame()).toContain('session expired');
+        expect(sut.lastFrame()).toContain('Log in to a Confidence account');
       });
     });
   });
@@ -191,7 +191,7 @@ describe('AuthenticateScreen', () => {
 
       // Assert
       await waitFor(() => {
-        expect(sut.lastFrame()).toContain('Sign in to a Confidence account');
+        expect(sut.lastFrame()).toContain('Log in to a Confidence account');
       });
     });
   });

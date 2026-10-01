@@ -38,7 +38,7 @@ function page(lines: string[]): string {
 </html>`;
 }
 
-export const successPage = page(['Authenticated with Confidence!', 'You can close this tab.']);
+export const successPage = page(['Authenticated with Confidence', 'You can close this tab.']);
 
 export const errorPage = page(['Authentication failed.', 'You can close this tab.']);
 

@@ -2,7 +2,7 @@ import type { TaskItem } from '../components/TaskList.js';
 
 const WIZARD_STEPS = {
   systemCheck: 'Check system',
-  authenticate: 'Sign in to Confidence',
+  authenticate: 'Log in to Confidence',
   installPlugins: 'Set up your agent',
   connectTools: 'Connect tools',
   onboardProject: 'Onboard project',

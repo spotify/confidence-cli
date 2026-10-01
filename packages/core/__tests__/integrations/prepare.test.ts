@@ -110,7 +110,7 @@ describe('codex prepare', () => {
     execFile.mockResolvedValueOnce({ stdout: 'codex-cli 0.146.0' });
     execFile.mockRejectedValueOnce(new Error('not logged in'));
 
-    await expect(sut()).rejects.toThrow('Not logged in to Codex');
+    await expect(sut()).rejects.toThrow("You're not logged in to Codex");
   });
 
   it('succeeds when version meets minimum and logged in', async () => {

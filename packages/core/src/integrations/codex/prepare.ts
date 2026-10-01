@@ -21,6 +21,6 @@ export async function prepare(): Promise<void> {
   try {
     await execFile('codex', ['login', 'status']);
   } catch {
-    throw new Error('Not logged in to Codex. Please, run `codex login` first.');
+    throw new Error("You're not logged in to Codex. Run `codex login` first.");
   }
 }

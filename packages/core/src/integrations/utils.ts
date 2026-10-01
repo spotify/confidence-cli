@@ -58,8 +58,8 @@ export function formatOnboardingError(bin: string, stderr: string, code: number 
   const codeHint = code != null ? ` (code ${code})` : '';
   const headline =
     `${bin} exited with an error${codeHint}. ` +
-    `This may be caused by your ${bin} setup (e.g. MCP server auth or stale cache). ` +
-    `Please, check your configuration and retry.`;
+    `This may be caused by your ${bin} setup (for example, MCP server auth or stale cache). ` +
+    `Check your configuration and try again.`;
 
   const trimmed = stderr.trim();
   if (!trimmed) return headline;

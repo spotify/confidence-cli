@@ -2,12 +2,12 @@ import type { OnboardingGoal } from '@spotify-confidence/shared-kernel';
 import type { PromptOption } from '../../components/PromptPanel.js';
 
 const BASE_GOALS: PromptOption<OnboardingGoal>[] = [
-  { label: 'Feature Flags', value: 'feature-flags' },
-  { label: 'Event Tracking', value: 'event-tracking' },
+  { label: 'Feature flags', value: 'feature-flags' },
+  { label: 'Event tracking', value: 'event-tracking' },
 ];
 
 const RECORDINGS_GOAL: PromptOption<OnboardingGoal> = {
-  label: 'Session Recordings (β)',
+  label: 'Session recordings (β)',
   value: 'session-recordings',
 };
 

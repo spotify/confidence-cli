@@ -153,7 +153,7 @@ describe('Onboarding flow', () => {
       sut.stdin.write(ENTER);
 
       await waitFor(() => {
-        expect(sut.lastFrame()).toContain('Onboarding encountered an error');
+        expect(sut.lastFrame()).toContain('Something went wrong during onboarding');
         expect(sut.lastFrame()).toContain('Something went wrong');
       });
     });

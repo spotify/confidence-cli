@@ -13,9 +13,9 @@ export async function installPlugin(projectDir: string): Promise<void> {
     cwd: projectDir,
   });
 
-  throw new Error('Cursor does not support CLI plugin installation yet.');
+  throw new Error("Cursor doesn't support CLI plugin installation yet.");
 }
 
 export async function updatePlugin(_projectDir: string): Promise<void> {
-  throw new Error('Cursor does not support CLI plugin updates yet.');
+  throw new Error("Cursor doesn't support CLI plugin updates yet.");
 }

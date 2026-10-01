@@ -4,7 +4,7 @@ exports[`Done screen migration hint > shows /migrate-statsig hint when competito
 " Confidence by Spotify                                              https://confidence.spotify.com/
 
 
-                                       ✔ Confidence is ready!
+                                       ✔ Confidence is ready
 
          We've taught Claude Code Confidence skills—try them out with slash commands.
          For example, run /migrate-statsig to migrate existing feature flags to Confidence.

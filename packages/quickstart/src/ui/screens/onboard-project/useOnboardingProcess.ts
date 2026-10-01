@@ -59,7 +59,7 @@ export function useOnboardingProcess(): OnboardingProcess {
   const markComplete = useCallback(
     function markComplete(goals: OnboardingGoal[], lines?: string[]) {
       addStatus('', 'blank');
-      addStatus('Project onboarding complete!', 'success');
+      addStatus('Project onboarding complete', 'success');
       store.setReportFile('CONFIDENCE_QUICKSTART.md');
       store.setCodeChanges(lines ? extractCodeChanges(lines) : dryRunCodeChanges(goals));
       setPhase('done');
@@ -135,7 +135,7 @@ export function useOnboardingProcess(): OnboardingProcess {
             onError(message) {
               childRef.current = null;
               setError(message);
-              addStatus(`Error: ${message}`, 'error');
+              addStatus(`Something went wrong: ${message}`, 'error');
               log(
                 !message.startsWith('Process exited')
                   ? onboardingSpawnError(message)

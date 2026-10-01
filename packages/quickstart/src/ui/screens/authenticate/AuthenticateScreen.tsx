@@ -38,12 +38,12 @@ export function AuthenticateScreen() {
     <Box flexDirection="column">
       <Box marginBottom={1}>
         <Text color={Colors.primary} bold>
-          Sign in to Confidence
+          Log in to Confidence
         </Text>
       </Box>
       <Box marginBottom={1}>
         <Text color={Colors.muted}>
-          Sign in so the wizard can create flags and set up your project.
+          Log in so the wizard can create flags and set up your project.
         </Text>
       </Box>
 

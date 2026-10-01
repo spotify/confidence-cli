@@ -6,7 +6,7 @@ exports[`when system check fails > shows error when git is missing > system-chec
  System Check                                                         Todo (0/5)
 
  Checking that your system has everything we need.                    ✘ Check system
-                                                                      ○ Sign in to Confidence
+                                                                      ○ Log in to Confidence
  ✔ Node.js vX.Y.Z                                                     ○ Set up your agent
  ✘ Git                                                                ○ Connect tools
                                                                       ○ Onboard project
@@ -28,7 +28,7 @@ exports[`when system check fails > shows error when node is not on PATH > system
  System Check                                                         Todo (0/5)
 
  Checking that your system has everything we need.                    ✘ Check system
-                                                                      ○ Sign in to Confidence
+                                                                      ○ Log in to Confidence
  ✘ Node.js                                                            ○ Set up your agent
  ✔ Git X.Y.Z                                                          ○ Connect tools
                                                                       ○ Onboard project

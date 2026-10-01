@@ -16,7 +16,7 @@ describe('when auth token is stale', () => {
     await navigatePastWelcome(session);
 
     // Authenticate — expired token should be rejected, showing choose-action
-    await session.waitForText('Sign in to a Confidence account');
+    await session.waitForText('Log in to a Confidence account');
     expect(session.snapshot()).toMatchSnapshot('auth-expired');
   });
 
@@ -53,8 +53,8 @@ describe('when auth token is stale', () => {
     // Authenticate — click "Use existing account", refresh fails (no refresh token)
     await session.waitForText('Use existing account');
     await session.press('Enter');
-    await session.waitForText('session seems to be expired');
-    await session.waitForText('Sign in to a Confidence account');
+    await session.waitForText('session expired');
+    await session.waitForText('Log in to a Confidence account');
     expect(session.snapshot()).toMatchSnapshot('auth-refresh-failed');
   });
 
@@ -64,7 +64,7 @@ describe('when auth token is stale', () => {
     await navigatePastWelcome(session);
 
     // Authenticate — sign in fresh
-    await session.waitForText('Sign in to a Confidence account');
+    await session.waitForText('Log in to a Confidence account');
     await session.press('Enter');
     await session.waitForText('Waiting for browser');
     await simulateAuthCallback();
@@ -83,10 +83,10 @@ describe('when auth token is stale', () => {
     // Authenticate — click "Use existing account", refresh fails
     await session.waitForText('Use existing account');
     await session.press('Enter');
-    await session.waitForText('session seems to be expired');
+    await session.waitForText('session expired');
 
     // Sign in via browser
-    await session.waitForText('Sign in to a Confidence account');
+    await session.waitForText('Log in to a Confidence account');
     await session.press('Enter');
     await session.waitForText('Waiting for browser');
     await simulateAuthCallback();
@@ -114,7 +114,7 @@ describe('when auth token is stale', () => {
     await navigatePastWelcome(session);
 
     // Malformed JWT cannot be decoded — treated as invalid
-    await session.waitForText('Sign in to a Confidence account');
+    await session.waitForText('Log in to a Confidence account');
     expect(session.snapshot()).toMatchSnapshot('auth-malformed');
   });
 });

@@ -18,8 +18,8 @@ describe('happy-path flow', () => {
     session.checkpoint();
 
     // Authenticate
-    await session.waitForText('Sign in to Confidence');
-    await session.waitForText('Sign in to a Confidence account');
+    await session.waitForText('Log in to Confidence');
+    await session.waitForText('Log in to a Confidence account');
     await session.press('Enter');
     await session.waitForText('Waiting for browser');
     await simulateAuthCallback();

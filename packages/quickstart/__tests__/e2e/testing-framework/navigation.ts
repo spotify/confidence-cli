@@ -25,8 +25,8 @@ export async function navigatePastWelcome(session: TerminalSession): Promise<voi
  * @param session - An active terminal session showing the Authenticate screen.
  */
 export async function navigatePastAuth(session: TerminalSession): Promise<void> {
-  await session.waitForText('Sign in to Confidence');
-  await session.waitForText('Sign in to a Confidence account');
+  await session.waitForText('Log in to Confidence');
+  await session.waitForText('Log in to a Confidence account');
   await session.press('Enter');
   await session.waitForText('Waiting for browser');
   await simulateAuthCallback();

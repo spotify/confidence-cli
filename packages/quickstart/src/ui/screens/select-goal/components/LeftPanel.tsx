@@ -14,7 +14,7 @@ export function LeftPanel() {
         <Text color={Colors.muted}>Toggle Confidence features to integrate with your project.</Text>
         <Box marginTop={1}>
           <Text color={Colors.warning}>
-            {Icons.diamond} Event Tracking works best with Confidence Cloud or an existing warehouse
+            {Icons.diamond} Event tracking works best with Confidence Cloud or an existing warehouse
             setup.
           </Text>
         </Box>
