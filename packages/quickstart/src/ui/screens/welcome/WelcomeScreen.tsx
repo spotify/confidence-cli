@@ -122,7 +122,7 @@ export function WelcomeScreen() {
 
       <PromptPanel
         mode="select"
-        status={frameworkUnknown ? 'Please, select your framework' : 'Ready to get started?'}
+        status={frameworkUnknown ? 'Select your framework' : 'Ready to get started?'}
         options={menuOptions}
         onSelect={handleMenuSelect}
       />

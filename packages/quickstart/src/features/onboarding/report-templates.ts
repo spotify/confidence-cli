@@ -92,7 +92,7 @@ function buildTemplateEnd(goals: OnboardingGoal[]): string {
     );
     checklistEntries.push(
       '- [ ] Run the app and confirm a session appears under **Recordings**',
-      '- [ ] Mention session recording in your privacy policy and gate it behind user consent where required (e.g. EU)',
+      '- [ ] Mention session recording in your privacy policy and gate it behind user consent where required (for example, in the EU)',
       "- [ ] Lower the rule's session sample rate in Confidence before rolling out to production traffic",
     );
     undoEntries.push(
@@ -132,7 +132,7 @@ ${checklistEntries.join('\n')}
 - [Manage your setup](https://app.confidence.spotify.com)
 - [SDK reference](<link from docs MCP for detected platform>)
 - Set up a data warehouse → \`/setup-warehouse\`
-- Migrate flags from another provider → \`/migrate-<provider>\` (e.g. \`/migrate-statsig\`, \`/migrate-eppo\`)
+- Migrate flags from another provider → \`/migrate-<provider>\` (for example, \`/migrate-statsig\`, \`/migrate-eppo\`)
 - Preview and create metrics → \`/confidence:explore-metric\`
 - Invite your team → \`/onboard-confidence invite-user\`
 - Run an A/B experiment → \`/onboard-confidence learn\`

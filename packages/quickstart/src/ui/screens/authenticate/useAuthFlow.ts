@@ -115,7 +115,7 @@ export function useAuthFlow(): AuthFlowState {
         })
         .catch(() => {
           store.setAuthState({ status: 'idle' });
-          setNotice('Your session seems to be expired. Please sign in again.');
+          setNotice('Your session expired. Log in again.');
           track(authRefreshFailed());
           setPhase('choose-action');
         });

@@ -38,7 +38,7 @@ export function DoneScreen() {
         <Box marginBottom={1}>
           <Text color={skipped ? Colors.muted : Colors.success} bold>
             {skipped ? Icons.diamond : Icons.check}{' '}
-            {skipped ? 'Onboarding skipped' : 'Confidence is ready!'}
+            {skipped ? 'Onboarding skipped' : 'Confidence is ready'}
           </Text>
         </Box>
 

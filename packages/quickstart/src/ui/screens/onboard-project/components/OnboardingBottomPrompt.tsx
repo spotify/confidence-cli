@@ -66,7 +66,7 @@ export function OnboardingBottomPrompt({
       return (
         <PromptPanel
           mode="select"
-          status="Onboarding encountered an error."
+          status="Something went wrong during onboarding."
           options={ERROR_OPTIONS}
           onSelect={(value) => (value === 'retry' ? onRetry() : onSkip())}
         />

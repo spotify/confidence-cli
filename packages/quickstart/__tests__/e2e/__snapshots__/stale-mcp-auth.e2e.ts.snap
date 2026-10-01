@@ -6,7 +6,7 @@ exports[`when MCP config has expired auth tokens > allows skipping when auth is 
  Ready to start?                                                      Todo (4/5)
 
  The wizard will:                                                     ● Check system
- ✔ add the Confidence SDK                                             ● Sign in to Confidence
+ ✔ add the Confidence SDK                                             ● Log in to Confidence
  ✔ create your first feature flag                                     ● Set up your agent
                                                                       ● Connect tools
  ◆ The AI agent will be able to run commands, install packages, and   ▶ Onboard project
@@ -28,7 +28,7 @@ exports[`when MCP config has expired auth tokens > shows auth-expired status and
  Teach your AI Confidence                                             Todo (3/5)
 
  Give your AI assistant direct access to flags, docs, and             ● Check system
- integration tools via Confidence MCP. With it, you'll be able to:    ● Sign in to Confidence
+ integration tools via Confidence MCP. With it, you'll be able to:    ● Log in to Confidence
                                                                       ● Set up your agent
  ● Ask your agent to create and manage feature flags.                 ▶ Connect tools
  ● Search docs and generate code, all from your IDE.                  ○ Onboard project
@@ -61,7 +61,7 @@ exports[`when MCP config has expired auth tokens > shows auth-expired status and
  Teach your AI Confidence                                             Todo (4/5)
 
  Give your AI assistant direct access to flags, docs, and             ● Check system
- integration tools via Confidence MCP. With it, you'll be able to:    ● Sign in to Confidence
+ integration tools via Confidence MCP. With it, you'll be able to:    ● Log in to Confidence
                                                                       ● Set up your agent
  ● Ask your agent to create and manage feature flags.                 ● Connect tools
  ● Search docs and generate code, all from your IDE.                  ○ Onboard project

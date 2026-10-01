@@ -31,7 +31,7 @@ function buildChatPrompt(session: WizardSession): string {
     if (session.pluginTargets.length) {
       lines.push(
         'I have installed Confidence AI plugin that contains useful skills and commands for working with Confidence,',
-        'e.g., `/setup-warehouse` for setting up a data warehouse',
+        'for example, `/setup-warehouse` for setting up a data warehouse',
 
         session.detectedProviders.length
           ? "or `/migrate-<provider>` to migrate another provider's flags to Confidence."

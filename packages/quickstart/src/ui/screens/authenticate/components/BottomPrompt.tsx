@@ -38,8 +38,8 @@ export function BottomPrompt({
       return (
         <PromptPanel
           mode="select"
-          status="We'll open your browser to sign in. Continue?"
-          options={[{ label: 'Sign in to a Confidence account', value: 'login' }]}
+          status="We'll open your browser to log in. Continue?"
+          options={[{ label: 'Log in to a Confidence account', value: 'login' }]}
           onSelect={onLogin}
         />
       );
