@@ -56,9 +56,15 @@ importers:
       '@spotify-confidence/eslint-config':
         specifier: workspace:*
         version: link:../eslint-config
+      '@spotify-confidence/testing':
+        specifier: workspace:*
+        version: link:../testing
       eslint:
         specifier: ^10.9.1
         version: 10.9.1(jiti@2.7.0)
+      msw:
+        specifier: ^2.15.0
+        version: 2.15.0(@types/node@26.4.0)(typescript@6.0.3)
       prettier:
         specifier: ^3.9.6
         version: 3.9.6

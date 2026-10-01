@@ -3,12 +3,5 @@
   "compilerOptions": {
     "noEmit": true
   },
-  "references": [
-    { "path": "packages/shared-kernel" },
-    { "path": "packages/utils" },
-    { "path": "packages/core" },
-    { "path": "packages/testing" },
-    { "path": "packages/quickstart" }
-  ],
   "files": []
 }

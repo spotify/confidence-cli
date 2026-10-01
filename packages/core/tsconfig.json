@@ -1,9 +1,9 @@
 {
   "extends": "../../tsconfig.base.json",
   "compilerOptions": {
-    "composite": true,
     "outDir": "dist",
-    "rootDir": "src",
+    "rootDir": ".",
+    "typeRoots": ["./node_modules/@types", "./types"],
     "paths": {
       "@auth/*": ["./src/auth/*"],
       "@telemetry/*": ["./src/telemetry/*"],
@@ -15,6 +15,5 @@
       "@providers/*": ["./src/providers/*"]
     }
   },
-  "include": ["src", "__tests__"],
-  "references": [{ "path": "../shared-kernel" }, { "path": "../utils" }]
+  "include": ["src", "__tests__", "types", "vitest.config.ts"]
 }

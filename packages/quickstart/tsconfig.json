@@ -18,6 +18,5 @@
     "vitest.config.ts",
     "tsdown.config.ts",
     "eslint.config.js"
-  ],
-  "references": [{ "path": "../shared-kernel" }, { "path": "../utils" }, { "path": "../core" }]
+  ]
 }
