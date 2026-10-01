@@ -1,8 +1,8 @@
-import type { CommandModule } from 'yargs';
+import type { OutputFormat } from '@output/detect.js';
 
 export type GlobalFlags = {
   json: boolean;
-  output: 'json' | 'table' | 'plain';
+  output?: OutputFormat;
   project?: string;
   environment?: string;
   profile?: string;
@@ -10,5 +10,3 @@ export type GlobalFlags = {
   'dry-run': boolean;
   'no-color': boolean;
 };
-
-export type Command<T = object> = CommandModule<GlobalFlags, GlobalFlags & T>;

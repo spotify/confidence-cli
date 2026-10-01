@@ -61,14 +61,15 @@ export function createSession({
   };
 
   if (token) {
-    const tokenDir = mkdtempSync(join(tmpdir(), 'e2e-tmp-'));
+    const configDir = mkdtempSync(join(tmpdir(), 'e2e-config-'));
 
-    writeFileSync(join(tokenDir, 'confidence_token'), token, 'utf-8');
+    const credentials: Record<string, string> = { accessToken: token };
     if (refreshToken) {
-      writeFileSync(join(tokenDir, 'confidence_refresh_token'), refreshToken, 'utf-8');
+      credentials.refreshToken = refreshToken;
     }
 
-    sessionEnv.TMPDIR = tokenDir;
+    writeFileSync(join(configDir, 'credentials.json'), JSON.stringify(credentials), 'utf-8');
+    sessionEnv.CONFIDENCE_CONFIG_DIR = configDir;
   }
 
   const session = new TerminalSession({

@@ -2,6 +2,12 @@
 
 import yargs from 'yargs';
 import { hideBin } from 'yargs/helpers';
+import {
+  loginCommand,
+  logoutCommand,
+  whoamiCommand,
+  configCommand,
+} from '../src/commands/index.js';
 
 const APP_NAME = 'confidence';
 
@@ -21,10 +27,12 @@ const cli = yargs(hideBin(process.argv))
   .option('project', {
     type: 'string',
     describe: 'Override project (from config)',
+    hidden: true,
   })
   .option('environment', {
     type: 'string',
     describe: 'Override environment (from config)',
+    hidden: true,
   })
   .option('profile', {
     type: 'string',
@@ -34,17 +42,24 @@ const cli = yargs(hideBin(process.argv))
     type: 'boolean',
     default: false,
     describe: 'Disable colors',
+    hidden: true,
   })
   .option('dry-run', {
     type: 'boolean',
     default: false,
     describe: 'Preview without executing',
+    hidden: true,
   })
   .option('debug', {
     type: 'boolean',
     default: false,
     describe: 'Verbose/diagnostic output',
+    hidden: true,
   })
+  .command(loginCommand)
+  .command(logoutCommand)
+  .command(whoamiCommand)
+  .command(configCommand)
   .demandCommand(1, 'Run "confidence --help" to see available commands.')
   .strict()
   .help()

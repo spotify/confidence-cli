@@ -1,4 +1,4 @@
-import { validateToken } from '../../auth/authenticate.js';
+import { validateToken } from '../../auth/jwt.js';
 import { env } from '../../system/env.js';
 
 const MCP_BASE_URL = env('CONFIDENCE_MCP_URL', 'https://mcp.confidence.dev');
