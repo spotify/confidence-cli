@@ -23,9 +23,9 @@ describe('SelectGoalScreen', () => {
       await waitFor(() => {
         const frame = sut.lastFrame()!;
         expect(frame).toContain('Select the features');
-        expect(frame).toContain('Feature flags');
-        expect(frame).toContain('Session recording');
-        expect(frame).toContain('Event tracking');
+        expect(frame).toContain('Flags');
+        expect(frame).toContain('Recordings');
+        expect(frame).toContain('Events');
         expect(frame).toContain('space');
         expect(frame).toContain('toggle');
       });
@@ -56,9 +56,9 @@ describe('SelectGoalScreen', () => {
 
       await waitFor(() => {
         const frame = sut.lastFrame()!;
-        expect(frame).toContain('Feature flags');
-        expect(frame).toContain('Event tracking');
-        expect(frame).not.toContain('Session recording');
+        expect(frame).toContain('Flags');
+        expect(frame).toContain('Events');
+        expect(frame).not.toContain('Recordings');
       });
     });
 
@@ -72,7 +72,7 @@ describe('SelectGoalScreen', () => {
       });
 
       await waitFor(() => {
-        expect(sut.lastFrame()).toContain('Feature flags');
+        expect(sut.lastFrame()).toContain('Flags');
       });
 
       await act(() => sut.stdin.write(SPACE));
@@ -94,7 +94,7 @@ describe('SelectGoalScreen', () => {
       });
 
       await waitFor(() => {
-        expect(sut.lastFrame()).toContain('Feature flags');
+        expect(sut.lastFrame()).toContain('Flags');
       });
 
       await act(() => sut.stdin.write(ENTER));
@@ -115,7 +115,7 @@ describe('SelectGoalScreen', () => {
       });
 
       await waitFor(() => {
-        expect(sut.lastFrame()).toContain('Event tracking');
+        expect(sut.lastFrame()).toContain('Events');
       });
 
       await act(() => sut.stdin.write(ARROW_DOWN + SPACE));
@@ -139,9 +139,9 @@ describe('SelectGoalScreen', () => {
 
       await waitFor(() => {
         const frame = sut.lastFrame()!;
-        expect(frame).toContain('Feature flags');
-        expect(frame).toContain('Event tracking');
-        expect(frame).not.toContain('Session recording');
+        expect(frame).toContain('Flags');
+        expect(frame).toContain('Events');
+        expect(frame).not.toContain('Recordings');
       });
     });
   });

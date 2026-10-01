@@ -10,9 +10,9 @@ describe('SelectGoal screen', () => {
 
     await navigateToGoalSelection(session);
 
-    await session.waitForText('Feature flags');
-    await session.waitForText('Session recordings');
-    await session.waitForText('Event tracking');
+    await session.waitForText('Flags');
+    await session.waitForText('Recordings');
+    await session.waitForText('Events');
     await session.waitForText('space');
     await session.waitForText('toggle');
     expect(session.snapshot()).toMatchSnapshot('select-goal');
@@ -136,7 +136,7 @@ describe('SelectGoal screen', () => {
     await session.press('Enter');
 
     // Non-browser project now shows goal selection (without Session Recordings)
-    await session.waitForText('Feature flags');
-    await session.waitForText('Event tracking');
+    await session.waitForText('Flags');
+    await session.waitForText('Events');
   });
 });

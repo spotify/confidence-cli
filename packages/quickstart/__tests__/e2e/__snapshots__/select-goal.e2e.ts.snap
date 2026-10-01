@@ -15,9 +15,9 @@ exports[`SelectGoal screen > shows goal options for a browser framework > select
  ──────────────────────────────────────────────────────────────────────────────────────────────────
  Toggle features to set up:
 
- ❯ Feature flags
-   Event tracking
-   Session recordings (β)
+ ❯ Flags
+   Events
+   Recordings (β)
 
  ↑↓ navigate   space toggle   enter confirm                                                  vX.Y.Z"
 `;
