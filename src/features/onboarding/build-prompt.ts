@@ -3,8 +3,8 @@ import { addIf } from '@lib/prompt-utils.js';
 import { buildToolVars } from './tool-vars.js';
 import { preflight } from './sections/preflight.js';
 import { scaffold } from './sections/scaffold.js';
-import { integrateViaSkill } from './sections/integrate.js';
-import { determineRecordingSDK, integrateRecording } from './sections/recording.js';
+import { integrateFeatureFlags } from './sections/feature-flags.js';
+import { integrateRecording } from './sections/recording.js';
 import { instrumentEvents } from './sections/event-tracking.js';
 import { generateReport } from './sections/report.js';
 import { summary, rules } from './sections/summary.js';
@@ -41,17 +41,11 @@ export function buildOnboardingPrompt({
     addIf(isEmptyProject, () => scaffold(framework, steps.next())),
 
     addIf(withFlags, () =>
-      integrateViaSkill(framework, steps.next(), isEmptyProject, ide, pluginInstallMethod),
+      integrateFeatureFlags(framework, steps.next(), isEmptyProject, ide, pluginInstallMethod),
     ),
 
-    addIf(withRecordings, () => determineRecordingSDK(framework, steps.next(), tools)),
     addIf(withRecordings, () =>
-      integrateRecording({
-        step: steps.next(),
-        isEmptyProject,
-        projectDir,
-        toolVars: tools,
-      }),
+      integrateRecording(framework, steps.next(), isEmptyProject, ide, pluginInstallMethod),
     ),
 
     addIf(withEventTracking, () =>

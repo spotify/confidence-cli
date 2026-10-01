@@ -1,51 +1,24 @@
-import { basename, dirname, resolve } from 'node:path';
-import { CONFIDENCE_DOCS_URL } from '@lib/constants.js';
+import type { IdeId, PluginInstallationMethod } from '@shared-kernel/types.js';
 import { loadStep } from '../steps/load.js';
+import { referenceInstruction } from '../tool-vars.js';
 
-const FALLBACK_PROJECT_NAME = 'project';
-
-type IntegrateRecordingParams = {
-  step: number;
-  isEmptyProject: boolean;
-  projectDir: string;
-  toolVars: Record<string, string>;
-};
-
-export function projectDisplayName(projectDir: string): string {
-  return basename(resolve(projectDir)) || FALLBACK_PROJECT_NAME;
-}
-
-export function projectParentName(projectDir: string): string {
-  return basename(dirname(resolve(projectDir))) || FALLBACK_PROJECT_NAME;
-}
-
-export function determineRecordingSDK(
+export function integrateRecording(
   framework: string,
   step: number,
-  toolVars: Record<string, string>,
+  isEmptyProject: boolean,
+  ide: IdeId,
+  pluginInstallMethod?: PluginInstallationMethod | null,
 ): string {
-  return loadStep('determine-recording-sdk.md', {
-    STEP: step,
-    FRAMEWORK: framework,
-    DOCS_URL: CONFIDENCE_DOCS_URL,
-    ...toolVars,
-  });
-}
-
-export function integrateRecording({
-  step,
-  isEmptyProject,
-  projectDir,
-  toolVars,
-}: IntegrateRecordingParams): string {
   return loadStep('integrate-recording.md', {
     STEP: step,
-    PROJECT_NAME: projectDisplayName(projectDir),
-    PARENT_NAME: projectParentName(projectDir),
-    DOCS_URL: CONFIDENCE_DOCS_URL,
-    ANALYSIS_CONTEXT: isEmptyProject
+    FRAMEWORK: framework,
+    SKILL_READ_INSTRUCTION: referenceInstruction(
+      'setup-session-recording',
+      ide,
+      pluginInstallMethod,
+    ),
+    DOMAIN_CONTEXT: isEmptyProject
       ? "The project was just scaffolded — configure recording on the sample app's main view."
       : "Identify the app's entry point or root layout where the session recorder should be initialized.",
-    ...toolVars,
   });
 }
