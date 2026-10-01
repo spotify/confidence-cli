@@ -1,4 +1,4 @@
-import { execFile } from '@exec/exec.js';
+import { execFile } from '../../exec/exec.js';
 import { PLUGIN_MARKETPLACE_REPO, PLUGIN_MARKETPLACE_NAME, PLUGIN_NAME } from '../../constants.js';
 import type { PluginInstallationMethod } from '@spotify-confidence/shared-kernel';
 import { hasDownloadedSkills } from '../skills/local.js';

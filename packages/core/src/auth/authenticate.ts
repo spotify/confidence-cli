@@ -4,7 +4,7 @@ import { execFile } from 'node:child_process';
 import { writeFileSync, readFileSync, existsSync } from 'node:fs';
 import { tmpdir } from 'node:os';
 import { join } from 'node:path';
-import { env } from '@system/env.js';
+import { env } from '../system/env.js';
 import { successPage, errorPage, exchangeErrorPage } from './callback-pages.js';
 
 const AUTH_DOMAIN = env('CONFIDENCE_AUTH_DOMAIN', 'auth.confidence.dev');

@@ -1,4 +1,4 @@
-import { spawn } from '@exec/exec.js';
+import { spawn } from '../../exec/exec.js';
 import type { ChatOpts } from '../types.js';
 
 export function launchChat({ prompt, cwd, token }: ChatOpts): void {

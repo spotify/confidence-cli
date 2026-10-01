@@ -11,3 +11,12 @@ export type DetectedProvider = {
   name: string;
   skillName: string;
 };
+
+export type AuthState = {
+  status: 'idle' | 'pending' | 'authenticated' | 'failed';
+  token?: string;
+  refreshToken?: string;
+  region?: 'EU' | 'US';
+  workspace?: string;
+  error?: string;
+};

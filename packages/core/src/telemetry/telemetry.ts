@@ -1,4 +1,4 @@
-import { env, isCI } from '@system/env.js';
+import { env, isCI } from '../system/env.js';
 
 const TELEMETRY_KEY_URL = env(
   'CONFIDENCE_TELEMETRY_KEY_URL',

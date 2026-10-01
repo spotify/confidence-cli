@@ -1,7 +1,7 @@
 import { unlinkSync, writeFileSync } from 'node:fs';
 import { tmpdir } from 'node:os';
 import { join } from 'node:path';
-import { noop } from '@lib/noop.js';
+import { noop } from '@spotify-confidence/utils';
 import { buildTestJwt } from './jwt.js';
 import type { TokenType } from './types.js';
 

@@ -1,4 +1,4 @@
-import { env } from '@system/env.js';
+import { env } from './system/env.js';
 
 export const CONFIDENCE_SITE_URL = 'https://confidence.spotify.com/';
 export const CONFIDENCE_DOCS_URL = 'https://confidence.spotify.com/docs';

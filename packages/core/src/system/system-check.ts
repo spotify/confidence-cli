@@ -1,5 +1,5 @@
 import { execFile } from 'node:child_process';
-import type { CheckResult } from '@telemetry/session.js';
+import type { CheckResult } from '../telemetry/session.js';
 
 function run(cmd: string, args: string[]): Promise<string> {
   return new Promise((resolve, reject) => {

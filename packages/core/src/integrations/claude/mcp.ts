@@ -1,6 +1,6 @@
 import { existsSync, readFileSync, writeFileSync, mkdirSync } from 'node:fs';
 import { join } from 'node:path';
-import { execFile } from '@exec/exec.js';
+import { execFile } from '../../exec/exec.js';
 import type { McpConnectOpts } from '../types.js';
 import {
   type McpServerName,

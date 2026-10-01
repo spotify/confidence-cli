@@ -1,5 +1,5 @@
 import { readFileSync, writeFileSync } from 'node:fs';
-import { execFile } from '@exec/exec.js';
+import { execFile } from '../../exec/exec.js';
 import type { McpConnectOpts } from '../types.js';
 import {
   MCP_SERVERS,

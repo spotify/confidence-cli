@@ -1,4 +1,4 @@
-import type { AuthState } from '@lib/session.js';
+import type { AuthState } from '@spotify-confidence/shared-kernel';
 
 function base64url(str: string): string {
   return Buffer.from(str, 'utf-8').toString('base64url');

@@ -1,4 +1,4 @@
-import { execFile } from '@exec/exec.js';
+import { execFile } from '../../exec/exec.js';
 import { extractVersion, isAtLeast } from '../version.js';
 
 const MIN_VERSION = [0, 146, 0];

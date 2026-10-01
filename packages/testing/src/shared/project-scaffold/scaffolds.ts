@@ -1,6 +1,6 @@
 import { writeFileSync } from 'node:fs';
 import { join } from 'node:path';
-import { noop } from '@lib/noop.js';
+import { noop } from '@spotify-confidence/utils';
 import type { ProjectType } from './types.js';
 
 function writeDeps(dir: string, dependencies: Record<string, string>): void {

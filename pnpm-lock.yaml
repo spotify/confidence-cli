@@ -59,6 +59,9 @@ importers:
       '@spotify-confidence/testing':
         specifier: workspace:*
         version: link:../testing
+      '@types/node':
+        specifier: ^26.4.0
+        version: 26.4.0
       eslint:
         specifier: ^10.9.1
         version: 10.9.1(jiti@2.7.0)
@@ -176,13 +179,19 @@ importers:
 
   packages/testing:
     dependencies:
-      '@spotify-confidence/core':
+      '@spotify-confidence/shared-kernel':
         specifier: workspace:*
-        version: link:../core
+        version: link:../shared-kernel
+      '@spotify-confidence/utils':
+        specifier: workspace:*
+        version: link:../utils
       msw:
         specifier: ^2.15.0
         version: 2.15.0(@types/node@26.4.0)(typescript@6.0.3)
     devDependencies:
+      '@types/node':
+        specifier: ^26.4.0
+        version: 26.4.0
       typescript:
         specifier: ^6.0.3
         version: 6.0.3

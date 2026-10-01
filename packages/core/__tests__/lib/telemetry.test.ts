@@ -1,5 +1,5 @@
 import { http, HttpResponse } from 'msw';
-import { server } from '../msw/server.js';
+import { server } from '@spotify-confidence/testing';
 import { initTelemetry, getTelemetry, resetTelemetry } from '@telemetry/telemetry.js';
 
 beforeEach(() => {

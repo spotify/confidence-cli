@@ -1,5 +1,6 @@
 import { randomUUID } from 'node:crypto';
 import type {
+  AuthState,
   IdeId,
   OnboardingGoal,
   PluginInstallationMethod,
@@ -133,14 +134,7 @@ export type CheckResult = {
   version?: string;
 };
 
-export type AuthState = {
-  status: 'idle' | 'pending' | 'authenticated' | 'failed';
-  token?: string;
-  refreshToken?: string;
-  region?: 'EU' | 'US';
-  workspace?: string;
-  error?: string;
-};
+export type { AuthState } from '@spotify-confidence/shared-kernel';
 
 export enum ScreenId {
   Welcome = 'welcome',

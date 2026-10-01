@@ -1,6 +1,6 @@
 import type { ChildProcess } from 'node:child_process';
 import { createInterface } from 'node:readline';
-import { spawn } from '@exec/exec.js';
+import { spawn } from '../../exec/exec.js';
 import type { OnboardingOpts, OnboardingCallbacks } from '../types.js';
 import { ONBOARDING_TIMEOUT_MS } from '../constants.js';
 import {

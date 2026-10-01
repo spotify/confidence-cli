@@ -1,5 +1,5 @@
 import type { IdeId } from '@spotify-confidence/shared-kernel';
-import type { WizardSession } from '@telemetry/session.js';
+import type { WizardSession } from '../telemetry/session.js';
 import { getIntegration } from './registry.js';
 
 function buildChatPrompt(session: WizardSession): string {
