@@ -21,8 +21,10 @@ export default defineConfig({
     environment: 'node',
     include: ['__tests__/**/*.test.{ts,tsx}', 'src/**/__tests__/**/*.test.{ts,tsx}'],
     exclude: ['node_modules', 'dist'],
+    setupFiles: ['../testing/src/msw/setup.ts'],
     clearMocks: true,
     maxWorkers: isCI ? 1 : 4,
     pool: 'forks',
+    execArgv: ['--import', '../testing/src/msw/localstorage-fake.mjs'],
   },
 });
