@@ -57,7 +57,5 @@ export function buildToolVars(ide: IdeId): Record<string, string> {
     FLAGS_addRecordingRule: flags('addRecordingRule'),
     FLAGS_setRecordingRuleEnabled: flags('setRecordingRuleEnabled'),
     DOCS_searchDocumentation: docs('searchDocumentation'),
-    DOCS_getLocalResolveIntegrationGuide: docs('getLocalResolveIntegrationGuide'),
-    DOCS_getCodeSnippetAndSdkIntegrationTips: docs('getCodeSnippetAndSdkIntegrationTips'),
   };
 }

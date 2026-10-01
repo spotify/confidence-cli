@@ -130,7 +130,7 @@ ${checklistEntries.join('\n')}
 ## Next steps
 
 - [Manage your setup](https://app.confidence.spotify.com)
-- [SDK reference](<link from docs MCP for detected platform>)
+- [SDK reference](<link from skill's integration guide for detected platform>)
 - Set up a data warehouse → \`/setup-warehouse\`
 - Migrate flags from another provider → \`/migrate-<provider>\` (for example, \`/migrate-statsig\`, \`/migrate-eppo\`)
 - Preview and create metrics → \`/confidence:explore-metric\`
