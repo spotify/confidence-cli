@@ -157,5 +157,112 @@ describe('SelectGoalScreen', () => {
         expect(sut.lastFrame()).toContain('Select agent to set up');
       });
     });
+
+    it('auto-advances when recordings are pre-set with a browser framework', async () => {
+      using project = createProjectDir();
+
+      using sut = renderApp({
+        screen: ScreenId.SelectGoal,
+        dir: project.path,
+        framework: 'typescript',
+        goals: ['session-recordings', 'feature-flags'],
+      });
+
+      await waitFor(() => {
+        expect(sut.lastFrame()).toContain('Select agent to set up');
+      });
+    });
+  });
+
+  describe('incompatible preset recordings', () => {
+    it('shows error when recordings are pre-set with a non-browser framework', async () => {
+      using project = createProjectDir();
+
+      using sut = renderApp({
+        screen: ScreenId.SelectGoal,
+        dir: project.path,
+        framework: 'python',
+        goals: ['session-recordings'],
+      });
+
+      await waitFor(() => {
+        const frame = sut.lastFrame()!;
+        expect(frame).toContain('Incompatible feature selection');
+        expect(frame).toContain('python');
+        expect(frame).toContain('Session recordings are not available');
+      });
+    });
+
+    it('shows quit-only option when recordings is the sole pre-set goal', async () => {
+      using project = createProjectDir();
+
+      using sut = renderApp({
+        screen: ScreenId.SelectGoal,
+        dir: project.path,
+        framework: 'go',
+        goals: ['session-recordings'],
+      });
+
+      await waitFor(() => {
+        const frame = sut.lastFrame()!;
+        expect(frame).toContain('Quit');
+        expect(frame).not.toContain('Continue without recordings');
+      });
+    });
+
+    it('offers continue-without-recordings when other goals are also pre-set', async () => {
+      using project = createProjectDir();
+
+      using sut = renderApp({
+        screen: ScreenId.SelectGoal,
+        dir: project.path,
+        framework: 'python',
+        goals: ['feature-flags', 'session-recordings'],
+      });
+
+      await waitFor(() => {
+        const frame = sut.lastFrame()!;
+        expect(frame).toContain('Continue without recordings');
+        expect(frame).toContain('Quit');
+      });
+    });
+
+    it('advances with remaining goals after choosing continue without recordings', async () => {
+      using project = createProjectDir();
+
+      using sut = renderApp({
+        screen: ScreenId.SelectGoal,
+        dir: project.path,
+        framework: 'python',
+        goals: ['feature-flags', 'session-recordings'],
+      });
+
+      await waitFor(() => {
+        expect(sut.lastFrame()).toContain('Continue without recordings');
+      });
+
+      await act(() => sut.stdin.write(ENTER));
+
+      await waitFor(() => {
+        expect(sut.lastFrame()).toContain('Select agent to set up');
+      });
+    });
+
+    it('does not auto-advance past the error', async () => {
+      using project = createProjectDir();
+
+      using sut = renderApp({
+        screen: ScreenId.SelectGoal,
+        dir: project.path,
+        framework: 'swift',
+        goals: ['session-recordings', 'event-tracking'],
+      });
+
+      await waitFor(() => {
+        const frame = sut.lastFrame()!;
+        expect(frame).toContain('Incompatible feature selection');
+        expect(frame).not.toContain('Select agent to set up');
+      });
+    });
   });
 });
