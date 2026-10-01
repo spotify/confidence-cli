@@ -14,18 +14,18 @@ The TUI follows a **reactive session-driven pattern**: the rendered screen deriv
 
 ### Central Components
 
-- **WizardSession** (`src/lib/session.ts`) — Source of truth for wizard state
-- **WizardStore** (`src/ui/tui/store.ts`) — Nanostores-backed reactive store with explicit setters
-- **WizardRouter** (`src/ui/tui/router.ts`) — Declarative sequence-based navigation
-- **ScreenContainer** (`src/ui/tui/components/ScreenContainer.tsx`) — Root layout orchestrating screens
-- **Screen Registry** (`src/ui/tui/screen-registry.tsx`) — Factory mapping ScreenId to components
+- **WizardSession** (`packages/core/src/session/session.ts`) — Source of truth for wizard state
+- **WizardStore** (`packages/quickstart/src/ui/store.ts`) — Nanostores-backed reactive store with explicit setters
+- **WizardRouter** (`packages/quickstart/src/ui/router.ts`) — Declarative sequence-based navigation
+- **ScreenContainer** (`packages/quickstart/src/ui/components/ScreenContainer.tsx`) — Root layout orchestrating screens
+- **Screen Registry** (`packages/quickstart/src/ui/screen-registry.tsx`) — Factory mapping ScreenId to components
 
 ## Adding a Screen
 
-1. Create the component in `src/ui/tui/screens/YourScreen.tsx`
-2. Add a `ScreenId` entry in `src/lib/session.ts`
-3. Register the mapping in `src/ui/tui/screen-registry.tsx`
-4. Add to the sequence in `src/ui/tui/screen-sequences.ts`
+1. Create the component in `packages/quickstart/src/ui/screens/YourScreen.tsx`
+2. Add a `ScreenId` entry in `packages/core/src/session/session.ts`
+3. Register the mapping in `packages/quickstart/src/ui/screen-registry.tsx`
+4. Add to the sequence in `packages/quickstart/src/ui/screen-sequences.ts`
 
 No other files need changes.
 
@@ -43,11 +43,11 @@ For display-only state:
 
 ## Layout & UI
 
-### Components (`src/ui/tui/components/`)
+### Components (`packages/quickstart/src/ui/components/`)
 
 Reusable building blocks and composites: `TextBlock`, `Divider`, `KeyboardHintsBar`, `ScreenContainer`, `TitleBar`, etc. Barrel-exported from `index.ts`.
 
-### Theme (`src/ui/tui/styles.ts`)
+### Theme (`packages/quickstart/src/ui/styles.ts`)
 
 Shared constants: `Colors`, `Icons`, `HAlign`, `VAlign`. Import from here for consistent styling.
 

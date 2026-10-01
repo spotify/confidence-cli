@@ -26,15 +26,15 @@
   "dependencies": {
     "@inkjs/ui": "^2.0.0",
     "@nanostores/react": "^1.1.0",
-    "@spotify-confidence/core": "workspace:*",
-    "@spotify-confidence/shared-kernel": "workspace:*",
     "ink": "^7.1.1",
     "nanostores": "^1.5.2",
     "react": "^19.2.8",
     "yargs": "^18.1.0"
   },
   "devDependencies": {
+    "@spotify-confidence/core": "workspace:*",
     "@spotify-confidence/eslint-config": "workspace:*",
+    "@spotify-confidence/shared-kernel": "workspace:*",
     "@spotify-confidence/testing": "workspace:*",
     "@testing-library/react": "^16.3.2",
     "@types/node": "^26.4.0",

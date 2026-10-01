@@ -10,12 +10,12 @@ This skill defines the structure, constraints, and conventions for IDE integrati
 
 ## Purpose
 
-The `src/integrations/` module encapsulates all IDE-specific behavior behind a strategy pattern. Each supported IDE (Claude Code, Cursor, Codex) has a self-contained implementation that conforms to a shared `IdeIntegration` interface. This eliminates per-IDE `switch` statements scattered across the codebase and makes adding a new IDE a single-directory change.
+The `packages/core/src/integrations/` module encapsulates all IDE-specific behavior behind a strategy pattern. Each supported IDE (Claude Code, Cursor, Codex) has a self-contained implementation that conforms to a shared `IdeIntegration` interface. This eliminates per-IDE `switch` statements scattered across the codebase and makes adding a new IDE a single-directory change.
 
 ## Module Structure
 
 ```
-src/integrations/
+packages/core/src/integrations/
   types.ts              # IdeId, IdeIntegration strategy type, McpConnectOpts
   index.ts              # Barrel exports + registry re-exports
   registry.ts           # getIntegrations(), getIntegration() — the strategy registry
@@ -57,7 +57,7 @@ Each IDE owns the full implementation of all these methods. Shared helpers (`ver
 
 ### Shared types
 
-`IdeId` is defined in `src/integrations/types.ts` — it belongs to the integrations module. `WizardSession` uses its own `IdeId` type (same string union, defined in `src/lib/session.ts`) to stay decoupled from the integrations module. This keeps the dependency direction clean: integrations never imports from lib/session for its own type definitions, and session never imports from integrations.
+`IdeId` is defined in `packages/core/src/integrations/types.ts` — it belongs to the integrations module. `WizardSession` uses its own `IdeId` type (same string union, defined in `packages/core/src/session/session.ts`) to stay decoupled from the integrations module. This keeps the dependency direction clean: integrations never imports from lib/session for its own type definitions, and session never imports from integrations.
 
 ### Orchestrators
 
@@ -81,7 +81,7 @@ Each IDE subdirectory (`claude/`, `cursor/`, `codex/`) must be fully independent
 
 ### No switch-on-IDE outside strategy implementations
 
-All IDE-specific branching is encapsulated inside each strategy object. Code outside `src/integrations/` must not `switch` on `IdeId` or branch on IDE identity. Instead, call `getIntegration(ide)` and use the strategy methods.
+All IDE-specific branching is encapsulated inside each strategy object. Code outside `packages/core/src/integrations/` must not `switch` on `IdeId` or branch on IDE identity. Instead, call `getIntegration(ide)` and use the strategy methods.
 
 ### Dependency direction
 
@@ -94,7 +94,7 @@ mcp/                        → (no internal integrations imports)
 shared.ts                   → (no internal integrations imports)
 ```
 
-The integrations module imports from `src/lib/` (for `IdeId`, `WizardSession`, constants). It never imports from `src/ui/` or `src/commands/`.
+The integrations module imports from `@spotify-confidence/shared-kernel` and other core modules (for `IdeId`, `WizardSession`, constants). It never imports from `packages/quickstart/src/ui/` or `packages/quickstart/src/commands/`.
 
 ### Clean-dev script
 
@@ -102,15 +102,15 @@ When changing MCP-related code (config paths, server names, connection methods, 
 
 ## Adding a New IDE
 
-1. Create `src/integrations/<ide-name>/index.ts`
+1. Create `packages/core/src/integrations/<ide-name>/index.ts`
 2. Export a `const <name>Integration: IdeIntegration` with all required methods
-3. Add the import and entry to the `INTEGRATIONS` array in `src/integrations/registry.ts`
+3. Add the import and entry to the `INTEGRATIONS` array in `packages/core/src/integrations/registry.ts`
 4. Update `scripts/clean-dev-env.sh` to clean the new IDE's config files and MCP entries
 5. No other source files need to change — the registry, screens, and orchestrators all derive from the strategy
 
 ## Public API
 
-The barrel `src/integrations/index.ts` exports:
+The barrel `packages/core/src/integrations/index.ts` exports:
 
 - Types: `IdeId`, `IdeIntegration`, `McpConnectOpts`, `OnboardingOpts`, `OnboardingCallbacks`, `McpServerName`, `McpServerStatus`
 - Registry: `getIntegrations()`, `getIntegration(id)`

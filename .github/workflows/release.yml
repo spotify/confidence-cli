@@ -18,7 +18,7 @@ jobs:
       contents: write # create GitHub releases and push tags
       pull-requests: write # open and update release PRs
     outputs:
-      release_created: ${{ steps.release.outputs.release_created }}
+      quickstart_released: ${{ steps.release.outputs['packages/quickstart--release_created'] }}
     steps:
       - uses: googleapis/release-please-action@d1a8f221d7723166f48a584aebba00ef3f6febec # v4.1.4
         id: release
@@ -28,7 +28,7 @@ jobs:
   publish:
     name: Publish to npm
     needs: release-please
-    if: ${{ needs.release-please.outputs.release_created }}
+    if: ${{ needs.release-please.outputs.quickstart_released }}
     runs-on: ubuntu-latest
     permissions:
       contents: read # checkout code
@@ -45,5 +45,5 @@ jobs:
 
       - run: pnpm install --frozen-lockfile
       - run: pnpm test
-      - run: pnpm build
-      - run: pnpm publish --no-git-checks --provenance
+      - run: pnpm --filter @spotify-confidence/quickstart build
+      - run: pnpm --filter @spotify-confidence/quickstart publish --no-git-checks --provenance

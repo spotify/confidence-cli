@@ -101,12 +101,6 @@ importers:
       '@nanostores/react':
         specifier: ^1.1.0
         version: 1.1.0(nanostores@1.5.2)(react@19.2.8)
-      '@spotify-confidence/core':
-        specifier: workspace:*
-        version: link:../core
-      '@spotify-confidence/shared-kernel':
-        specifier: workspace:*
-        version: link:../shared-kernel
       ink:
         specifier: ^7.1.1
         version: 7.1.1(@types/react@19.2.18)(react@19.2.8)
@@ -120,9 +114,15 @@ importers:
         specifier: ^18.1.0
         version: 18.1.0
     devDependencies:
+      '@spotify-confidence/core':
+        specifier: workspace:*
+        version: link:../core
       '@spotify-confidence/eslint-config':
         specifier: workspace:*
         version: link:../eslint-config
+      '@spotify-confidence/shared-kernel':
+        specifier: workspace:*
+        version: link:../shared-kernel
       '@spotify-confidence/testing':
         specifier: workspace:*
         version: link:../testing

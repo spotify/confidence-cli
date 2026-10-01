@@ -2,11 +2,12 @@
 name: testing
 description: >
   Load before writing, modifying, or adding any test file (unit,
-  integration, or e2e). Covers testing philosophy, conventions, shared
-  test scaffolds (__tests__/shared/), test framework structure
-  (__tests__/e2e/testing-framework/, __tests__/ui/testing-framework/),
+  integration, or e2e). Covers testing philosophy, conventions, test
+  infrastructure (packages/testing/), test framework structure
+  (packages/quickstart/__tests__/e2e/testing-framework/,
+  packages/quickstart/__tests__/ui/testing-framework/),
   and the named-key press() API for e2e tests.
-version: '0.2'
+version: '0.3'
 ---
 
 # Testing Guidelines
@@ -41,18 +42,18 @@ Do **not** mock `fetch` or HTTP clients directly with `vi.fn()` or `vi.mock()`.
 
 ### General Mocking Rules
 
-- Only mock what crosses a **non-emulatable** system boundary — operations that can't be redirected to a temp directory or intercepted by MSW.
-- Prefer temp directories over mocking filesystem reads. Use `createProjectDir()` to set up real files; the function under test reads them naturally. Only mock filesystem access when it reads from fixed system paths (e.g., `homedir()`, `tmpdir()`) that can't be overridden via the project dir.
-- Prefer MSW over `vi.mock` for HTTP calls. MSW intercepts at the network level, keeping the code under test unaware it's being mocked.
+- Only mock what crosses a **non-emulatable** system boundary.
+- Prefer temp directories over mocking filesystem reads. Use `createProjectDir()` to set up real files.
+- Prefer MSW over `vi.mock` for HTTP calls.
 - When partial mocking is needed, use `importOriginal` to keep real functions and mock only what's necessary:
   ```ts
-  vi.mock('../../../src/lib/plugins.js', async (importOriginal) => {
-    const actual = await importOriginal<typeof import('../../../src/lib/plugins.js')>();
+  vi.mock('@spotify-confidence/core', async (importOriginal) => {
+    const actual = await importOriginal<typeof import('@spotify-confidence/core')>();
     return { ...actual, detectInstalledPlugins: vi.fn().mockReturnValue([]) };
   });
   ```
 - Never mock the module under test.
-- MSW server setup (`listen`, `resetHandlers`, `close`) belongs in `__tests__/msw/setup.ts`, not in individual test files.
+- MSW server setup (`listen`, `resetHandlers`, `close`) belongs in `packages/testing/src/msw/setup.ts`, not in individual test files.
 
 ## Tooling
 
@@ -66,38 +67,57 @@ Do **not** mock `fetch` or HTTP clients directly with `vi.fn()` or `vi.mock()`.
 
 ## Test File Location
 
-Tests live in `__tests__/` mirroring the `src/` directory structure:
+Tests mirror the source structure within each package:
 
 ```
-__tests__/
-  shared/                       # Utilities shared between e2e and integration tests
-    key-map.ts                  # Named terminal key mapping (Enter, ArrowDown, etc.)
-    auth.ts                     # JWT builders (buildTestJwt, buildExpiredJwt, buildAuthState)
-    project-scaffold.ts         # Project directory factory (react, empty, react-statsig, etc.)
-  e2e/                          # End-to-end tests (node-pty)
+packages/core/__tests__/
+  auth/                             # Auth module tests
+  exec/                             # Exec module tests
+  telemetry/                        # Telemetry module tests
+  integrations/                     # Integration tests
+  providers/                        # Provider tests
+
+packages/quickstart/__tests__/
+  commands/                         # CLI command tests
+  features/                         # Feature tests
+  ui/                               # Integration tests (ink-testing-library)
     testing-framework/
-      terminal/                 # PTY infrastructure (TerminalSession, screen buffer, ANSI strip)
-      mocks/                    # Mock HTTP server + mock IDE binaries (binaries/ subdirectory)
-      navigation.ts             # Screen navigation shortcuts
-      session-factory.ts        # createSession() factory
-      utils.ts                  # simulateAuthCallback, readInvocation
-    *.e2e.ts                    # E2E test files
-  ui/                           # Integration tests (ink-testing-library)
+      ink/                          # Ink rendering (renderScreen, renderApp, act)
+      mocks/                        # Mock child process
+      async.ts                      # delay, waitFor
+    screens/                        # Screen test files
+  e2e/                              # End-to-end tests (node-pty)
     testing-framework/
-      ink/                      # Ink rendering (renderScreen, renderApp, act)
-      mocks/                    # Mock child process (createFakeChild, mockNextSpawn)
-      async.ts                  # delay, waitFor
-    screens/                    # Screen test files
-  commands/
-  lib/
-  frameworks/
+      terminal/                     # PTY infrastructure (TerminalSession, screen buffer)
+      mocks/                        # Mock HTTP server + mock IDE binaries
+      navigation.ts                 # Screen navigation shortcuts
+      session-factory.ts            # createSession() factory
+      utils.ts                      # simulateAuthCallback, readInvocation
+    *.e2e.ts                        # E2E test files
+
+packages/testing/src/               # Shared test infrastructure
+  auth/                             # JWT builders, token scaffolds
+  scaffold/                         # Project directory factory
+  env/                              # Environment overlay, platform detection
+  terminal/                         # Key-map, key resolution
+  msw/                              # MSW server + handlers
 ```
 
-Unit/integration tests are colocated as `src/**/__tests__/**/*.test.{ts,tsx}`.
+### Test infrastructure imports
+
+Import from specific sub-paths to avoid pulling in unrelated modules:
+
+```ts
+import { buildTestJwt, prepareAuthTokens } from '@spotify-confidence/testing/auth';
+import { createProjectDir } from '@spotify-confidence/testing/scaffold';
+import { isWindows } from '@spotify-confidence/testing/env';
+import { resolveKey } from '@spotify-confidence/testing/terminal';
+import { server } from '@spotify-confidence/testing'; // MSW server (main barrel)
+```
 
 ## E2E Tests
 
-E2E tests spawn the **built CLI binary** (`dist/bin/cli.js`) in a real pseudo-terminal via `node-pty`, send keystrokes, and assert on terminal output. They exercise real code paths — not the dry-run stubs.
+E2E tests spawn the **built CLI binary** (`packages/quickstart/dist/bin/cli.js`) in a real pseudo-terminal via `node-pty`, send keystrokes, and assert on terminal output. They exercise real code paths — not the dry-run stubs.
 
 ### Running
 
@@ -109,158 +129,49 @@ E2E tests are **not** included in `pnpm test` or `pnpm qa`. They run in a separa
 
 ### Config
 
-E2E tests use a dedicated vitest config (`vitest.config.e2e.ts`) with:
+E2E tests use a dedicated vitest config (`packages/quickstart/vitest.config.e2e.ts`) with:
 
 - 120s test timeout (the full wizard flow takes ~12s)
 - Serial execution (`maxWorkers: 1`)
 - No MSW setup (HTTP is mocked via a real local server)
-- Global setup in `__tests__/e2e/global-setup.ts`
+- Global setup in `packages/quickstart/__tests__/e2e/global-setup.ts`
 
-### Testing Framework (`__tests__/e2e/testing-framework/`)
+### Testing Framework (`packages/quickstart/__tests__/e2e/testing-framework/`)
 
 - **`createSession(opts?)`** (`session-factory.ts`) — spawns the CLI in a pty with an isolated temp project dir. Pass `{ project: 'empty' }` for an empty project (no `package.json`). Returns a `TerminalSession` with `[Symbol.dispose]`.
 - **`TerminalSession`** (`terminal/session.ts`) — wraps node-pty. Key methods: `press(key)` (named keys like `'Enter'`, `'ArrowDown'`), `pressRepeat(key, count)`, `waitForText(text)`, `waitForPattern(regex)`, `waitForExit()`, `checkpoint()`, `snapshot()`, `screen` (full ANSI-stripped output).
 - **`simulateAuthCallback()`** (`utils.ts`) — hits the CLI's local OAuth callback server to simulate browser auth.
 - **`navigateToPlugins/ConnectTools/Onboarding(session)`** (`navigation.ts`) — navigation shortcuts that advance through earlier screens.
-- **Mock HTTP server** (`mocks/server.ts`) — started in global setup, mimics all Confidence APIs (auth, MCP, skills, telemetry). The CLI's API URLs are configurable via env vars (e.g. `CONFIDENCE_AUTH_URL`), which the global setup points at the local server.
-- **Mock IDE binaries** (`mocks/binaries/`) — `claude`, `cursor`, `codex` mock scripts placed on PATH, handle subcommands and `--print` onboarding by emitting stream-json events.
-- **Shared utilities** (`__tests__/shared/`) — `key-map.ts` (key escape sequences), `auth.ts` (JWT builders), `project-scaffold.ts` (temp project directory factory). Shared with integration tests.
+- **Mock HTTP server** (`mocks/server.ts`) — started in global setup, mimics all Confidence APIs. The CLI's API URLs are configurable via env vars, which the global setup points at the local server.
+- **Mock IDE binaries** (`mocks/binaries/`) — `claude`, `cursor`, `codex` mock scripts placed on PATH.
+- **Shared test scaffolds** — imported from `@spotify-confidence/testing/auth`, `@spotify-confidence/testing/scaffold`, `@spotify-confidence/testing/terminal`, etc.
 
 ### Writing E2E Tests
 
 - **File naming**: `*.e2e.ts` (not `.test.ts`)
-- **One concern per file**: group related scenarios (e.g. `skip-plugins.e2e.ts` covers all skip-plugin variations).
-- **Use `createSession()` per test** — each call creates a fresh project dir for full isolation. No shared state between tests.
+- **One concern per file**: group related scenarios.
+- **Use `createSession()` per test** — each call creates a fresh project dir for full isolation.
 - **Use `using`** for automatic cleanup: `using session = createSession()`.
-- **Use named keys** with `session.press('Enter')`, `session.press('ArrowDown')`, `session.pressRepeat('ArrowDown', 3)` — not raw escape code constants.
-- **Assert positively** — the accumulated buffer contains ALL output ever rendered (including text from previous screens). Prefer `waitForText('expected')` over `not.toContain('unexpected')`.
-- **Use `checkpoint()`** between screens to scope `waitForText` and `snapshot()` to the current screen, avoiding false positives from earlier output.
-- **Use navigation helpers** to skip past earlier screens when testing later ones (e.g. `navigateToOnboarding(session)` advances through Welcome, SystemCheck, Auth, Plugins, and ConnectTools).
-- **Add comments** before each interaction block to identify the screen and the intent of the action (e.g. `// Welcome`, `// Select "Skip for now"`, `// Done — no IDE set, only Exit option`).
+- **Use named keys** with `session.press('Enter')`, `session.press('ArrowDown')`.
+- **Assert positively** — prefer `waitForText('expected')` over `not.toContain('unexpected')`.
+- **Use `checkpoint()`** between screens to scope `waitForText` and `snapshot()` to the current screen.
+- **Use navigation helpers** to skip past earlier screens.
 
 ## Test Structure
 
-Use the **Arrange-Act-Assert (AAA)** pattern in every test:
-
-- **Arrange** — set up preconditions and inputs.
-- **Act** — execute the system under test.
-- **Assert** — verify the expected outcome.
-
-Formatting rules:
+Use the **Arrange-Act-Assert (AAA)** pattern in every test. Name the system under test variable **`sut`**.
 
 - If the test body is **3 lines or fewer**, no blank lines or comments are needed.
-- If the test body is **longer than 3 lines**, add **empty lines** between the AAA sections.
-- If **each section is longer than 3 lines**, also add `// Arrange`, `// Act`, `// Assert` comments above each section.
-
-Name the system under test variable **`sut`** in all tests.
-
-```ts
-// Short test — no separators needed:
-it('returns default value', () => {
-  const sut = createResolver();
-  const result = sut.resolve('flag-key');
-  expect(result).toBe('default');
-});
-
-// Medium test — blank lines between sections:
-it('resolves flag with context', () => {
-  const context = { user: 'test-user' };
-  const sut = createResolver({ defaultValue: 'on' });
-
-  const result = sut.resolve('flag-key', context);
-
-  expect(result).toBe('on');
-  expect(sut.lastContext).toEqual(context);
-});
-
-// Long test — comments + blank lines:
-it('applies targeting rules in priority order', () => {
-  // Arrange
-  const rules = [
-    { segment: 'beta', value: 'variant-a', priority: 2 },
-    { segment: 'internal', value: 'variant-b', priority: 1 },
-    { segment: 'all', value: 'control', priority: 3 },
-  ];
-  const context = { user: 'test-user', segments: ['beta', 'internal'] };
-  const sut = createResolver({ rules });
-
-  // Act
-  const result = sut.resolve('flag-key', context);
-  const appliedRule = sut.getAppliedRule();
-
-  // Assert
-  expect(result).toBe('variant-b');
-  expect(appliedRule).toMatchObject({ segment: 'internal', priority: 1 });
-  expect(sut.evaluationCount).toBe(1);
-});
-```
+- If **longer than 3 lines**, add empty lines between AAA sections.
+- If **each section is longer than 3 lines**, also add `// Arrange`, `// Act`, `// Assert` comments.
 
 ## Conventions
 
-- Test files use the `.test.ts` or `.test.tsx` extension.
-- **`it` / `test` names** describe the **public behavior** from the API consumer's point of view — what the code does, not how it does it. Focus on inputs, outputs, and observable effects.
-- **`describe` blocks** state the **prerequisites or context** under which the nested tests run, also from the consumer's perspective when possible (e.g., `"when the flag has no targeting rules"`, `"given an unauthenticated user"`).
-
-```ts
-// Good — consumer-facing behavior and prerequisites:
-describe('when the flag has targeting rules', () => {
-  it('resolves to the highest-priority matching variant', () => { ... });
-  it('falls back to the default value when no rule matches', () => { ... });
-});
-
-// Bad — implementation details and vague names:
-describe('resolve method internals', () => {
-  it('calls evaluateRules and filters the array', () => { ... });
-  it('works correctly', () => { ... });
-});
-```
-
+- Test files use `.test.ts` or `.test.tsx` extension.
+- **`it`/`test` names** describe public behavior from the consumer's point of view.
+- **`describe` blocks** state prerequisites or context.
 - One assertion concern per test — multiple `expect` calls are fine if they assert the same behavior.
 - No snapshot tests unless explicitly requested.
-- **Prefer `createProjectDir()` for setting up project context** (framework, dependencies, project structure) in TUI screen tests. Use scaffold types to control framework detection (e.g., `createProjectDir('react')`, `createProjectDir('empty')`, `createProjectDir('react-statsig')`). The function lives in `__tests__/shared/project-scaffold.ts` and is shared between integration and e2e tests. Only pre-build a `WizardStore` directly when the test needs store state that `createProjectDir` cannot provide (e.g., a framework already set from an earlier screen).
-- **Prefer `using` for disposable resources.** When a helper returns an object with `[Symbol.dispose]` (e.g., `createProjectDir()`, `renderScreen()`, `renderApp()`), declare it with `using` inside each test rather than sharing it via `beforeAll`/`afterAll`. This keeps each test self-contained and guarantees cleanup even if the test throws.
-
-```ts
-// Good — each test owns its resources:
-it('detects project framework', async () => {
-  using project = createProjectDir();
-  using sut = renderScreen(<WelcomeScreen />, { dir: project.path });
-  await waitFor(() => {
-    expect(sut.lastFrame()).toContain('React');
-  });
-});
-
-// Bad — shared mutable state across tests:
-let project: ReturnType<typeof createProjectDir>;
-beforeAll(() => { project = createProjectDir(); });
-afterAll(() => { project[Symbol.dispose](); });
-```
-
-- **Use `waitFor` instead of `await delay`** for TUI assertions. `waitFor` polls until the assertion passes (default 5s timeout, 10ms interval), making tests faster and resilient to timing differences. Never use fixed `await delay(N)` waits before assertions — they are slow and flaky under CPU load.
-  - Wrap the assertion directly: `await waitFor(() => { expect(sut.lastFrame()).toContain('X'); })`.
-  - When interacting with a rendered component, send input then `waitFor` the result:
-    ```ts
-    sut.stdin.write(ENTER);
-    await waitFor(() => {
-      expect(sut.lastFrame()).toContain('Next Screen');
-    });
-    ```
-  - When a component must render interactive elements (e.g. a Select) before input can be processed, add a `waitFor` before `stdin.write` to confirm the element is present:
-    ```ts
-    await waitFor(() => {
-      expect(sut.lastFrame()).toContain('Connect all MCP tools');
-    });
-    sut.stdin.write(ENTER);
-    await waitFor(() => {
-      expect(sut.lastFrame()).toContain('Connected');
-    });
-    ```
-  - For multi-step flows (e.g. action then auto-advance), chain separate `waitFor` calls — each gets its own timeout window:
-    ```ts
-    await waitFor(() => {
-      expect(sut.lastFrame()).toContain('Authenticated');
-    });
-    await waitFor(() => {
-      expect(sut.lastFrame()).toContain('Connect MCP');
-    });
-    ```
+- **Prefer `createProjectDir()`** for setting up project context in TUI screen tests. Import from `@spotify-confidence/testing/scaffold`.
+- **Prefer `using`** for disposable resources.
+- **Use `waitFor` instead of `await delay`** for TUI assertions.
