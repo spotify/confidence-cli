@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { Box, Text, useInput } from 'ink';
 import { MultiSelect, Select, TextInput } from '@inkjs/ui';
-import { APP_VERSION } from '@spotify-confidence/core';
+import { APP_VERSION } from '../../meta.js';
 import { Colors, HAlign } from '../styles.js';
 import { useIsNarrow } from '../hooks/useIsNarrow.js';
 

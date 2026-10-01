@@ -3,7 +3,7 @@
 import yargs from 'yargs';
 import { hideBin } from 'yargs/helpers';
 import { defaultCommand, helpCommand } from '../src/commands/index.js';
-import { APP_NAME } from '@spotify-confidence/core';
+import { APP_NAME } from '../src/meta.js';
 
 const cli = yargs(hideBin(process.argv))
   .scriptName(APP_NAME)

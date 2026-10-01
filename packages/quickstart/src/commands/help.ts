@@ -1,5 +1,5 @@
 import type { Command } from './types.js';
-import { APP_NAME, APP_VERSION } from '@spotify-confidence/core';
+import { APP_NAME, APP_VERSION } from '../meta.js';
 
 export const helpCommand: Command = {
   name: 'help',
