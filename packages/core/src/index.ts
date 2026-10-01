@@ -1,4 +1,5 @@
 export * from './auth/index.js';
+export * from './session/index.js';
 export * from './telemetry/index.js';
 export * from './exec/index.js';
 export * from './system/index.js';
