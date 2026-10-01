@@ -1,0 +1,27 @@
+{
+  "name": "@spotify-confidence/testing",
+  "private": true,
+  "version": "0.0.0",
+  "type": "module",
+  "exports": {
+    ".": "./src/index.ts",
+    "./auth": "./src/auth/index.ts",
+    "./scaffold": "./src/scaffold/index.ts",
+    "./env": "./src/env/index.ts",
+    "./terminal": "./src/terminal/index.ts",
+    "./msw": "./src/msw/setup.ts",
+    "./msw/localstorage-fake": "./src/msw/localstorage-fake.mjs"
+  },
+  "dependencies": {
+    "@spotify-confidence/shared-kernel": "workspace:*",
+    "msw": "^2.15.0"
+  },
+  "scripts": {
+    "typecheck": "tsc --noEmit"
+  },
+  "devDependencies": {
+    "@types/node": "^26.6.2",
+    "typescript": "^6.0.3",
+    "vitest": "^4.1.11"
+  }
+}

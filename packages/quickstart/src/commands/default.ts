@@ -1,0 +1,20 @@
+import type { Command } from './types.js';
+import { startTui } from '@ui/start-tui.js';
+
+export const defaultCommand: Command = {
+  name: '$0',
+  description: 'Launch the Confidence setup wizard',
+  handler: async (argv) => {
+    const args = argv as Record<string, unknown>;
+    const dryRun = Boolean(args['dry-run'] ?? args.dryRun);
+    const debug = Boolean(args.debug);
+    const dir = args.dir as string | undefined;
+    const noTelemetry = args.telemetry === false;
+
+    if (noTelemetry) {
+      process.env.CONFIDENCE_TELEMETRY = 'false';
+    }
+
+    await startTui({ dryRun, debug, dir });
+  },
+};

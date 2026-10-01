@@ -1,0 +1,115 @@
+import { renderScreen, waitFor } from '../testing-framework/index.js';
+import { DoneScreen } from '@ui/screens/done/index.js';
+import { ScreenId } from '@spotify-confidence/core';
+import { store } from '@ui/store.js';
+
+vi.mock('@spotify-confidence/core', async (importOriginal) => ({
+  ...(await importOriginal<typeof import('@spotify-confidence/core')>()),
+  launchChatSession: vi.fn(),
+}));
+
+describe('DoneScreen', () => {
+  it('renders skipped message when no code changes', async () => {
+    using sut = renderScreen(<DoneScreen />, { screen: ScreenId.Done });
+    await waitFor(() => {
+      expect(sut.lastFrame()).toContain('Onboarding skipped');
+      expect(sut.lastFrame()).toContain(
+        'You can always use Confidence AI plugin to run onboarding yourself later.',
+      );
+    });
+  });
+
+  it('shows docs URLs', async () => {
+    using sut = renderScreen(<DoneScreen />, { screen: ScreenId.Done });
+    await waitFor(() => {
+      expect(sut.lastFrame()).toContain('confidence.spotify.com/docs');
+      expect(sut.lastFrame()).toContain('app.confidence.spotify.com');
+    });
+  });
+
+  it('shows only Exit when no IDE is chosen', async () => {
+    using sut = renderScreen(<DoneScreen />, { screen: ScreenId.Done });
+    await waitFor(() => {
+      expect(sut.lastFrame()).toContain('Exit');
+      expect(sut.lastFrame()).not.toContain('Continue work with');
+    });
+  });
+
+  it('shows continue option with chosen IDE name', async () => {
+    using sut = renderScreen(<DoneScreen />, { screen: ScreenId.Done, ide: 'cursor' });
+    await waitFor(() => {
+      expect(sut.lastFrame()).toContain('Continue work with Cursor');
+    });
+  });
+
+  describe('when code changes are present', () => {
+    it('renders completion message and code changes summary', async () => {
+      using sut = renderScreen(<DoneScreen />, { screen: ScreenId.Done });
+      store.setCodeChanges(['Added @spotify-confidence/sdk', 'Created confidence.config.ts']);
+      await waitFor(() => {
+        expect(sut.lastFrame()).toContain('Confidence is ready');
+        expect(sut.lastFrame()).toContain('What we have set up');
+        expect(sut.lastFrame()).toContain('confidence.config.ts');
+      });
+    });
+
+    it('shows continuation hint without plugins', async () => {
+      using sut = renderScreen(<DoneScreen />, { screen: ScreenId.Done, ide: 'claude' });
+      store.setCodeChanges(['Added @spotify-confidence/sdk']);
+      await waitFor(() => {
+        expect(sut.lastFrame()).toContain('Continue working in Claude Code');
+      });
+    });
+
+    it('shows skills hint when plugins are installed', async () => {
+      using sut = renderScreen(<DoneScreen />, {
+        screen: ScreenId.Done,
+        ide: 'claude',
+        plugins: ['claude'],
+      });
+      store.setCodeChanges(['Added @spotify-confidence/sdk']);
+      await waitFor(() => {
+        expect(sut.lastFrame()).toContain('Confidence skills');
+        expect(sut.lastFrame()).toContain('slash commands');
+      });
+    });
+
+    it('includes migration hint when providers are detected', async () => {
+      using sut = renderScreen(<DoneScreen />, {
+        screen: ScreenId.Done,
+        ide: 'claude',
+        plugins: ['claude'],
+      });
+      store.setDetectedProviders([
+        { id: 'statsig', name: 'Statsig', skillName: 'migrate-statsig' },
+      ]);
+      store.setCodeChanges(['Added @spotify-confidence/sdk']);
+      await waitFor(() => {
+        expect(sut.lastFrame()).toContain('/migrate-statsig');
+      });
+    });
+
+    it('omits migration hint when no providers are detected', async () => {
+      using sut = renderScreen(<DoneScreen />, {
+        screen: ScreenId.Done,
+        ide: 'claude',
+        plugins: ['claude'],
+      });
+      store.setCodeChanges(['Added @spotify-confidence/sdk']);
+      await waitFor(() => {
+        expect(sut.lastFrame()).toContain('slash commands');
+        expect(sut.lastFrame()).not.toContain('/migrate-');
+      });
+    });
+  });
+
+  describe('when a report file is generated', () => {
+    it('shows report file path', async () => {
+      using sut = renderScreen(<DoneScreen />, { screen: ScreenId.Done });
+      store.setReportFile('CONFIDENCE_QUICKSTART.md');
+      await waitFor(() => {
+        expect(sut.lastFrame()).toContain('CONFIDENCE_QUICKSTART.md');
+      });
+    });
+  });
+});

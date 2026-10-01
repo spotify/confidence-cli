@@ -1,0 +1,63 @@
+import type { IdeId, PluginInstallationMethod } from '@spotify-confidence/shared-kernel';
+import { PLUGIN_NAME } from '@spotify-confidence/core';
+
+type ToolFormatter = (server: string, tool: string) => string;
+
+const TOOL_FORMATTERS: Record<IdeId, ToolFormatter> = {
+  claude: (server, tool) => `mcp__${server}__${tool}`,
+  codex: (server, tool) => `${server}:${tool}`,
+  cursor: (server, tool) => `mcp__${server}__${tool}`,
+};
+
+const SKILL_INVOCATIONS: Record<IdeId, (skill: string) => string> = {
+  claude: (skill) => `/${PLUGIN_NAME}:${skill}`,
+  codex: (skill) => `$${skill}`,
+  cursor: (skill) => `/${skill}`,
+};
+
+const SKILLS_DIRS: Record<IdeId, string> = {
+  claude: '.claude/skills',
+  cursor: '.cursor/skills',
+  codex: '.agents/skills',
+};
+
+export function skillInvocation(skillName: string, ide: IdeId): string {
+  return SKILL_INVOCATIONS[ide](skillName);
+}
+
+export function referenceInstruction(
+  skillName: string,
+  ide: IdeId,
+  method?: PluginInstallationMethod | null,
+): string {
+  return method === 'cli'
+    ? `Invoke the \`${skillInvocation(skillName, ide)}\` skill as a **methodology reference**`
+    : `Read \`${SKILLS_DIRS[ide]}/${skillName}/SKILL.md\` as a **methodology reference**`;
+}
+
+export function buildToolVars(ide: IdeId): Record<string, string> {
+  const fmt = TOOL_FORMATTERS[ide];
+  const flags = (tool: string) => fmt('confidence-flags', tool);
+  const docs = (tool: string) => fmt('confidence-docs', tool);
+
+  return {
+    FLAGS_getIdentityInfo: flags('getIdentityInfo'),
+    FLAGS_listClients: flags('listClients'),
+    FLAGS_createClient: flags('createClient'),
+    FLAGS_getClientSecret: flags('getClientSecret'),
+    FLAGS_getContextSchema: flags('getContextSchema'),
+    FLAGS_addContextField: flags('addContextField'),
+    FLAGS_listFlags: flags('listFlags'),
+    FLAGS_createFlag: flags('createFlag'),
+    FLAGS_addTargetingRule: flags('addTargetingRule'),
+    FLAGS_resolveFlag: flags('resolveFlag'),
+    FLAGS_listRecordingPolicies: flags('listRecordingPolicies'),
+    FLAGS_createRecordingPolicy: flags('createRecordingPolicy'),
+    FLAGS_getRecordingPolicy: flags('getRecordingPolicy'),
+    FLAGS_addRecordingRule: flags('addRecordingRule'),
+    FLAGS_setRecordingRuleEnabled: flags('setRecordingRuleEnabled'),
+    DOCS_searchDocumentation: docs('searchDocumentation'),
+    DOCS_getLocalResolveIntegrationGuide: docs('getLocalResolveIntegrationGuide'),
+    DOCS_getCodeSnippetAndSdkIntegrationTips: docs('getCodeSnippetAndSdkIntegrationTips'),
+  };
+}

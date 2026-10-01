@@ -34,7 +34,7 @@ Handles OAuth2 PKCE authentication with Confidence via Auth0.
 
 ## Implementation
 
-The auth flow is implemented in `src/lib/auth.ts` using Node.js built-ins:
+The auth flow is implemented in `packages/core/src/auth/authenticate.ts` using Node.js built-ins:
 
 - `node:crypto` for PKCE code verifier/challenge generation
 - `node:http` for local callback server

@@ -1,15 +1,7 @@
 {
-  "extends": "./tsconfig.build.json",
+  "extends": "./tsconfig.base.json",
   "compilerOptions": {
-    "typeRoots": ["./node_modules/@types", "./types"]
+    "noEmit": true
   },
-  "include": [
-    "src",
-    "bin",
-    "__tests__",
-    "types",
-    "vitest.config.ts",
-    "tsdown.config.ts",
-    "eslint.config.js"
-  ]
+  "files": []
 }

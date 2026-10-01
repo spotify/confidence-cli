@@ -1,0 +1,19 @@
+{
+  "extends": "../../tsconfig.base.json",
+  "compilerOptions": {
+    "outDir": "dist",
+    "rootDir": ".",
+    "typeRoots": ["./node_modules/@types", "./types"],
+    "paths": {
+      "@auth/*": ["./src/auth/*"],
+      "@telemetry/*": ["./src/telemetry/*"],
+      "@exec/*": ["./src/exec/*"],
+      "@system/*": ["./src/system/*"],
+      "@sdk/*": ["./src/sdk/*"],
+      "@frameworks/*": ["./src/frameworks/*"],
+      "@integrations/*": ["./src/integrations/*"],
+      "@providers/*": ["./src/providers/*"]
+    }
+  },
+  "include": ["src", "__tests__", "types", "vitest.config.ts"]
+}
