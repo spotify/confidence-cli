@@ -28,7 +28,6 @@
     "@nanostores/react": "^1.1.0",
     "@spotify-confidence/core": "workspace:*",
     "@spotify-confidence/shared-kernel": "workspace:*",
-    "@spotify-confidence/utils": "workspace:*",
     "ink": "^7.1.1",
     "nanostores": "^1.5.2",
     "react": "^19.2.8",

@@ -4,6 +4,7 @@ export * from './telemetry/index.js';
 export * from './exec/index.js';
 export * from './system/index.js';
 export * from './sdk/index.js';
+export * from './utils/index.js';
 export * from './constants.js';
 export * from './frameworks/index.js';
 export * from './integrations/index.js';

@@ -3,7 +3,7 @@ import type {
   OnboardingGoal,
   PluginInstallationMethod,
 } from '@spotify-confidence/shared-kernel';
-import { addIf } from '@spotify-confidence/utils';
+import { addIf } from '@spotify-confidence/core';
 import { buildToolVars } from './tool-vars.js';
 import { preflight } from './sections/preflight.js';
 import { scaffold } from './sections/scaffold.js';

@@ -49,9 +49,6 @@ importers:
       '@spotify-confidence/shared-kernel':
         specifier: workspace:*
         version: link:../shared-kernel
-      '@spotify-confidence/utils':
-        specifier: workspace:*
-        version: link:../utils
     devDependencies:
       '@spotify-confidence/eslint-config':
         specifier: workspace:*
@@ -110,9 +107,6 @@ importers:
       '@spotify-confidence/shared-kernel':
         specifier: workspace:*
         version: link:../shared-kernel
-      '@spotify-confidence/utils':
-        specifier: workspace:*
-        version: link:../utils
       ink:
         specifier: ^7.1.1
         version: 7.1.1(@types/react@19.2.18)(react@19.2.8)
@@ -195,12 +189,6 @@ importers:
       vitest:
         specifier: ^4.1.11
         version: 4.1.11(@types/node@26.4.0)(msw@2.15.0(@types/node@26.4.0)(typescript@6.0.3))(vite@7.3.6(@types/node@26.4.0)(jiti@2.7.0)(tsx@4.23.12)(yaml@2.9.0))
-
-  packages/utils:
-    dependencies:
-      '@spotify-confidence/shared-kernel':
-        specifier: workspace:*
-        version: link:../shared-kernel
 
 packages:
 

@@ -1,7 +1,7 @@
 import { readFileSync } from 'node:fs';
 import { join, dirname } from 'node:path';
 import { fileURLToPath } from 'node:url';
-import { interpolate } from '@spotify-confidence/utils';
+import { interpolate } from '@spotify-confidence/core';
 
 const STEPS_DIR = dirname(fileURLToPath(import.meta.url));
 
