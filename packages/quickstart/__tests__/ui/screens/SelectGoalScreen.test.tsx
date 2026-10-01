@@ -24,7 +24,7 @@ describe('SelectGoalScreen', () => {
         const frame = sut.lastFrame()!;
         expect(frame).toContain('Select the features');
         expect(frame).toContain('Feature flags');
-        expect(frame).toContain('Session Recording');
+        expect(frame).toContain('Session recording');
         expect(frame).toContain('Event tracking');
         expect(frame).toContain('space');
         expect(frame).toContain('toggle');
@@ -58,7 +58,7 @@ describe('SelectGoalScreen', () => {
         const frame = sut.lastFrame()!;
         expect(frame).toContain('Feature flags');
         expect(frame).toContain('Event tracking');
-        expect(frame).not.toContain('Session Recording');
+        expect(frame).not.toContain('Session recording');
       });
     });
 
@@ -141,7 +141,7 @@ describe('SelectGoalScreen', () => {
         const frame = sut.lastFrame()!;
         expect(frame).toContain('Feature flags');
         expect(frame).toContain('Event tracking');
-        expect(frame).not.toContain('Session Recording');
+        expect(frame).not.toContain('Session recording');
       });
     });
   });
