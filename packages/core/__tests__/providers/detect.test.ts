@@ -1,5 +1,5 @@
 import { detectProviders } from '@providers/index.js';
-import { createProjectDir } from '@spotify-confidence/testing';
+import { createProjectDir } from '@spotify-confidence/testing/scaffold';
 
 describe('detectProviders', () => {
   describe('when project has no manifest files', () => {

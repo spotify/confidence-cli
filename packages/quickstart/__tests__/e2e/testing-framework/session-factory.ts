@@ -2,7 +2,7 @@ import { mkdtempSync, writeFileSync } from 'node:fs';
 import { tmpdir } from 'node:os';
 import { delimiter, join } from 'node:path';
 import { TerminalSession } from './terminal/index.js';
-import { createProjectDir, type ProjectType } from '@spotify-confidence/testing/shared';
+import { createProjectDir, type ProjectType } from '@spotify-confidence/testing/scaffold';
 
 /**
  * Creates an isolated {@link TerminalSession} pre-configured for e2e testing.

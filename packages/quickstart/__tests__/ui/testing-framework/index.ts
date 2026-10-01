@@ -3,19 +3,20 @@ export { createFakeChild, mockNextSpawn } from './mocks/index.js';
 export { delay, waitFor } from './async.js';
 
 export {
-  KEY_MAP,
-  resolveKey,
-  type KeyName,
-  type Modifiers,
   buildTestJwt,
   buildExpiredJwt,
   buildAuthState,
   prepareAuthTokens,
-  createProjectDir,
-  type ProjectType,
-} from '@spotify-confidence/testing';
+} from '@spotify-confidence/testing/auth';
+export { createProjectDir, type ProjectType } from '@spotify-confidence/testing/scaffold';
+export {
+  KEY_MAP,
+  resolveKey,
+  type KeyName,
+  type Modifiers,
+} from '@spotify-confidence/testing/terminal';
 
-import { KEY_MAP } from '@spotify-confidence/testing';
+import { KEY_MAP } from '@spotify-confidence/testing/terminal';
 
 /** @see {@link KEY_MAP.ArrowDown} */
 export const ARROW_DOWN = KEY_MAP.ArrowDown;

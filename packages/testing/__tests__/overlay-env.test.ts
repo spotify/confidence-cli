@@ -1,4 +1,4 @@
-import { overlayEnv } from './overlay-env.js';
+import { overlayEnv } from '../src/env/overlay-env.js';
 
 describe('overlayEnv', () => {
   it('replaces Windows Path with PATH so mock bins win', () => {

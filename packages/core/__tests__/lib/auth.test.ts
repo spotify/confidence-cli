@@ -1,6 +1,7 @@
 import { execFile } from 'node:child_process';
 import { http, HttpResponse, passthrough } from 'msw';
-import { server, buildTestJwt, prepareAuthTokens } from '@spotify-confidence/testing';
+import { server } from '@spotify-confidence/testing';
+import { buildTestJwt, prepareAuthTokens } from '@spotify-confidence/testing/auth';
 import { authenticate, AUTH_CALLBACK_PORT } from '@auth/authenticate.js';
 
 // Isolate the token files in a dedicated temp directory so the real

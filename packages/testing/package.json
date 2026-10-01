@@ -5,9 +5,12 @@
   "type": "module",
   "exports": {
     ".": "./src/index.ts",
+    "./auth": "./src/auth/index.ts",
+    "./scaffold": "./src/scaffold/index.ts",
+    "./env": "./src/env/index.ts",
+    "./terminal": "./src/terminal/index.ts",
     "./msw": "./src/msw/setup.ts",
-    "./msw/localstorage-fake": "./src/msw/localstorage-fake.mjs",
-    "./shared": "./src/shared-index.ts"
+    "./msw/localstorage-fake": "./src/msw/localstorage-fake.mjs"
   },
   "dependencies": {
     "@spotify-confidence/shared-kernel": "workspace:*",

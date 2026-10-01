@@ -1,7 +1,7 @@
 import { mkdtempSync, rmSync } from 'node:fs';
 import { tmpdir } from 'node:os';
 import { join } from 'node:path';
-import { perPlatform } from '../platform.js';
+import { perPlatform } from '../env/platform.js';
 import { SCAFFOLDS } from './scaffolds.js';
 import type { ProjectType } from './types.js';
 
