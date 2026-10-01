@@ -13,6 +13,8 @@
   "devDependencies": {
     "@commitlint/cli": "^21.2.2",
     "@commitlint/config-conventional": "^21.2.2",
+    "@spotify-confidence/eslint-config": "workspace:*",
+    "eslint": "^10.9.1",
     "husky": "^9.1.7",
     "lint-staged": "^17.3.0",
     "prettier": "^3.9.6"
