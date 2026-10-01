@@ -40,8 +40,8 @@ describe('when auth token is stale', () => {
     await session.press('Enter');
     await session.waitForText('Authenticated');
 
-    // Continues to InstallPlugins
-    await session.waitForText('Which CLI agent would you like to use?');
+    // Continues to SelectGoal
+    await session.waitForText("Select the features you'd like to set up");
     expect(session.snapshot()).toMatchSnapshot('auth-refreshed');
   });
 
@@ -70,8 +70,8 @@ describe('when auth token is stale', () => {
     await simulateAuthCallback();
     await session.waitForText('Authenticated');
 
-    // Continues to InstallPlugins
-    await session.waitForText('Which CLI agent would you like to use?');
+    // Continues to SelectGoal
+    await session.waitForText("Select the features you'd like to set up");
     expect(session.snapshot()).toMatchSnapshot('auth-re-authenticated');
   });
 
@@ -92,8 +92,8 @@ describe('when auth token is stale', () => {
     await simulateAuthCallback();
     await session.waitForText('Authenticated');
 
-    // Continues to InstallPlugins
-    await session.waitForText('Which CLI agent would you like to use?');
+    // Continues to SelectGoal
+    await session.waitForText("Select the features you'd like to set up");
     expect(session.snapshot()).toMatchSnapshot('auth-refresh-failed-then-signed-in');
   });
 

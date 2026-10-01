@@ -66,7 +66,7 @@ describe('AuthenticateScreen', () => {
       });
 
       await waitFor(() => {
-        expect(sut.lastFrame()).toContain('Select agent to set up');
+        expect(sut.lastFrame()).toContain('Select the features');
       });
     });
 

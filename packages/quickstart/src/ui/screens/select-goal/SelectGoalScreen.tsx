@@ -4,7 +4,7 @@ import { buildWizardTasks } from '../../lib/wizard-tasks.js';
 import { useGoalSelection } from './useGoalSelection.js';
 import { LeftPanel, BottomPrompt } from './components/index.js';
 
-const WIZARD_TASKS = buildWizardTasks('onboardProject', 'active');
+const WIZARD_TASKS = buildWizardTasks('selectGoal', 'active');
 
 export function SelectGoalScreen() {
   const goalSelection = useGoalSelection();

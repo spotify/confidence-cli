@@ -28,6 +28,12 @@ const cli = yargs(hideBin(process.argv))
     default: true,
     describe: 'Collect anonymous usage telemetry (disable with --no-telemetry)',
   })
+  .option('features', {
+    type: 'string',
+    array: true,
+    choices: ['flags', 'events', 'recordings'] as const,
+    describe: 'Pre-select onboarding features (skips feature selection screen)',
+  })
   .command(defaultCommand.name, defaultCommand.description, () => {}, defaultCommand.handler)
   .command('start', defaultCommand.description, () => {}, defaultCommand.handler)
   .command(helpCommand.name, helpCommand.description, () => {}, helpCommand.handler)

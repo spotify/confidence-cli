@@ -3,14 +3,14 @@
 exports[`when system check fails > shows error when git is missing > system-check-failure 1`] = `
 " Confidence by Spotify                                              https://confidence.spotify.com/
 
- System Check                                                         Todo (0/5)
+ System Check                                                         Todo (0/6)
 
  Checking that your system has everything we need.                    ✘ Check system
                                                                       ○ Log in to Confidence
- ✔ Node.js vX.Y.Z                                                     ○ Set up your agent
- ✘ Git                                                                ○ Connect tools
-                                                                      ○ Onboard project
- Some required tools are missing. Install them and retry.
+ ✔ Node.js vX.Y.Z                                                     ○ Select features
+ ✘ Git                                                                ○ Set up your agent
+                                                                      ○ Connect tools
+ Some required tools are missing. Install them and retry.             ○ Onboard project
 
 
  ──────────────────────────────────────────────────────────────────────────────────────────────────
@@ -25,14 +25,14 @@ exports[`when system check fails > shows error when git is missing > system-chec
 exports[`when system check fails > shows error when node is not on PATH > system-check-node-missing 1`] = `
 " Confidence by Spotify                                              https://confidence.spotify.com/
 
- System Check                                                         Todo (0/5)
+ System Check                                                         Todo (0/6)
 
  Checking that your system has everything we need.                    ✘ Check system
                                                                       ○ Log in to Confidence
- ✘ Node.js                                                            ○ Set up your agent
- ✔ Git X.Y.Z                                                          ○ Connect tools
-                                                                      ○ Onboard project
- Some required tools are missing. Install them and retry.
+ ✘ Node.js                                                            ○ Select features
+ ✔ Git X.Y.Z                                                          ○ Set up your agent
+                                                                      ○ Connect tools
+ Some required tools are missing. Install them and retry.             ○ Onboard project
 
 
  ──────────────────────────────────────────────────────────────────────────────────────────────────

@@ -62,7 +62,7 @@ describe('SelectGoalScreen', () => {
       });
     });
 
-    it('advances to OnboardProject after selecting a goal', async () => {
+    it('advances to InstallPlugins after selecting a goal', async () => {
       using project = createProjectDir();
 
       using sut = renderApp({
@@ -79,8 +79,7 @@ describe('SelectGoalScreen', () => {
       await act(() => sut.stdin.write(ENTER));
 
       await waitFor(() => {
-        expect(sut.lastFrame()).toContain('Ready to start?');
-        expect(sut.lastFrame()).toContain('create your first feature flag');
+        expect(sut.lastFrame()).toContain('Select agent to set up');
       });
     });
 
@@ -122,8 +121,7 @@ describe('SelectGoalScreen', () => {
       await act(() => sut.stdin.write(ENTER));
 
       await waitFor(() => {
-        expect(sut.lastFrame()).toContain('Ready to start?');
-        expect(sut.lastFrame()).toContain('instrument event tracking');
+        expect(sut.lastFrame()).toContain('Select agent to set up');
       });
     });
 
@@ -142,6 +140,21 @@ describe('SelectGoalScreen', () => {
         expect(frame).toContain('Flags');
         expect(frame).toContain('Events');
         expect(frame).not.toContain('Recordings');
+      });
+    });
+
+    it('auto-advances when goals are pre-set from CLI', async () => {
+      using project = createProjectDir();
+
+      using sut = renderApp({
+        screen: ScreenId.SelectGoal,
+        dir: project.path,
+        framework: 'react',
+        goals: ['feature-flags'],
+      });
+
+      await waitFor(() => {
+        expect(sut.lastFrame()).toContain('Select agent to set up');
       });
     });
   });
