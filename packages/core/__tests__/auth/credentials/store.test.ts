@@ -1,4 +1,4 @@
-import { existsSync, statSync } from 'node:fs';
+import { existsSync, statSync, writeFileSync } from 'node:fs';
 import { join } from 'node:path';
 import { prepareAuthTokens } from '@spotify-confidence/testing/auth';
 import {
@@ -6,6 +6,7 @@ import {
   writeCredentials,
   clearTokens,
   getConfigDir,
+  credentialsPath,
 } from '@auth/credentials/index.js';
 
 describe('writeCredentials / readCredentials', () => {
@@ -72,5 +73,35 @@ describe('clearTokens', () => {
     using _auth = prepareAuthTokens('none');
 
     expect(() => clearTokens()).not.toThrow();
+  });
+
+  it('leaves profile directory if it contains other files', () => {
+    using _auth = prepareAuthTokens('none');
+    writeCredentials({ accessToken: 'tok' }, 'staging');
+    const profileDir = join(getConfigDir(), 'profiles', 'staging');
+    writeFileSync(join(profileDir, 'extra.json'), '{}');
+
+    clearTokens('staging');
+
+    expect(existsSync(join(profileDir, 'credentials.json'))).toBe(false);
+    expect(existsSync(profileDir)).toBe(true);
+  });
+});
+
+describe('credentialsPath', () => {
+  it('rejects profile names with path traversal characters', () => {
+    expect(() => credentialsPath('../../etc')).toThrow(/Only lowercase letters/);
+  });
+
+  it('rejects profile names with uppercase letters', () => {
+    expect(() => credentialsPath('MyProfile')).toThrow(/Only lowercase letters/);
+  });
+
+  it('rejects empty profile names', () => {
+    expect(() => credentialsPath('')).not.toThrow();
+  });
+
+  it('accepts valid profile names', () => {
+    expect(() => credentialsPath('my-profile_01')).not.toThrow();
   });
 });

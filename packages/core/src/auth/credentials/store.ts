@@ -4,12 +4,11 @@ import {
   existsSync,
   mkdirSync,
   unlinkSync,
-  rmSync,
+  rmdirSync,
   chmodSync,
 } from 'node:fs';
 import { join } from 'node:path';
 import { credentialsPath } from './paths.js';
-import { migrateLegacyTokens } from './migrate.js';
 
 export type Credentials = {
   accessToken: string;
@@ -17,13 +16,12 @@ export type Credentials = {
   organization?: string;
 };
 
-function ensureDir(dir: string): void {
+export function ensureDir(dir: string): void {
   mkdirSync(dir, { recursive: true, mode: 0o700 });
   chmodSync(dir, 0o700);
 }
 
 export function readCredentials(profile?: string): Credentials | null {
-  migrateLegacyTokens();
   const path = credentialsPath(profile);
   if (!existsSync(path)) return null;
   try {
@@ -45,7 +43,11 @@ export function clearTokens(profile?: string): void {
   try {
     unlinkSync(path);
     if (profile) {
-      rmSync(join(path, '..'), { recursive: true, force: true });
+      try {
+        rmdirSync(join(path, '..'));
+      } catch {
+        /* non-empty dir — leave it */
+      }
     }
   } catch {
     // best-effort

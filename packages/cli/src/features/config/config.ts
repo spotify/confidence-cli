@@ -1,6 +1,6 @@
-import { readFileSync, writeFileSync, mkdirSync, existsSync } from 'node:fs';
+import { readFileSync, writeFileSync, existsSync } from 'node:fs';
 import { join } from 'node:path';
-import { getConfigDir } from '@spotify-confidence/core';
+import { ensureDir, getConfigDir } from '@spotify-confidence/core';
 
 type ConfigKey = 'project' | 'environment' | 'output' | 'profile' | 'ide';
 
@@ -24,7 +24,7 @@ export function readConfig(): Config {
 
 function writeConfig(config: Config): void {
   const path = configPath();
-  mkdirSync(join(path, '..'), { recursive: true });
+  ensureDir(join(path, '..'));
   writeFileSync(path, JSON.stringify(config, null, 2), { encoding: 'utf-8', mode: 0o600 });
 }
 

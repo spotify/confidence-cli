@@ -72,6 +72,7 @@ export function authenticate(
   mode: 'signup' | 'login',
   signal?: AbortSignal,
   profile?: string,
+  onUrl?: (url: string) => void,
 ): Promise<AuthResult> {
   const clientId = mode === 'signup' ? AUTH_CLIENT_ID_SIGNUP : AUTH_CLIENT_ID_LOGIN;
   const organization = mode === 'login' ? resolveOrganization(profile) : undefined;
@@ -135,6 +136,7 @@ export function authenticate(
 
     server.listen(AUTH_CALLBACK_PORT, () => {
       const authUrl = buildAuthUrl({ clientId, challenge, redirectUri, organization });
+      onUrl?.(authUrl);
       openBrowser(authUrl);
     });
 

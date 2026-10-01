@@ -24,8 +24,13 @@ export const configCommand = {
             .positional('key', { type: 'string', demandOption: true })
             .positional('value', { type: 'string', demandOption: true }),
         (argv) => {
-          setConfigValue(argv.key as string, argv.value as string);
-          console.log(`Set ${argv.key} = ${argv.value}`);
+          try {
+            setConfigValue(argv.key as string, argv.value as string);
+            console.log(`Set ${argv.key} = ${argv.value}`);
+          } catch (err) {
+            console.error((err as Error).message);
+            process.exitCode = 1;
+          }
         },
       )
       .command(
@@ -33,11 +38,16 @@ export const configCommand = {
         'Get a config value',
         (y: Argv) => y.positional('key', { type: 'string', demandOption: true }),
         (argv) => {
-          const value = getConfigValue(argv.key as string);
-          if (value === undefined) {
-            console.log(`${argv.key} is not set`);
-          } else {
-            console.log(value);
+          try {
+            const value = getConfigValue(argv.key as string);
+            if (value === undefined) {
+              console.log(`${argv.key} is not set`);
+            } else {
+              console.log(value);
+            }
+          } catch (err) {
+            console.error((err as Error).message);
+            process.exitCode = 1;
           }
         },
       )
