@@ -12,6 +12,7 @@ import * as te from './telemetry-events.js';
 export type GoalSelection = {
   recordingAvailable: boolean;
   submitGoals: (values: OnboardingGoal[]) => void;
+  changeAgent: () => void;
 };
 
 export function useGoalSelection(): GoalSelection {
@@ -30,8 +31,14 @@ export function useGoalSelection(): GoalSelection {
     navigate.to('next');
   }
 
+  function changeAgent() {
+    track(te.agentChangeRequested());
+    navigate.to('changeAgent');
+  }
+
   return {
     recordingAvailable,
     submitGoals,
+    changeAgent,
   };
 }

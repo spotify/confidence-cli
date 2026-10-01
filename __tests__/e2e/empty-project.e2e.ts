@@ -6,7 +6,7 @@ describe('when the project is empty', () => {
 
     await session.waitForText('Confidence Quickstart');
     await session.waitForText('Could not auto-detect');
-    await session.waitForText('Please, select your framework');
+    await session.waitForText('Select your framework to continue');
     await session.waitForText('Select framework');
     expect(session.snapshot()).toMatchSnapshot('welcome-no-framework');
   });

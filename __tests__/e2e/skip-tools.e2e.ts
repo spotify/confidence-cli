@@ -14,7 +14,7 @@ describe('when the user skips connecting tools', () => {
     await session.waitForText('Skipped');
 
     // SelectGoal
-    await session.waitForText("Select the features you'd like to set up");
+    await session.waitForText('Toggle Confidence features');
     await session.press('Space');
     await session.press('Enter');
 

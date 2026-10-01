@@ -1,12 +1,13 @@
 import { Box, Text } from 'ink';
 import { Colors, Icons } from '../../../styles.js';
+import { wizardStepLabel } from '../../../lib/wizard-tasks.js';
 
 export function LeftPanel() {
   return (
     <Box flexDirection="column">
       <Box marginBottom={1}>
         <Text color={Colors.primary} bold>
-          Select the features you'd like to set up
+          {wizardStepLabel('selectGoal')}
         </Text>
       </Box>
 

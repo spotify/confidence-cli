@@ -5,7 +5,7 @@ import { Colors, Icons } from '../../styles.js';
 import { PromptPanel } from '../../components/PromptPanel.js';
 import { MainLayout } from '../../components/MainLayout.js';
 import { TaskList } from '../../components/TaskList.js';
-import { buildWizardTasks } from '../../lib/wizard-tasks.js';
+import { buildWizardTasks, wizardStepLabel } from '../../lib/wizard-tasks.js';
 import { ScreenId } from '@lib/session.js';
 import { useLogger } from '../../hooks/useLog.js';
 import { useNavigation } from '../../hooks/useNavigation.js';
@@ -49,7 +49,7 @@ export function SystemCheckScreen() {
     <Box flexDirection="column">
       <Box marginBottom={1}>
         <Text color={Colors.primary} bold>
-          System Check
+          {wizardStepLabel('systemCheck')}
         </Text>
       </Box>
       <Box marginBottom={1}>

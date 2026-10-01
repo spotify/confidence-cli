@@ -117,7 +117,14 @@ export type WizardSession = {
    * @example ["Added @spotify-confidence/sdk", "Created confidence.config.ts"]
    */
   codeChanges: string[];
+  /**
+   * How the onboarding step ended. `null` until the user leaves the onboarding screen.
+   * @default null
+   */
+  onboardingOutcome: OnboardingOutcome | null;
 };
+
+export type OnboardingOutcome = 'completed' | 'skipped' | 'cancelled' | 'failed';
 
 export type FrameworkSource = 'detected' | 'selected';
 
@@ -182,5 +189,6 @@ export function createSession(opts?: {
     onboardingStatus: '',
     reportFile: null,
     codeChanges: [],
+    onboardingOutcome: null,
   };
 }

@@ -25,7 +25,7 @@ export async function navigatePastWelcome(session: TerminalSession): Promise<voi
  * @param session - An active terminal session showing the Authenticate screen.
  */
 export async function navigatePastAuth(session: TerminalSession): Promise<void> {
-  await session.waitForText('Sign in to Confidence');
+  await session.waitForText('Sign in so the wizard can create flags');
   await session.waitForText('Sign in to a Confidence account');
   await session.press('Enter');
   await session.waitForText('Waiting for browser');
@@ -57,7 +57,7 @@ export async function navigateToConnectTools(session: TerminalSession): Promise<
   session.checkpoint();
   await session.press('Enter');
   await session.waitForText('Plugin set up successfully');
-  await session.waitForText('Teach your AI Confidence');
+  await session.waitForText('Tools give your agent live access');
 }
 
 /**
@@ -70,7 +70,7 @@ export async function navigateToGoalSelection(session: TerminalSession): Promise
   await navigateToConnectTools(session);
   session.checkpoint();
   await session.press('Enter');
-  await session.waitForText("Select the features you'd like to set up");
+  await session.waitForText('Toggle Confidence features');
 }
 
 /**
@@ -115,13 +115,13 @@ export async function selectIdeAndOnboard(
   const matched = await session.waitForText([
     'Start onboarding?',
     'Connect Confidence tools?',
-    "Select the features you'd like to set up",
+    'Toggle Confidence features',
   ]);
 
   if (matched === 'Connect Confidence tools?') {
     await session.press('Enter');
     await session.waitForText('Connected successfully');
-    await session.waitForText("Select the features you'd like to set up");
+    await session.waitForText('Toggle Confidence features');
   }
 
   if (matched !== 'Start onboarding?') {

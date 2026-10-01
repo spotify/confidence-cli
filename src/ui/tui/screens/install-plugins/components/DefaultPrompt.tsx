@@ -4,15 +4,18 @@ import { IDE_SELECT_OPTIONS } from '../actions.js';
 
 type DefaultPromptProps = {
   onSelect: (value: IdeId) => void;
+  onBack: () => void;
 };
 
-export function DefaultPrompt({ onSelect }: DefaultPromptProps) {
+export function DefaultPrompt({ onSelect, onBack }: DefaultPromptProps) {
   return (
     <PromptPanel
       mode="select"
       status="Which CLI agent would you like to use?"
       options={IDE_SELECT_OPTIONS}
       onSelect={onSelect}
+      onCancel={onBack}
+      cancelLabel="back"
     />
   );
 }

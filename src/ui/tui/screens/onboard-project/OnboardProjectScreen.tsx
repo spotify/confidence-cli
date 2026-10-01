@@ -9,7 +9,7 @@ import { useAutoAdvance } from '../../hooks/useAutoAdvance.js';
 import { useLogger } from '../../hooks/useLog.js';
 import { useNavigation } from '../../hooks/useNavigation.js';
 import { skipped } from '../../lib/log-messages.js';
-import { $session, useSession } from '../../store.js';
+import { $session, store, useSession } from '../../store.js';
 import { useOnboardingProcess } from './useOnboardingProcess.js';
 import { track } from '@lib/telemetry.js';
 import { onboardingCancelled, onboardingCompleted } from './log-messages.js';
@@ -42,12 +42,21 @@ export function OnboardProjectScreen() {
   function handleCancel() {
     track(te.onboardingCancelled());
     onboarding.cancel();
+    store.setOnboardingOutcome('cancelled');
     log(onboardingCancelled());
     navigate.to('next');
   }
 
   function handleSkip() {
     track(te.onboardingSkipped());
+    store.setOnboardingOutcome('skipped');
+    log(skipped());
+    navigate.to('next');
+  }
+
+  function handleSkipAfterError() {
+    track(te.onboardingSkipped());
+    store.setOnboardingOutcome('failed');
     log(skipped());
     navigate.to('next');
   }
@@ -59,6 +68,7 @@ export function OnboardProjectScreen() {
 
   function handleConfirmSkip() {
     track(te.onboardingConfirmSkipped());
+    store.setOnboardingOutcome('skipped');
     log(skipped());
     navigate.to('skip');
   }
@@ -95,6 +105,8 @@ export function OnboardProjectScreen() {
           onConfirmStart={handleConfirmStart}
           onConfirmSkip={handleConfirmSkip}
           onSkip={handleSkip}
+          onSkipAfterError={handleSkipAfterError}
+          onBack={() => navigate.back()}
           onRetry={handleRetry}
           onCancel={handleCancel}
         />

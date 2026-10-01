@@ -9,11 +9,12 @@ exports[`when the project is empty > shows "Select framework" instead of "Start 
                       Feature flags and experiments, set up with AI in minutes.
                        This wizard will help you get started with Confidence.
 
-                               1. It will check your system
-                               2. Sign you in to Confidence workspace
-                               3. Teach your AI agent about Confidence
-                               4. Integrate the SDK into your project
-                               5. Show a working feature flag example
+                                     1. Check your system
+                                     2. Sign in to Confidence
+                                     3. Set up your AI agent
+                                     4. Connect Confidence tools
+                                     5. Choose features
+                                     6. Set up your project
 
 
                                 Directory  ✔ <project-dir>
@@ -22,7 +23,7 @@ exports[`when the project is empty > shows "Select framework" instead of "Start 
 
 
  ──────────────────────────────────────────────────────────────────────────────────────────────────
- Please, select your framework
+ Select your framework to continue
 
  ❯ Select framework
    About Confidence
@@ -40,11 +41,12 @@ exports[`when the project is empty > shows "Start setup" after selecting a frame
                       Feature flags and experiments, set up with AI in minutes.
                        This wizard will help you get started with Confidence.
 
-                               1. It will check your system
-                               2. Sign you in to Confidence workspace
-                               3. Teach your AI agent about Confidence
-                               4. Integrate the SDK into your project
-                               5. Show a working feature flag example
+                                     1. Check your system
+                                     2. Sign in to Confidence
+                                     3. Set up your AI agent
+                                     4. Connect Confidence tools
+                                     5. Choose features
+                                     6. Set up your project
 
 
                                 Directory  ✔ <project-dir>

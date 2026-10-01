@@ -12,6 +12,7 @@ import {
   type AuthState,
   type DebugEntry,
   type FrameworkSource,
+  type OnboardingOutcome,
   ScreenId,
   createSession,
 } from '@lib/session.js';
@@ -125,6 +126,11 @@ export const store = {
   setCodeChanges: (changes: string[]): void =>
     updateSession({
       codeChanges: changes,
+    }),
+
+  setOnboardingOutcome: (outcome: OnboardingOutcome): void =>
+    updateSession({
+      onboardingOutcome: outcome,
     }),
 };
 

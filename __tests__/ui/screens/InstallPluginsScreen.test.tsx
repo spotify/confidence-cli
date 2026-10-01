@@ -22,7 +22,7 @@ describe('InstallPluginsScreen', () => {
   it('renders title', async () => {
     using sut = renderScreen(<InstallPluginsScreen />, { screen: ScreenId.InstallPlugins });
     await waitFor(() => {
-      expect(sut.lastFrame()).toContain('Select agent to set up');
+      expect(sut.lastFrame()).toContain('Skills teach your agent');
     });
   });
 
@@ -71,7 +71,7 @@ describe('InstallPluginsScreen', () => {
     await act(() => sut.stdin.write(ARROW_DOWN + ENTER));
 
     await waitFor(() => {
-      expect(sut.lastFrame()).toContain('Teach your AI Confidence');
+      expect(sut.lastFrame()).toContain('Tools give your agent live access');
     });
   });
 
@@ -89,7 +89,7 @@ describe('InstallPluginsScreen', () => {
     await act(() => sut.stdin.write(ENTER));
 
     await waitFor(() => {
-      expect(sut.lastFrame()).toContain('Teach your AI Confidence');
+      expect(sut.lastFrame()).toContain('Tools give your agent live access');
     });
   });
 

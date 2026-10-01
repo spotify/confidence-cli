@@ -12,7 +12,7 @@ describe('when system check fails', () => {
     await session.press('Enter');
 
     // SystemCheck — git not found
-    await session.waitForText('System Check');
+    await session.waitForText('Checking that your system has everything');
     await session.waitForText('Some required tools are missing');
     await session.waitForText('Retry');
     await session.waitForText('Quit');
@@ -32,7 +32,7 @@ describe('when system check fails', () => {
     await session.press('Enter');
 
     // SystemCheck — node not found on PATH
-    await session.waitForText('System Check');
+    await session.waitForText('Checking that your system has everything');
     await session.waitForText('Some required tools are missing');
     expect(session.snapshot()).toMatchSnapshot('system-check-node-missing');
   });

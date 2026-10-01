@@ -9,18 +9,13 @@ import { useProjectDetection } from '../../hooks/useProjectDetection.js';
 import { useIsNarrow } from '../../hooks/useIsNarrow.js';
 import { useIsShort } from '../../hooks/useIsShort.js';
 import { useSession } from '../../store.js';
+import { WIZARD_STEP_LABELS } from '../../lib/wizard-tasks.js';
 import { track, isTelemetryEnabled } from '@lib/telemetry.js';
 import { welcomeMenuSelect } from './log-messages.js';
 import { welcomeMenuSelected } from './telemetry-events.js';
 import { MENU_OPTIONS, MENU_OPTIONS_NO_FRAMEWORK, type MenuAction } from './actions.js';
 
-const STEPS = [
-  'It will check your system',
-  'Sign you in to Confidence workspace',
-  'Teach your AI agent about Confidence',
-  'Integrate the SDK into your project',
-  'Show a working feature flag example',
-] as const;
+const STEPS = WIZARD_STEP_LABELS;
 
 export function WelcomeScreen() {
   const session = useSession();
@@ -124,7 +119,7 @@ export function WelcomeScreen() {
 
       <PromptPanel
         mode="select"
-        status={frameworkUnknown ? 'Please, select your framework' : 'Ready to get started?'}
+        status={frameworkUnknown ? 'Select your framework to continue' : 'Ready to get started?'}
         options={menuOptions}
         onSelect={handleMenuSelect}
       />

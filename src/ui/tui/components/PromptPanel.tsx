@@ -12,6 +12,8 @@ export type PromptOption<T extends string = string> = {
 
 type PromptPanelBase = {
   onCancel?: () => void;
+  /** Hint shown next to `esc` when `onCancel` is set. */
+  cancelLabel?: string;
 };
 
 type PromptPanelSelectProps<T extends string = string> = PromptPanelBase & {
@@ -137,7 +139,7 @@ export function PromptPanel<T extends string = string>(props: PromptPanelProps<T
             <Text color={Colors.accent} bold>
               esc
             </Text>
-            <Text color={Colors.muted}>cancel</Text>
+            <Text color={Colors.muted}>{props.cancelLabel ?? 'cancel'}</Text>
           </Box>
         )}
 

@@ -47,7 +47,7 @@ describe('DoneScreen', () => {
       store.setCodeChanges(['Added @spotify-confidence/sdk', 'Created confidence.config.ts']);
       await waitFor(() => {
         expect(sut.lastFrame()).toContain('Confidence is ready');
-        expect(sut.lastFrame()).toContain('What we have set up');
+        expect(sut.lastFrame()).toContain('What we set up');
         expect(sut.lastFrame()).toContain('confidence.config.ts');
       });
     });

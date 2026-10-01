@@ -40,8 +40,8 @@ describe('WelcomeScreen', () => {
     using project = createProjectDir();
     using sut = renderScreen(<WelcomeScreen />, { dir: project.path });
     await waitFor(() => {
-      expect(sut.lastFrame()).toContain('It will check your system');
-      expect(sut.lastFrame()).toContain('Sign you in to Confidence');
+      expect(sut.lastFrame()).toContain('1. Check your system');
+      expect(sut.lastFrame()).toContain('2. Sign in to Confidence');
     });
   });
 
@@ -65,7 +65,7 @@ describe('WelcomeScreen', () => {
     await act(() => sut.stdin.write(ENTER));
 
     await waitFor(() => {
-      expect(sut.lastFrame()).toContain('System Check');
+      expect(sut.lastFrame()).toContain('Checking that your system has everything');
     });
   });
 

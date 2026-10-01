@@ -35,7 +35,7 @@ describe('AuthenticateScreen', () => {
     using sut = renderScreen(<AuthenticateScreen />, testOpts);
 
     await waitFor(() => {
-      expect(sut.lastFrame()).toContain('Sign in to Confidence');
+      expect(sut.lastFrame()).toContain('Sign in so the wizard can create flags');
     });
   });
 
@@ -66,7 +66,7 @@ describe('AuthenticateScreen', () => {
       });
 
       await waitFor(() => {
-        expect(sut.lastFrame()).toContain('Select agent to set up');
+        expect(sut.lastFrame()).toContain('Skills teach your agent');
       });
     });
 

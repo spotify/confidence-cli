@@ -12,13 +12,13 @@ describe('happy-path flow', () => {
     await session.press('Enter');
 
     // SystemCheck
-    await session.waitForText('System Check');
+    await session.waitForText('Checking that your system has everything');
     await session.waitForText('All checks passed');
     expect(session.snapshot()).toMatchSnapshot('system-check');
     session.checkpoint();
 
     // Authenticate
-    await session.waitForText('Sign in to Confidence');
+    await session.waitForText('Sign in so the wizard can create flags');
     await session.waitForText('Sign in to a Confidence account');
     await session.press('Enter');
     await session.waitForText('Waiting for browser');
@@ -28,14 +28,14 @@ describe('happy-path flow', () => {
     session.checkpoint();
 
     // InstallPlugins
-    await session.waitForText('Select agent to set up');
+    await session.waitForText('Skills teach your agent');
     await session.waitForText('Which CLI agent would you like to use?');
     expect(session.snapshot()).toMatchSnapshot('install-plugins');
     session.checkpoint();
     await session.press('Enter');
 
     // ConnectTools
-    await session.waitForText('Teach your AI Confidence');
+    await session.waitForText('Tools give your agent live access');
     await session.waitForText('Connect Confidence tools?');
     expect(session.snapshot()).toMatchSnapshot('connect-tools');
     session.checkpoint();
@@ -43,7 +43,7 @@ describe('happy-path flow', () => {
     await session.waitForText('Connected successfully');
 
     // SelectGoal
-    await session.waitForText("Select the features you'd like to set up");
+    await session.waitForText('Toggle Confidence features');
     expect(session.snapshot()).toMatchSnapshot('select-goal');
     session.checkpoint();
     await session.press('Space');

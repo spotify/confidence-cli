@@ -1,5 +1,6 @@
 import { spawn } from 'node:child_process';
 import {
+  act,
   renderApp,
   renderScreen,
   createProjectDir,
@@ -7,6 +8,7 @@ import {
   ENTER,
   ARROW_DOWN,
   ESCAPE,
+  SPACE,
   waitFor,
 } from '../testing-framework/index.js';
 import { OnboardProjectScreen } from '@ui/tui/screens/onboard-project/index.js';
@@ -80,7 +82,7 @@ describe('Onboarding flow', () => {
 
       await waitFor(() => {
         expect(sut.lastFrame()).not.toContain('Start onboarding?');
-        expect(sut.lastFrame()).toContain('Setting up your project');
+        expect(sut.lastFrame()).toContain('Grab a coffee');
       });
     });
 
@@ -202,7 +204,7 @@ describe('Onboarding flow', () => {
       sut.stdin.write(ESCAPE);
 
       await waitFor(() => {
-        expect(sut.lastFrame()).toContain('Onboarding skipped');
+        expect(sut.lastFrame()).toContain('Onboarding cancelled');
       });
     });
 
@@ -370,6 +372,48 @@ describe('Onboarding flow', () => {
         expect(frame).toContain('create your first feature flag');
         expect(frame).toContain('set up session recordings');
         expect(frame).toContain('instrument event tracking');
+      });
+    });
+  });
+  describe('when the user leaves the confirmation prompt with Escape', () => {
+    it('returns to feature selection', async () => {
+      using project = createProjectDir();
+      using sut = renderApp({ screen: ScreenId.SelectGoal, dir: project.path });
+      await waitFor(() => {
+        expect(sut.lastFrame()).toContain('Toggle Confidence features');
+      });
+
+      await act(() => sut.stdin.write(SPACE));
+      await act(() => sut.stdin.write(ENTER));
+      await waitFor(() => {
+        expect(sut.lastFrame()).toContain('Start onboarding?');
+      });
+      sut.stdin.write(ESCAPE);
+
+      await waitFor(() => {
+        expect(sut.lastFrame()).toContain('Toggle features to set up');
+      });
+    });
+  });
+
+  describe('when onboarding fails and the user skips', () => {
+    it('reports that onboarding did not finish', async () => {
+      using project = createProjectDir();
+      mockNextSpawn({ exitCode: 1, stderrOutput: 'Something went wrong' });
+      using sut = renderApp({ screen: ScreenId.OnboardProject, dir: project.path });
+      await waitFor(() => {
+        expect(sut.lastFrame()).toContain('Start onboarding?');
+      });
+
+      sut.stdin.write(ENTER);
+      await waitFor(() => {
+        expect(sut.lastFrame()).toContain('Onboarding encountered an error');
+      });
+      await act(() => sut.stdin.write(ARROW_DOWN));
+      await act(() => sut.stdin.write(ENTER));
+
+      await waitFor(() => {
+        expect(sut.lastFrame()).toContain("Onboarding didn't finish");
       });
     });
   });

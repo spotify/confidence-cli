@@ -7,6 +7,7 @@ import type { IdeId, OnboardingGoal } from '@shared-kernel/types.js';
 import type { OnboardingPhase } from '../useOnboardingProcess.js';
 import type { StatusLine } from '../../../lib/status-line.js';
 import type { Tip } from '../../../lib/tips.js';
+import { wizardStepLabel } from '../../../lib/wizard-tasks.js';
 
 export const MAX_VISIBLE_STATUS = 3;
 
@@ -33,7 +34,7 @@ export function OnboardingLeftPanel({
     <Box flexDirection="column">
       <Box marginBottom={1}>
         <Text color={Colors.primary} bold>
-          {phase === 'confirm' ? 'Ready to start?' : 'Setting up your project'}
+          {phase === 'confirm' ? 'Ready to start?' : wizardStepLabel('onboardProject')}
         </Text>
       </Box>
 

@@ -5,6 +5,7 @@ import { getIntegrations } from '@integrations/index.js';
 import { PLUGIN_REPO_URL } from '@lib/constants.js';
 import { Colors, Icons } from '../../../styles.js';
 import type { PluginPhase } from '../usePluginInstall.js';
+import { wizardStepLabel } from '../../../lib/wizard-tasks.js';
 
 type IdeLabels = Record<IdeId, string>;
 
@@ -21,13 +22,13 @@ export function MainContent({ phase, detected, error }: MainContentProps) {
     <Box flexDirection="column">
       <Box marginBottom={1}>
         <Text color={Colors.primary} bold>
-          Select agent to set up
+          {wizardStepLabel('installPlugins')}
         </Text>
       </Box>
       <Box marginBottom={1}>
         <Text color={Colors.muted}>
-          Your agent will get Confidence skills for flag management, warehouse setup, migrations,
-          and onboarding — so it can help without searching the docs.
+          Skills teach your agent how to work with Confidence — flag management, warehouse setup,
+          migrations, and onboarding — so it can help without searching the docs.
         </Text>
       </Box>
 

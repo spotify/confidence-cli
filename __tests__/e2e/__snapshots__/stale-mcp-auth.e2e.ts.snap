@@ -3,14 +3,14 @@
 exports[`when MCP config has expired auth tokens > allows skipping when auth is expired > mcp-auth-skipped 1`] = `
 " Confidence by Spotify                                              https://confidence.spotify.com/
 
- Ready to start?                                                      Todo (4/5)
+ Ready to start?                                                      Todo (5/6)
 
- The wizard will:                                                     ● Check system
+ The wizard will:                                                     ● Check your system
  ✔ add the Confidence SDK                                             ● Sign in to Confidence
- ✔ create your first feature flag                                     ● Set up your agent
-                                                                      ● Connect tools
- ◆ The AI agent will be able to run commands, install packages, and   ▶ Onboard project
- modify files in your project.
+ ✔ create your first feature flag                                     ● Set up your AI agent
+                                                                      ● Connect Confidence tools
+ ◆ The AI agent will be able to run commands, install packages, and   ● Choose features
+ modify files in your project.                                        ▶ Set up your project
 
 
  ──────────────────────────────────────────────────────────────────────────────────────────────────
@@ -19,20 +19,20 @@ exports[`when MCP config has expired auth tokens > allows skipping when auth is 
  ❯ Start onboarding
    Skip for now
 
- ↑↓ navigate   enter confirm                                                                 vX.Y.Z"
+ ↑↓ navigate   enter confirm   esc back                                                      vX.Y.Z"
 `;
 
 exports[`when MCP config has expired auth tokens > shows auth-expired status and reconnects successfully > connect-tools-expired 1`] = `
 " Confidence by Spotify                                              https://confidence.spotify.com/
 
- Teach your AI Confidence                                             Todo (3/5)
+ Connect Confidence tools                                             Todo (3/6)
 
- Give your AI assistant direct access to flags, docs, and             ● Check system
- integration tools via Confidence MCP. With it, you'll be able to:    ● Sign in to Confidence
-                                                                      ● Set up your agent
- ● Ask your agent to create and manage feature flags.                 ▶ Connect tools
- ● Search docs and generate code, all from your IDE.                  ○ Onboard project
- ● Avoid context-switching or manual lookups. Your assistant has the
+ Tools give your agent live access to your Confidence workspace and   ● Check your system
+ docs via MCP. With them, you'll be able to:                          ● Sign in to Confidence
+                                                                      ● Set up your AI agent
+ ● Ask your agent to create and manage feature flags.                 ▶ Connect Confidence tools
+ ● Search docs and generate code, all from your IDE.                  ○ Choose features
+ ● Avoid context-switching or manual lookups. Your assistant has the  ○ Set up your project
     keys.
 
  Confidence tools:
@@ -58,14 +58,14 @@ exports[`when MCP config has expired auth tokens > shows auth-expired status and
 exports[`when MCP config has expired auth tokens > shows auth-expired status and reconnects successfully > connect-tools-reconnected 1`] = `
 " Confidence by Spotify                                              https://confidence.spotify.com/
 
- Teach your AI Confidence                                             Todo (4/5)
+ Connect Confidence tools                                             Todo (4/6)
 
- Give your AI assistant direct access to flags, docs, and             ● Check system
- integration tools via Confidence MCP. With it, you'll be able to:    ● Sign in to Confidence
-                                                                      ● Set up your agent
- ● Ask your agent to create and manage feature flags.                 ● Connect tools
- ● Search docs and generate code, all from your IDE.                  ○ Onboard project
- ● Avoid context-switching or manual lookups. Your assistant has the
+ Tools give your agent live access to your Confidence workspace and   ● Check your system
+ docs via MCP. With them, you'll be able to:                          ● Sign in to Confidence
+                                                                      ● Set up your AI agent
+ ● Ask your agent to create and manage feature flags.                 ● Connect Confidence tools
+ ● Search docs and generate code, all from your IDE.                  ○ Choose features
+ ● Avoid context-switching or manual lookups. Your assistant has the  ○ Set up your project
     keys.
 
  Confidence tools:

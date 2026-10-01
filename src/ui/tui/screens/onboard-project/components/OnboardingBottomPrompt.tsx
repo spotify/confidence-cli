@@ -11,6 +11,8 @@ type OnboardingBottomPromptProps = {
   onConfirmStart: () => void;
   onConfirmSkip: () => void;
   onSkip: () => void;
+  onSkipAfterError: () => void;
+  onBack: () => void;
   onRetry: () => void;
   onCancel: () => void;
 };
@@ -22,6 +24,8 @@ export function OnboardingBottomPrompt({
   onConfirmStart,
   onConfirmSkip,
   onSkip,
+  onSkipAfterError,
+  onBack,
   onRetry,
   onCancel,
 }: OnboardingBottomPromptProps) {
@@ -36,6 +40,8 @@ export function OnboardingBottomPrompt({
             if (value === 'skip') return onConfirmSkip();
             onConfirmStart();
           }}
+          onCancel={onBack}
+          cancelLabel="back"
         />
       );
     case 'choose-sdk':
@@ -68,7 +74,7 @@ export function OnboardingBottomPrompt({
           mode="select"
           status="Onboarding encountered an error."
           options={ERROR_OPTIONS}
-          onSelect={(value) => (value === 'retry' ? onRetry() : onSkip())}
+          onSelect={(value) => (value === 'retry' ? onRetry() : onSkipAfterError())}
         />
       );
     case 'detecting':

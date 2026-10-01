@@ -12,12 +12,13 @@ type BottomPromptProps = {
   detected: IdeId[];
   onSelect: (value: IdeId) => void;
   onError: (value: ErrorAction) => void;
+  onBack: () => void;
 };
 
-export function BottomPrompt({ phase, detected, onSelect, onError }: BottomPromptProps) {
+export function BottomPrompt({ phase, detected, onSelect, onError, onBack }: BottomPromptProps) {
   switch (phase) {
     case 'choose-ide':
-      return <DefaultPrompt onSelect={onSelect} />;
+      return <DefaultPrompt onSelect={onSelect} onBack={onBack} />;
 
     case 'error':
       return (
@@ -34,7 +35,7 @@ export function BottomPrompt({ phase, detected, onSelect, onError }: BottomPromp
       const preferred = ALL_INTEGRATIONS.find((i) => detectedSet.has(i.id));
 
       if (!preferred) {
-        return <DefaultPrompt onSelect={onSelect} />;
+        return <DefaultPrompt onSelect={onSelect} onBack={onBack} />;
       }
 
       const rest = ALL_INTEGRATIONS.filter((i) => i.id !== preferred.id)
@@ -47,6 +48,8 @@ export function BottomPrompt({ phase, detected, onSelect, onError }: BottomPromp
           status={`Confidence plugin detected for ${preferred.name}. Continue with it?`}
           options={[{ label: `Continue with ${preferred.name}`, value: preferred.id }, ...rest]}
           onSelect={onSelect}
+          onCancel={onBack}
+          cancelLabel="back"
         />
       );
     }

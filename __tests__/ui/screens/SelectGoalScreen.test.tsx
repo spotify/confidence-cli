@@ -5,9 +5,15 @@ import {
   ENTER,
   ARROW_DOWN,
   SPACE,
+  ESCAPE,
   waitFor,
 } from '../testing-framework/index.js';
 import { ScreenId } from '@lib/session.js';
+
+vi.mock('../../../src/integrations/skills/plugin.js', async (importOriginal) => ({
+  ...(await importOriginal<typeof import('../../../src/integrations/skills/plugin.js')>()),
+  detectInstalledPlugins: vi.fn().mockResolvedValue([]),
+}));
 
 describe('SelectGoalScreen', () => {
   describe('goal selection', () => {
@@ -22,7 +28,7 @@ describe('SelectGoalScreen', () => {
 
       await waitFor(() => {
         const frame = sut.lastFrame()!;
-        expect(frame).toContain('Select the features');
+        expect(frame).toContain('Toggle Confidence features');
         expect(frame).toContain('Feature Flags');
         expect(frame).toContain('Session Recording');
         expect(frame).toContain('Event Tracking');
@@ -142,6 +148,21 @@ describe('SelectGoalScreen', () => {
         expect(frame).toContain('Feature Flags');
         expect(frame).toContain('Event Tracking');
         expect(frame).not.toContain('Session Recording');
+      });
+    });
+  });
+  describe('when the user presses Escape', () => {
+    it('returns to agent selection', async () => {
+      using project = createProjectDir();
+      using sut = renderApp({ screen: ScreenId.SelectGoal, dir: project.path });
+      await waitFor(() => {
+        expect(sut.lastFrame()).toContain('change agent');
+      });
+
+      sut.stdin.write(ESCAPE);
+
+      await waitFor(() => {
+        expect(sut.lastFrame()).toContain('Which CLI agent would you like to use?');
       });
     });
   });

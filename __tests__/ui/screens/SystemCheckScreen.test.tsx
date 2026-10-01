@@ -25,7 +25,7 @@ describe('SystemCheckScreen', () => {
   it('renders title', async () => {
     using sut = renderScreen(<SystemCheckScreen />, { screen: ScreenId.SystemCheck });
     await waitFor(() => {
-      expect(sut.lastFrame()).toContain('System Check');
+      expect(sut.lastFrame()).toContain('Checking that your system has everything');
     });
   });
 
@@ -50,7 +50,7 @@ describe('SystemCheckScreen', () => {
     it('auto-advances to Authenticate', async () => {
       using sut = renderApp({ screen: ScreenId.SystemCheck });
       await waitFor(() => {
-        expect(sut.lastFrame()).toContain('Sign in to Confidence');
+        expect(sut.lastFrame()).toContain('Sign in so the wizard can create flags');
       });
     });
   });

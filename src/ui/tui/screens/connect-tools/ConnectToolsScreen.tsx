@@ -5,7 +5,7 @@ import { Colors, Icons } from '../../styles.js';
 import { PromptPanel } from '../../components/PromptPanel.js';
 import { MainLayout } from '../../components/MainLayout.js';
 import { TaskList } from '../../components/TaskList.js';
-import { buildWizardTasks } from '../../lib/wizard-tasks.js';
+import { buildWizardTasks, wizardStepLabel } from '../../lib/wizard-tasks.js';
 import type { McpServerStatus } from '@integrations/index.js';
 import { CONFIDENCE_DOCS_URL } from '@lib/constants.js';
 import { ScreenId } from '@lib/session.js';
@@ -72,13 +72,13 @@ export function ConnectToolsScreen() {
     <Box flexDirection="column">
       <Box marginBottom={1}>
         <Text color={Colors.primary} bold>
-          Teach your AI Confidence
+          {wizardStepLabel('connectTools')}
         </Text>
       </Box>
       <Box marginBottom={1} flexDirection="column">
         <Text color={Colors.muted}>
-          Give your AI assistant direct access to flags, docs, and integration tools via Confidence
-          MCP. With it, you'll be able to:
+          Tools give your agent live access to your Confidence workspace and docs via MCP. With
+          them, you'll be able to:
         </Text>
         {showBullets && (
           <>

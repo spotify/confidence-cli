@@ -3,7 +3,7 @@ import { Spinner } from '@inkjs/ui';
 import { Colors, Icons } from '../../styles.js';
 import { MainLayout } from '../../components/MainLayout.js';
 import { TaskList } from '../../components/TaskList.js';
-import { buildWizardTasks } from '../../lib/wizard-tasks.js';
+import { buildWizardTasks, wizardStepLabel } from '../../lib/wizard-tasks.js';
 import { ScreenId } from '@lib/session.js';
 import { useAutoAdvance } from '../../hooks/useAutoAdvance.js';
 import { useLogger } from '../../hooks/useLog.js';
@@ -39,7 +39,7 @@ export function AuthenticateScreen() {
     <Box flexDirection="column">
       <Box marginBottom={1}>
         <Text color={Colors.primary} bold>
-          Sign in to Confidence
+          {wizardStepLabel('authenticate')}
         </Text>
       </Box>
       <Box marginBottom={1}>
@@ -61,7 +61,7 @@ export function AuthenticateScreen() {
           <Spinner label="Waiting for browser login..." />
           <Box marginTop={1}>
             <Text color={Colors.muted}>
-              Finish signing in in your browser. This will update when you're done.
+              Finish signing in through your browser. This will update when you're done.
             </Text>
           </Box>
         </Box>

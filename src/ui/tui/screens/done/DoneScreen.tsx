@@ -12,7 +12,8 @@ import { doneActionSelected } from './telemetry-events.js';
 import { useIsShort } from '@ui/tui/hooks/useIsShort.js';
 import { doneOptions } from './actions.js';
 import { useScreenDescription } from './useScreenDescription.js';
-import { useSkippedOnboarding } from './useSkippedOnboarding.js';
+import { useOnboardingOutcome } from './useOnboardingOutcome.js';
+import { headlineFor } from './headline.js';
 import { useIdeIdName } from './useIdeIdName.js';
 
 const MAX_SHOWN_CHANGES = 5;
@@ -21,7 +22,8 @@ export function DoneScreen() {
   const { exit } = useApp();
   const { reportFile, codeChanges, projectDir } = useSession();
 
-  const skipped = useSkippedOnboarding();
+  const outcome = useOnboardingOutcome();
+  const headline = headlineFor(outcome);
   const ideName = useIdeIdName();
   const description = useScreenDescription();
 
@@ -33,9 +35,8 @@ export function DoneScreen() {
     <Box flexDirection="column" flexGrow={1} justifyContent="space-between">
       <Box flexDirection="column" alignItems={align} flexGrow={1} justifyContent={VAlign.Center}>
         <Box marginBottom={1}>
-          <Text color={skipped ? Colors.muted : Colors.success} bold>
-            {skipped ? Icons.diamond : Icons.check}{' '}
-            {skipped ? 'Onboarding skipped' : 'Confidence is ready!'}
+          <Text color={headline.color} bold>
+            {headline.icon} {headline.title}
           </Text>
         </Box>
 
@@ -45,10 +46,10 @@ export function DoneScreen() {
           </Box>
         )}
 
-        {!skipped && !isShort && (
+        {outcome === 'completed' && !isShort && (
           <>
             <Box alignItems={align}>
-              <Text bold>What we have set up:</Text>
+              <Text bold>What we set up:</Text>
             </Box>
             <Box flexDirection="column" marginBottom={1}>
               {codeChanges
@@ -87,7 +88,7 @@ export function DoneScreen() {
       <PromptPanel
         mode="select"
         status="What's next?"
-        options={doneOptions(ideName)}
+        options={doneOptions(ideName, outcome)}
         onSelect={(value) => {
           track(doneActionSelected(value));
           if (value === 'chat') {

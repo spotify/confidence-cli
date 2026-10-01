@@ -9,7 +9,7 @@ exports[`Done screen migration hint > shows /migrate-statsig hint when competito
          We've taught Claude Code Confidence skills—try them out with slash commands.
          For example, run /migrate-statsig to migrate existing feature flags to Confidence.
 
-                                        What we have set up:
+                                           What we set up:
                                    ● Added feature flag example
                                    ● Created confidence.config.ts
 

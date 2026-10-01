@@ -59,6 +59,7 @@ export function useOnboardingProcess(): OnboardingProcess {
       addStatus('Project onboarding complete!', 'success');
       store.setReportFile('CONFIDENCE_QUICKSTART.md');
       store.setCodeChanges(lines ? extractCodeChanges(lines) : dryRunCodeChanges(goals));
+      store.setOnboardingOutcome('completed');
       setPhase('done');
     },
     [addStatus],

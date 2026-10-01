@@ -13,6 +13,8 @@ export function BottomPrompt({ goalSelection }: GoalSelectionProps) {
       status="Toggle features to set up:"
       options={goalOptionsFor(goalSelection.recordingAvailable)}
       onSubmit={goalSelection.submitGoals}
+      onCancel={goalSelection.changeAgent}
+      cancelLabel="change agent"
     />
   );
 }

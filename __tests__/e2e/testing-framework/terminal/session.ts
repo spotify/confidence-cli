@@ -148,7 +148,7 @@ export class TerminalSession {
    *
    * @example
    * ```ts
-   * await session.waitForText('System Check');
+   * await session.waitForText('Checking that your system has everything');
    * session.checkpoint();
    * // From here, waitForText only searches new output
    * await session.waitForText('All checks passed');

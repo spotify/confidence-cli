@@ -8,7 +8,7 @@ exports[`when the user skips connecting tools > shows skip message and proceeds 
 
             We've taught Claude Code Confidence skills—try them out with slash commands.
 
-                                        What we have set up:
+                                           What we set up:
                                    ● Added feature flag example
                                    ● Created confidence.config.ts
 
