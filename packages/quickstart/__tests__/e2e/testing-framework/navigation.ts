@@ -124,5 +124,3 @@ export async function selectIdeAndOnboard(
   await session.press('Enter');
   await session.waitForText('onboarding complete');
 }
-
-// test
