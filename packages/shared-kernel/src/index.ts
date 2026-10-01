@@ -6,3 +6,4 @@ export type {
   ProviderId,
   DetectedProvider,
 } from './types.js';
+export { noop } from './noop.js';

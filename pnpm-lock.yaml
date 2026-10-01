@@ -182,9 +182,6 @@ importers:
       '@spotify-confidence/shared-kernel':
         specifier: workspace:*
         version: link:../shared-kernel
-      '@spotify-confidence/utils':
-        specifier: workspace:*
-        version: link:../utils
       msw:
         specifier: ^2.15.0
         version: 2.15.0(@types/node@26.4.0)(typescript@6.0.3)

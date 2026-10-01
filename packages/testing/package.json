@@ -14,7 +14,6 @@
   },
   "dependencies": {
     "@spotify-confidence/shared-kernel": "workspace:*",
-    "@spotify-confidence/utils": "workspace:*",
     "msw": "^2.15.0"
   },
   "scripts": {
