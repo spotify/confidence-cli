@@ -7,6 +7,7 @@ import {
   logoutCommand,
   whoamiCommand,
   configCommand,
+  quickstartCommand,
 } from '../src/commands/index.js';
 
 const APP_NAME = 'confidence';
@@ -60,6 +61,7 @@ const cli = yargs(hideBin(process.argv))
   .command(logoutCommand)
   .command(whoamiCommand)
   .command(configCommand)
+  .command(quickstartCommand)
   .demandCommand(1, 'Run "confidence --help" to see available commands.')
   .strict()
   .help()
