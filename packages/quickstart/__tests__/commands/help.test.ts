@@ -15,7 +15,7 @@ describe('helpCommand', () => {
     sut.handler({} as never);
 
     const output = spy.mock.calls[0][0] as string;
-    expect(output).toContain('confidence-wizard');
+    expect(output).toContain('confidence-quickstart');
     expect(output).toContain('confidence.spotify.com');
     spy.mockRestore();
   });

@@ -20,7 +20,7 @@ export async function navigatePastWelcome(session: TerminalSession): Promise<voi
  *
  * Initiates sign-in, triggers {@link simulateAuthCallback}, and waits
  * for the "Authenticated" confirmation. The session is left at the
- * InstallPlugins screen.
+ * SelectGoal screen.
  *
  * @param session - An active terminal session showing the Authenticate screen.
  */
@@ -35,13 +35,27 @@ export async function navigatePastAuth(session: TerminalSession): Promise<void> 
 
 /**
  * Navigates from the start through Welcome, SystemCheck, and Auth,
- * landing on the InstallPlugins screen with a fresh checkpoint.
+ * landing on the SelectGoal screen with a fresh checkpoint.
+ *
+ * @param session - An active terminal session at the Welcome screen.
+ */
+export async function navigateToGoalSelection(session: TerminalSession): Promise<void> {
+  await navigatePastWelcome(session);
+  await navigatePastAuth(session);
+  session.checkpoint();
+  await session.waitForText("Select the features you'd like to set up");
+}
+
+/**
+ * Navigates from the start through to the InstallPlugins screen,
+ * selecting Feature Flags as the goal and setting a checkpoint.
  *
  * @param session - An active terminal session at the Welcome screen.
  */
 export async function navigateToPlugins(session: TerminalSession): Promise<void> {
-  await navigatePastWelcome(session);
-  await navigatePastAuth(session);
+  await navigateToGoalSelection(session);
+  await session.press('Space');
+  await session.press('Enter');
   session.checkpoint();
   await session.waitForText('Which CLI agent would you like to use?');
 }
@@ -61,29 +75,16 @@ export async function navigateToConnectTools(session: TerminalSession): Promise<
 }
 
 /**
- * Navigates from the start through to the SelectGoal screen,
+ * Navigates from the start through to the OnboardProject screen,
  * accepting default tools connection and setting a checkpoint.
  *
  * @param session - An active terminal session at the Welcome screen.
  */
-export async function navigateToGoalSelection(session: TerminalSession): Promise<void> {
+export async function navigateToOnboarding(session: TerminalSession): Promise<void> {
   await navigateToConnectTools(session);
   session.checkpoint();
   await session.press('Enter');
-  await session.waitForText("Select the features you'd like to set up");
-}
-
-/**
- * Navigates from the start through to the OnboardProject screen,
- * selecting "Feature Flags" as the goal and setting a checkpoint.
- *
- * @param session - An active terminal session at the Welcome screen.
- */
-export async function navigateToOnboarding(session: TerminalSession): Promise<void> {
-  await navigateToGoalSelection(session);
-  session.checkpoint();
-  await session.press('Space');
-  await session.press('Enter');
+  await session.waitForText('Connected successfully');
   await session.waitForText('Start onboarding?');
 }
 
@@ -112,22 +113,11 @@ export async function selectIdeAndOnboard(
   await session.pressRepeat('ArrowDown', downPresses);
   await session.press('Enter');
 
-  const matched = await session.waitForText([
-    'Start onboarding?',
-    'Connect Confidence tools?',
-    "Select the features you'd like to set up",
-  ]);
+  const matched = await session.waitForText(['Start onboarding?', 'Connect Confidence tools?']);
 
   if (matched === 'Connect Confidence tools?') {
     await session.press('Enter');
     await session.waitForText('Connected successfully');
-    await session.waitForText("Select the features you'd like to set up");
-  }
-
-  if (matched !== 'Start onboarding?') {
-    // SelectGoal — toggle Feature Flags and submit
-    await session.press('Space');
-    await session.press('Enter');
     await session.waitForText('Start onboarding?');
   }
 

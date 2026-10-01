@@ -1,7 +1,7 @@
 import { createSession, simulateAuthCallback } from './testing-framework/index.js';
 
 describe('happy-path flow', () => {
-  it('navigates Welcome → SystemCheck → Authenticate → InstallPlugins → ConnectTools → SelectGoal → OnboardProject → Done', async () => {
+  it('navigates Welcome → SystemCheck → Authenticate → SelectGoal → InstallPlugins → ConnectTools → OnboardProject → Done', async () => {
     using session = createSession();
 
     // Welcome
@@ -27,6 +27,13 @@ describe('happy-path flow', () => {
     expect(session.snapshot()).toMatchSnapshot('authenticate');
     session.checkpoint();
 
+    // SelectGoal
+    await session.waitForText("Select the features you'd like to set up");
+    expect(session.snapshot()).toMatchSnapshot('select-goal');
+    session.checkpoint();
+    await session.press('Space');
+    await session.press('Enter');
+
     // InstallPlugins
     await session.waitForText('Select agent to set up');
     await session.waitForText('Which CLI agent would you like to use?');
@@ -41,13 +48,6 @@ describe('happy-path flow', () => {
     session.checkpoint();
     await session.press('Enter');
     await session.waitForText('Connected successfully');
-
-    // SelectGoal
-    await session.waitForText("Select the features you'd like to set up");
-    expect(session.snapshot()).toMatchSnapshot('select-goal');
-    session.checkpoint();
-    await session.press('Space');
-    await session.press('Enter');
 
     // OnboardProject
     await session.waitForText('Start onboarding?');

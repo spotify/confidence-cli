@@ -153,6 +153,7 @@ export function createSession(opts?: {
   dryRun?: boolean;
   debug?: boolean;
   dir?: string;
+  goals?: OnboardingGoal[];
 }): WizardSession {
   return {
     sessionId: randomUUID(),
@@ -172,7 +173,7 @@ export function createSession(opts?: {
     connectedMcps: [],
     isEmptyProject: false,
     detectedProviders: [],
-    onboardingGoals: [],
+    onboardingGoals: opts?.goals ?? [],
     onboardingStatus: '',
     reportFile: null,
     codeChanges: [],

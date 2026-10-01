@@ -20,6 +20,7 @@ export type StoreOptions = {
   dryRun?: boolean;
   debug?: boolean;
   dir?: string;
+  goals?: OnboardingGoal[];
 };
 
 export const $session = atom<WizardSession>(createSession());
@@ -39,6 +40,7 @@ export const store = {
         dryRun: opts?.dryRun,
         debug: opts?.debug,
         dir: opts?.dir,
+        goals: opts?.goals,
       }),
     ),
 

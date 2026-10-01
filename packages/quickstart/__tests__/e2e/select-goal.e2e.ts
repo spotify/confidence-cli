@@ -1,8 +1,4 @@
-import {
-  createSession,
-  navigateToGoalSelection,
-  navigateToConnectTools,
-} from './testing-framework/index.js';
+import { createSession, navigateToGoalSelection } from './testing-framework/index.js';
 
 describe('SelectGoal screen', () => {
   it('shows goal options for a browser framework', async () => {
@@ -18,7 +14,7 @@ describe('SelectGoal screen', () => {
     expect(session.snapshot()).toMatchSnapshot('select-goal');
   });
 
-  it('shows feature flag steps after selecting Feature Flags', async () => {
+  it('advances to InstallPlugins after selecting a goal', async () => {
     using session = createSession();
 
     await navigateToGoalSelection(session);
@@ -26,61 +22,7 @@ describe('SelectGoal screen', () => {
     await session.press('Space');
     await session.press('Enter');
 
-    await session.waitForText('Start onboarding?');
-    expect(session.snapshot()).toContain('add the Confidence SDK');
-    expect(session.snapshot()).toContain('create your first feature flag');
-  });
-
-  it('shows session recording steps after selecting Session Recordings', async () => {
-    using session = createSession();
-
-    await navigateToGoalSelection(session);
-    session.checkpoint();
-
-    // Session Recordings — 3rd option
-    await session.pressRepeat('ArrowDown', 2);
-    await session.press('Space');
-    await session.press('Enter');
-
-    await session.waitForText('Start onboarding?');
-    expect(session.snapshot()).toContain('add the Confidence SDK');
-    expect(session.snapshot()).toContain('set up session recordings');
-  });
-
-  it('shows combined steps when multiple goals are selected', async () => {
-    using session = createSession();
-
-    await navigateToGoalSelection(session);
-    session.checkpoint();
-
-    // Toggle Feature Flags (1st), Event Tracking (2nd), Session Recordings (3rd)
-    await session.press('Space');
-    await session.press('ArrowDown');
-    await session.press('Space');
-    await session.pressRepeat('ArrowDown', 1);
-    await session.press('Space');
-    await session.press('Enter');
-
-    await session.waitForText('Start onboarding?');
-    expect(session.snapshot()).toContain('create your first feature flag');
-    expect(session.snapshot()).toContain('instrument event tracking');
-    expect(session.snapshot()).toContain('set up session recordings');
-  });
-
-  it('shows event tracking steps after selecting Event Tracking', async () => {
-    using session = createSession();
-
-    await navigateToGoalSelection(session);
-    session.checkpoint();
-
-    // Event Tracking — 2nd option
-    await session.press('ArrowDown');
-    await session.press('Space');
-    await session.press('Enter');
-
-    await session.waitForText('Start onboarding?');
-    expect(session.snapshot()).toContain('add the Confidence SDK');
-    expect(session.snapshot()).toContain('instrument event tracking');
+    await session.waitForText('Which CLI agent would you like to use?');
   });
 
   it('shows validation message when submitting with nothing selected', async () => {
@@ -93,49 +35,11 @@ describe('SelectGoal screen', () => {
     await session.waitForText('Toggle features to set up');
   });
 
-  it('shows plain time estimate for a single goal', async () => {
-    using session = createSession();
-
-    await navigateToGoalSelection(session);
-    session.checkpoint();
-    await session.press('Space');
-    await session.press('Enter');
-
-    // OnboardProject — confirm start
-    await session.waitForText('Start onboarding?');
-    await session.press('Enter');
-
-    await session.waitForText('3–5 min.');
-    expect(session.snapshot()).not.toContain('per feature');
-  });
-
-  it('shows per-feature time estimate for multiple goals', async () => {
-    using session = createSession();
-
-    await navigateToGoalSelection(session);
-    session.checkpoint();
-
-    // Toggle Feature Flags (1st) and Event Tracking (2nd)
-    await session.press('Space');
-    await session.press('ArrowDown');
-    await session.press('Space');
-    await session.press('Enter');
-
-    // OnboardProject — confirm start
-    await session.waitForText('Start onboarding?');
-    await session.press('Enter');
-
-    await session.waitForText('3–5 min per feature');
-  });
-
   it('shows goal selection for non-browser project without recording option', async () => {
     using session = createSession({ project: 'statsig-node' });
 
-    await navigateToConnectTools(session);
-    session.checkpoint();
-    await session.press('Enter');
+    await navigateToGoalSelection(session);
 
-    // Non-browser project now shows goal selection (without Session Recordings)
     await session.waitForText('Flags');
     await session.waitForText('Events');
   });

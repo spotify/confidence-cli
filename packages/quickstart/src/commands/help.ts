@@ -9,7 +9,7 @@ export const helpCommand: Command = {
     const lines = [
       `${APP_NAME} v${APP_VERSION}`,
       '',
-      'Usage: confidence-wizard [command] [options]',
+      'Usage: confidence-quickstart [command] [options]',
       '',
       'Commands:',
       '  (default)    Launch the interactive setup wizard',
@@ -18,6 +18,8 @@ export const helpCommand: Command = {
       '',
       'Options:',
       '  --dir <path>     Project directory to run the wizard in',
+      '  --features <f>   Pre-select onboarding features (skips feature selection screen)',
+      '                   Choices: flags, events, recordings',
       '  --dry-run        Run without making real API calls',
       '  --debug          Enable debug output and preserve terminal history',
       '  --no-telemetry   Disable anonymous usage telemetry',

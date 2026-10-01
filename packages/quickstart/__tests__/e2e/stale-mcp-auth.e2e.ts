@@ -45,6 +45,11 @@ describe('when MCP config has expired auth tokens', () => {
     // Authenticate
     await navigatePastAuth(session);
 
+    // SelectGoal
+    await session.waitForText("Select the features you'd like to set up");
+    await session.press('Space');
+    await session.press('Enter');
+
     // InstallPlugins
     await session.waitForText('Which CLI agent would you like to use?');
     await session.press('Enter');
@@ -68,6 +73,11 @@ describe('when MCP config has expired auth tokens', () => {
     await navigatePastWelcome(session);
     await navigatePastAuth(session);
 
+    // SelectGoal
+    await session.waitForText("Select the features you'd like to set up");
+    await session.press('Space');
+    await session.press('Enter');
+
     // InstallPlugins
     await session.waitForText('Which CLI agent would you like to use?');
     await session.press('Enter');
@@ -79,11 +89,6 @@ describe('when MCP config has expired auth tokens', () => {
     await session.pressRepeat('ArrowDown', 3);
     await session.press('Enter');
     await session.waitForText('Skipped');
-
-    // SelectGoal
-    await session.waitForText("Select the features you'd like to set up");
-    await session.press('Space');
-    await session.press('Enter');
 
     // OnboardProject
     await session.waitForText('Start onboarding?');
