@@ -1,15 +1,14 @@
 {
-  "extends": "./tsconfig.build.json",
+  "extends": "./tsconfig.base.json",
   "compilerOptions": {
-    "typeRoots": ["./node_modules/@types", "./types"]
+    "noEmit": true
   },
-  "include": [
-    "src",
-    "bin",
-    "__tests__",
-    "types",
-    "vitest.config.ts",
-    "tsdown.config.ts",
-    "eslint.config.js"
-  ]
+  "references": [
+    { "path": "packages/shared-kernel" },
+    { "path": "packages/utils" },
+    { "path": "packages/core" },
+    { "path": "packages/testing" },
+    { "path": "packages/quickstart" }
+  ],
+  "files": []
 }

@@ -1,0 +1,16 @@
+{
+  "name": "@spotify-confidence/eslint-config",
+  "private": true,
+  "version": "0.0.0",
+  "type": "module",
+  "exports": {
+    ".": "./index.js"
+  },
+  "dependencies": {
+    "@eslint/js": "^10.0.1",
+    "eslint": "^10.9.1",
+    "eslint-config-prettier": "^10.1.8",
+    "eslint-plugin-react-hooks": "^7.1.1",
+    "typescript-eslint": "^8.68.0"
+  }
+}

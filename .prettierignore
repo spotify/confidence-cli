@@ -1,5 +1,5 @@
 pnpm-lock.yaml
-dist/
-node_modules/
+**/dist/
+**/node_modules/
 CHANGELOG.md
 CLAUDE.md

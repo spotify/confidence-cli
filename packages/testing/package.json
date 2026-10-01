@@ -1,0 +1,20 @@
+{
+  "name": "@spotify-confidence/testing",
+  "private": true,
+  "version": "0.0.0",
+  "type": "module",
+  "exports": {
+    ".": "./src/index.ts"
+  },
+  "dependencies": {
+    "@spotify-confidence/core": "workspace:*",
+    "msw": "^2.15.0"
+  },
+  "scripts": {
+    "typecheck": "tsc --noEmit"
+  },
+  "devDependencies": {
+    "typescript": "^6.0.3",
+    "vitest": "^4.1.11"
+  }
+}

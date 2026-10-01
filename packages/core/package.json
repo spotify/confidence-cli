@@ -1,0 +1,25 @@
+{
+  "name": "@spotify-confidence/core",
+  "private": true,
+  "version": "0.0.0",
+  "type": "module",
+  "exports": {
+    ".": "./src/index.ts"
+  },
+  "dependencies": {
+    "@spotify-confidence/shared-kernel": "workspace:*",
+    "@spotify-confidence/utils": "workspace:*"
+  },
+  "scripts": {
+    "test": "vitest run",
+    "typecheck": "tsc --noEmit",
+    "lint": "eslint . && prettier --check ."
+  },
+  "devDependencies": {
+    "@spotify-confidence/eslint-config": "workspace:*",
+    "eslint": "^10.9.1",
+    "prettier": "^3.9.6",
+    "typescript": "^6.0.3",
+    "vitest": "^4.1.11"
+  }
+}

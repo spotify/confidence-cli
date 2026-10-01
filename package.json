@@ -1,73 +1,24 @@
 {
-  "name": "@spotify-confidence/quickstart",
-  "version": "1.6.0",
-  "description": "Get started with Confidence in minutes.",
-  "license": "Apache-2.0",
+  "private": true,
   "type": "module",
-  "bin": {
-    "confidence-quickstart": "dist/bin/cli.js"
-  },
-  "files": [
-    "dist"
-  ],
   "scripts": {
-    "build": "tsdown",
-    "dev": "tsdown --watch",
-    "try": "NODE_ENV=development node --import tsx bin/cli.ts",
-    "test": "vitest run",
-    "test:e2e": "pnpm build && vitest run --config vitest.config.e2e.ts",
-    "test:e2e:update": "pnpm test:e2e -- --update",
-    "test:watch": "vitest",
-    "lint": "pnpm lint:src && pnpm lint:scripts && pnpm format:check",
-    "lint:src": "eslint .",
-    "lint:scripts": "eslint --config scripts/eslint.config.js scripts/",
-    "lint:fix": "eslint --fix . && prettier --write .",
-    "format:check": "prettier --check .",
-    "typecheck": "tsc --noEmit",
+    "build": "pnpm -r run build",
+    "test": "pnpm -r run test",
+    "test:e2e": "pnpm --filter @spotify-confidence/quickstart run test:e2e",
+    "lint": "pnpm -r run lint",
+    "typecheck": "pnpm -r run typecheck",
     "qa": "pnpm typecheck && pnpm lint && pnpm test",
-    "clear": "./scripts/clean-dev-env.sh",
     "prepare": "husky"
-  },
-  "dependencies": {
-    "@inkjs/ui": "^2.0.0",
-    "@nanostores/react": "^1.1.0",
-    "ink": "^7.1.1",
-    "nanostores": "^1.5.2",
-    "react": "^19.2.8",
-    "yargs": "^18.1.0"
   },
   "devDependencies": {
     "@commitlint/cli": "^21.2.2",
     "@commitlint/config-conventional": "^21.2.2",
-    "@eslint/js": "^10.0.1",
-    "@testing-library/react": "^16.3.2",
-    "@types/node": "^26.4.0",
-    "@types/react": "^19.2.18",
-    "@types/yargs": "^17.0.35",
-    "eslint": "^10.9.1",
-    "eslint-config-prettier": "^10.1.8",
-    "eslint-plugin-react-hooks": "^7.1.1",
     "husky": "^9.1.7",
-    "ink-testing-library": "^4.0.0",
     "lint-staged": "^17.3.0",
-    "msw": "^2.15.0",
-    "node-pty": "1.2.0-beta.14",
-    "prettier": "^3.9.6",
-    "tsdown": "^0.22.14",
-    "tsx": "^4.23.12",
-    "typescript": "^6.0.3",
-    "typescript-eslint": "^8.68.0",
-    "vitest": "^4.1.11"
+    "prettier": "^3.9.6"
   },
   "engines": {
     "node": ">=24.0.0"
-  },
-  "publishConfig": {
-    "access": "public"
-  },
-  "repository": {
-    "type": "git",
-    "url": "https://github.com/spotify/confidence-cli.git"
   },
   "packageManager": "pnpm@10.12.1"
 }

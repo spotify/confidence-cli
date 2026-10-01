@@ -21,6 +21,67 @@ overrides:
 importers:
 
   .:
+    devDependencies:
+      '@commitlint/cli':
+        specifier: ^21.2.2
+        version: 21.2.2(@types/node@26.4.0)(conventional-commits-parser@7.1.2)(typescript@6.0.3)
+      '@commitlint/config-conventional':
+        specifier: ^21.2.2
+        version: 21.2.2
+      husky:
+        specifier: ^9.1.7
+        version: 9.1.7
+      lint-staged:
+        specifier: ^17.3.0
+        version: 17.3.0
+      prettier:
+        specifier: ^3.9.6
+        version: 3.9.6
+
+  packages/core:
+    dependencies:
+      '@spotify-confidence/shared-kernel':
+        specifier: workspace:*
+        version: link:../shared-kernel
+      '@spotify-confidence/utils':
+        specifier: workspace:*
+        version: link:../utils
+    devDependencies:
+      '@spotify-confidence/eslint-config':
+        specifier: workspace:*
+        version: link:../eslint-config
+      eslint:
+        specifier: ^10.9.1
+        version: 10.9.1(jiti@2.7.0)
+      prettier:
+        specifier: ^3.9.6
+        version: 3.9.6
+      typescript:
+        specifier: ^6.0.3
+        version: 6.0.3
+      vitest:
+        specifier: ^4.1.11
+        version: 4.1.11(@types/node@26.4.0)(msw@2.15.0(@types/node@26.4.0)(typescript@6.0.3))(vite@7.3.6(@types/node@26.4.0)(jiti@2.7.0)(tsx@4.23.12)(yaml@2.9.0))
+
+  packages/eslint-config:
+    dependencies:
+      '@eslint/js':
+        specifier: ^10.0.1
+        version: 10.0.1(eslint@10.9.1(jiti@2.7.0))
+      eslint:
+        specifier: ^10.9.1
+        version: 10.9.1(jiti@2.7.0)
+      eslint-config-prettier:
+        specifier: ^10.1.8
+        version: 10.1.8(eslint@10.9.1(jiti@2.7.0))
+      eslint-plugin-react-hooks:
+        specifier: ^7.1.1
+        version: 7.1.1(eslint@10.9.1(jiti@2.7.0))
+      typescript-eslint:
+        specifier: ^8.68.0
+        version: 8.68.0(eslint@10.9.1(jiti@2.7.0))(typescript@6.0.3)
+
+  packages/quickstart:
     dependencies:
       '@inkjs/ui':
         specifier: ^2.0.0
@@ -28,6 +89,15 @@ importers:
       '@nanostores/react':
         specifier: ^1.1.0
         version: 1.1.0(nanostores@1.5.2)(react@19.2.8)
+      '@spotify-confidence/core':
+        specifier: workspace:*
+        version: link:../core
+      '@spotify-confidence/shared-kernel':
+        specifier: workspace:*
+        version: link:../shared-kernel
+      '@spotify-confidence/utils':
+        specifier: workspace:*
+        version: link:../utils
       ink:
         specifier: ^7.1.1
         version: 7.1.1(@types/react@19.2.18)(react@19.2.8)
@@ -41,15 +111,12 @@ importers:
         specifier: ^18.1.0
         version: 18.1.0
     devDependencies:
-      '@commitlint/cli':
-        specifier: ^21.2.2
-        version: 21.2.2(@types/node@26.4.0)(conventional-commits-parser@7.1.2)(typescript@6.0.3)
-      '@commitlint/config-conventional':
-        specifier: ^21.2.2
-        version: 21.2.2
-      '@eslint/js':
-        specifier: ^10.0.1
-        version: 10.0.1(eslint@10.9.1(jiti@2.7.0))
+      '@spotify-confidence/eslint-config':
+        specifier: workspace:*
+        version: link:../eslint-config
+      '@spotify-confidence/testing':
+        specifier: workspace:*
+        version: link:../testing
       '@testing-library/react':
         specifier: ^16.3.2
         version: 16.3.2(@testing-library/dom@10.4.1)(@types/react@19.2.18)(react-dom@19.2.7(react@19.2.8))(react@19.2.8)
@@ -65,21 +132,9 @@ importers:
       eslint:
         specifier: ^10.9.1
         version: 10.9.1(jiti@2.7.0)
-      eslint-config-prettier:
-        specifier: ^10.1.8
-        version: 10.1.8(eslint@10.9.1(jiti@2.7.0))
-      eslint-plugin-react-hooks:
-        specifier: ^7.1.1
-        version: 7.1.1(eslint@10.9.1(jiti@2.7.0))
-      husky:
-        specifier: ^9.1.7
-        version: 9.1.7
       ink-testing-library:
         specifier: ^4.0.0
         version: 4.0.0(@types/react@19.2.18)
-      lint-staged:
-        specifier: ^17.3.0
-        version: 17.3.0
       msw:
         specifier: ^2.15.0
         version: 2.15.0(@types/node@26.4.0)(typescript@6.0.3)
@@ -104,6 +159,30 @@ importers:
       vitest:
         specifier: ^4.1.11
         version: 4.1.11(@types/node@26.4.0)(msw@2.15.0(@types/node@26.4.0)(typescript@6.0.3))(vite@7.3.6(@types/node@26.4.0)(jiti@2.7.0)(tsx@4.23.12)(yaml@2.9.0))
+
+  packages/shared-kernel: {}
+
+  packages/testing:
+    dependencies:
+      '@spotify-confidence/core':
+        specifier: workspace:*
+        version: link:../core
+      msw:
+        specifier: ^2.15.0
+        version: 2.15.0(@types/node@26.4.0)(typescript@6.0.3)
+    devDependencies:
+      typescript:
+        specifier: ^6.0.3
+        version: 6.0.3
+      vitest:
+        specifier: ^4.1.11
+        version: 4.1.11(@types/node@26.4.0)(msw@2.15.0(@types/node@26.4.0)(typescript@6.0.3))(vite@7.3.6(@types/node@26.4.0)(jiti@2.7.0)(tsx@4.23.12)(yaml@2.9.0))
+
+  packages/utils:
+    dependencies:
+      '@spotify-confidence/shared-kernel':
+        specifier: workspace:*
+        version: link:../shared-kernel
 
 packages:
 

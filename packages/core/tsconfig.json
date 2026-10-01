@@ -1,0 +1,20 @@
+{
+  "extends": "../../tsconfig.base.json",
+  "compilerOptions": {
+    "composite": true,
+    "outDir": "dist",
+    "rootDir": "src",
+    "paths": {
+      "@auth/*": ["./src/auth/*"],
+      "@telemetry/*": ["./src/telemetry/*"],
+      "@exec/*": ["./src/exec/*"],
+      "@system/*": ["./src/system/*"],
+      "@sdk/*": ["./src/sdk/*"],
+      "@frameworks/*": ["./src/frameworks/*"],
+      "@integrations/*": ["./src/integrations/*"],
+      "@providers/*": ["./src/providers/*"]
+    }
+  },
+  "include": ["src", "__tests__"],
+  "references": [{ "path": "../shared-kernel" }, { "path": "../utils" }]
+}

@@ -1,0 +1,66 @@
+{
+  "name": "@spotify-confidence/quickstart",
+  "version": "1.6.0",
+  "description": "Get started with Confidence in minutes.",
+  "license": "Apache-2.0",
+  "type": "module",
+  "bin": {
+    "confidence-quickstart": "dist/bin/cli.js"
+  },
+  "files": [
+    "dist"
+  ],
+  "scripts": {
+    "build": "tsdown",
+    "dev": "tsdown --watch",
+    "try": "NODE_ENV=development node --import tsx bin/cli.ts",
+    "test": "vitest run",
+    "test:e2e": "pnpm build && vitest run --config vitest.config.e2e.ts",
+    "test:e2e:update": "pnpm test:e2e -- --update",
+    "test:watch": "vitest",
+    "lint": "eslint . && prettier --check .",
+    "lint:fix": "eslint --fix . && prettier --write .",
+    "typecheck": "tsc --noEmit",
+    "qa": "pnpm typecheck && pnpm lint && pnpm test"
+  },
+  "dependencies": {
+    "@inkjs/ui": "^2.0.0",
+    "@nanostores/react": "^1.1.0",
+    "@spotify-confidence/core": "workspace:*",
+    "@spotify-confidence/shared-kernel": "workspace:*",
+    "@spotify-confidence/utils": "workspace:*",
+    "ink": "^7.1.1",
+    "nanostores": "^1.5.2",
+    "react": "^19.2.8",
+    "yargs": "^18.1.0"
+  },
+  "devDependencies": {
+    "@spotify-confidence/eslint-config": "workspace:*",
+    "@spotify-confidence/testing": "workspace:*",
+    "@testing-library/react": "^16.3.2",
+    "@types/node": "^26.4.0",
+    "@types/react": "^19.2.18",
+    "@types/yargs": "^17.0.35",
+    "eslint": "^10.9.1",
+    "ink-testing-library": "^4.0.0",
+    "msw": "^2.15.0",
+    "node-pty": "1.2.0-beta.14",
+    "prettier": "^3.9.6",
+    "tsdown": "^0.22.14",
+    "tsx": "^4.23.12",
+    "typescript": "^6.0.3",
+    "typescript-eslint": "^8.68.0",
+    "vitest": "^4.1.11"
+  },
+  "engines": {
+    "node": ">=24.0.0"
+  },
+  "publishConfig": {
+    "access": "public"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/spotify/confidence-cli.git",
+    "directory": "packages/quickstart"
+  }
+}
