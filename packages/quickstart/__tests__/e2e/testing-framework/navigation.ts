@@ -48,7 +48,7 @@ export async function navigateToGoalSelection(session: TerminalSession): Promise
 
 /**
  * Navigates from the start through to the InstallPlugins screen,
- * selecting Feature Flags as the goal and setting a checkpoint.
+ * selecting Feature Flags as the goal.
  *
  * @param session - An active terminal session at the Welcome screen.
  */
@@ -56,7 +56,6 @@ export async function navigateToPlugins(session: TerminalSession): Promise<void>
   await navigateToGoalSelection(session);
   await session.press('Space');
   await session.press('Enter');
-  session.checkpoint();
   await session.waitForText('Which CLI agent would you like to use?');
 }
 
