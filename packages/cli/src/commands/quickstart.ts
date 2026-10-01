@@ -1,4 +1,8 @@
-import { spawn } from '@spotify-confidence/core';
+const FEATURE_TO_GOAL: Record<string, string> = {
+  flags: 'feature-flags',
+  events: 'event-tracking',
+  recordings: 'session-recordings',
+};
 
 export const quickstartCommand = {
   command: 'quickstart',
@@ -22,36 +26,18 @@ export const quickstartCommand = {
     },
   },
   async handler(argv: Record<string, unknown>) {
-    const args = buildArgs(argv);
-    const child = spawn('npx', ['--yes', '@spotify-confidence/quickstart', ...args], {
-      stdio: 'inherit',
-    });
+    const dryRun = Boolean(argv['dry-run'] ?? argv.dryRun);
+    const debug = Boolean(argv.debug);
+    const dir = argv.dir as string | undefined;
+    const noTelemetry = argv.telemetry === false;
+    const features = argv.features as string[] | undefined;
+    const goals = features?.map((f) => FEATURE_TO_GOAL[f]).filter(Boolean);
 
-    await new Promise<void>((resolve) => {
-      child.on('close', (code) => {
-        if (code !== 0) process.exitCode = code ?? 1;
-        resolve();
-      });
-      child.on('error', (err) => {
-        console.error(`Failed to launch quickstart wizard: ${err.message}`);
-        process.exitCode = 1;
-        resolve();
-      });
-    });
+    if (noTelemetry) {
+      process.env.CONFIDENCE_TELEMETRY = 'false';
+    }
+
+    const { startTui } = await import('@spotify-confidence/quickstart');
+    await startTui({ dryRun, debug, dir, goals });
   },
 };
-
-function buildArgs(argv: Record<string, unknown>): string[] {
-  const args: string[] = [];
-  if (argv['dry-run'] ?? argv.dryRun) args.push('--dry-run');
-  if (argv.debug) args.push('--debug');
-  if (typeof argv.dir === 'string') args.push('--dir', argv.dir);
-  if (argv.telemetry === false) args.push('--no-telemetry');
-  const features = argv.features as string[] | undefined;
-  if (features?.length) {
-    for (const feature of features) {
-      args.push('--features', feature);
-    }
-  }
-  return args;
-}
