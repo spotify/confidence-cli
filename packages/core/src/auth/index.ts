@@ -1,8 +1,9 @@
 export {
   authenticate,
   refreshAccessToken,
-  loadPersistedToken,
-  validateToken,
   AUTH_CALLBACK_PORT,
-} from './authenticate.js';
+  type AuthResult,
+} from './authenticate/index.js';
+export { ensureDir, loadPersistedToken, clearTokens, getConfigDir } from './credentials/index.js';
+export { decodeJwtPayload, validateToken } from './jwt.js';
 export { successPage, errorPage, exchangeErrorPage } from './callback-pages.js';

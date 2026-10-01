@@ -152,6 +152,7 @@ describe('AuthenticateScreen', () => {
 
   describe('when authentication fails', () => {
     it('shows failure message with retry option', async () => {
+      using _auth = prepareAuthTokens('none');
       const { authenticate } = await import('@spotify-confidence/core');
       vi.mocked(authenticate).mockRejectedValueOnce(new Error('Network error'));
 
@@ -167,6 +168,7 @@ describe('AuthenticateScreen', () => {
 
     it('allows retrying after failure', async () => {
       // Arrange
+      using _auth = prepareAuthTokens('none');
       const { authenticate } = await import('@spotify-confidence/core');
       vi.mocked(authenticate)
         .mockRejectedValueOnce(new Error('Network error'))

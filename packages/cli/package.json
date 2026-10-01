@@ -1,0 +1,53 @@
+{
+  "name": "@spotify-confidence/cli",
+  "version": "1.0.0",
+  "description": "CLI for managing Confidence feature flags, experiments, and more.",
+  "license": "Apache-2.0",
+  "type": "module",
+  "bin": {
+    "confidence": "dist/bin/cli.js"
+  },
+  "files": [
+    "dist"
+  ],
+  "scripts": {
+    "build": "tsdown",
+    "dev": "tsdown --watch",
+    "try": "NODE_ENV=development node --import tsx bin/cli.ts",
+    "test": "vitest run",
+    "test:watch": "vitest",
+    "lint": "eslint . && prettier --check .",
+    "lint:fix": "eslint --fix . && prettier --write .",
+    "typecheck": "tsc --noEmit",
+    "qa": "pnpm typecheck && pnpm lint && pnpm test"
+  },
+  "dependencies": {
+    "yargs": "^18.2.0"
+  },
+  "devDependencies": {
+    "@spotify-confidence/core": "workspace:*",
+    "@spotify-confidence/eslint-config": "workspace:*",
+    "@spotify-confidence/shared-kernel": "workspace:*",
+    "@spotify-confidence/testing": "workspace:*",
+    "@types/node": "^26.6.2",
+    "@types/yargs": "^17.0.35",
+    "eslint": "^10.11.0",
+    "prettier": "^3.9.9",
+    "tsdown": "^0.22.14",
+    "tsx": "^4.23.15",
+    "typescript": "^6.0.3",
+    "typescript-eslint": "^8.70.1",
+    "vitest": "^4.1.11"
+  },
+  "engines": {
+    "node": ">=24.0.0"
+  },
+  "publishConfig": {
+    "access": "public"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/spotify/confidence-cli.git",
+    "directory": "packages/cli"
+  }
+}

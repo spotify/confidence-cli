@@ -2,20 +2,8 @@ import { execFile } from 'node:child_process';
 import { http, HttpResponse, passthrough } from 'msw';
 import { server } from '@spotify-confidence/testing';
 import { buildTestJwt, prepareAuthTokens } from '@spotify-confidence/testing/auth';
-import { authenticate, AUTH_CALLBACK_PORT } from '@auth/authenticate.js';
+import { authenticate, AUTH_CALLBACK_PORT } from '@auth/authenticate/index.js';
 
-// Isolate the token files in a dedicated temp directory so the real
-// logins performed here don't leak tokens into test files that run in
-// parallel workers and read the shared tmpdir. Must run before module
-// imports because token paths are resolved at module load.
-await vi.hoisted(async () => {
-  const { mkdtempSync } = await import('node:fs');
-  const { tmpdir } = await import('node:os');
-  const { join } = await import('node:path');
-  process.env['TMPDIR'] = mkdtempSync(join(tmpdir(), 'confidence-auth-test-'));
-});
-
-// Mocking the browser opener because it would launch a real browser.
 vi.mock('node:child_process', async (importOriginal) => {
   const actual = await importOriginal<typeof import('node:child_process')>();
   return { ...actual, execFile: vi.fn() };

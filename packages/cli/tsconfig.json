@@ -1,0 +1,23 @@
+{
+  "extends": "../../tsconfig.base.json",
+  "compilerOptions": {
+    "outDir": "dist",
+    "rootDir": ".",
+    "typeRoots": ["./node_modules/@types", "./types"],
+    "paths": {
+      "@commands/*": ["./src/commands/*"],
+      "@features/*": ["./src/features/*"],
+      "@output/*": ["./src/output/*"],
+      "@api/*": ["./src/api/*"]
+    }
+  },
+  "include": [
+    "src",
+    "bin",
+    "__tests__",
+    "types",
+    "vitest.config.ts",
+    "tsdown.config.ts",
+    "eslint.config.js"
+  ]
+}
