@@ -4,4 +4,4 @@ export {
   CHAT_PROMPT_FILE,
   ONBOARDING_INVOCATION_FILE,
 } from './binaries/index.js';
-export { buildTestJwt } from '@spotify-confidence/testing';
+export { buildTestJwt } from '@spotify-confidence/testing/shared';

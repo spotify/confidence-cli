@@ -4,7 +4,10 @@
   "version": "0.0.0",
   "type": "module",
   "exports": {
-    ".": "./src/index.ts"
+    ".": "./src/index.ts",
+    "./msw": "./src/msw/setup.ts",
+    "./msw/localstorage-fake": "./src/msw/localstorage-fake.mjs",
+    "./shared": "./src/shared-index.ts"
   },
   "dependencies": {
     "@spotify-confidence/shared-kernel": "workspace:*",

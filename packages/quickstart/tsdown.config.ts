@@ -15,6 +15,11 @@ export default defineConfig({
   dts: false,
   fixedExtension: false,
   deps: {
+    alwaysBundle: [
+      '@spotify-confidence/core',
+      '@spotify-confidence/shared-kernel',
+      '@spotify-confidence/utils',
+    ],
     neverBundle: ['react', 'ink', '@inkjs/ui'],
   },
 

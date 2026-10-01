@@ -1,5 +1,5 @@
 import { dirname } from 'node:path';
-import { isWindows } from '@spotify-confidence/testing';
+import { isWindows } from '@spotify-confidence/testing/shared';
 import { createSession } from './testing-framework/index.js';
 
 describe('when system check fails', () => {

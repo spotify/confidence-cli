@@ -6,7 +6,12 @@ import { join } from 'node:path';
 import { stripAnsi } from './strip-ansi.js';
 import { renderScreen, normalizeSnapshot } from './screen-buffer.js';
 import { E2E_BASE_ENV } from '../env.js';
-import { overlayEnv, isWindows, resolveKey, type Modifiers } from '@spotify-confidence/testing';
+import {
+  overlayEnv,
+  isWindows,
+  resolveKey,
+  type Modifiers,
+} from '@spotify-confidence/testing/shared';
 
 const CLI_PATH = resolve(import.meta.dirname, '../../../../dist/bin/cli.js');
 const DEFAULT_COLS = 100;
