@@ -9,3 +9,4 @@ export * from './constants.js';
 export * from './frameworks/index.js';
 export * from './integrations/index.js';
 export * from './providers/index.js';
+export * from './config/index.js';

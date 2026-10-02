@@ -5,4 +5,4 @@ export {
   resetConfig,
   isValidKey,
   validKeys,
-} from '@spotify-confidence/core';
+} from './config.js';
