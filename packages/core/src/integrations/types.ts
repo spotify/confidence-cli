@@ -8,7 +8,7 @@ export type InstalledPlugin = {
 };
 
 export type McpConnectOpts = {
-  serverName: string;
+  serverName: McpServerName;
   serverUrl: string;
   serverType: string;
   serverHeaders: Record<string, string>;
@@ -17,7 +17,7 @@ export type McpConnectOpts = {
 };
 
 export type McpDisconnectOpts = {
-  serverName: string;
+  serverName: McpServerName;
   projectDir: string;
 };
 
