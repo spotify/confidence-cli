@@ -1,5 +1,15 @@
 export function simulateTTY(isTTY: boolean): Disposable {
-  const original = process.stdin.isTTY;
+  const originalTTY = process.stdin.isTTY;
+  const originalCI = process.env.CI;
   process.stdin.isTTY = (isTTY || undefined) as typeof process.stdin.isTTY;
-  return { [Symbol.dispose]: () => void (process.stdin.isTTY = original) };
+
+  if (isTTY) delete process.env.CI;
+
+  return {
+    [Symbol.dispose]: () => {
+      process.stdin.isTTY = originalTTY;
+      if (originalCI !== undefined) process.env.CI = originalCI;
+      else delete process.env.CI;
+    },
+  };
 }
