@@ -115,6 +115,18 @@ describe('mcp install', () => {
 
     expect(output.stderr).toContain('connection refused');
   });
+
+  it('continues installing remaining servers after a failure', async () => {
+    using _auth = prepareAuthTokens('valid');
+    using _output = captureOutput();
+    vi.mocked(mockIntegration.connectMcpServer).mockRejectedValueOnce(
+      new Error('connection refused'),
+    );
+
+    await run(['mcp', 'install']);
+
+    expect(mockIntegration.connectMcpServer).toHaveBeenCalledTimes(2);
+  });
 });
 
 describe('mcp uninstall', () => {

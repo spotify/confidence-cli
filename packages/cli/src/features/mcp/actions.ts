@@ -1,4 +1,4 @@
-import ora from 'ora';
+import ora, { type Ora } from 'ora';
 import type { IdeId } from '@spotify-confidence/shared-kernel';
 import { message, fail } from '@output/print.js';
 import {
@@ -10,6 +10,7 @@ import {
   validateToken,
   type McpServerName,
   type McpServerStatus,
+  type McpServer,
 } from '@spotify-confidence/core';
 
 export async function installMcpServers(
@@ -24,6 +25,7 @@ export async function installMcpServers(
   if (!token) return;
 
   const spinner = ora(`Installing MCP servers for ${integration.name}...`).start();
+  const failed: string[] = [];
 
   for (const server of servers) {
     const serverDef = MCP_SERVERS[server.name];
@@ -39,13 +41,13 @@ export async function installMcpServers(
         accessToken: token,
       });
     } catch (err) {
-      spinner.stop();
-      fail(`Failed to connect ${server.name}: ${(err as Error).message}`);
-      return;
+      failed.push(`${server.name}: ${(err as Error).message}`);
     }
   }
 
-  spinner.succeed(`MCP servers installed for ${integration.name}`);
+  const action = 'install';
+  const success = `MCP servers installed for ${integration.name}`;
+  reportResults({ spinner, servers, failed, action, success });
 }
 
 export async function uninstallMcpServers(ideId: IdeId, projectDir: string): Promise<void> {
@@ -88,6 +90,7 @@ export async function refreshMcpAuth(
   if (!token) return;
 
   const spinner = ora('Updating MCP server credentials...').start();
+  const failed: string[] = [];
 
   for (const server of servers) {
     const serverDef = MCP_SERVERS[server.name];
@@ -103,13 +106,13 @@ export async function refreshMcpAuth(
         accessToken: token,
       });
     } catch (err) {
-      spinner.stop();
-      fail(`Failed to update ${server.name}: ${(err as Error).message}`);
-      return;
+      failed.push(`${server.name}: ${(err as Error).message}`);
     }
   }
 
-  spinner.succeed('MCP server credentials updated');
+  const action = 'update';
+  const success = 'MCP server credentials updated';
+  reportResults({ spinner, servers, failed, action, success });
 }
 
 async function resolveAuthToken(opts?: {
@@ -136,4 +139,29 @@ async function resolveAuthToken(opts?: {
     fail(`Authentication failed: ${(err as Error).message}`);
     return null;
   }
+}
+
+function reportResults(opts: {
+  spinner: Ora;
+  servers: McpServer[];
+  action: 'install' | 'update';
+  failed: string[];
+  success: string;
+}) {
+  const { spinner, action, success, failed, servers } = opts;
+  const errorReport = failed.join('\n');
+
+  if (failed.length === 0) {
+    spinner.succeed(success);
+    return;
+  }
+
+  if (failed.length === servers.length) {
+    spinner.stop();
+    fail(`Failed to ${action} MCP servers:\n${errorReport}`);
+    return;
+  }
+
+  spinner.stop();
+  fail(`Some MCP servers failed to ${action}:\n${errorReport}`);
 }
