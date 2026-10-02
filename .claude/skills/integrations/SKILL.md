@@ -1,12 +1,12 @@
 ---
 name: integrations
-description: IDE integration strategy pattern and guidelines for the Confidence Wizard CLI project
-version: '0.2'
+description: IDE integration strategy pattern and guidelines for the packages/core/src/integrations/ module
+version: '0.3'
 ---
 
 # IDE Integrations Guidelines
 
-This skill defines the structure, constraints, and conventions for IDE integrations in the Confidence Wizard CLI. Follow these when adding, modifying, or reviewing IDE-related code.
+This skill defines the structure, constraints, and conventions for IDE integrations. Follow these when adding, modifying, or reviewing IDE-related code.
 
 ## Purpose
 
@@ -94,11 +94,11 @@ mcp/                        → (no internal integrations imports)
 shared.ts                   → (no internal integrations imports)
 ```
 
-The integrations module imports from `@spotify-confidence/shared-kernel` and other core modules (for `IdeId`, `WizardSession`, constants). It never imports from `packages/quickstart/src/ui/` or `packages/quickstart/src/commands/`.
+The integrations module imports from `@spotify-confidence/shared-kernel` and other core modules. It never imports from `packages/quickstart/` or `packages/cli/`.
 
 ### Clean-dev script
 
-When changing MCP-related code (config paths, server names, connection methods, permissions), verify that `scripts/clean-dev-env.sh` still correctly cleans up all IDE connections and artifacts. This script resets the local dev environment for clean-slate testing. If you add a new IDE, config path, or MCP registration method, update the script accordingly.
+When changing MCP-related code (config paths, server names, connection methods, permissions), verify that `scripts/clean-dev-env.sh` still correctly cleans up all IDE connections and artifacts. If you add a new IDE, config path, or MCP registration method, update the script accordingly.
 
 ## Adding a New IDE
 
@@ -124,19 +124,10 @@ Only import from the barrel or from specific submodules — never reach into an 
 
 ### Codex: shell environment policy
 
-Codex `exec` mode defaults to a restricted shell environment — commands the agent runs do not inherit proxy settings, npm auth tokens, or registry config from the parent process. Without `shell_environment_policy.inherit="core"`, `npm install` falls back to direct connections that time out on corporate networks, turning a 15-second install into minutes of waiting.
+Codex `exec` mode defaults to a restricted shell environment — commands the agent runs do not inherit proxy settings, npm auth tokens, or registry config from the parent process. Without `shell_environment_policy.inherit="core"`, `npm install` falls back to direct connections that time out on corporate networks.
 
 Always pass `-c 'shell_environment_policy.inherit="core"'` in Codex `exec` spawn args so the agent's commands see the core parent environment (PATH, HOME, proxy settings, etc.).
 
 ### Codex: `item.completed` event batching
 
-Codex `exec --json` only emits `item.completed` events — not incremental text deltas. Status lines only surface after the agent finishes an entire message turn. If the agent does MCP calls, file reads, or package installs between messages, the user sees nothing until the next completed message. Claude Code and Cursor stream incrementally via `stream-json`, so their status updates appear in real time.
-
-## Coding Conventions
-
-Follow all conventions from the `wizard-architecture` skill. Additionally:
-
-- Use `type` over `interface` for all type definitions
-- Strategy objects use `satisfies IdeIntegration` only if needed for type narrowing; otherwise the export type annotation is sufficient
-- Private helpers within IDE subdirs should be plain functions, not methods on the strategy object
-- The `connectMcpServer` method receives all server metadata via `McpConnectOpts` — it must not import `MCP_SERVERS` directly
+Codex `exec --json` only emits `item.completed` events — not incremental text deltas. Status lines only surface after the agent finishes an entire message turn. Claude Code and Cursor stream incrementally via `stream-json`, so their status updates appear in real time.

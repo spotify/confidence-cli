@@ -1,3 +1,9 @@
+---
+name: workflows
+description: GitHub Actions workflow security rules and conventions (hash-pinned actions, minimal permissions, injection prevention)
+version: '0.2'
+---
+
 # GitHub Actions Workflows
 
 Guidelines for writing and modifying GitHub Actions workflows in this project. Follow these when creating or editing files under `.github/workflows/`.

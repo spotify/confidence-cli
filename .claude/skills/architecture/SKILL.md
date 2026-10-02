@@ -1,33 +1,34 @@
 ---
 name: architecture
-description: Architecture guidelines and constraints for the Confidence Wizard CLI project
-version: '0.2'
+description: Monorepo structure, dependency graph, domain boundaries, and package-level constraints for the Confidence CLI project
+version: '0.3'
 ---
 
 # Architecture Guidelines
 
-This skill defines the structural rules, domain boundaries, and constraints that govern all work on the Confidence Wizard CLI. Follow these when adding features, refactoring, or reviewing changes.
+This skill defines the structural rules, domain boundaries, and constraints that govern all work on the Confidence CLI. Follow these when adding features, refactoring, or reviewing changes.
 
 ## Purpose
 
-The Confidence Wizard is a CLI tool for quickly setting up and integrating [Confidence](https://confidence.spotify.com/) with users' projects. It works together with a Claude Code Skill backed by Confidence MCP tools ([confidence-ai-plugins](https://github.com/spotify/confidence-ai-plugins)) — the Skill handles product knowledge, the CLI handles user interaction.
+The Confidence CLI is a set of tools for setting up and integrating [Confidence](https://confidence.spotify.com/) with users' projects. It works together with a Claude Code Skill backed by Confidence MCP tools ([confidence-ai-plugins](https://github.com/spotify/confidence-ai-plugins)) — the Skill handles product knowledge, the CLI handles user interaction.
 
 ## Monorepo Structure
 
-The project is a pnpm monorepo with five packages:
+The project is a pnpm monorepo with six packages:
 
-| Package                   | Published    | Purpose                                                                                                         |
-| ------------------------- | ------------ | --------------------------------------------------------------------------------------------------------------- |
-| `packages/shared-kernel/` | No (private) | Cross-domain types and `noop` helper                                                                            |
-| `packages/eslint-config/` | No (private) | Shared ESLint config (base + react presets)                                                                     |
-| `packages/core/`          | No (private) | Shared infrastructure (auth, session, telemetry, exec, system, sdk, utils, frameworks, integrations, providers) |
-| `packages/testing/`       | No (private) | Test infrastructure (auth scaffolds, project scaffolds, env helpers, terminal helpers, MSW)                     |
-| `packages/quickstart/`    | Yes          | TUI wizard — `@spotify-confidence/quickstart`                                                                   |
+| Package                   | Published | Purpose                                                                                                         |
+| ------------------------- | --------- | --------------------------------------------------------------------------------------------------------------- |
+| `packages/shared-kernel/` | No        | Cross-domain types and `noop` helper                                                                            |
+| `packages/eslint-config/` | No        | Shared ESLint config (base + react presets)                                                                     |
+| `packages/core/`          | No        | Shared infrastructure (auth, session, telemetry, exec, system, sdk, utils, frameworks, integrations, providers) |
+| `packages/testing/`       | No        | Test infrastructure (auth scaffolds, project scaffolds, env helpers, terminal helpers, MSW)                     |
+| `packages/quickstart/`    | Yes       | TUI wizard — `@spotify-confidence/quickstart`                                                                   |
+| `packages/cli/`           | Yes       | CLI for managing Confidence — `@spotify-confidence/cli`                                                         |
 
 ### Dependency Graph
 
 ```
-shared-kernel ◄── core ◄── quickstart
+shared-kernel ◄── core ◄── quickstart ◄── cli
      ▲
      └── testing
 ```
@@ -36,6 +37,7 @@ shared-kernel ◄── core ◄── quickstart
 - **core** → shared-kernel
 - **testing** → shared-kernel (devDep on core for tests only)
 - **quickstart** → core, shared-kernel (devDep on testing, eslint-config)
+- **cli** → quickstart (devDep on core, shared-kernel, testing, eslint-config)
 
 ### Cross-Package Imports
 
@@ -57,6 +59,15 @@ Within `packages/quickstart/`, use path aliases for cross-domain imports:
 | `@commands/*` | `src/commands/*` |
 | `@features/*` | `src/features/*` |
 | `@ui/*`       | `src/ui/*`       |
+
+Within `packages/cli/`, use path aliases for cross-domain imports:
+
+| Alias         | Target           |
+| ------------- | ---------------- |
+| `@commands/*` | `src/commands/*` |
+| `@features/*` | `src/features/*` |
+| `@output/*`   | `src/output/*`   |
+| `@api/*`      | `src/api/*`      |
 
 Within `packages/core/src/`, use relative imports (no path aliases in source — enables external consumers to follow source imports). Core `__tests__/` can use the tsconfig path aliases (`@auth/*`, `@exec/*`, etc.).
 
@@ -87,7 +98,7 @@ Shared infrastructure organized into cohesive modules:
 - **`integrations/`** — IDE integration strategies (one subdir per IDE)
 - **`providers/`** — Provider detection for competing platforms
 
-Core depends on `shared-kernel`. It must not import from `quickstart` or `testing`.
+Core depends on `shared-kernel`. It must not import from `quickstart`, `cli`, or `testing`.
 
 ### Testing (`packages/testing/src/`)
 
@@ -109,7 +120,6 @@ The TUI wizard, organized into:
 
 CLI command definitions using yargs. Each command is a self-contained module exporting a `Command` object.
 
-- Currently: `default` (launches TUI) and `help`.
 - Commands orchestrate — they call into `src/ui/` but never contain UI rendering or framework detection logic themselves.
 
 #### Features (`src/features/`)
@@ -134,6 +144,36 @@ Terminal user interface built with Ink and React:
 - **`screen-transitions.ts`** — Transition map defining valid navigation edges.
 - **`screen-registry.tsx`** — Maps `ScreenId` → React component.
 
+### CLI (`packages/cli/`)
+
+The `confidence` CLI, organized into:
+
+#### Entry Point (`bin/cli.ts`)
+
+Uses yargs to define the CLI with global options (`--json`, `--output`, `--project`, `--environment`, `--profile`, `--dry-run`, `--debug`) and commands.
+
+#### Commands (`src/commands/`)
+
+Each command exports an object with `command`, `describe`, `builder` (optional), and `handler` properties. Commands with subcommands (e.g. `config`, `flags`, `events`, `recordings`) use nested yargs builders.
+
+- **`login`** / **`logout`** / **`whoami`** — Auth commands delegating to `@spotify-confidence/core`
+- **`config`** — Persistent configuration management (set/get/list/reset)
+- **`flags`** / **`events`** / **`recordings`** — Feature-specific setup commands delegating to quickstart
+- **`quickstart`** — Launches the interactive TUI wizard
+
+#### Features (`src/features/`)
+
+- **`config/`** — Re-exports config operations from core
+- **`quickstart/`** — Launches the quickstart TUI with feature pre-selection
+
+#### Output (`src/output/`)
+
+Structured output formatting with automatic format detection:
+
+- **`detect.ts`** — `resolveFormat()`: `--json` flag → JSON; `--output` flag → specified; TTY → table; pipe → JSON
+- **`json.ts`** — `formatJson()`: wraps data in `{ data, meta? }` envelope
+- **`table.ts`** — `formatTable()`: dynamically-sized column layout
+
 ## Hard Constraints
 
 ### No product knowledge in the TUI
@@ -143,11 +183,13 @@ The TUI is a generic wizard shell. It must not contain Confidence-specific domai
 ### Dependency direction
 
 ```
-quickstart commands → ui, features, core, shared-kernel
-quickstart features → core, shared-kernel
-quickstart ui       → features, core, shared-kernel
-core                → shared-kernel
-shared-kernel       → nothing
+cli commands          → features, output, quickstart, core, shared-kernel
+cli features          → quickstart, core, shared-kernel
+quickstart commands   → ui, features, core, shared-kernel
+quickstart features   → core, shared-kernel
+quickstart ui         → features, core, shared-kernel
+core                  → shared-kernel
+shared-kernel         → nothing
 ```
 
 No circular dependencies. No upward imports.
@@ -172,68 +214,3 @@ All session state changes go through `WizardStore` setters. Never mutate the ses
 ### UI component sourcing
 
 Use `@inkjs/ui` components over standalone `ink-*` packages.
-
-## Coding Conventions
-
-### Initialization Hooks
-
-Slices that compute initial state at mount time use a dedicated `useInitial*` hook. This separates one-time "resolve initial state + sync to store" from ongoing interaction logic.
-
-Each init hook: (1) pure `resolve*` function, (2) `useEffect` to sync store, (3) returns values for the parent hook.
-
-### Dry Run Separation
-
-Hooks supporting dry-run mode keep dry-run logic in a separate function. Never interleave with conditionals.
-
-### React Hooks Rules
-
-`eslint-plugin-react-hooks` with `recommended-latest` rules, all set to `error`.
-
-### Path Aliases (Quickstart)
-
-Within `packages/quickstart/`, use path aliases (`@commands/`, `@features/`, `@ui/`) for cross-domain imports. Keep relative imports within the same domain.
-
-```ts
-// Cross-domain within quickstart — use alias
-import { WelcomeScreen } from '@ui/screens/welcome/index.js';
-import { buildPrompt } from '@features/onboarding/index.js';
-
-// Cross-package — use npm name
-import { ScreenId, track } from '@spotify-confidence/core';
-import type { IdeId } from '@spotify-confidence/shared-kernel';
-
-// Within-domain — use relative
-import { store } from '../../store.js';
-```
-
-### TypeScript Style
-
-- Sort imports: system (node:*), react, external deps, cross-package (`@spotify-confidence/*`), aliases, relative.
-- Use `type` instead of `interface`.
-- Use latest TypeScript syntax: `satisfies`, `using`, etc.
-- Object params for 4+ args.
-- Named functions in `useEffect`.
-- `AbortController` for event listener cleanup.
-- Named types in `actions.ts` for union extensions.
-- `satisfies never` in `switch` defaults.
-
-### Module Exports
-
-Keep the public API compact. Barrel files re-export only the public API.
-
-### Linting
-
-Strict linting — all rules are errors. ESLint config from `@spotify-confidence/eslint-config` (base) or `@spotify-confidence/eslint-config/react` (quickstart).
-
-### No Warning Suppression
-
-Never suppress runtime warnings or linter diagnostics. Fix the root cause.
-
-## Confidence MCP Tools
-
-The wizard works alongside two Confidence MCP servers:
-
-- **`confidence-flags`** — Feature flag management
-- **`confidence-docs`** — Documentation access
-
-These are accessed via the Claude Code Skill, never directly from the TUI or CLI code.

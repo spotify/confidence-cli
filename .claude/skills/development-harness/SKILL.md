@@ -1,6 +1,12 @@
+---
+name: development-harness
+description: Quality gates, commit conventions, pre-commit hooks, and CI/CD processes for the Confidence CLI monorepo
+version: '0.2'
+---
+
 # Development Harness
 
-This skill defines the quality gates, commit conventions, and CI/CD processes for the Confidence Wizard CLI. Follow these when making changes, creating commits, or setting up automation.
+This skill defines the quality gates, commit conventions, and CI/CD processes for the Confidence CLI monorepo. Follow these when making changes, creating commits, or setting up automation.
 
 ## Quality Harness
 
@@ -71,11 +77,12 @@ feat!: remove legacy auth flow
 ### Examples
 
 ```
+feat(cli): add whoami command
 feat(ui): add framework selection screen
 fix(frameworks): correct Next.js detection for app router
-refactor: extract shared types to lib module
+refactor(core): extract shared types to lib module
 chore(deps): update ink to v6.9
-test: add coverage for wizard store reactivity
+test(cli): add coverage for config management
 ```
 
 ## CI/CD

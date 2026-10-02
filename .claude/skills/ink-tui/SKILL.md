@@ -1,12 +1,12 @@
 ---
 name: ink-tui
-description: Develop and modify the Ink-based terminal UI for the Confidence Wizard
-version: '0.1'
+description: Develop and modify the Ink-based terminal UI in the packages/quickstart/ package
+version: '0.2'
 ---
 
-# Ink TUI Wizard Skill
+# Ink TUI Skill
 
-This skill covers building and modifying the interactive terminal user interface for the Confidence Wizard CLI. The TUI is built with Ink (React for CLIs), @inkjs/ui, and nanostores for state management.
+This skill covers building and modifying the interactive terminal user interface in `packages/quickstart/`. The TUI is built with Ink (React for CLIs), @inkjs/ui, and nanostores for state management.
 
 ## Core Architecture
 
