@@ -1,8 +1,9 @@
 import { readFileSync } from 'node:fs';
 import { join } from 'node:path';
-import { createProjectDir } from '@spotify-confidence/testing/scaffold';
 import {
+  createProjectDir,
   writeClaudeSettings,
+  writeCodexConfig,
   writeCursorMcpConfig,
   writeCursorCliConfig,
 } from '@spotify-confidence/testing/scaffold';
@@ -110,15 +111,34 @@ describe('codex disconnectMcpServer', () => {
     return mod.disconnectMcpServer;
   }
 
-  it('calls codex mcp remove with the server name', async () => {
+  it('removes the server section from project and global configs', async () => {
+    using project = createProjectDir('empty');
+    vi.stubEnv('HOME', project.path);
+    const toml = [
+      '[mcp_servers.confidence-flags]',
+      'url = "https://example.com"',
+      '',
+      '[mcp_servers.other-server]',
+      'url = "https://other.com"',
+    ].join('\n');
+    writeCodexConfig(project.path, toml);
+
     const sut = await loadDisconnect();
 
-    await sut({ serverName: 'confidence-flags', projectDir: '/project' });
+    await sut({ serverName: 'confidence-flags', projectDir: project.path });
 
-    expect(execFile).toHaveBeenCalledWith(
-      'codex',
-      ['mcp', 'remove', 'confidence-flags'],
-      undefined,
-    );
+    const updated = readFileSync(join(project.path, '.codex', 'config.toml'), 'utf-8');
+    expect(updated).not.toContain('confidence-flags');
+    expect(updated).toContain('[mcp_servers.other-server]');
+  });
+
+  it('does not fail when config files do not exist', async () => {
+    using project = createProjectDir('empty');
+    vi.stubEnv('HOME', project.path);
+    const sut = await loadDisconnect();
+
+    await expect(
+      sut({ serverName: 'confidence-flags', projectDir: project.path }),
+    ).resolves.toBeUndefined();
   });
 });

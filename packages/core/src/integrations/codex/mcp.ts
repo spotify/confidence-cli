@@ -1,4 +1,4 @@
-import { readFileSync, writeFileSync } from 'node:fs';
+import { existsSync, readFileSync, writeFileSync } from 'node:fs';
 import { execFile } from '../../exec/exec.js';
 import type { McpConnectOpts, McpDisconnectOpts } from '../types.js';
 import {
@@ -35,8 +35,10 @@ export async function connectMcpServer(opts: McpConnectOpts): Promise<void> {
   patchHttpHeaders(opts.serverName, headers);
 }
 
-export async function disconnectMcpServer(opts: McpDisconnectOpts): Promise<void> {
-  await execFile('codex', ['mcp', 'remove', opts.serverName]);
+export function disconnectMcpServer(opts: McpDisconnectOpts): Promise<void> {
+  removeTomlSection(projectConfigPath(opts.projectDir), opts.serverName);
+  removeTomlSection(globalConfigPath(), opts.serverName);
+  return Promise.resolve();
 }
 
 function getRegisteredMcpNames(projectDir: string): McpServerName[] {
@@ -70,6 +72,25 @@ function getStoredAuthToken(serverName: McpServerName): string | null {
   } catch {
     // Config file missing or unreadable — treat as no stored token
     return null;
+  }
+}
+
+function removeTomlSection(configPath: string, serverName: string): void {
+  if (!existsSync(configPath)) return;
+  try {
+    const content = readFileSync(configPath, 'utf-8');
+    const sectionHeader = `[mcp_servers.${serverName}]`;
+    const idx = content.indexOf(sectionHeader);
+    if (idx === -1) return;
+
+    const nextSection = content.indexOf('\n[', idx + sectionHeader.length);
+    const before = content.slice(0, idx).replace(/\n+$/, '');
+    const after = nextSection === -1 ? '' : content.slice(nextSection);
+    const result = (before + after).trim();
+
+    writeFileSync(configPath, result ? result + '\n' : '', 'utf-8');
+  } catch {
+    // Corrupt or unreadable config — server is effectively unregistered already
   }
 }
 

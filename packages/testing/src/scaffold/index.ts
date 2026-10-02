@@ -4,5 +4,6 @@ export {
   writeClaudeSettings,
   writeCursorMcpConfig,
   writeCursorCliConfig,
+  writeCodexConfig,
 } from './ide-scaffold.js';
 export type { ProjectType } from './types.js';

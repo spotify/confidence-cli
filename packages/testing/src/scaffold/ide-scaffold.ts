@@ -31,3 +31,9 @@ export function writeCursorCliConfig(projectDir: string, config: CursorCliConfig
   mkdirSync(dir, { recursive: true });
   writeFileSync(join(dir, 'cli.json'), JSON.stringify(config, null, 2));
 }
+
+export function writeCodexConfig(projectDir: string, content: string): void {
+  const dir = join(projectDir, '.codex');
+  mkdirSync(dir, { recursive: true });
+  writeFileSync(join(dir, 'config.toml'), content);
+}
