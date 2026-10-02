@@ -68,19 +68,19 @@ export async function refreshAccessToken(profile?: string): Promise<AuthResult> 
   };
 }
 
-export function authenticate(
-  mode: 'signup' | 'login',
-  signal?: AbortSignal,
-  profile?: string,
-  onUrl?: (url: string) => void,
-): Promise<AuthResult> {
-  const clientId = mode === 'signup' ? AUTH_CLIENT_ID_SIGNUP : AUTH_CLIENT_ID_LOGIN;
-  const organization = mode === 'login' ? resolveOrganization(profile) : undefined;
+export function authenticate(opts: {
+  mode: 'signup' | 'login';
+  signal?: AbortSignal;
+  profile?: string;
+  onUrl?: (url: string) => void;
+}): Promise<AuthResult> {
+  const clientId = opts.mode === 'signup' ? AUTH_CLIENT_ID_SIGNUP : AUTH_CLIENT_ID_LOGIN;
+  const organization = opts.mode === 'login' ? resolveOrganization(opts.profile) : undefined;
   const { verifier, challenge } = generatePKCE();
   const redirectUri = `http://localhost:${AUTH_CALLBACK_PORT}/callback`;
 
   return new Promise((resolve, reject) => {
-    if (signal?.aborted) {
+    if (opts.signal?.aborted) {
       reject(new Error('Authentication cancelled'));
       return;
     }
@@ -117,7 +117,7 @@ export function authenticate(
         const tokenResponse = await exchangeCode({ code, clientId, verifier, redirectUri });
         const { access_token, refresh_token } = tokenResponse;
 
-        persistTokens(access_token, refresh_token, profile);
+        persistTokens(access_token, refresh_token, opts.profile);
 
         const region = extractRegion(access_token);
         const { workspace } = validateToken(access_token);
@@ -136,12 +136,12 @@ export function authenticate(
 
     server.listen(AUTH_CALLBACK_PORT, () => {
       const authUrl = buildAuthUrl({ clientId, challenge, redirectUri, organization });
-      onUrl?.(authUrl);
+      opts.onUrl?.(authUrl);
       openBrowser(authUrl);
     });
 
-    if (signal) {
-      signal.addEventListener(
+    if (opts.signal) {
+      opts.signal.addEventListener(
         'abort',
         () => {
           server.close();

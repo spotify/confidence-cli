@@ -57,7 +57,7 @@ export function useAuthFlow(): AuthFlowState {
     const controller = new AbortController();
     abortRef.current = controller;
 
-    authenticate(mode, controller.signal)
+    authenticate({ mode, signal: controller.signal })
       .then((result) => {
         store.setAuthState({
           status: 'authenticated',

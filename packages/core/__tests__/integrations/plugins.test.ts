@@ -18,6 +18,7 @@ const mockIntegration: IdeIntegration = {
   updatePlugin: vi.fn().mockResolvedValue(undefined),
   detectMcpStatuses: vi.fn().mockResolvedValue({}),
   connectMcpServer: vi.fn().mockResolvedValue(undefined),
+  disconnectMcpServer: vi.fn().mockResolvedValue(undefined),
 };
 
 vi.mock('../../src/integrations/registry.js', () => ({

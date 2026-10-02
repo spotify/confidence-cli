@@ -1,6 +1,7 @@
 export type {
   IdeIntegration,
   McpConnectOpts,
+  McpDisconnectOpts,
   OnboardingOpts,
   OnboardingCallbacks,
   InstalledPlugin,

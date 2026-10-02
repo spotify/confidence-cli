@@ -1,6 +1,6 @@
-import { readFileSync, writeFileSync } from 'node:fs';
+import { existsSync, readFileSync, writeFileSync } from 'node:fs';
 import { execFile } from '../../exec/exec.js';
-import type { McpConnectOpts } from '../types.js';
+import type { McpConnectOpts, McpDisconnectOpts } from '../types.js';
 import {
   MCP_SERVERS,
   type McpServerName,
@@ -22,7 +22,7 @@ export async function connectMcpServer(opts: McpConnectOpts): Promise<void> {
   try {
     await execFile('codex', ['mcp', 'remove', opts.serverName]);
   } catch {
-    // Not registered yet — that's fine
+    // Server may not be registered yet; the subsequent `mcp add` is idempotent
   }
 
   await execFile('codex', ['mcp', 'add', opts.serverName, '--url', opts.serverUrl]);
@@ -35,6 +35,12 @@ export async function connectMcpServer(opts: McpConnectOpts): Promise<void> {
   patchHttpHeaders(opts.serverName, headers);
 }
 
+export function disconnectMcpServer(opts: McpDisconnectOpts): Promise<void> {
+  removeTomlSection(projectConfigPath(opts.projectDir), opts.serverName);
+  removeTomlSection(globalConfigPath(), opts.serverName);
+  return Promise.resolve();
+}
+
 function getRegisteredMcpNames(projectDir: string): McpServerName[] {
   const names = Object.keys(MCP_SERVERS) as McpServerName[];
   const paths = [globalConfigPath(), projectConfigPath(projectDir)];
@@ -45,6 +51,7 @@ function getRegisteredMcpNames(projectDir: string): McpServerName[] {
         const content = readFileSync(configPath, 'utf-8');
         return content.includes(`[mcp_servers.${name}]`) || content.includes(`"${name}"`);
       } catch {
+        // Config file doesn't exist — server is not registered in this scope
         return false;
       }
     }),
@@ -63,7 +70,27 @@ function getStoredAuthToken(serverName: McpServerName): string | null {
     const match = section.match(/"Authorization"\s*=\s*"Bearer\s+([^"]+)"/);
     return match?.[1] ?? null;
   } catch {
+    // Config file missing or unreadable — treat as no stored token
     return null;
+  }
+}
+
+function removeTomlSection(configPath: string, serverName: string): void {
+  if (!existsSync(configPath)) return;
+  try {
+    const content = readFileSync(configPath, 'utf-8');
+    const sectionHeader = `[mcp_servers.${serverName}]`;
+    const idx = content.indexOf(sectionHeader);
+    if (idx === -1) return;
+
+    const nextSection = content.indexOf('\n[', idx + sectionHeader.length);
+    const before = content.slice(0, idx).replace(/\n+$/, '');
+    const after = nextSection === -1 ? '' : content.slice(nextSection);
+    const result = (before + after).trim();
+
+    writeFileSync(configPath, result ? result + '\n' : '', 'utf-8');
+  } catch {
+    // Corrupt or unreadable config — server is effectively unregistered already
   }
 }
 
@@ -105,6 +132,6 @@ export function patchHttpHeaders(
 
     writeFileSync(configPath, content, 'utf-8');
   } catch {
-    // Best-effort — MCP still works without the header
+    // Config may not exist yet if `codex mcp add` failed; MCP still works without custom headers
   }
 }
