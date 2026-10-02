@@ -70,7 +70,7 @@ describe('cursor disconnectMcpServer', () => {
     return mod.disconnectMcpServer;
   }
 
-  it('removes the server entry from project and global MCP configs', async () => {
+  it('removes the server entry from project config and CLI permissions', async () => {
     using project = createProjectDir('empty');
     writeCursorMcpConfig(project.path, {
       mcpServers: {
@@ -83,7 +83,6 @@ describe('cursor disconnectMcpServer', () => {
     });
 
     const sut = await loadDisconnect();
-    vi.stubEnv('HOME', project.path);
 
     await sut({ serverName: 'confidence-flags', projectDir: project.path });
 
@@ -93,6 +92,25 @@ describe('cursor disconnectMcpServer', () => {
 
     const updatedCli = JSON.parse(readFileSync(join(project.path, '.cursor', 'cli.json'), 'utf-8'));
     expect(updatedCli.permissions.allow).toEqual(['Mcp(other:*)']);
+  });
+
+  it('does not remove the server from global config', async () => {
+    using project = createProjectDir('empty');
+    using home = createProjectDir('empty');
+    vi.stubEnv('HOME', home.path);
+    writeCursorMcpConfig(project.path, {
+      mcpServers: { 'confidence-flags': { type: 'http', url: 'https://example.com' } },
+    });
+    writeCursorMcpConfig(home.path, {
+      mcpServers: { 'confidence-flags': { type: 'http', url: 'https://example.com' } },
+    });
+
+    const sut = await loadDisconnect();
+
+    await sut({ serverName: 'confidence-flags', projectDir: project.path });
+
+    const globalMcp = JSON.parse(readFileSync(join(home.path, '.cursor', 'mcp.json'), 'utf-8'));
+    expect(globalMcp.mcpServers).toHaveProperty('confidence-flags');
   });
 
   it('does not fail when config files do not exist', async () => {

@@ -41,7 +41,6 @@ export async function connectMcpServer(opts: McpConnectOpts): Promise<void> {
 
 export async function disconnectMcpServer(opts: McpDisconnectOpts): Promise<void> {
   removeMcpEntry(mcpConfigPath(opts.projectDir), opts.serverName);
-  removeMcpEntry(globalConfigPath(), opts.serverName);
   removeCliPermission(cliConfigPath(opts.projectDir), opts.serverName);
 }
 
