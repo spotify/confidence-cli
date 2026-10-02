@@ -5,7 +5,7 @@ import {
   navigateToOnboarding,
   navigateToPlugins,
   CHAT_PROMPT_FILE,
-} from './testing-framework/index.js';
+} from '@spotify-confidence/testing/e2e';
 
 describe('when the user starts chat after onboarding', () => {
   it('includes code changes and report file in the prompt', async () => {

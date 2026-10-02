@@ -1,4 +1,4 @@
-import { createSession, navigateToConnectTools } from './testing-framework/index.js';
+import { createSession, navigateToConnectTools } from '@spotify-confidence/testing/e2e';
 
 describe('when the user skips connecting tools', () => {
   it('shows skip message and proceeds to onboarding', async () => {

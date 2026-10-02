@@ -1,4 +1,4 @@
-import { createSession } from './testing-framework/index.js';
+import { createSession } from '@spotify-confidence/testing/e2e';
 
 describe('when the project is empty', () => {
   it('shows "Select framework" instead of "Start setup" on the Welcome screen', async () => {

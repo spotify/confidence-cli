@@ -3,7 +3,7 @@ import {
   navigateToPlugins,
   selectIdeAndOnboard,
   readInvocation,
-} from './testing-framework/index.js';
+} from '@spotify-confidence/testing/e2e';
 
 const IDE_CASES = [
   {

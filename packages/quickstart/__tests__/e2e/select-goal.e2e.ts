@@ -1,4 +1,4 @@
-import { createSession, navigateToGoalSelection } from './testing-framework/index.js';
+import { createSession, navigateToGoalSelection } from '@spotify-confidence/testing/e2e';
 
 describe('SelectGoal screen', () => {
   it('shows goal options for a browser framework', async () => {

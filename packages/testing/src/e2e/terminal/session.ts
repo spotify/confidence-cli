@@ -1,15 +1,13 @@
 import { spawn as ptySpawn, type IPty } from 'node-pty';
-import { resolve } from 'node:path';
 import { mkdtempSync, rmSync } from 'node:fs';
 import { tmpdir } from 'node:os';
 import { join } from 'node:path';
 import { stripAnsi } from './strip-ansi.js';
 import { renderScreen, normalizeSnapshot } from './screen-buffer.js';
 import { E2E_BASE_ENV } from '../env.js';
-import { overlayEnv, isWindows } from '@spotify-confidence/testing/env';
-import { resolveKey, type Modifiers } from '@spotify-confidence/testing/terminal';
+import { overlayEnv, isWindows } from '../../env/index.js';
+import { resolveKey, type Modifiers } from '../../terminal/index.js';
 
-const CLI_PATH = resolve(import.meta.dirname, '../../../../dist/bin/cli.js');
 const DEFAULT_COLS = 100;
 const DEFAULT_ROWS = 40;
 const DEFAULT_TIMEOUT = 15_000;
@@ -20,6 +18,8 @@ const DEFAULT_TIMEOUT = 15_000;
  * @see {@link TerminalSession}
  */
 type SessionOptions = {
+  /** Absolute path to the CLI entry point (e.g. `dist/bin/cli.js`). */
+  cliPath: string;
   /** CLI arguments appended after the binary path. @defaultValue `['--debug']` */
   args?: string[];
   /** Extra environment variables merged on top of the base e2e env. */
@@ -39,14 +39,14 @@ function delay(ms: number): Promise<void> {
 /**
  * Drives a CLI process inside a pseudo-terminal for end-to-end testing.
  *
- * Wraps `node-pty` to spawn the wizard binary in an isolated environment,
+ * Wraps `node-pty` to spawn a CLI binary in an isolated environment,
  * then exposes high-level methods for sending input, waiting for output,
  * and capturing snapshots. Supports the TC39 Explicit Resource Management
  * protocol (`using`) for automatic cleanup.
  *
  * @example
  * ```ts
- * using session = new TerminalSession({ args: ['--debug'] });
+ * using session = new TerminalSession({ cliPath: 'dist/bin/cli.js', args: ['--debug'] });
  * await session.waitForText('Welcome');
  * await session.press('Enter');
  * expect(session.snapshot()).toMatchSnapshot('welcome');
@@ -67,8 +67,15 @@ export class TerminalSession {
   readonly cols: number;
   readonly rows: number;
 
-  constructor(options: SessionOptions = {}) {
-    const { args = ['--debug'], env = {}, cols = DEFAULT_COLS, rows = DEFAULT_ROWS, cwd } = options;
+  constructor(options: SessionOptions) {
+    const {
+      cliPath,
+      args = ['--debug'],
+      env = {},
+      cols = DEFAULT_COLS,
+      rows = DEFAULT_ROWS,
+      cwd,
+    } = options;
 
     this.cols = cols;
     this.rows = rows;
@@ -77,7 +84,7 @@ export class TerminalSession {
     this.cwd = cwd ?? process.cwd();
     this.tempDirs.push(isolatedTmpDir);
 
-    this.pty = ptySpawn(process.execPath, [CLI_PATH, ...args], {
+    this.pty = ptySpawn(process.execPath, [cliPath, ...args], {
       name: 'xterm-256color',
       cols,
       rows,

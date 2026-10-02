@@ -1,5 +1,5 @@
 import { createServer, type Server } from 'node:http';
-import { buildTestJwt } from '@spotify-confidence/testing/auth';
+import { buildTestJwt } from '../../auth/index.js';
 import { buildMockEnv } from '../env.js';
 
 /**

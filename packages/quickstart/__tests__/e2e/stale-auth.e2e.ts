@@ -4,7 +4,7 @@ import {
   navigatePastGoalSelection,
   simulateAuthCallback,
   buildTestJwt,
-} from './testing-framework/index.js';
+} from '@spotify-confidence/testing/e2e';
 
 function buildExpiredJwt(): string {
   return buildTestJwt({ exp: Math.floor(Date.now() / 1000) - 3600 });
