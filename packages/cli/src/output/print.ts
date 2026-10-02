@@ -26,8 +26,12 @@ type PrintKeyValueOpts = {
   flags: FormatFlags;
 };
 
-function write(text: string): void {
+export function message(text: string): void {
   process.stdout.write(text + '\n');
+}
+
+export function error(text: string): void {
+  process.stderr.write(text + '\n');
 }
 
 export function print<T extends Record<string, unknown>>(opts: PrintTableOpts<T>): void;
@@ -38,23 +42,23 @@ export function print<T extends Record<string, unknown>>(
   const format = resolveFormat(opts.flags);
 
   if (format === 'json') {
-    write(formatJson(opts.data));
+    message(formatJson(opts.data));
     return;
   }
 
   if (Array.isArray(opts.data)) {
-    write(formatTable(opts.data, opts.columns as Column<T>[]));
+    message(formatTable(opts.data, opts.columns as Column<T>[]));
     return;
   }
 
   const entries = Object.entries(opts.data);
   if (entries.length === 0) {
-    write('No results.');
+    message('No results.');
     return;
   }
 
   const rows = entries.map(([key, value]) => ({ key, value: String(value ?? '') }));
-  write(formatTable(rows, opts.columns as Column<{ key: string; value: string }>[]));
+  message(formatTable(rows, opts.columns as Column<{ key: string; value: string }>[]));
 }
 
 export function extractFlags(argv: Record<string, unknown>): FormatFlags {
