@@ -5,12 +5,14 @@ import { useAutoAdvance } from '../../hooks/useAutoAdvance.js';
 import { useLogger } from '../../hooks/useLog.js';
 import { store, useSession } from '../../store.js';
 import { goalLabel } from './actions.js';
-import { goalsChosen } from './log-messages.js';
+import { goalsChosen, recordingsIncompatible } from './log-messages.js';
 import * as te from './telemetry-events.js';
 
 export type GoalSelection = {
   recordingAvailable: boolean;
+  incompatiblePreset: boolean;
   submitGoals: (values: OnboardingGoal[]) => void;
+  continueWithoutRecordings: () => void;
 };
 
 export function useGoalSelection(): GoalSelection {
@@ -23,9 +25,13 @@ export function useGoalSelection(): GoalSelection {
   const goalsPreset =
     session.onboardingGoals.length > 0 && !session.completedScreens.has(ScreenId.SelectGoal);
 
+  const hasPresetRecordings = goalsPreset && session.onboardingGoals.includes('session-recordings');
+
+  const incompatiblePreset = hasPresetRecordings && !recordingAvailable;
+
   useAutoAdvance({
     screen: ScreenId.SelectGoal,
-    when: goalsPreset,
+    when: goalsPreset && !incompatiblePreset,
     delay: 0,
     onAdvance() {
       const goals = session.onboardingGoals;
@@ -43,8 +49,23 @@ export function useGoalSelection(): GoalSelection {
     navigate.to('next');
   }
 
+  function continueWithoutRecordings() {
+    const compatible = session.onboardingGoals.filter((g) => g !== 'session-recordings');
+    log(recordingsIncompatible(session.framework ?? 'unknown'));
+    track(te.recordingsIncompatibleContinued(session.framework ?? 'unknown'));
+
+    if (compatible.length > 0) {
+      store.setOnboardingGoals(compatible);
+      track(te.goalsSelected(compatible));
+      log(goalsChosen(compatible.map(goalLabel).join(', ')));
+      navigate.to('next');
+    }
+  }
+
   return {
     recordingAvailable,
+    incompatiblePreset,
     submitGoals,
+    continueWithoutRecordings,
   };
 }

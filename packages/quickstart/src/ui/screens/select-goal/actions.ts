@@ -20,3 +20,14 @@ export function goalOptionsFor(recordingAvailable: boolean): PromptOption<Onboar
 export function goalLabel(goal: OnboardingGoal): string {
   return GOAL_OPTIONS.find((o) => o.value === goal)?.label ?? goal;
 }
+
+export type IncompatibleAction = 'continue' | 'quit';
+
+const QUIT_OPTION: PromptOption<IncompatibleAction> = { label: 'Quit', value: 'quit' };
+
+export const INCOMPATIBLE_OPTIONS_WITH_FALLBACK: PromptOption<IncompatibleAction>[] = [
+  { label: 'Continue without recordings', value: 'continue' },
+  QUIT_OPTION,
+];
+
+export const INCOMPATIBLE_OPTIONS_QUIT_ONLY: PromptOption<IncompatibleAction>[] = [QUIT_OPTION];
