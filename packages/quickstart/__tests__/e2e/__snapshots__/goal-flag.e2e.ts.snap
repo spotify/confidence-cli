@@ -1,0 +1,24 @@
+// Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
+
+exports[`--features flag > omits "Select features" from the task list when --features is provided > task-list-without-select-features 1`] = `
+" Confidence by Spotify                                              https://confidence.spotify.com/
+
+ Select agent to set up                                               Todo (2/5)
+
+ Your agent will get Confidence skills for flag management,           ● Check system
+ warehouse setup, migrations, and onboarding — so it can help         ● Log in to Confidence
+ without searching the docs.                                          ▶ Set up your agent
+                                                                      ○ Install MCPs
+ ◆ Cursor and Codex require full file system access to run            ○ Onboard project
+ onboarding.
+
+
+ ──────────────────────────────────────────────────────────────────────────────────────────────────
+ Which CLI agent would you like to use?
+
+ ❯ Claude Code
+   Cursor
+   Codex
+
+ ↑↓ navigate   enter confirm                                                                 vX.Y.Z"
+`;

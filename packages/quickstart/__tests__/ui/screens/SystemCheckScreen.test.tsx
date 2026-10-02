@@ -44,10 +44,10 @@ describe('SystemCheckScreen', () => {
       });
     });
 
-    it('auto-advances to Authenticate', async () => {
+    it('auto-advances to SelectGoal', async () => {
       using sut = renderApp({ screen: ScreenId.SystemCheck });
       await waitFor(() => {
-        expect(sut.lastFrame()).toContain('Log in to Confidence');
+        expect(sut.lastFrame()).toContain('Select the features');
       });
     });
   });

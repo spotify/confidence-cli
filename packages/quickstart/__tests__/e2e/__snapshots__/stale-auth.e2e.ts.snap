@@ -3,59 +3,59 @@
 exports[`when auth token is stale > allows re-authentication after expired token and proceeds normally > auth-re-authenticated 1`] = `
 " Confidence by Spotify                                              https://confidence.spotify.com/
 
- Select the features you'd like to set up                             Todo (2/6)
+ Select agent to set up                                               Todo (3/6)
 
- Toggle Confidence features to integrate with your project.           ● Check system
-                                                                      ● Log in to Confidence
- ◆ Event tracking works best with Confidence Cloud or an existing     ▶ Select features
- warehouse setup.                                                     ○ Set up your agent
-                                                                      ○ Connect tools
-                                                                      ○ Onboard project
+ Your agent will get Confidence skills for flag management,           ● Check system
+ warehouse setup, migrations, and onboarding — so it can help         ● Select features
+ without searching the docs.                                          ● Log in to Confidence
+                                                                      ▶ Set up your agent
+ ◆ Cursor and Codex require full file system access to run            ○ Install MCPs
+ onboarding.                                                          ○ Onboard project
 
 
  ──────────────────────────────────────────────────────────────────────────────────────────────────
- Toggle features to set up:
+ Which CLI agent would you like to use?
 
- ❯ Flags
-   Events
-   Recordings (β)
+ ❯ Claude Code
+   Cursor
+   Codex
 
- ↑↓ navigate   space toggle   enter confirm                                                  vX.Y.Z"
+ ↑↓ navigate   enter confirm                                                                 vX.Y.Z"
 `;
 
 exports[`when auth token is stale > allows signing in after failed refresh and proceeds normally > auth-refresh-failed-then-signed-in 1`] = `
 " Confidence by Spotify                                              https://confidence.spotify.com/
 
- Select the features you'd like to set up                             Todo (2/6)
+ Select agent to set up                                               Todo (3/6)
 
- Toggle Confidence features to integrate with your project.           ● Check system
-                                                                      ● Log in to Confidence
- ◆ Event tracking works best with Confidence Cloud or an existing     ▶ Select features
- warehouse setup.                                                     ○ Set up your agent
-                                                                      ○ Connect tools
-                                                                      ○ Onboard project
+ Your agent will get Confidence skills for flag management,           ● Check system
+ warehouse setup, migrations, and onboarding — so it can help         ● Select features
+ without searching the docs.                                          ● Log in to Confidence
+                                                                      ▶ Set up your agent
+ ◆ Cursor and Codex require full file system access to run            ○ Install MCPs
+ onboarding.                                                          ○ Onboard project
 
 
  ──────────────────────────────────────────────────────────────────────────────────────────────────
- Toggle features to set up:
+ Which CLI agent would you like to use?
 
- ❯ Flags
-   Events
-   Recordings (β)
+ ❯ Claude Code
+   Cursor
+   Codex
 
- ↑↓ navigate   space toggle   enter confirm                                                  vX.Y.Z"
+ ↑↓ navigate   enter confirm                                                                 vX.Y.Z"
 `;
 
 exports[`when auth token is stale > falls back to sign-in when choosing existing account and refresh fails > auth-refresh-failed 1`] = `
 " Confidence by Spotify                                              https://confidence.spotify.com/
 
- Log in to Confidence                                                 Todo (1/6)
+ Log in to Confidence                                                 Todo (2/6)
 
  Log in so the wizard can create flags and set up your project.       ● Check system
-                                                                      ▶ Log in to Confidence
- Your session expired. Log in again.                                  ○ Select features
+                                                                      ● Select features
+ Your session expired. Log in again.                                  ▶ Log in to Confidence
                                                                       ○ Set up your agent
-                                                                      ○ Connect tools
+                                                                      ○ Install MCPs
                                                                       ○ Onboard project
 
 
@@ -70,13 +70,13 @@ exports[`when auth token is stale > falls back to sign-in when choosing existing
 exports[`when auth token is stale > prompts user to sign in again instead of using the expired token > auth-expired 1`] = `
 " Confidence by Spotify                                              https://confidence.spotify.com/
 
- Log in to Confidence                                                 Todo (1/6)
+ Log in to Confidence                                                 Todo (2/6)
 
  Log in so the wizard can create flags and set up your project.       ● Check system
+                                                                      ● Select features
                                                                       ▶ Log in to Confidence
-                                                                      ○ Select features
                                                                       ○ Set up your agent
-                                                                      ○ Connect tools
+                                                                      ○ Install MCPs
                                                                       ○ Onboard project
 
 
@@ -91,36 +91,36 @@ exports[`when auth token is stale > prompts user to sign in again instead of usi
 exports[`when auth token is stale > refreshes and authenticates when choosing existing account > auth-refreshed 1`] = `
 " Confidence by Spotify                                              https://confidence.spotify.com/
 
- Select the features you'd like to set up                             Todo (2/6)
+ Select agent to set up                                               Todo (3/6)
 
- Toggle Confidence features to integrate with your project.           ● Check system
-                                                                      ● Log in to Confidence
- ◆ Event tracking works best with Confidence Cloud or an existing     ▶ Select features
- warehouse setup.                                                     ○ Set up your agent
-                                                                      ○ Connect tools
-                                                                      ○ Onboard project
+ Your agent will get Confidence skills for flag management,           ● Check system
+ warehouse setup, migrations, and onboarding — so it can help         ● Select features
+ without searching the docs.                                          ● Log in to Confidence
+                                                                      ▶ Set up your agent
+ ◆ Cursor and Codex require full file system access to run            ○ Install MCPs
+ onboarding.                                                          ○ Onboard project
 
 
  ──────────────────────────────────────────────────────────────────────────────────────────────────
- Toggle features to set up:
+ Which CLI agent would you like to use?
 
- ❯ Flags
-   Events
-   Recordings (β)
+ ❯ Claude Code
+   Cursor
+   Codex
 
- ↑↓ navigate   space toggle   enter confirm                                                  vX.Y.Z"
+ ↑↓ navigate   enter confirm                                                                 vX.Y.Z"
 `;
 
 exports[`when auth token is stale > shows "Use existing account" when the token is still valid > auth-existing 1`] = `
 " Confidence by Spotify                                              https://confidence.spotify.com/
 
- Log in to Confidence                                                 Todo (1/6)
+ Log in to Confidence                                                 Todo (2/6)
 
  Log in so the wizard can create flags and set up your project.       ● Check system
+                                                                      ● Select features
                                                                       ▶ Log in to Confidence
-                                                                      ○ Select features
                                                                       ○ Set up your agent
-                                                                      ○ Connect tools
+                                                                      ○ Install MCPs
                                                                       ○ Onboard project
 
 
@@ -136,13 +136,13 @@ exports[`when auth token is stale > shows "Use existing account" when the token 
 exports[`when auth token is stale > treats a malformed token as invalid and prompts sign-in > auth-malformed 1`] = `
 " Confidence by Spotify                                              https://confidence.spotify.com/
 
- Log in to Confidence                                                 Todo (1/6)
+ Log in to Confidence                                                 Todo (2/6)
 
  Log in so the wizard can create flags and set up your project.       ● Check system
+                                                                      ● Select features
                                                                       ▶ Log in to Confidence
-                                                                      ○ Select features
                                                                       ○ Set up your agent
-                                                                      ○ Connect tools
+                                                                      ○ Install MCPs
                                                                       ○ Onboard project
 
 
@@ -157,13 +157,13 @@ exports[`when auth token is stale > treats a malformed token as invalid and prom
 exports[`when auth token is stale > treats a near-expiry token as valid > auth-near-expiry 1`] = `
 " Confidence by Spotify                                              https://confidence.spotify.com/
 
- Log in to Confidence                                                 Todo (1/6)
+ Log in to Confidence                                                 Todo (2/6)
 
  Log in so the wizard can create flags and set up your project.       ● Check system
+                                                                      ● Select features
                                                                       ▶ Log in to Confidence
-                                                                      ○ Select features
                                                                       ○ Set up your agent
-                                                                      ○ Connect tools
+                                                                      ○ Install MCPs
                                                                       ○ Onboard project
 
 

@@ -3,10 +3,10 @@ import { Spinner } from '@inkjs/ui';
 import { Colors, Icons } from '../../styles.js';
 import { MainLayout } from '../../components/MainLayout.js';
 import { TaskList } from '../../components/TaskList.js';
-import { buildWizardTasks } from '../../lib/wizard-tasks.js';
 import { ScreenId, track } from '@spotify-confidence/core';
 import { useAutoAdvance } from '../../hooks/useAutoAdvance.js';
 import { useLogger } from '../../hooks/useLog.js';
+import { useWizardTasks } from '../../hooks/useWizardTasks.js';
 import { $session } from '../../store.js';
 import { useAuthFlow } from './useAuthFlow.js';
 import { authCompleted } from './log-messages.js';
@@ -29,7 +29,7 @@ export function AuthenticateScreen() {
     },
   });
 
-  const tasks = buildWizardTasks(
+  const tasks = useWizardTasks(
     'authenticate',
     phase === 'authenticated' ? 'done' : phase === 'failed' ? 'error' : 'active',
   );

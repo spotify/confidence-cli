@@ -3,6 +3,7 @@ import { join } from 'node:path';
 import {
   createSession,
   navigatePastWelcome,
+  navigatePastGoalSelection,
   navigatePastAuth,
   buildTestJwt,
 } from './testing-framework/index.js';
@@ -42,13 +43,13 @@ describe('when MCP config has expired auth tokens', () => {
     // SystemCheck
     await session.waitForText('All checks passed');
 
-    // Authenticate
-    await navigatePastAuth(session);
-
     // SelectGoal
     await session.waitForText("Select the features you'd like to set up");
     await session.press('Space');
     await session.press('Enter');
+
+    // Authenticate
+    await navigatePastAuth(session);
 
     // InstallPlugins
     await session.waitForText('Which CLI agent would you like to use?');
@@ -71,12 +72,8 @@ describe('when MCP config has expired auth tokens', () => {
     writeExpiredMcpConfig(session.cwd);
 
     await navigatePastWelcome(session);
+    await navigatePastGoalSelection(session);
     await navigatePastAuth(session);
-
-    // SelectGoal
-    await session.waitForText("Select the features you'd like to set up");
-    await session.press('Space');
-    await session.press('Enter');
 
     // InstallPlugins
     await session.waitForText('Which CLI agent would you like to use?');

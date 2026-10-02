@@ -102,6 +102,11 @@ export type WizardSession = {
    */
   onboardingGoals: OnboardingGoal[];
   /**
+   * Whether onboarding goals were provided via CLI flags at session creation.
+   * @default false
+   */
+  goalsPreset: boolean;
+  /**
    * Latest status line emitted by the onboarding process.
    * @default ""
    */
@@ -174,6 +179,7 @@ export function createSession(opts?: {
     isEmptyProject: false,
     detectedProviders: [],
     onboardingGoals: opts?.goals ?? [],
+    goalsPreset: (opts?.goals?.length ?? 0) > 0,
     onboardingStatus: '',
     reportFile: null,
     codeChanges: [],

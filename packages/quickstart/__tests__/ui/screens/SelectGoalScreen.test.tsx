@@ -31,6 +31,20 @@ describe('SelectGoalScreen', () => {
       });
     });
 
+    it('shows "Select features" in the task list when goals are not pre-set', async () => {
+      using project = createProjectDir();
+
+      using sut = renderApp({
+        screen: ScreenId.SelectGoal,
+        dir: project.path,
+        framework: 'react',
+      });
+
+      await waitFor(() => {
+        expect(sut.lastFrame()).toContain('Select features');
+      });
+    });
+
     it('shows warehouse note for event tracking', async () => {
       using project = createProjectDir();
 
@@ -79,7 +93,7 @@ describe('SelectGoalScreen', () => {
       await act(() => sut.stdin.write(ENTER));
 
       await waitFor(() => {
-        expect(sut.lastFrame()).toContain('Select agent to set up');
+        expect(sut.lastFrame()).toContain('Log in to Confidence');
       });
     });
 
@@ -121,7 +135,7 @@ describe('SelectGoalScreen', () => {
       await act(() => sut.stdin.write(ENTER));
 
       await waitFor(() => {
-        expect(sut.lastFrame()).toContain('Select agent to set up');
+        expect(sut.lastFrame()).toContain('Log in to Confidence');
       });
     });
 
@@ -154,7 +168,24 @@ describe('SelectGoalScreen', () => {
       });
 
       await waitFor(() => {
-        expect(sut.lastFrame()).toContain('Select agent to set up');
+        expect(sut.lastFrame()).toContain('Log in to Confidence');
+      });
+    });
+
+    it('omits "Select features" from the task list when goals are pre-set', async () => {
+      using project = createProjectDir();
+
+      using sut = renderApp({
+        screen: ScreenId.SelectGoal,
+        dir: project.path,
+        framework: 'react',
+        goals: ['feature-flags'],
+      });
+
+      await waitFor(() => {
+        const frame = sut.lastFrame()!;
+        expect(frame).toContain('Log in to Confidence');
+        expect(frame).not.toContain('Select features');
       });
     });
 
@@ -169,7 +200,7 @@ describe('SelectGoalScreen', () => {
       });
 
       await waitFor(() => {
-        expect(sut.lastFrame()).toContain('Select agent to set up');
+        expect(sut.lastFrame()).toContain('Log in to Confidence');
       });
     });
   });
@@ -244,7 +275,7 @@ describe('SelectGoalScreen', () => {
       await act(() => sut.stdin.write(ENTER));
 
       await waitFor(() => {
-        expect(sut.lastFrame()).toContain('Select agent to set up');
+        expect(sut.lastFrame()).toContain('Log in to Confidence');
       });
     });
 
@@ -262,6 +293,21 @@ describe('SelectGoalScreen', () => {
         const frame = sut.lastFrame()!;
         expect(frame).toContain('Incompatible feature selection');
         expect(frame).not.toContain('Select agent to set up');
+      });
+    });
+
+    it('auto-advances when recordings are pre-set with a browser framework', async () => {
+      using project = createProjectDir();
+
+      using sut = renderApp({
+        screen: ScreenId.SelectGoal,
+        dir: project.path,
+        framework: 'typescript',
+        goals: ['session-recordings', 'feature-flags'],
+      });
+
+      await waitFor(() => {
+        expect(sut.lastFrame()).toContain('Log in to Confidence');
       });
     });
   });

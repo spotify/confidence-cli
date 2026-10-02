@@ -5,7 +5,7 @@ import { MainLayout } from '../../components/MainLayout.js';
 import { TaskList } from '../../components/TaskList.js';
 import { useAutoAdvance } from '../../hooks/useAutoAdvance.js';
 import { useLogger } from '../../hooks/useLog.js';
-import { buildWizardTasks } from '../../lib/wizard-tasks.js';
+import { useWizardTasks } from '../../hooks/useWizardTasks.js';
 import { $session } from '../../store.js';
 import { usePluginInstall } from './usePluginInstall.js';
 import {
@@ -52,7 +52,7 @@ export function InstallPluginsScreen() {
     if (ide) selectIde(ide);
   }
 
-  const tasks = buildWizardTasks(
+  const tasks = useWizardTasks(
     'installPlugins',
     phase === 'done' || phase === 'already-installed'
       ? 'done'

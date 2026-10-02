@@ -14,7 +14,7 @@ describe('SelectGoal screen', () => {
     expect(session.snapshot()).toMatchSnapshot('select-goal');
   });
 
-  it('advances to InstallPlugins after selecting a goal', async () => {
+  it('advances to Authenticate after selecting a goal', async () => {
     using session = createSession();
 
     await navigateToGoalSelection(session);
@@ -22,7 +22,7 @@ describe('SelectGoal screen', () => {
     await session.press('Space');
     await session.press('Enter');
 
-    await session.waitForText('Which CLI agent would you like to use?');
+    await session.waitForText('Log in to Confidence');
   });
 
   it('shows validation message when submitting with nothing selected', async () => {

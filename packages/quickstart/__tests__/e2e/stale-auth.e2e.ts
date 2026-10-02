@@ -1,6 +1,7 @@
 import {
   createSession,
   navigatePastWelcome,
+  navigatePastGoalSelection,
   simulateAuthCallback,
   buildTestJwt,
 } from './testing-framework/index.js';
@@ -14,6 +15,7 @@ describe('when auth token is stale', () => {
     using session = createSession({ token: buildExpiredJwt() });
 
     await navigatePastWelcome(session);
+    await navigatePastGoalSelection(session);
 
     // Authenticate — expired token should be rejected, showing choose-action
     await session.waitForText('Log in to a Confidence account');
@@ -24,6 +26,7 @@ describe('when auth token is stale', () => {
     using session = createSession({ token: buildTestJwt() });
 
     await navigatePastWelcome(session);
+    await navigatePastGoalSelection(session);
 
     // Authenticate — valid token found
     await session.waitForText('Use existing account');
@@ -34,14 +37,15 @@ describe('when auth token is stale', () => {
     using session = createSession({ token: buildTestJwt() });
 
     await navigatePastWelcome(session);
+    await navigatePastGoalSelection(session);
 
     // Authenticate — click "Use existing account", token is refreshed via mock server
     await session.waitForText('Use existing account');
     await session.press('Enter');
     await session.waitForText('Authenticated');
 
-    // Continues to SelectGoal
-    await session.waitForText("Select the features you'd like to set up");
+    // Continues to InstallPlugins
+    await session.waitForText('Which CLI agent would you like to use?');
     expect(session.snapshot()).toMatchSnapshot('auth-refreshed');
   });
 
@@ -49,6 +53,7 @@ describe('when auth token is stale', () => {
     using session = createSession({ token: buildTestJwt(), refreshToken: null });
 
     await navigatePastWelcome(session);
+    await navigatePastGoalSelection(session);
 
     // Authenticate — click "Use existing account", refresh fails (no refresh token)
     await session.waitForText('Use existing account');
@@ -62,6 +67,7 @@ describe('when auth token is stale', () => {
     using session = createSession({ token: buildExpiredJwt() });
 
     await navigatePastWelcome(session);
+    await navigatePastGoalSelection(session);
 
     // Authenticate — sign in fresh
     await session.waitForText('Log in to a Confidence account');
@@ -70,8 +76,8 @@ describe('when auth token is stale', () => {
     await simulateAuthCallback();
     await session.waitForText('Authenticated');
 
-    // Continues to SelectGoal
-    await session.waitForText("Select the features you'd like to set up");
+    // Continues to InstallPlugins
+    await session.waitForText('Which CLI agent would you like to use?');
     expect(session.snapshot()).toMatchSnapshot('auth-re-authenticated');
   });
 
@@ -79,6 +85,7 @@ describe('when auth token is stale', () => {
     using session = createSession({ token: buildTestJwt(), refreshToken: null });
 
     await navigatePastWelcome(session);
+    await navigatePastGoalSelection(session);
 
     // Authenticate — click "Use existing account", refresh fails
     await session.waitForText('Use existing account');
@@ -92,8 +99,8 @@ describe('when auth token is stale', () => {
     await simulateAuthCallback();
     await session.waitForText('Authenticated');
 
-    // Continues to SelectGoal
-    await session.waitForText("Select the features you'd like to set up");
+    // Continues to InstallPlugins
+    await session.waitForText('Which CLI agent would you like to use?');
     expect(session.snapshot()).toMatchSnapshot('auth-refresh-failed-then-signed-in');
   });
 
@@ -102,6 +109,7 @@ describe('when auth token is stale', () => {
     using session = createSession({ token: nearExpiryJwt });
 
     await navigatePastWelcome(session);
+    await navigatePastGoalSelection(session);
 
     // Token expires in 5s — no buffer in validateToken, so still accepted
     await session.waitForText('Use existing account');
@@ -112,6 +120,7 @@ describe('when auth token is stale', () => {
     using session = createSession({ token: 'not.a.valid.jwt' });
 
     await navigatePastWelcome(session);
+    await navigatePastGoalSelection(session);
 
     // Malformed JWT cannot be decoded — treated as invalid
     await session.waitForText('Log in to a Confidence account');

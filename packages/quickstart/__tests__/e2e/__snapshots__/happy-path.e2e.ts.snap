@@ -1,28 +1,28 @@
 // Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
 
-exports[`happy-path flow > navigates Welcome → SystemCheck → Authenticate → SelectGoal → InstallPlugins → ConnectTools → OnboardProject → Done > authenticate 1`] = `
+exports[`happy-path flow > navigates Welcome → SystemCheck → SelectGoal → Authenticate → InstallPlugins → ConnectTools → OnboardProject → Done > authenticate 1`] = `
 " Confidence by Spotify                                              https://confidence.spotify.com/
 
- Log in to Confidence                                                 Todo (2/6)
+ Log in to Confidence                                                 Todo (3/6)
 
  Log in so the wizard can create flags and set up your project.       ● Check system
-                                                                      ● Log in to Confidence
- ✔ Authenticated as test@example.com                                  ○ Select features
+                                                                      ● Select features
+ ✔ Authenticated as test@example.com                                  ● Log in to Confidence
                                                                       ○ Set up your agent
- Continuing...                                                        ○ Connect tools
+ Continuing...                                                        ○ Install MCPs
                                                                       ○ Onboard project"
 `;
 
-exports[`happy-path flow > navigates Welcome → SystemCheck → Authenticate → SelectGoal → InstallPlugins → ConnectTools → OnboardProject → Done > connect-tools 1`] = `
+exports[`happy-path flow > navigates Welcome → SystemCheck → SelectGoal → Authenticate → InstallPlugins → ConnectTools → OnboardProject → Done > connect-tools 1`] = `
 " Confidence by Spotify                                              https://confidence.spotify.com/
 
  Teach your AI Confidence                                             Todo (4/6)
 
  Give your AI assistant direct access to flags, docs, and             ● Check system
- integration tools via Confidence MCP. With it, you'll be able to:    ● Log in to Confidence
-                                                                      ● Select features
+ integration tools via Confidence MCP. With it, you'll be able to:    ● Select features
+                                                                      ● Log in to Confidence
  ● Ask your agent to create and manage feature flags.                 ● Set up your agent
- ● Search docs and generate code, all from your IDE.                  ▶ Connect tools
+ ● Search docs and generate code, all from your IDE.                  ▶ Install MCPs
  ● Avoid context-switching or manual lookups. Your assistant has the  ○ Onboard project
     keys.
 
@@ -42,7 +42,7 @@ exports[`happy-path flow > navigates Welcome → SystemCheck → Authenticate �
  ↑↓ navigate   enter confirm                                                                 vX.Y.Z"
 `;
 
-exports[`happy-path flow > navigates Welcome → SystemCheck → Authenticate → SelectGoal → InstallPlugins → ConnectTools → OnboardProject → Done > done 1`] = `
+exports[`happy-path flow > navigates Welcome → SystemCheck → SelectGoal → Authenticate → InstallPlugins → ConnectTools → OnboardProject → Done > done 1`] = `
 " Confidence by Spotify                                              https://confidence.spotify.com/
 
 
@@ -69,16 +69,16 @@ exports[`happy-path flow > navigates Welcome → SystemCheck → Authenticate �
  ↑↓ navigate   enter confirm   esc cancel                                                    vX.Y.Z"
 `;
 
-exports[`happy-path flow > navigates Welcome → SystemCheck → Authenticate → SelectGoal → InstallPlugins → ConnectTools → OnboardProject → Done > install-plugins 1`] = `
+exports[`happy-path flow > navigates Welcome → SystemCheck → SelectGoal → Authenticate → InstallPlugins → ConnectTools → OnboardProject → Done > install-plugins 1`] = `
 " Confidence by Spotify                                              https://confidence.spotify.com/
 
  Select agent to set up                                               Todo (3/6)
 
  Your agent will get Confidence skills for flag management,           ● Check system
- warehouse setup, migrations, and onboarding — so it can help         ● Log in to Confidence
- without searching the docs.                                          ● Select features
+ warehouse setup, migrations, and onboarding — so it can help         ● Select features
+ without searching the docs.                                          ● Log in to Confidence
                                                                       ▶ Set up your agent
- ◆ Cursor and Codex require full file system access to run            ○ Connect tools
+ ◆ Cursor and Codex require full file system access to run            ○ Install MCPs
  onboarding.                                                          ○ Onboard project
 
 
@@ -92,16 +92,16 @@ exports[`happy-path flow > navigates Welcome → SystemCheck → Authenticate �
  ↑↓ navigate   enter confirm                                                                 vX.Y.Z"
 `;
 
-exports[`happy-path flow > navigates Welcome → SystemCheck → Authenticate → SelectGoal → InstallPlugins → ConnectTools → OnboardProject → Done > onboard-project 1`] = `
+exports[`happy-path flow > navigates Welcome → SystemCheck → SelectGoal → Authenticate → InstallPlugins → ConnectTools → OnboardProject → Done > onboard-project 1`] = `
 " Confidence by Spotify                                              https://confidence.spotify.com/
 
  Ready to start?                                                      Todo (5/6)
 
  The wizard will:                                                     ● Check system
- ✔ add the Confidence SDK                                             ● Log in to Confidence
- ✔ create your first feature flag                                     ● Select features
+ ✔ add the Confidence SDK                                             ● Select features
+ ✔ create your first feature flag                                     ● Log in to Confidence
                                                                       ● Set up your agent
- ◆ The AI agent will be able to run commands, install packages, and   ● Connect tools
+ ◆ The AI agent will be able to run commands, install packages, and   ● Install MCPs
  modify files in your project.                                        ▶ Onboard project
 
 
@@ -114,16 +114,16 @@ exports[`happy-path flow > navigates Welcome → SystemCheck → Authenticate �
  ↑↓ navigate   enter confirm                                                                 vX.Y.Z"
 `;
 
-exports[`happy-path flow > navigates Welcome → SystemCheck → Authenticate → SelectGoal → InstallPlugins → ConnectTools → OnboardProject → Done > select-goal 1`] = `
+exports[`happy-path flow > navigates Welcome → SystemCheck → SelectGoal → Authenticate → InstallPlugins → ConnectTools → OnboardProject → Done > select-goal 1`] = `
 " Confidence by Spotify                                              https://confidence.spotify.com/
 
- Select the features you'd like to set up                             Todo (2/6)
+ Select the features you'd like to set up                             Todo (1/6)
 
  Toggle Confidence features to integrate with your project.           ● Check system
-                                                                      ● Log in to Confidence
- ◆ Event tracking works best with Confidence Cloud or an existing     ▶ Select features
+                                                                      ▶ Select features
+ ◆ Event tracking works best with Confidence Cloud or an existing     ○ Log in to Confidence
  warehouse setup.                                                     ○ Set up your agent
-                                                                      ○ Connect tools
+                                                                      ○ Install MCPs
                                                                       ○ Onboard project
 
 
@@ -137,20 +137,20 @@ exports[`happy-path flow > navigates Welcome → SystemCheck → Authenticate �
  ↑↓ navigate   space toggle   enter confirm                                                  vX.Y.Z"
 `;
 
-exports[`happy-path flow > navigates Welcome → SystemCheck → Authenticate → SelectGoal → InstallPlugins → ConnectTools → OnboardProject → Done > system-check 1`] = `
+exports[`happy-path flow > navigates Welcome → SystemCheck → SelectGoal → Authenticate → InstallPlugins → ConnectTools → OnboardProject → Done > system-check 1`] = `
 " Confidence by Spotify                                              https://confidence.spotify.com/
 
  System Check                                                         Todo (1/6)
 
  Checking that your system has everything we need.                    ● Check system
-                                                                      ○ Log in to Confidence
- ✔ Node.js vX.Y.Z                                                     ○ Select features
+                                                                      ○ Select features
+ ✔ Node.js vX.Y.Z                                                     ○ Log in to Confidence
  ✔ Git X.Y.Z                                                          ○ Set up your agent
-                                                                      ○ Connect tools
+                                                                      ○ Install MCPs
  All checks passed. Continuing...                                     ○ Onboard project"
 `;
 
-exports[`happy-path flow > navigates Welcome → SystemCheck → Authenticate → SelectGoal → InstallPlugins → ConnectTools → OnboardProject → Done > welcome 1`] = `
+exports[`happy-path flow > navigates Welcome → SystemCheck → SelectGoal → Authenticate → InstallPlugins → ConnectTools → OnboardProject → Done > welcome 1`] = `
 " Confidence by Spotify                                              https://confidence.spotify.com/
 
 
