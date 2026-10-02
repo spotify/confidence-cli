@@ -1,7 +1,7 @@
 import { existsSync, readFileSync, writeFileSync, mkdirSync } from 'node:fs';
 import { join } from 'node:path';
 import { execFile } from '../../exec/exec.js';
-import type { McpConnectOpts } from '../types.js';
+import type { McpConnectOpts, McpDisconnectOpts } from '../types.js';
 import {
   type McpServerName,
   type McpServerStatus,
@@ -35,7 +35,41 @@ export async function connectMcpServer(opts: McpConnectOpts): Promise<void> {
   try {
     await execFile('cursor', ['agent', 'mcp', 'enable', opts.serverName]);
   } catch {
-    // cursor agent CLI may not be available
+    // `cursor` CLI is not always installed; config files were already written above
+  }
+}
+
+export async function disconnectMcpServer(opts: McpDisconnectOpts): Promise<void> {
+  removeMcpEntry(mcpConfigPath(opts.projectDir), opts.serverName);
+  removeMcpEntry(globalConfigPath(), opts.serverName);
+  removeCliPermission(cliConfigPath(opts.projectDir), opts.serverName);
+}
+
+function removeMcpEntry(configPath: string, serverName: string): void {
+  if (!existsSync(configPath)) return;
+  try {
+    const config = JSON.parse(readFileSync(configPath, 'utf-8')) as Record<string, unknown>;
+    const mcpServers = (config.mcpServers ?? {}) as Record<string, unknown>;
+    delete mcpServers[serverName];
+    config.mcpServers = mcpServers;
+    writeFileSync(configPath, JSON.stringify(config, null, 2) + '\n', 'utf-8');
+  } catch {
+    // Corrupt or unreadable config — server is effectively unregistered already
+  }
+}
+
+function removeCliPermission(configPath: string, serverName: string): void {
+  if (!existsSync(configPath)) return;
+  try {
+    const config = JSON.parse(readFileSync(configPath, 'utf-8')) as Record<string, unknown>;
+    const permissions = (config.permissions ?? {}) as Record<string, unknown>;
+    const allow = (permissions.allow ?? []) as string[];
+    const rule = `Mcp(${serverName}:*)`;
+    permissions.allow = allow.filter((r) => r !== rule);
+    config.permissions = permissions;
+    writeFileSync(configPath, JSON.stringify(config, null, 2) + '\n', 'utf-8');
+  } catch {
+    // Corrupt or unreadable config — stale permission rules are harmless
   }
 }
 
@@ -45,7 +79,7 @@ function writeMcpEntry(configPath: string, serverName: string, entry: unknown): 
     try {
       config = JSON.parse(readFileSync(configPath, 'utf-8')) as Record<string, unknown>;
     } catch {
-      // overwrite if corrupt
+      // Corrupt JSON — fall through to overwrite with valid config
     }
   } else {
     mkdirSync(join(configPath, '..'), { recursive: true });
@@ -64,7 +98,7 @@ function writeCliPermission(configPath: string, serverName: string): void {
     try {
       config = JSON.parse(readFileSync(configPath, 'utf-8')) as Record<string, unknown>;
     } catch {
-      // overwrite if corrupt
+      // Corrupt JSON — fall through to overwrite with valid config
     }
   } else {
     mkdirSync(join(configPath, '..'), { recursive: true });
