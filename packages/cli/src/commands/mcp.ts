@@ -8,6 +8,7 @@ import {
   getMcpStatuses,
   refreshMcpAuth,
 } from '@features/mcp/index.js';
+import { resolveProjectDir } from '../utils/resolve-project-dir.js';
 
 const STATUS_LABELS: Record<string, string> = {
   connected: 'Connected',
@@ -15,10 +16,6 @@ const STATUS_LABELS: Record<string, string> = {
   'auth-expired': 'Auth expired',
   'not-installed': 'Not installed',
 };
-
-function resolveProjectDir(argv: Record<string, unknown>): string {
-  return (argv.project as string | undefined) ?? process.cwd();
-}
 
 export const mcpCommand = {
   command: 'mcp <action>',

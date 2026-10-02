@@ -38,7 +38,9 @@ describe('--features none (SDK-only setup)', () => {
 
     expect(invocation.prompt).toContain('Install the appropriate Confidence SDK');
     expect(invocation.prompt).toContain('searchDocumentation');
-    expect(invocation.prompt).toContain('do not configure providers, create flags, or add instrumentation');
+    expect(invocation.prompt).toContain(
+      'do not configure providers, create flags, or add instrumentation',
+    );
   });
 
   it('does not include feature flag, recording, or event sections in the prompt', async () => {
