@@ -22,5 +22,6 @@ export {
   loadMcpPreference,
   persistMcpPreference,
   clearMcpPreference,
+  callMcpTool,
 } from './mcp/index.js';
 export { detectInstalledPlugins, prepareIde, installPlugin, updatePlugin } from './skills/index.js';
