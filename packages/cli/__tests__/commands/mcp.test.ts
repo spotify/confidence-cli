@@ -1,3 +1,4 @@
+import { resolve } from 'node:path';
 import yargs from 'yargs';
 import { buildTestJwt } from '@spotify-confidence/testing/auth';
 import { prepareAuthTokens } from '@spotify-confidence/testing/auth';
@@ -135,5 +136,49 @@ describe('mcp auth', () => {
 
     expect(mockAuthenticate).toHaveBeenCalled();
     expect(mockIntegration.connectMcpServer).toHaveBeenCalledTimes(2);
+  });
+});
+
+describe('--dir', () => {
+  it('passes cwd when --dir is omitted', async () => {
+    using _auth = prepareAuthTokens('valid');
+    using _output = captureOutput();
+
+    await run(['mcp', 'install']);
+
+    expect(mockIntegration.connectMcpServer).toHaveBeenCalledWith(
+      expect.objectContaining({ projectDir: process.cwd() }),
+    );
+  });
+
+  it('resolves --dir to an absolute path', async () => {
+    using _auth = prepareAuthTokens('valid');
+    using _output = captureOutput();
+
+    await run(['mcp', 'install', '--dir', 'some/relative/path']);
+
+    expect(mockIntegration.connectMcpServer).toHaveBeenCalledWith(
+      expect.objectContaining({ projectDir: resolve('some/relative/path') }),
+    );
+  });
+
+  it('passes --dir through to status detection', async () => {
+    using _auth = prepareAuthTokens('valid');
+    using _output = captureOutput();
+
+    await run(['mcp', 'status', '--dir', '/tmp/my-project', '--json']);
+
+    expect(mockIntegration.detectMcpStatuses).toHaveBeenCalledWith('/tmp/my-project');
+  });
+
+  it('passes --dir through to auth refresh', async () => {
+    using _auth = prepareAuthTokens('valid');
+    using _output = captureOutput();
+
+    await run(['mcp', 'auth', '--dir', '/tmp/my-project']);
+
+    expect(mockIntegration.connectMcpServer).toHaveBeenCalledWith(
+      expect.objectContaining({ projectDir: '/tmp/my-project' }),
+    );
   });
 });

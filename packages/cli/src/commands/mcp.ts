@@ -1,3 +1,4 @@
+import { resolve } from 'node:path';
 import type { Argv } from 'yargs';
 import { print, fail, extractFlags } from '@output/print.js';
 import { getAvailableMcpServers } from '@spotify-confidence/core';
@@ -17,7 +18,8 @@ const STATUS_LABELS: Record<string, string> = {
 };
 
 function resolveProjectDir(argv: Record<string, unknown>): string {
-  return (argv.project as string | undefined) ?? process.cwd();
+  const dir = argv.dir as string | undefined;
+  return dir ? resolve(dir) : process.cwd();
 }
 
 export const mcpCommand = {
@@ -25,6 +27,10 @@ export const mcpCommand = {
   describe: 'Manage Confidence MCP server connections',
   builder(yargs: Argv) {
     return yargs
+      .option('dir', {
+        type: 'string',
+        describe: 'Target project directory',
+      })
       .command(
         'install',
         'Install Confidence MCP servers for your AI coding agent',
