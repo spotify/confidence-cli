@@ -9,6 +9,11 @@ type Column<T> = {
   width?: number;
 };
 
+type KeyValuePair = {
+  key: string;
+  value: string;
+};
+
 type FormatFlags = {
   json?: boolean;
   output?: OutputFormat;
@@ -18,12 +23,14 @@ type PrintTableOpts<T extends Record<string, unknown>> = {
   data: T[];
   columns: Column<T>[];
   flags: FormatFlags;
+  empty?: string;
 };
 
 type PrintKeyValueOpts = {
   data: Record<string, unknown>;
-  columns: [Column<{ key: string; value: string }>, Column<{ key: string; value: string }>];
+  columns: [Column<KeyValuePair>, Column<KeyValuePair>];
   flags: FormatFlags;
+  empty?: string;
 };
 
 export function message(text: string): void {
@@ -39,6 +46,13 @@ export function fail(text: string): void {
   process.exitCode = 1;
 }
 
+export function extractFlags(argv: Record<string, unknown>): FormatFlags {
+  return {
+    json: argv.json as boolean | undefined,
+    output: argv.output as OutputFormat | undefined,
+  };
+}
+
 export function print<T extends Record<string, unknown>>(opts: PrintTableOpts<T>): void;
 export function print(opts: PrintKeyValueOpts): void;
 export function print<T extends Record<string, unknown>>(
@@ -51,24 +65,20 @@ export function print<T extends Record<string, unknown>>(
     return;
   }
 
-  if (Array.isArray(opts.data)) {
-    message(formatTable(opts.data, opts.columns as Column<T>[]));
+  const rows = intoRows(opts.data) as T[];
+
+  if (rows.length === 0) {
+    message(opts.empty ?? 'No results.');
     return;
   }
 
-  const entries = Object.entries(opts.data);
-  if (entries.length === 0) {
-    message('No results.');
-    return;
-  }
-
-  const rows = entries.map(([key, value]) => ({ key, value: String(value ?? '') }));
-  message(formatTable(rows, opts.columns as Column<{ key: string; value: string }>[]));
+  message(formatTable(rows, opts.columns as Column<T>[]));
 }
 
-export function extractFlags(argv: Record<string, unknown>): FormatFlags {
-  return {
-    json: argv.json as boolean | undefined,
-    output: argv.output as OutputFormat | undefined,
-  };
+function intoRows(
+  data: Record<string, unknown> | Record<string, unknown>[],
+): Record<string, unknown>[] {
+  return Array.isArray(data)
+    ? data
+    : Object.entries(data).map(([key, value]) => ({ key, value: String(value ?? '') }));
 }

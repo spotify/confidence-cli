@@ -59,6 +59,7 @@ export const configCommand = {
               { key: 'value', header: 'Value' },
             ],
             flags: extractFlags(argv),
+            empty: 'No configuration set.',
           });
         },
       )

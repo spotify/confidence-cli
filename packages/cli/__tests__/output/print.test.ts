@@ -117,4 +117,48 @@ describe('print', () => {
     const output = (spy.mock.calls[0] as string[])[0];
     expect(output).toContain('No results.');
   });
+
+  it('prints "No results." for an empty array', () => {
+    print({
+      data: [],
+      columns: [
+        { key: 'name', header: 'Server' },
+        { key: 'url', header: 'URL' },
+      ],
+      flags: { output: 'table' },
+    });
+
+    const output = (spy.mock.calls[0] as string[])[0];
+    expect(output).toContain('No results.');
+  });
+
+  it('uses a custom empty for an empty object', () => {
+    print({
+      data: {},
+      columns: [
+        { key: 'key', header: 'Key' },
+        { key: 'value', header: 'Value' },
+      ],
+      flags: { output: 'table' },
+      empty: 'No configuration set.',
+    });
+
+    const output = (spy.mock.calls[0] as string[])[0];
+    expect(output).toContain('No configuration set.');
+  });
+
+  it('uses a custom empty for an empty array', () => {
+    print({
+      data: [],
+      columns: [
+        { key: 'name', header: 'Server' },
+        { key: 'url', header: 'URL' },
+      ],
+      flags: { output: 'table' },
+      empty: 'No servers configured.',
+    });
+
+    const output = (spy.mock.calls[0] as string[])[0];
+    expect(output).toContain('No servers configured.');
+  });
 });
