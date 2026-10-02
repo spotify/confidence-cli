@@ -46,6 +46,9 @@ importers:
 
   packages/cli:
     dependencies:
+      '@spotify-confidence/quickstart':
+        specifier: workspace:*
+        version: link:../quickstart
       yargs:
         specifier: ^18.2.0
         version: 18.2.0

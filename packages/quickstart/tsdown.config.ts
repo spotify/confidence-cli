@@ -3,11 +3,11 @@ import { copyFileSync, mkdirSync, readdirSync } from 'node:fs';
 import { join } from 'node:path';
 
 const STEPS_SRC = 'src/features/onboarding/steps';
-const STEPS_DIST = 'dist/bin';
+const STEPS_DIST = 'dist';
 
 export default defineConfig({
-  entry: ['bin/cli.ts'],
-  outDir: 'dist/bin',
+  entry: ['bin/cli.ts', 'src/index.ts'],
+  outDir: 'dist',
   format: 'esm',
   platform: 'node',
   target: 'node24',
