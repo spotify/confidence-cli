@@ -1,133 +1,38 @@
 ---
 name: integrations
 description: IDE integration strategy pattern and guidelines for the packages/core/src/integrations/ module
-version: '0.3'
+version: '0.4'
 ---
 
 # IDE Integrations Guidelines
 
-This skill defines the structure, constraints, and conventions for IDE integrations. Follow these when adding, modifying, or reviewing IDE-related code.
+Structure, constraints, and conventions for IDE integrations in `packages/core/src/integrations/`.
 
-## Purpose
+## Strategy Pattern
 
-The `packages/core/src/integrations/` module encapsulates all IDE-specific behavior behind a strategy pattern. Each supported IDE (Claude Code, Cursor, Codex) has a self-contained implementation that conforms to a shared `IdeIntegration` interface. This eliminates per-IDE `switch` statements scattered across the codebase and makes adding a new IDE a single-directory change.
+Each supported IDE (Claude Code, Cursor, Codex) is a self-contained `IdeIntegration` object in its own subdirectory. This eliminates per-IDE `switch` statements and makes adding a new IDE a single-directory change.
 
-## Module Structure
+Every IDE implements the `IdeIntegration` interface: `id`, `name`, `launchChat()`, `runOnboarding()`, `detectPlugins()`, `installPlugins()`, `detectMcpStatuses()`, `connectMcpServer()`. See the type definition in `types.ts` for the full contract.
 
-```
-packages/core/src/integrations/
-  types.ts              # IdeId, IdeIntegration strategy type, McpConnectOpts
-  index.ts              # Barrel exports + registry re-exports
-  registry.ts           # getIntegrations(), getIntegration() — the strategy registry
-  chat.ts               # buildChatPrompt() + launchChatSession() orchestrator
-  plugins.ts            # detectInstalledPlugins() + installPlugin() orchestrators
-  shared.ts             # Reusable helpers: PLUGIN_SKILLS, installSkills(), hasConfidenceServers()
-  claude/
-    index.ts            # claudeIntegration — composes strategy from submodules
-    paths.ts            # Config file and directory paths
-    plugins.ts          # detectPlugins(), installPlugins()
-    mcp.ts              # detectMcpStatuses(), connectMcpServer()
-    onboarding.ts       # runOnboarding() — spawns the IDE's onboarding process
-  cursor/
-    index.ts, paths.ts, plugins.ts, mcp.ts, onboarding.ts  # Same structure
-  codex/
-    index.ts, paths.ts, plugins.ts, mcp.ts, onboarding.ts  # Same structure
-  mcp/
-    servers.ts          # MCP_SERVERS, McpServerName, McpServerStatus, verifyMcpServer(), helpers
-    preference.ts       # loadMcpPreference(), persistMcpPreference()
-    index.ts            # Barrel exports
-```
-
-## The Strategy Pattern
-
-### `IdeIntegration` type
-
-Every IDE exports a single `IdeIntegration` object with these methods:
-
-- `id` — the `IdeId` string (`'claude' | 'cursor' | 'codex'`)
-- `name` — human-readable label for UI display
-- `launchChat(prompt, cwd)` — spawns a chat session in this IDE
-- `runOnboarding(opts, callbacks)` — spawns the IDE's onboarding process with stdout/stderr streaming
-- `detectPlugins(projectDir)` — checks if Confidence plugins are installed for this IDE
-- `installPlugins(projectDir)` — installs MCP config and skills for this IDE
-- `detectMcpStatuses(projectDir)` — detects MCP server connection statuses
-- `connectMcpServer(opts)` — registers an MCP server for this IDE
-
-Each IDE owns the full implementation of all these methods. Shared helpers (`verifyMcpServer`, `installSkills`, `hasConfidenceServers`) are imported from `mcp/servers.ts` and `shared.ts`.
-
-### Shared types
-
-`IdeId` is defined in `packages/core/src/integrations/types.ts` — it belongs to the integrations module. `WizardSession` uses its own `IdeId` type (same string union, defined in `packages/core/src/session/session.ts`) to stay decoupled from the integrations module. This keeps the dependency direction clean: integrations never imports from lib/session for its own type definitions, and session never imports from integrations.
-
-### Orchestrators
-
-`chat.ts` and `plugins.ts` are thin orchestrators that resolve the IDE strategy and delegate:
-
-- `launchChatSession(session, ide)` — builds prompt, calls `integration.launchChat()`
-- `detectInstalledPlugins(projectDir)` — iterates all integrations, calls `i.detectPlugins()`
-- `installPlugin(ide, projectDir)` — calls `getIntegration(ide).installPlugins()`
-
-Consumers use orchestrators when they don't have the integration object, or use the strategy methods directly when they do.
+Thin orchestrators (`chat.ts`, `plugins.ts`) resolve the strategy via `getIntegration(ide)` and delegate.
 
 ## Hard Constraints
 
-### IDE subdirs are self-contained
-
-Each IDE subdirectory (`claude/`, `cursor/`, `codex/`) must be fully independent:
-
-- No imports from other IDE subdirectories
-- Each IDE subdir is split into `paths.ts`, `plugins.ts`, `mcp.ts`, and a slim `index.ts` that composes them
-- IDE subdirs may import from `../types.js`, `../mcp/servers.js`, and `../shared.js` — never from `../registry.js` or each other
-
-### No switch-on-IDE outside strategy implementations
-
-All IDE-specific branching is encapsulated inside each strategy object. Code outside `packages/core/src/integrations/` must not `switch` on `IdeId` or branch on IDE identity. Instead, call `getIntegration(ide)` and use the strategy methods.
-
-### Dependency direction
-
-```
-integrations/index.ts       → registry, chat, plugins, mcp/
-registry.ts                 → claude/, cursor/, codex/
-chat.ts, plugins.ts         → registry.ts
-claude/, cursor/, codex/    → types.ts, mcp/servers.ts, shared.ts (never registry or each other)
-mcp/                        → (no internal integrations imports)
-shared.ts                   → (no internal integrations imports)
-```
-
-The integrations module imports from `@spotify-confidence/shared-kernel` and other core modules. It never imports from `packages/quickstart/` or `packages/cli/`.
-
-### Clean-dev script
-
-When changing MCP-related code (config paths, server names, connection methods, permissions), verify that `scripts/clean-dev-env.sh` still correctly cleans up all IDE connections and artifacts. If you add a new IDE, config path, or MCP registration method, update the script accordingly.
+- **IDE subdirs are self-contained** — no imports from other IDE subdirs. Each is split into `paths.ts`, `plugins.ts`, `mcp.ts`, and `index.ts`. May import from `../types.js`, `../mcp/servers.js`, `../shared.js` — never from `../registry.js` or each other.
+- **No switch-on-IDE outside strategies** — code outside `integrations/` must not branch on `IdeId`. Use `getIntegration(ide)` and call strategy methods.
+- **Dependency direction** — integrations imports from `shared-kernel` and other core modules, never from `quickstart/` or `cli/`.
+- **Clean-dev script** — when changing MCP-related code, verify `scripts/clean-dev-env.sh` still cleans up correctly. Update it when adding a new IDE.
 
 ## Adding a New IDE
 
-1. Create `packages/core/src/integrations/<ide-name>/index.ts`
-2. Export a `const <name>Integration: IdeIntegration` with all required methods
-3. Add the import and entry to the `INTEGRATIONS` array in `packages/core/src/integrations/registry.ts`
-4. Update `scripts/clean-dev-env.sh` to clean the new IDE's config files and MCP entries
-5. No other source files need to change — the registry, screens, and orchestrators all derive from the strategy
+1. Create `packages/core/src/integrations/<ide-name>/index.ts` with `paths.ts`, `plugins.ts`, `mcp.ts`
+2. Export a `const <name>Integration: IdeIntegration`
+3. Add to the `INTEGRATIONS` array in `registry.ts`
+4. Update `scripts/clean-dev-env.sh`
 
-## Public API
+No other source files need changes.
 
-The barrel `packages/core/src/integrations/index.ts` exports:
+## Codex Runtime Constraints
 
-- Types: `IdeId`, `IdeIntegration`, `McpConnectOpts`, `OnboardingOpts`, `OnboardingCallbacks`, `McpServerName`, `McpServerStatus`
-- Registry: `getIntegrations()`, `getIntegration(id)`
-- MCP: `MCP_SERVERS`, `allServersConnected()`, `getAvailableMcpServers()`, `verifyMcpServer()`, `loadMcpPreference()`, `persistMcpPreference()`
-- Chat: `launchChatSession(session, ide)`
-- Plugins: `detectInstalledPlugins(projectDir)`, `installPlugin(ide, projectDir)`
-
-Only import from the barrel or from specific submodules — never reach into an IDE's `index.ts` directly from outside the integrations module.
-
-## IDE-Specific Runtime Constraints
-
-### Codex: shell environment policy
-
-Codex `exec` mode defaults to a restricted shell environment — commands the agent runs do not inherit proxy settings, npm auth tokens, or registry config from the parent process. Without `shell_environment_policy.inherit="core"`, `npm install` falls back to direct connections that time out on corporate networks.
-
-Always pass `-c 'shell_environment_policy.inherit="core"'` in Codex `exec` spawn args so the agent's commands see the core parent environment (PATH, HOME, proxy settings, etc.).
-
-### Codex: `item.completed` event batching
-
-Codex `exec --json` only emits `item.completed` events — not incremental text deltas. Status lines only surface after the agent finishes an entire message turn. Claude Code and Cursor stream incrementally via `stream-json`, so their status updates appear in real time.
+- **Shell environment policy** — always pass `-c 'shell_environment_policy.inherit="core"'` in Codex `exec` spawn args, otherwise `npm install` times out on corporate networks.
+- **Event batching** — Codex `exec --json` only emits `item.completed` events (no incremental deltas). Status lines only appear after a full message turn. Claude Code and Cursor stream incrementally.
