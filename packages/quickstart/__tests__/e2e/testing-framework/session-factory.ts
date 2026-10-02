@@ -24,6 +24,8 @@ import { createProjectDir, type ProjectType } from '@spotify-confidence/testing/
  * @param options.refreshToken - Refresh token written alongside the auth
  *   token. Pass `null` to simulate a missing refresh token.
  *   @defaultValue `'e2e-refresh-token'`
+ * @param options.config - Pre-seed Confidence config values (e.g. `{ ide: 'cursor' }`).
+ *   Written to `config.json` in the session's config directory.
  * @param options.systemPath - Override `PATH` to control which system
  *   binaries the wizard's system check can find.
  * @returns A disposable {@link TerminalSession} ready for interaction.
@@ -43,6 +45,7 @@ export function createSession({
   env = {},
   token,
   refreshToken = 'e2e-refresh-token',
+  config,
   systemPath,
 }: {
   project?: ProjectType;
@@ -50,6 +53,7 @@ export function createSession({
   env?: Record<string, string>;
   token?: string;
   refreshToken?: string | null;
+  config?: Record<string, string>;
   systemPath?: string;
 } = {}): TerminalSession {
   const mockBinDir = process.env.E2E_MOCK_BIN_DIR!;
@@ -60,15 +64,9 @@ export function createSession({
     ...env,
   };
 
-  if (token) {
+  if (token || config) {
     const configDir = mkdtempSync(join(tmpdir(), 'e2e-config-'));
-
-    const credentials: Record<string, string> = { accessToken: token };
-    if (refreshToken) {
-      credentials.refreshToken = refreshToken;
-    }
-
-    writeFileSync(join(configDir, 'credentials.json'), JSON.stringify(credentials), 'utf-8');
+    seedConfigDir(configDir, { token, refreshToken, config });
     sessionEnv.CONFIDENCE_CONFIG_DIR = configDir;
   }
 
@@ -80,4 +78,23 @@ export function createSession({
 
   session.addTempDir(projectDir);
   return session;
+}
+
+function seedConfigDir(
+  dir: string,
+  opts: {
+    token?: string;
+    refreshToken?: string | null;
+    config?: Record<string, string>;
+  },
+): void {
+  if (opts.token) {
+    const credentials: Record<string, string> = { accessToken: opts.token };
+    if (opts.refreshToken) credentials.refreshToken = opts.refreshToken;
+    writeFileSync(join(dir, 'credentials.json'), JSON.stringify(credentials), 'utf-8');
+  }
+
+  if (opts.config) {
+    writeFileSync(join(dir, 'config.json'), JSON.stringify(opts.config), 'utf-8');
+  }
 }
