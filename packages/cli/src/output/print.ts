@@ -34,6 +34,11 @@ export function error(text: string): void {
   process.stderr.write(text + '\n');
 }
 
+export function fail(text: string): void {
+  error(text);
+  process.exitCode = 1;
+}
+
 export function print<T extends Record<string, unknown>>(opts: PrintTableOpts<T>): void;
 export function print(opts: PrintKeyValueOpts): void;
 export function print<T extends Record<string, unknown>>(
