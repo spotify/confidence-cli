@@ -1,5 +1,4 @@
 import type { Argv } from 'yargs';
-import type { GlobalFlags } from './types.js';
 import {
   readConfig,
   getConfigValue,
@@ -7,9 +6,7 @@ import {
   resetConfig,
   validKeys,
 } from '@features/config/index.js';
-import { resolveFormat } from '@output/detect.js';
-import { formatJson } from '@output/json.js';
-import { formatTable } from '@output/table.js';
+import { print, extractFlags } from '@output/print.js';
 
 export const configCommand = {
   command: 'config <action>',
@@ -57,30 +54,14 @@ export const configCommand = {
         () => {},
         (argv) => {
           const config = readConfig();
-          const format = resolveFormat({
-            json: argv.json as boolean | undefined,
-            output: argv.output as GlobalFlags['output'],
+          print({
+            data: config,
+            columns: [
+              { key: 'key', header: 'Key', width: 14 },
+              { key: 'value', header: 'Value' },
+            ],
+            flags: extractFlags(argv),
           });
-
-          if (format === 'json') {
-            console.log(formatJson(config));
-          } else {
-            const entries = Object.entries(config);
-            if (entries.length === 0) {
-              console.log('No configuration set.');
-              return;
-            }
-            const rows = entries.map(([key, value]) => ({
-              key,
-              value: String(value),
-            }));
-            console.log(
-              formatTable(rows, [
-                { key: 'key', header: 'Key', width: 14 },
-                { key: 'value', header: 'Value' },
-              ]),
-            );
-          }
         },
       )
       .command(

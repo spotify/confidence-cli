@@ -1,15 +1,11 @@
 import { loadPersistedToken, validateToken, decodeJwtPayload } from '@spotify-confidence/core';
-import { resolveFormat } from '@output/detect.js';
-import { formatJson } from '@output/json.js';
-import { formatTable } from '@output/table.js';
+import { print, extractFlags } from '@output/print.js';
 
 export const whoamiCommand = {
   command: 'whoami',
   describe: 'Show current user, org, region, and token expiry',
   handler(argv: Record<string, unknown>) {
     const profile = argv.profile as string | undefined;
-    const json = argv.json as boolean | undefined;
-    const output = argv.output as 'json' | 'table' | 'plain' | undefined;
 
     const token = loadPersistedToken(profile);
     if (!token) {
@@ -34,30 +30,20 @@ export const whoamiCommand = {
     const exp = payload.exp as number | undefined;
     const expiresAt = exp ? new Date(exp * 1000).toISOString() : 'unknown';
 
-    const info = {
-      email: email ?? 'unknown',
-      organization: org ?? 'unknown',
-      region: validation.region ?? 'unknown',
-      workspace: validation.workspace ?? 'unknown',
-      expires: expiresAt,
-      profile: profile ?? 'default',
-    };
-
-    const format = resolveFormat({ json, output });
-
-    if (format === 'json') {
-      console.log(formatJson(info));
-    } else {
-      const rows = Object.entries(info).map(([key, value]) => ({
-        key,
-        value: String(value),
-      }));
-      console.log(
-        formatTable(rows, [
-          { key: 'key', header: 'Field', width: 14 },
-          { key: 'value', header: 'Value' },
-        ]),
-      );
-    }
+    print({
+      data: {
+        email: email ?? 'unknown',
+        organization: org ?? 'unknown',
+        region: validation.region ?? 'unknown',
+        workspace: validation.workspace ?? 'unknown',
+        expires: expiresAt,
+        profile: profile ?? 'default',
+      },
+      columns: [
+        { key: 'key', header: 'Field', width: 14 },
+        { key: 'value', header: 'Value' },
+      ],
+      flags: extractFlags(argv),
+    });
   },
 };
