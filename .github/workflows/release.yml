@@ -19,14 +19,15 @@ jobs:
       pull-requests: write # open and update release PRs
     outputs:
       quickstart_released: ${{ steps.release.outputs['packages/quickstart--release_created'] }}
+      cli_released: ${{ steps.release.outputs['packages/cli--release_created'] }}
     steps:
       - uses: googleapis/release-please-action@d1a8f221d7723166f48a584aebba00ef3f6febec # v4.1.4
         id: release
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
 
-  publish:
-    name: Publish to npm
+  publish-quickstart:
+    name: Publish quickstart to npm
     needs: release-please
     if: ${{ needs.release-please.outputs.quickstart_released }}
     runs-on: ubuntu-latest
@@ -47,3 +48,26 @@ jobs:
       - run: pnpm test
       - run: pnpm --filter @spotify-confidence/quickstart build
       - run: pnpm --filter @spotify-confidence/quickstart publish --no-git-checks --provenance
+
+  publish-cli:
+    name: Publish CLI to npm
+    needs: release-please
+    if: ${{ needs.release-please.outputs.cli_released }}
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read # checkout code
+      id-token: write # OIDC token for npm trusted publishing
+    steps:
+      - uses: actions/checkout@fbc6f3992d24b796d5a048ff273f7fcc4a7b6c09 # v5.1.0
+        with:
+          persist-credentials: false
+      - uses: pnpm/action-setup@a15d269cd4658e1107c09f1fabf4cbd7bd1f308a # v4.4.0
+      - uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v7.0.0
+        with:
+          node-version: '24'
+          registry-url: https://registry.npmjs.org
+
+      - run: pnpm install --frozen-lockfile
+      - run: pnpm test
+      - run: pnpm --filter @spotify-confidence/cli build
+      - run: pnpm --filter @spotify-confidence/cli publish --no-git-checks --provenance

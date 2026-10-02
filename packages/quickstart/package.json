@@ -7,6 +7,9 @@
   "bin": {
     "confidence-quickstart": "dist/bin/cli.js"
   },
+  "exports": {
+    ".": "./dist/src/index.js"
+  },
   "files": [
     "dist"
   ],
