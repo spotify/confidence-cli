@@ -1,6 +1,6 @@
 import ora from 'ora';
 import type { IdeId } from '@spotify-confidence/shared-kernel';
-import { message, error } from '@output/print.js';
+import { message, fail } from '@output/print.js';
 import {
   getIntegration,
   getAvailableMcpServers,
@@ -39,7 +39,8 @@ export async function installMcpServers(
         accessToken: token,
       });
     } catch (err) {
-      spinner.fail(`Failed to connect ${server.name}: ${(err as Error).message}`);
+      spinner.stop();
+      fail(`Failed to connect ${server.name}: ${(err as Error).message}`);
       return;
     }
   }
@@ -102,7 +103,8 @@ export async function refreshMcpAuth(
         accessToken: token,
       });
     } catch (err) {
-      spinner.fail(`Failed to update ${server.name}: ${(err as Error).message}`);
+      spinner.stop();
+      fail(`Failed to update ${server.name}: ${(err as Error).message}`);
       return;
     }
   }
@@ -131,7 +133,7 @@ async function resolveAuthToken(opts?: {
     });
     return result.accessToken;
   } catch (err) {
-    error(`Authentication failed: ${(err as Error).message}`);
+    fail(`Authentication failed: ${(err as Error).message}`);
     return null;
   }
 }
