@@ -21,6 +21,10 @@ export function pluginIdeSelected(ide: string): TelemetryEvent {
   return { step: 'install-plugins.ide', action: ide };
 }
 
+export function pluginIdeRestoredFromConfig(ide: string): TelemetryEvent {
+  return { step: 'install-plugins.ide', action: `restored:${ide}`, sentiment: 'positive' };
+}
+
 export function pluginExitedAfterError(): TelemetryEvent {
   return { step: 'install-plugins.exit', action: 'exited-after-error', sentiment: 'frustrated' };
 }

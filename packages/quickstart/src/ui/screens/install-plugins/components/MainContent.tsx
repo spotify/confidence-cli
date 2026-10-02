@@ -39,6 +39,7 @@ export function MainContent({ phase, detected, error }: MainContentProps) {
       )}
 
       {phase === 'detecting' && <Spinner label="Checking for Confidence AI plugins..." />}
+      {phase === 'restoring' && <Spinner label="Checking previously selected IDE..." />}
 
       {phase === 'already-installed' && (
         <>

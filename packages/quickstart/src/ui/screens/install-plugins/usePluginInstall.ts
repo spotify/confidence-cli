@@ -1,12 +1,20 @@
-import { useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 import type { IdeId } from '@spotify-confidence/shared-kernel';
 import { prepareIde, installPlugin, updatePlugin, track } from '@spotify-confidence/core';
 import { $session, store } from '../../store.js';
 import { useInitialDetection } from './useInitialDetection.js';
-import { pluginInstallFailed } from './telemetry-events.js';
+import { pluginInstallFailed, pluginIdeRestoredFromConfig } from './telemetry-events.js';
+import { saveIdeToConfig } from '../../lib/ide-config.js';
 
 export type PluginPhase =
-  'detecting' | 'already-installed' | 'choose-ide' | 'installing' | 'updating' | 'done' | 'error';
+  | 'detecting'
+  | 'restoring'
+  | 'already-installed'
+  | 'choose-ide'
+  | 'installing'
+  | 'updating'
+  | 'done'
+  | 'error';
 
 export type PluginInstallState = {
   phase: PluginPhase;
@@ -22,40 +30,59 @@ export function usePluginInstall(): PluginInstallState {
 
   const phase = installPhase ?? initial.phase;
 
-  function selectIde(ide: IdeId) {
-    const isDetected = initial.detected.includes(ide);
+  const selectIde = useCallback(
+    function selectIde(ide: IdeId) {
+      const isDetected = initial.detected.includes(ide);
 
-    store.setIde(ide);
-    setInstallPhase(isDetected ? 'updating' : 'installing');
+      store.setIde(ide);
+      saveIdeToConfig(ide);
+      setInstallPhase(isDetected ? 'updating' : 'installing');
 
-    if ($session.get().dryRun) return setupDryRun(ide);
-    setupRealPlugin(ide, isDetected);
-  }
+      if ($session.get().dryRun) {
+        setTimeout(() => {
+          store.setPluginTargets([ide]);
+          store.setPluginInstallMethod('download');
+          setInstallPhase('done');
+        }, 1000);
+        return;
+      }
 
-  function setupDryRun(ide: IdeId) {
-    setTimeout(() => {
-      store.setPluginTargets([ide]);
-      store.setPluginInstallMethod('download');
-      setInstallPhase('done');
-    }, 1000);
-  }
+      const action = isDetected ? updatePlugin : installPlugin;
 
-  function setupRealPlugin(ide: IdeId, shouldUpdate: boolean) {
-    const action = shouldUpdate ? updatePlugin : installPlugin;
+      prepareIde(ide)
+        .then(() => action(ide, $session.get().projectDir))
+        .then((method) => {
+          store.setPluginTargets([ide]);
+          store.setPluginInstallMethod(method);
+          setInstallPhase('done');
+        })
+        .catch((err) => {
+          setError(err instanceof Error ? err.message : 'Plugin setup failed');
+          track(pluginInstallFailed());
+          setInstallPhase('error');
+        });
+    },
+    [initial.detected],
+  );
 
-    prepareIde(ide)
-      .then(() => action(ide, $session.get().projectDir))
-      .then((method) => {
-        store.setPluginTargets([ide]);
-        store.setPluginInstallMethod(method);
-        setInstallPhase('done');
-      })
-      .catch((err) => {
-        setError(err instanceof Error ? err.message : 'Plugin setup failed');
-        track(pluginInstallFailed());
-        setInstallPhase('error');
-      });
-  }
+  useEffect(
+    function autoSelectSavedIde() {
+      if (initial.phase !== 'restoring') return;
+      if (installPhase !== null) return;
 
-  return { phase, detected: initial.detected, error, selectIde };
+      const ide = $session.get().ide;
+      if (!ide) return;
+
+      track(pluginIdeRestoredFromConfig(ide));
+      queueMicrotask(() => selectIde(ide));
+    },
+    [initial.phase, installPhase, selectIde],
+  );
+
+  return {
+    phase,
+    error,
+    detected: initial.detected,
+    selectIde,
+  };
 }

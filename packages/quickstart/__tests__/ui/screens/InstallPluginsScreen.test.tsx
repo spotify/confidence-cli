@@ -16,6 +16,8 @@ vi.mock('@spotify-confidence/core', async (importOriginal) => ({
   prepareIde: vi.fn().mockResolvedValue(undefined),
   installPlugin: vi.fn().mockResolvedValue('download'),
   updatePlugin: vi.fn().mockResolvedValue('download'),
+  getConfigValue: vi.fn().mockReturnValue(undefined),
+  setConfigValue: vi.fn(),
 }));
 
 describe('InstallPluginsScreen', () => {
@@ -109,6 +111,37 @@ describe('InstallPluginsScreen', () => {
       expect(codexPos).toBeGreaterThan(-1);
       expect(cursorPos).toBeGreaterThan(-1);
       expect(codexPos).toBeLessThan(cursorPos);
+    });
+  });
+
+  it('auto-selects IDE from config and advances without user input', async () => {
+    const { getConfigValue } = await import('@spotify-confidence/core');
+    vi.mocked(getConfigValue).mockReturnValueOnce('cursor');
+
+    using project = createProjectDir();
+    using sut = renderApp({ screen: ScreenId.InstallPlugins, dir: project.path });
+
+    await waitFor(() => {
+      expect(sut.lastFrame()).toContain('Teach your AI Confidence');
+    });
+  });
+
+  it('saves IDE selection to config', async () => {
+    using project = createProjectDir();
+    using sut = renderScreen(<InstallPluginsScreen />, {
+      screen: ScreenId.InstallPlugins,
+      dir: project.path,
+    });
+
+    await waitFor(() => {
+      expect(sut.lastFrame()).toContain('Claude Code');
+    });
+
+    await act(() => sut.stdin.write(ENTER));
+
+    const { setConfigValue } = await import('@spotify-confidence/core');
+    await waitFor(() => {
+      expect(vi.mocked(setConfigValue)).toHaveBeenCalledWith('ide', 'claude');
     });
   });
 

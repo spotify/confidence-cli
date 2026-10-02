@@ -6,6 +6,7 @@ import { store } from '@ui/store.js';
 vi.mock('@spotify-confidence/core', async (importOriginal) => ({
   ...(await importOriginal<typeof import('@spotify-confidence/core')>()),
   launchChatSession: vi.fn(),
+  getConfigValue: vi.fn().mockReturnValue(undefined),
 }));
 
 describe('DoneScreen', () => {
