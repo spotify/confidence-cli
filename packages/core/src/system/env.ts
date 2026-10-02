@@ -27,3 +27,7 @@ export function isCI(): boolean {
 export function isDebug(): boolean {
   return env('DEBUG') === 'true';
 }
+
+export function isInteractive(): boolean {
+  return Boolean(process.stdin.isTTY) && !isCI();
+}

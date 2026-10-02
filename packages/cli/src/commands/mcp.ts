@@ -3,8 +3,8 @@ import { print, fail, extractFlags } from '@output/print.js';
 import { getAvailableMcpServers, type McpServerStatus } from '@spotify-confidence/core';
 import {
   resolveIde,
+  resolveFlag,
   resolveProjectDir,
-  resolveProfile,
   installMcpServers,
   uninstallMcpServers,
   getMcpStatuses,
@@ -27,14 +27,19 @@ export const mcpCommand = {
         type: 'string',
         describe: 'Target project directory',
       })
+      .option('ide', {
+        type: 'string',
+        choices: ['claude', 'cursor', 'codex'] as const,
+        describe: 'AI coding agent to configure',
+      })
       .command(
         'install',
         'Install Confidence MCP servers for your AI coding agent',
         () => {},
         async (argv) => {
           try {
-            const ideId = await resolveIde();
-            await installMcpServers(ideId, resolveProjectDir(argv), resolveProfile(argv));
+            const ideId = await resolveIde(resolveFlag('ide', argv));
+            await installMcpServers(ideId, resolveProjectDir(argv), resolveFlag('profile', argv));
           } catch (err) {
             fail((err as Error).message);
           }
@@ -46,7 +51,7 @@ export const mcpCommand = {
         () => {},
         async (argv) => {
           try {
-            const ideId = await resolveIde();
+            const ideId = await resolveIde(resolveFlag('ide', argv));
             await uninstallMcpServers(ideId, resolveProjectDir(argv));
           } catch (err) {
             fail((err as Error).message);
@@ -59,7 +64,7 @@ export const mcpCommand = {
         () => {},
         async (argv) => {
           try {
-            const ideId = await resolveIde();
+            const ideId = await resolveIde(resolveFlag('ide', argv));
             const statuses = await getMcpStatuses(ideId, resolveProjectDir(argv));
             const rows = Object.entries(statuses).map(([server, status]) => ({
               server,
@@ -100,8 +105,8 @@ export const mcpCommand = {
         () => {},
         async (argv) => {
           try {
-            const ideId = await resolveIde();
-            await refreshMcpAuth(ideId, resolveProjectDir(argv), resolveProfile(argv));
+            const ideId = await resolveIde(resolveFlag('ide', argv));
+            await refreshMcpAuth(ideId, resolveProjectDir(argv), resolveFlag('profile', argv));
           } catch (err) {
             fail((err as Error).message);
           }

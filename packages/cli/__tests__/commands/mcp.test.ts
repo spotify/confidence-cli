@@ -28,10 +28,6 @@ vi.mock('@spotify-confidence/core', async (importOriginal) => {
   };
 });
 
-vi.mock('@inquirer/select', () => ({
-  default: vi.fn().mockResolvedValue('claude'),
-}));
-
 beforeEach(() => {
   vi.clearAllMocks();
 });
@@ -76,7 +72,7 @@ describe('mcp status', () => {
     using _auth = prepareAuthTokens('valid');
     using output = captureOutput();
 
-    await run(['mcp', 'status', '--json']);
+    await run(['mcp', 'status', '--ide', 'claude', '--json']);
 
     const parsed = JSON.parse(output.stdout);
     expect(parsed.data).toEqual(
@@ -93,7 +89,7 @@ describe('mcp install', () => {
     using _auth = prepareAuthTokens('valid');
     using _output = captureOutput();
 
-    await run(['mcp', 'install']);
+    await run(['mcp', 'install', '--ide', 'claude']);
 
     expect(mockIntegration.connectMcpServer).toHaveBeenCalledTimes(2);
     expect(mockIntegration.connectMcpServer).toHaveBeenCalledWith(
@@ -111,7 +107,7 @@ describe('mcp install', () => {
       new Error('connection refused'),
     );
 
-    await run(['mcp', 'install']);
+    await run(['mcp', 'install', '--ide', 'claude']);
 
     expect(output.stderr).toContain('connection refused');
   });
@@ -123,7 +119,7 @@ describe('mcp install', () => {
       new Error('connection refused'),
     );
 
-    await run(['mcp', 'install']);
+    await run(['mcp', 'install', '--ide', 'claude']);
 
     expect(mockIntegration.connectMcpServer).toHaveBeenCalledTimes(2);
   });
@@ -134,7 +130,7 @@ describe('mcp uninstall', () => {
     using _auth = prepareAuthTokens('valid');
     using _output = captureOutput();
 
-    await run(['mcp', 'uninstall']);
+    await run(['mcp', 'uninstall', '--ide', 'claude']);
 
     expect(mockIntegration.disconnectMcpServer).toHaveBeenCalledTimes(2);
   });
@@ -145,7 +141,7 @@ describe('mcp auth', () => {
     using _auth = prepareAuthTokens('valid');
     using _output = captureOutput();
 
-    await run(['mcp', 'auth']);
+    await run(['mcp', 'auth', '--ide', 'claude']);
 
     expect(mockAuthenticate).toHaveBeenCalled();
     expect(mockIntegration.connectMcpServer).toHaveBeenCalledTimes(2);
@@ -156,7 +152,7 @@ describe('--profile', () => {
   it('forwards profile to authenticate during install', async () => {
     using _output = captureOutput();
 
-    await run(['mcp', 'install', '--profile', 'staging']);
+    await run(['mcp', 'install', '--ide', 'claude', '--profile', 'staging']);
 
     expect(mockAuthenticate).toHaveBeenCalledWith(
       expect.objectContaining({ mode: 'login', profile: 'staging' }),
@@ -166,7 +162,7 @@ describe('--profile', () => {
   it('forwards profile to authenticate during auth refresh', async () => {
     using _output = captureOutput();
 
-    await run(['mcp', 'auth', '--profile', 'staging']);
+    await run(['mcp', 'auth', '--ide', 'claude', '--profile', 'staging']);
 
     expect(mockAuthenticate).toHaveBeenCalledWith(
       expect.objectContaining({ mode: 'login', profile: 'staging' }),
@@ -179,7 +175,7 @@ describe('--dir', () => {
     using _auth = prepareAuthTokens('valid');
     using _output = captureOutput();
 
-    await run(['mcp', 'install']);
+    await run(['mcp', 'install', '--ide', 'claude']);
 
     expect(mockIntegration.connectMcpServer).toHaveBeenCalledWith(
       expect.objectContaining({ projectDir: process.cwd() }),
@@ -190,7 +186,7 @@ describe('--dir', () => {
     using _auth = prepareAuthTokens('valid');
     using _output = captureOutput();
 
-    await run(['mcp', 'install', '--dir', 'some/relative/path']);
+    await run(['mcp', 'install', '--ide', 'claude', '--dir', 'some/relative/path']);
 
     expect(mockIntegration.connectMcpServer).toHaveBeenCalledWith(
       expect.objectContaining({ projectDir: resolve('some/relative/path') }),
@@ -201,7 +197,7 @@ describe('--dir', () => {
     using _auth = prepareAuthTokens('valid');
     using _output = captureOutput();
 
-    await run(['mcp', 'status', '--dir', '/tmp/my-project', '--json']);
+    await run(['mcp', 'status', '--ide', 'claude', '--dir', '/tmp/my-project', '--json']);
 
     expect(mockIntegration.detectMcpStatuses).toHaveBeenCalledWith('/tmp/my-project');
   });
@@ -210,7 +206,7 @@ describe('--dir', () => {
     using _auth = prepareAuthTokens('valid');
     using _output = captureOutput();
 
-    await run(['mcp', 'auth', '--dir', '/tmp/my-project']);
+    await run(['mcp', 'auth', '--ide', 'claude', '--dir', '/tmp/my-project']);
 
     expect(mockIntegration.connectMcpServer).toHaveBeenCalledWith(
       expect.objectContaining({ projectDir: '/tmp/my-project' }),
