@@ -13,17 +13,21 @@ export function useInitialDetection(): InitialDetection {
   const session = useSession();
   const [phase, setPhase] = useState<PluginPhase>(session.dryRun ? 'choose-ide' : 'detecting');
   const [detected, setDetected] = useState<IdeId[]>([]);
+  const [savedIde] = useState<IdeId | null>(() => session.ide);
 
-  const applyResults = useCallback(function applyResults(found: InstalledPlugin[]) {
-    const ides = found.map((d) => d.ide);
-    setDetected(ides);
-    setPhase(found.length > 0 ? 'already-installed' : 'choose-ide');
+  const applyResults = useCallback(
+    function applyResults(found: InstalledPlugin[]) {
+      const ides = found.map((d) => d.ide);
+      setDetected(ides);
+      setPhase(savedIde ? 'restoring' : found.length > 0 ? 'already-installed' : 'choose-ide');
 
-    if (found.length > 0) {
-      store.setPluginTargets(ides);
-      store.setPluginInstallMethod(found[0].via);
-    }
-  }, []);
+      if (found.length > 0) {
+        store.setPluginTargets(ides);
+        store.setPluginInstallMethod(found[0].via);
+      }
+    },
+    [savedIde],
+  );
 
   useEffect(
     function resolveInitialDetection() {

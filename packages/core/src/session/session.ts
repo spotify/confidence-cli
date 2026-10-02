@@ -159,6 +159,7 @@ export function createSession(opts?: {
   debug?: boolean;
   dir?: string;
   goals?: OnboardingGoal[];
+  ide?: IdeId | null;
 }): WizardSession {
   return {
     sessionId: randomUUID(),
@@ -172,7 +173,7 @@ export function createSession(opts?: {
     projectDir: opts?.dir ?? process.cwd(),
     systemChecks: {},
     authState: { status: 'idle' },
-    ide: null,
+    ide: opts?.ide ?? null,
     pluginTargets: [],
     pluginInstallMethod: null,
     connectedMcps: [],

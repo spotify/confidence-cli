@@ -8,6 +8,10 @@ export function pluginInstalled(ide: string | null | undefined): LogMessage {
   return { input: ide ?? 'unknown', output: `Installed for ${ide}` };
 }
 
+export function pluginRestoredFromConfig(ide: string): LogMessage {
+  return { input: '(auto — from config)', output: ide };
+}
+
 export function pluginExitedAfterError(error: string | null): LogMessage {
   return { input: 'Exit (after error)', output: error ?? 'Setup failed' };
 }

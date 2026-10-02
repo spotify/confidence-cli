@@ -15,6 +15,7 @@ import {
   ScreenId,
   createSession,
 } from '@spotify-confidence/core';
+import { readSavedIde } from './lib/ide-config.js';
 
 export type StoreOptions = {
   dryRun?: boolean;
@@ -41,6 +42,7 @@ export const store = {
         debug: opts?.debug,
         dir: opts?.dir,
         goals: opts?.goals,
+        ide: opts?.dryRun ? null : readSavedIde(),
       }),
     ),
 
