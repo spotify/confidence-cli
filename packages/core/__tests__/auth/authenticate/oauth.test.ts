@@ -46,7 +46,7 @@ async function hitCallback(query: string, init?: RequestInit): Promise<Response>
 }
 
 async function completeAuth(mode: 'signup' | 'login'): Promise<string> {
-  const result = authenticate(mode);
+  const result = authenticate({ mode });
   const authUrl = await waitForOpenedUrl();
   await hitCallback('?code=test-code');
   await result;
@@ -122,7 +122,7 @@ describe('authenticate', () => {
       await sut('login');
 
       // Act
-      const result = authenticate('login');
+      const result = authenticate({ mode: 'login' });
       const authUrl = await waitForOpenedUrl();
       const response = await hitCallback('?error=invalid_request', { redirect: 'manual' });
       const retryUrl = response.headers.get('location')!;

@@ -9,8 +9,10 @@ export const loginCommand = {
 
     try {
       message('Opening browser for authentication...');
-      const result = await authenticate('login', undefined, profile, (url) => {
-        message(`If the browser did not open, visit:\n${url}`);
+      const result = await authenticate({
+        mode: 'login',
+        profile,
+        onUrl: (url) => message(`If the browser did not open, visit:\n${url}`),
       });
       message(`Authenticated as ${result.workspace ?? 'unknown'} (${result.region})`);
     } catch (err) {

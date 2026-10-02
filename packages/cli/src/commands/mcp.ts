@@ -1,9 +1,10 @@
-import { resolve } from 'node:path';
 import type { Argv } from 'yargs';
 import { print, fail, extractFlags } from '@output/print.js';
 import { getAvailableMcpServers, type McpServerStatus } from '@spotify-confidence/core';
 import {
   resolveIde,
+  resolveProjectDir,
+  resolveProfile,
   installMcpServers,
   uninstallMcpServers,
   getMcpStatuses,
@@ -16,11 +17,6 @@ const STATUS_LABELS: Record<McpServerStatus, string> = {
   'auth-expired': 'Auth expired',
   'not-installed': 'Not installed',
 };
-
-function resolveProjectDir(argv: Record<string, unknown>): string {
-  const dir = argv.dir as string | undefined;
-  return dir ? resolve(dir) : process.cwd();
-}
 
 export const mcpCommand = {
   command: 'mcp <action>',
@@ -38,7 +34,7 @@ export const mcpCommand = {
         async (argv) => {
           try {
             const ideId = await resolveIde();
-            await installMcpServers(ideId, resolveProjectDir(argv));
+            await installMcpServers(ideId, resolveProjectDir(argv), resolveProfile(argv));
           } catch (err) {
             fail((err as Error).message);
           }
@@ -105,7 +101,7 @@ export const mcpCommand = {
         async (argv) => {
           try {
             const ideId = await resolveIde();
-            await refreshMcpAuth(ideId, resolveProjectDir(argv));
+            await refreshMcpAuth(ideId, resolveProjectDir(argv), resolveProfile(argv));
           } catch (err) {
             fail((err as Error).message);
           }

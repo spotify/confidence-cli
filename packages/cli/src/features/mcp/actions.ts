@@ -12,11 +12,15 @@ import {
   type McpServerStatus,
 } from '@spotify-confidence/core';
 
-export async function installMcpServers(ideId: IdeId, projectDir: string): Promise<void> {
+export async function installMcpServers(
+  ideId: IdeId,
+  projectDir: string,
+  profile?: string,
+): Promise<void> {
   const integration = getIntegration(ideId);
   const servers = getAvailableMcpServers();
 
-  const token = await resolveAuthToken();
+  const token = await resolveAuthToken({ profile });
   if (!token) return;
 
   const spinner = ora(`Installing MCP servers for ${integration.name}...`).start();
@@ -71,11 +75,15 @@ export async function getMcpStatuses(
   return integration.detectMcpStatuses(projectDir);
 }
 
-export async function refreshMcpAuth(ideId: IdeId, projectDir: string): Promise<void> {
+export async function refreshMcpAuth(
+  ideId: IdeId,
+  projectDir: string,
+  profile?: string,
+): Promise<void> {
   const integration = getIntegration(ideId);
   const servers = getAvailableMcpServers();
 
-  const token = await resolveAuthToken({ forceNew: true });
+  const token = await resolveAuthToken({ forceNew: true, profile });
   if (!token) return;
 
   const spinner = ora('Updating MCP server credentials...').start();
@@ -102,9 +110,12 @@ export async function refreshMcpAuth(ideId: IdeId, projectDir: string): Promise<
   spinner.succeed('MCP server credentials updated');
 }
 
-async function resolveAuthToken(opts?: { forceNew?: boolean }): Promise<string | null> {
+async function resolveAuthToken(opts?: {
+  forceNew?: boolean;
+  profile?: string;
+}): Promise<string | null> {
   if (!opts?.forceNew) {
-    const existing = loadPersistedToken();
+    const existing = loadPersistedToken(opts?.profile);
     if (existing) {
       const { valid } = validateToken(existing);
       if (valid) return existing;
@@ -113,8 +124,10 @@ async function resolveAuthToken(opts?: { forceNew?: boolean }): Promise<string |
 
   try {
     message('Authentication required. Opening browser...');
-    const result = await authenticate('login', undefined, undefined, (url) => {
-      message(`If the browser did not open, visit:\n${url}`);
+    const result = await authenticate({
+      mode: 'login',
+      profile: opts?.profile,
+      onUrl: (url) => message(`If the browser did not open, visit:\n${url}`),
     });
     return result.accessToken;
   } catch (err) {

@@ -40,6 +40,7 @@ function run(args: string[]) {
   return yargs(args)
     .option('json', { type: 'boolean', default: false })
     .option('output', { type: 'string' })
+    .option('profile', { type: 'string' })
     .command(mcpCommand)
     .parse();
 }
@@ -136,6 +137,28 @@ describe('mcp auth', () => {
 
     expect(mockAuthenticate).toHaveBeenCalled();
     expect(mockIntegration.connectMcpServer).toHaveBeenCalledTimes(2);
+  });
+});
+
+describe('--profile', () => {
+  it('forwards profile to authenticate during install', async () => {
+    using _output = captureOutput();
+
+    await run(['mcp', 'install', '--profile', 'staging']);
+
+    expect(mockAuthenticate).toHaveBeenCalledWith(
+      expect.objectContaining({ mode: 'login', profile: 'staging' }),
+    );
+  });
+
+  it('forwards profile to authenticate during auth refresh', async () => {
+    using _output = captureOutput();
+
+    await run(['mcp', 'auth', '--profile', 'staging']);
+
+    expect(mockAuthenticate).toHaveBeenCalledWith(
+      expect.objectContaining({ mode: 'login', profile: 'staging' }),
+    );
   });
 });
 
