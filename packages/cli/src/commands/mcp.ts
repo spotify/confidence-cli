@@ -1,7 +1,7 @@
 import { resolve } from 'node:path';
 import type { Argv } from 'yargs';
 import { print, fail, extractFlags } from '@output/print.js';
-import { getAvailableMcpServers } from '@spotify-confidence/core';
+import { getAvailableMcpServers, type McpServerStatus } from '@spotify-confidence/core';
 import {
   resolveIde,
   installMcpServers,
@@ -10,7 +10,7 @@ import {
   refreshMcpAuth,
 } from '@features/mcp/index.js';
 
-const STATUS_LABELS: Record<string, string> = {
+const STATUS_LABELS: Record<McpServerStatus, string> = {
   connected: 'Connected',
   installed: 'Installed (unreachable)',
   'auth-expired': 'Auth expired',
