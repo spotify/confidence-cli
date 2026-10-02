@@ -10,11 +10,13 @@
     "./env": "./src/env/index.ts",
     "./terminal": "./src/terminal/index.ts",
     "./msw": "./src/msw/setup.ts",
-    "./msw/localstorage-fake": "./src/msw/localstorage-fake.mjs"
+    "./msw/localstorage-fake": "./src/msw/localstorage-fake.mjs",
+    "./e2e": "./src/e2e/index.ts"
   },
   "dependencies": {
     "@spotify-confidence/shared-kernel": "workspace:*",
-    "msw": "^2.15.0"
+    "msw": "^2.15.0",
+    "node-pty": "1.2.0-beta.14"
   },
   "scripts": {
     "typecheck": "tsc --noEmit"

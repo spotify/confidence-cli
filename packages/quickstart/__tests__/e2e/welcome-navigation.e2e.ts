@@ -1,4 +1,4 @@
-import { createSession } from './testing-framework/index.js';
+import { createSession } from '@spotify-confidence/testing/e2e';
 
 describe('welcome screen navigation', () => {
   it('navigates to About screen', async () => {

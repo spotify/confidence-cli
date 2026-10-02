@@ -1,8 +1,11 @@
 import { mkdtempSync, rmSync } from 'node:fs';
-import { join } from 'node:path';
+import { join, resolve } from 'node:path';
 import { tmpdir } from 'node:os';
-import { startMockServer, type MockServer } from './testing-framework/mocks/server.js';
-import { createMockBinDir } from './testing-framework/mocks/binaries/index.js';
+import {
+  startMockServer,
+  type MockServer,
+  createMockBinDir,
+} from '@spotify-confidence/testing/e2e';
 
 let mockServer: MockServer;
 let tempBase: string;
@@ -15,6 +18,7 @@ export async function setup() {
 
   Object.assign(process.env, mockServer.envVars);
   process.env.E2E_MOCK_BIN_DIR = mockBinDir;
+  process.env.E2E_CLI_PATH = resolve(import.meta.dirname, '../../dist/bin/cli.js');
 }
 
 export async function teardown() {

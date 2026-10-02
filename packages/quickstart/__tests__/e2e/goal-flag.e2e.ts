@@ -1,4 +1,8 @@
-import { createSession, navigatePastWelcome, navigatePastAuth } from './testing-framework/index.js';
+import {
+  createSession,
+  navigatePastWelcome,
+  navigatePastAuth,
+} from '@spotify-confidence/testing/e2e';
 
 describe('--features flag', () => {
   it('skips feature selection screen when --features is provided', async () => {

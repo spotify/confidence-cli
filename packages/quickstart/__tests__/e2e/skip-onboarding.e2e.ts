@@ -1,4 +1,4 @@
-import { createSession, navigateToOnboarding } from './testing-framework/index.js';
+import { createSession, navigateToOnboarding } from '@spotify-confidence/testing/e2e';
 
 describe('when the user skips onboarding', () => {
   it('shows Done screen without report file or code changes', async () => {

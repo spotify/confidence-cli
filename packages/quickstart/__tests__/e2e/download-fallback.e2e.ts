@@ -3,7 +3,7 @@ import {
   navigateToPlugins,
   selectIdeAndOnboard,
   readInvocation,
-} from './testing-framework/index.js';
+} from '@spotify-confidence/testing/e2e';
 
 describe('when CLI plugin install fails', () => {
   it('falls back to download and references skills by file path in the prompt', async () => {
