@@ -22,8 +22,7 @@ export function useGoalSelection(): GoalSelection {
 
   const recordingAvailable = !!session.framework && BROWSER_PLATFORMS.has(session.framework);
 
-  const goalsPreset =
-    session.onboardingGoals.length > 0 && !session.completedScreens.has(ScreenId.SelectGoal);
+  const goalsPreset = session.goalsPreset && !session.completedScreens.has(ScreenId.SelectGoal);
 
   const hasPresetRecordings = goalsPreset && session.onboardingGoals.includes('session-recordings');
 

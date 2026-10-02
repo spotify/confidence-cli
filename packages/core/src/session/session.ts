@@ -180,7 +180,7 @@ export function createSession(opts?: {
     isEmptyProject: false,
     detectedProviders: [],
     onboardingGoals: opts?.goals ?? [],
-    goalsPreset: (opts?.goals?.length ?? 0) > 0,
+    goalsPreset: opts?.goals !== undefined,
     onboardingStatus: '',
     reportFile: null,
     codeChanges: [],

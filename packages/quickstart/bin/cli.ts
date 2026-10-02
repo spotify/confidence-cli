@@ -31,8 +31,8 @@ const cli = yargs(hideBin(process.argv))
   .option('features', {
     type: 'string',
     array: true,
-    choices: ['flags', 'events', 'recordings'] as const,
-    describe: 'Pre-select onboarding features (skips feature selection screen)',
+    choices: ['none', 'flags', 'events', 'recordings'] as const,
+    describe: 'Pre-select onboarding features (use "none" for SDK-only setup)',
   })
   .command(defaultCommand.name, defaultCommand.description, () => {}, defaultCommand.handler)
   .command('start', defaultCommand.description, () => {}, defaultCommand.handler)

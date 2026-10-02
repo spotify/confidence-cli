@@ -19,7 +19,7 @@ export const helpCommand: Command = {
       'Options:',
       '  --dir <path>     Project directory to run the wizard in',
       '  --features <f>   Pre-select onboarding features (skips feature selection screen)',
-      '                   Choices: flags, events, recordings',
+      '                   Choices: none, flags, events, recordings',
       '  --dry-run        Run without making real API calls',
       '  --debug          Enable debug output and preserve terminal history',
       '  --no-telemetry   Disable anonymous usage telemetry',

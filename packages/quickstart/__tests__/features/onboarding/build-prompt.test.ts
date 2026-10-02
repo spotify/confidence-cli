@@ -1,3 +1,4 @@
+import type { OnboardingGoal } from '@spotify-confidence/shared-kernel';
 import { buildOnboardingPrompt } from '@features/onboarding/index.js';
 
 describe('buildOnboardingPrompt', () => {
@@ -129,6 +130,38 @@ describe('buildOnboardingPrompt', () => {
       });
 
       expect(sut).toContain('Invoke the `/analyze-project` skill as a **methodology reference**');
+    });
+  });
+
+  describe('with no goals (SDK-only setup)', () => {
+    const sdkOnlyOpts = { ...baseOpts, goals: [] as OnboardingGoal[] };
+
+    it('produces an SDK-only install prompt', () => {
+      const sut = buildOnboardingPrompt(sdkOnlyOpts);
+
+      expect(sut).toContain('Install the appropriate Confidence SDK');
+      expect(sut).toContain('react');
+    });
+
+    it('does not include feature flag, recording, or event tracking sections', () => {
+      const sut = buildOnboardingPrompt(sdkOnlyOpts);
+
+      expect(sut).not.toContain('integrateFeatureFlags');
+      expect(sut).not.toContain('Session Recording');
+      expect(sut).not.toContain('Event Tracking');
+    });
+
+    it('instructs the agent to only install the SDK', () => {
+      const sut = buildOnboardingPrompt(sdkOnlyOpts);
+
+      expect(sut).toContain('do not configure providers, create flags, or add instrumentation');
+    });
+
+    it('references the docs tool for install instructions', () => {
+      const sut = buildOnboardingPrompt(sdkOnlyOpts);
+
+      expect(sut).toContain('searchDocumentation');
+      expect(sut).toContain('SDK install');
     });
   });
 
