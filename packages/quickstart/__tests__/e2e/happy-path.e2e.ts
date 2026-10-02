@@ -1,4 +1,4 @@
-import { createSession, simulateAuthCallback } from './testing-framework/index.js';
+import { createSession, simulateAuthCallback } from '@spotify-confidence/testing/e2e';
 
 describe('happy-path flow', () => {
   it('navigates Welcome → SystemCheck → SelectGoal → Authenticate → InstallPlugins → ConnectTools → OnboardProject → Done', async () => {

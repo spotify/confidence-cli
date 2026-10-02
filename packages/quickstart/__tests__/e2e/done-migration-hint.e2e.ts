@@ -1,4 +1,4 @@
-import { createSession, navigateToOnboarding } from './testing-framework/index.js';
+import { createSession, navigateToOnboarding } from '@spotify-confidence/testing/e2e';
 
 describe('Done screen migration hint', () => {
   it('shows /migrate-statsig hint when competitor is detected', async () => {

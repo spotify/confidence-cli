@@ -46,7 +46,6 @@
     "eslint": "^10.11.0",
     "ink-testing-library": "^4.0.0",
     "msw": "^2.15.0",
-    "node-pty": "1.2.0-beta.14",
     "prettier": "^3.9.9",
     "tsdown": "^0.22.14",
     "tsx": "^4.23.15",

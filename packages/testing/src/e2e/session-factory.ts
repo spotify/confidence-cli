@@ -2,7 +2,7 @@ import { mkdtempSync, writeFileSync } from 'node:fs';
 import { tmpdir } from 'node:os';
 import { delimiter, join } from 'node:path';
 import { TerminalSession } from './terminal/index.js';
-import { createProjectDir, type ProjectType } from '@spotify-confidence/testing/scaffold';
+import { createProjectDir, type ProjectType } from '../scaffold/index.js';
 
 /**
  * Creates an isolated {@link TerminalSession} pre-configured for e2e testing.
@@ -71,6 +71,7 @@ export function createSession({
   }
 
   const session = new TerminalSession({
+    cliPath: process.env.E2E_CLI_PATH!,
     args: ['--debug', '--dir', projectDir, ...extraArgs],
     env: sessionEnv,
     cwd: projectDir,

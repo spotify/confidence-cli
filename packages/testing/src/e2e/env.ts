@@ -1,4 +1,4 @@
-export { AUTH_CALLBACK_PORT } from '@spotify-confidence/core';
+export const AUTH_CALLBACK_PORT = 8084;
 
 /**
  * Baseline environment variables injected into every e2e terminal session.

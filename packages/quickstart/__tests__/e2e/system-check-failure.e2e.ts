@@ -1,6 +1,6 @@
 import { dirname } from 'node:path';
 import { isWindows } from '@spotify-confidence/testing/env';
-import { createSession } from './testing-framework/index.js';
+import { createSession } from '@spotify-confidence/testing/e2e';
 
 describe('when system check fails', () => {
   it('shows error when git is missing', async () => {
