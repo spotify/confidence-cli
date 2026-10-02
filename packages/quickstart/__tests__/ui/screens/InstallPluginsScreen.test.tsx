@@ -7,6 +7,7 @@ import {
   ARROW_DOWN,
   waitFor,
 } from '../testing-framework/index.js';
+import { createConfigDir } from '@spotify-confidence/testing/scaffold';
 import { InstallPluginsScreen } from '@ui/screens/install-plugins/index.js';
 import { ScreenId } from '@spotify-confidence/core';
 
@@ -16,12 +17,11 @@ vi.mock('@spotify-confidence/core', async (importOriginal) => ({
   prepareIde: vi.fn().mockResolvedValue(undefined),
   installPlugin: vi.fn().mockResolvedValue('download'),
   updatePlugin: vi.fn().mockResolvedValue('download'),
-  getConfigValue: vi.fn().mockReturnValue(undefined),
-  setConfigValue: vi.fn(),
 }));
 
 describe('InstallPluginsScreen', () => {
   it('renders title', async () => {
+    using _config = createConfigDir();
     using sut = renderScreen(<InstallPluginsScreen />, { screen: ScreenId.InstallPlugins });
     await waitFor(() => {
       expect(sut.lastFrame()).toContain('Select agent to set up');
@@ -29,6 +29,7 @@ describe('InstallPluginsScreen', () => {
   });
 
   it('shows IDE selection when no plugins detected', async () => {
+    using _config = createConfigDir();
     using sut = renderScreen(<InstallPluginsScreen />, { screen: ScreenId.InstallPlugins });
     await waitFor(() => {
       expect(sut.lastFrame()).toContain('Claude Code');
@@ -38,6 +39,7 @@ describe('InstallPluginsScreen', () => {
   });
 
   it('shows file system access warning during IDE selection', async () => {
+    using _config = createConfigDir();
     using sut = renderScreen(<InstallPluginsScreen />, { screen: ScreenId.InstallPlugins });
     await waitFor(() => {
       expect(sut.lastFrame()).toContain('full file system access');
@@ -45,6 +47,7 @@ describe('InstallPluginsScreen', () => {
   });
 
   it('installs plugin and shows success', async () => {
+    using _config = createConfigDir();
     using project = createProjectDir();
     using sut = renderScreen(<InstallPluginsScreen />, {
       screen: ScreenId.InstallPlugins,
@@ -63,6 +66,7 @@ describe('InstallPluginsScreen', () => {
   });
 
   it('auto-advances after install', async () => {
+    using _config = createConfigDir();
     using project = createProjectDir();
     using sut = renderApp({ screen: ScreenId.InstallPlugins, dir: project.path });
 
@@ -78,6 +82,7 @@ describe('InstallPluginsScreen', () => {
   });
 
   it('shows continue option when plugins already installed', async () => {
+    using _config = createConfigDir();
     const { detectInstalledPlugins } = await import('@spotify-confidence/core');
     vi.mocked(detectInstalledPlugins).mockResolvedValueOnce([{ ide: 'claude', via: 'cli' }]);
 
@@ -96,6 +101,7 @@ describe('InstallPluginsScreen', () => {
   });
 
   it('sorts detected IDEs above non-detected ones', async () => {
+    using _config = createConfigDir();
     const { detectInstalledPlugins } = await import('@spotify-confidence/core');
     vi.mocked(detectInstalledPlugins).mockResolvedValueOnce([
       { ide: 'claude', via: 'cli' },
@@ -115,9 +121,7 @@ describe('InstallPluginsScreen', () => {
   });
 
   it('auto-selects IDE from config and advances without user input', async () => {
-    const { getConfigValue } = await import('@spotify-confidence/core');
-    vi.mocked(getConfigValue).mockReturnValueOnce('cursor');
-
+    using _config = createConfigDir({ ide: 'cursor' });
     using project = createProjectDir();
     using sut = renderApp({ screen: ScreenId.InstallPlugins, dir: project.path });
 
@@ -127,6 +131,7 @@ describe('InstallPluginsScreen', () => {
   });
 
   it('saves IDE selection to config', async () => {
+    using config = createConfigDir();
     using project = createProjectDir();
     using sut = renderScreen(<InstallPluginsScreen />, {
       screen: ScreenId.InstallPlugins,
@@ -139,13 +144,13 @@ describe('InstallPluginsScreen', () => {
 
     await act(() => sut.stdin.write(ENTER));
 
-    const { setConfigValue } = await import('@spotify-confidence/core');
     await waitFor(() => {
-      expect(vi.mocked(setConfigValue)).toHaveBeenCalledWith('ide', 'claude');
+      expect(config.readConfig()).toEqual(expect.objectContaining({ ide: 'claude' }));
     });
   });
 
   it('shows error and retry option on install failure', async () => {
+    using _config = createConfigDir();
     const { installPlugin } = await import('@spotify-confidence/core');
     vi.mocked(installPlugin).mockRejectedValueOnce(new Error('Installation failed'));
 
