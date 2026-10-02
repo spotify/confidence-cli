@@ -62,6 +62,26 @@ describe('claude disconnectMcpServer', () => {
       sut({ serverName: 'confidence-flags', projectDir: project.path }),
     ).resolves.toBeUndefined();
   });
+
+  it('cleans settings even when claude mcp remove fails', async () => {
+    using project = createProjectDir('empty');
+    writeClaudeSettings(project.path, {
+      permissions: { allow: ['mcp__confidence-flags__*'] },
+      enabledMcpjsonServers: ['confidence-flags'],
+    });
+    execFile.mockRejectedValueOnce(new Error('claude not found'));
+    const sut = await loadDisconnect();
+
+    await expect(sut({ serverName: 'confidence-flags', projectDir: project.path })).rejects.toThrow(
+      'claude not found',
+    );
+
+    const settings = JSON.parse(
+      readFileSync(join(project.path, '.claude', 'settings.local.json'), 'utf-8'),
+    );
+    expect(settings.permissions.allow).toEqual([]);
+    expect(settings.enabledMcpjsonServers).toEqual([]);
+  });
 });
 
 describe('cursor disconnectMcpServer', () => {

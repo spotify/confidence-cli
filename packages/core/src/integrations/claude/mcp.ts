@@ -54,11 +54,11 @@ export async function connectMcpServer(opts: McpConnectOpts): Promise<void> {
 }
 
 export async function disconnectMcpServer(opts: McpDisconnectOpts): Promise<void> {
+  removeMcpToolsFromSettings(opts.serverName, opts.projectDir);
+
   await execFile('claude', ['mcp', 'remove', '--scope', 'project', opts.serverName], {
     cwd: opts.projectDir,
   });
-
-  removeMcpToolsFromSettings(opts.serverName, opts.projectDir);
 }
 
 function removeMcpToolsFromSettings(serverName: string, projectDir: string): void {
