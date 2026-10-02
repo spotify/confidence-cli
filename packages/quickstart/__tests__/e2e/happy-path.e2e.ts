@@ -7,6 +7,7 @@ describe('happy-path flow', () => {
     // Welcome
     await session.waitForText('Confidence Quickstart');
     await session.waitForText('Start setup');
+    await session.waitForText('React');
     expect(session.snapshot()).toMatchSnapshot('welcome');
     session.checkpoint();
     await session.press('Enter');
