@@ -5,7 +5,7 @@ import { simulateAuthCallback } from './utils.js';
  * Advances the wizard past the Welcome and SystemCheck screens.
  *
  * Waits for the welcome CTA, presses Enter, then waits for the system
- * check to pass. The session is left at the Authenticate screen.
+ * check to pass. The session is left at the SelectGoal screen.
  *
  * @param session - An active terminal session showing the Welcome screen.
  */
@@ -16,11 +16,25 @@ export async function navigatePastWelcome(session: TerminalSession): Promise<voi
 }
 
 /**
+ * Selects the first goal (Feature Flags) and advances past the
+ * SelectGoal screen.
+ *
+ * The session is left at the Authenticate screen.
+ *
+ * @param session - An active terminal session showing the SelectGoal screen.
+ */
+export async function navigatePastGoalSelection(session: TerminalSession): Promise<void> {
+  await session.waitForText("Select the features you'd like to set up");
+  await session.press('Space');
+  await session.press('Enter');
+}
+
+/**
  * Completes the full authentication flow via browser-simulated OAuth.
  *
  * Initiates sign-in, triggers {@link simulateAuthCallback}, and waits
  * for the "Authenticated" confirmation. The session is left at the
- * SelectGoal screen.
+ * InstallPlugins screen.
  *
  * @param session - An active terminal session showing the Authenticate screen.
  */
@@ -34,28 +48,27 @@ export async function navigatePastAuth(session: TerminalSession): Promise<void> 
 }
 
 /**
- * Navigates from the start through Welcome, SystemCheck, and Auth,
+ * Navigates from the start through Welcome and SystemCheck,
  * landing on the SelectGoal screen with a fresh checkpoint.
  *
  * @param session - An active terminal session at the Welcome screen.
  */
 export async function navigateToGoalSelection(session: TerminalSession): Promise<void> {
   await navigatePastWelcome(session);
-  await navigatePastAuth(session);
   session.checkpoint();
   await session.waitForText("Select the features you'd like to set up");
 }
 
 /**
  * Navigates from the start through to the InstallPlugins screen,
- * selecting Feature Flags as the goal.
+ * selecting Feature Flags as the goal and authenticating.
  *
  * @param session - An active terminal session at the Welcome screen.
  */
 export async function navigateToPlugins(session: TerminalSession): Promise<void> {
   await navigateToGoalSelection(session);
-  await session.press('Space');
-  await session.press('Enter');
+  await navigatePastGoalSelection(session);
+  await navigatePastAuth(session);
   await session.waitForText('Which CLI agent would you like to use?');
 }
 

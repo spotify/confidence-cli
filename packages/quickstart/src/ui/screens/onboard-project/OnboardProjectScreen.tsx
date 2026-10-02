@@ -1,7 +1,7 @@
 import { MainLayout } from '../../components/MainLayout.js';
 import { TaskList } from '../../components/TaskList.js';
-import { buildWizardTasks } from '../../lib/wizard-tasks.js';
 import { useTipRotation } from '../../hooks/useTipRotation.js';
+import { useWizardTasks } from '../../hooks/useWizardTasks.js';
 import { useTerminalSize } from '../../hooks/useTerminalSize.js';
 import { tipsFitInViewport } from '../../lib/layout-budget.js';
 import { ScreenId, track } from '@spotify-confidence/core';
@@ -67,7 +67,7 @@ export function OnboardProjectScreen() {
     onboarding.confirmStart();
   }
 
-  const tasks = buildWizardTasks(
+  const tasks = useWizardTasks(
     'onboardProject',
     onboarding.phase === 'done' ? 'done' : onboarding.phase === 'error' ? 'error' : 'active',
   );

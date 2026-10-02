@@ -1,6 +1,6 @@
 import { MainLayout } from '../../components/MainLayout.js';
 import { TaskList } from '../../components/TaskList.js';
-import { buildWizardTasks } from '../../lib/wizard-tasks.js';
+import { useWizardTasks } from '../../hooks/useWizardTasks.js';
 import { useGoalSelection } from './useGoalSelection.js';
 import {
   LeftPanel,
@@ -12,7 +12,7 @@ import {
 export function SelectGoalScreen() {
   const goalSelection = useGoalSelection();
   const incompatible = goalSelection.incompatiblePreset;
-  const tasks = buildWizardTasks('selectGoal', incompatible ? 'error' : 'active');
+  const tasks = useWizardTasks('selectGoal', incompatible ? 'error' : 'active');
 
   return (
     <MainLayout

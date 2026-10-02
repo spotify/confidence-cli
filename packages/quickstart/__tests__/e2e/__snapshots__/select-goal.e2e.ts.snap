@@ -3,11 +3,11 @@
 exports[`SelectGoal screen > shows goal options for a browser framework > select-goal 1`] = `
 " Confidence by Spotify                                              https://confidence.spotify.com/
 
- Select the features you'd like to set up                             Todo (2/6)
+ Select the features you'd like to set up                             Todo (1/6)
 
  Toggle Confidence features to integrate with your project.           ● Check system
-                                                                      ● Log in to Confidence
- ◆ Event tracking works best with Confidence Cloud or an existing     ▶ Select features
+                                                                      ▶ Select features
+ ◆ Event tracking works best with Confidence Cloud or an existing     ○ Log in to Confidence
  warehouse setup.                                                     ○ Set up your agent
                                                                       ○ Connect tools
                                                                       ○ Onboard project

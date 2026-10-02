@@ -5,7 +5,7 @@ import { Colors, Icons } from '../../styles.js';
 import { PromptPanel } from '../../components/PromptPanel.js';
 import { MainLayout } from '../../components/MainLayout.js';
 import { TaskList } from '../../components/TaskList.js';
-import { buildWizardTasks } from '../../lib/wizard-tasks.js';
+import { useWizardTasks } from '../../hooks/useWizardTasks.js';
 import {
   CONFIDENCE_DOCS_URL,
   ScreenId,
@@ -68,7 +68,7 @@ export function ConnectToolsScreen() {
     ];
   }, [available, serverStatuses, connectedNames, phase]);
 
-  const tasks = buildWizardTasks('connectTools', isComplete ? 'done' : 'active');
+  const tasks = useWizardTasks('connectTools', isComplete ? 'done' : 'active');
 
   const main = (
     <Box flexDirection="column">

@@ -5,10 +5,26 @@ describe('--features flag', () => {
     using session = createSession({ extraArgs: ['--features', 'flags'] });
 
     await navigatePastWelcome(session);
+    // SelectGoal auto-advances because goals are preset
     await navigatePastAuth(session);
 
-    // Should skip SelectGoal and land on InstallPlugins
+    // Should land on InstallPlugins
     await session.waitForText('Which CLI agent would you like to use?');
+  });
+
+  it('omits "Select features" from the task list when --features is provided', async () => {
+    using session = createSession({ extraArgs: ['--features', 'flags'] });
+
+    await navigatePastWelcome(session);
+    await navigatePastAuth(session);
+    await session.waitForText('Which CLI agent would you like to use?');
+
+    const frame = session.screen;
+    expect(frame).not.toContain('Select features');
+    expect(frame).toContain('Check system');
+    expect(frame).toContain('Log in to Confidence');
+    expect(frame).toContain('Set up your agent');
+    expect(session.snapshot()).toMatchSnapshot('task-list-without-select-features');
   });
 
   it('accepts multiple features', async () => {
@@ -17,9 +33,10 @@ describe('--features flag', () => {
     });
 
     await navigatePastWelcome(session);
+    // SelectGoal auto-advances because goals are preset
     await navigatePastAuth(session);
 
-    // Should skip SelectGoal and land on InstallPlugins
+    // Should land on InstallPlugins
     await session.waitForText('Which CLI agent would you like to use?');
   });
 
@@ -31,7 +48,6 @@ describe('--features flag', () => {
       });
 
       await navigatePastWelcome(session);
-      await navigatePastAuth(session);
 
       await session.waitForText('Incompatible feature selection');
       await session.waitForText('Session recordings are not available');
@@ -45,7 +61,6 @@ describe('--features flag', () => {
       });
 
       await navigatePastWelcome(session);
-      await navigatePastAuth(session);
 
       await session.waitForText('Incompatible feature selection');
       await session.waitForText('Continue without recordings');
@@ -58,11 +73,12 @@ describe('--features flag', () => {
       });
 
       await navigatePastWelcome(session);
-      await navigatePastAuth(session);
 
       await session.waitForText('Continue without recordings');
       await session.press('Enter');
 
+      // Advances to Authenticate after goal resolution
+      await navigatePastAuth(session);
       await session.waitForText('Which CLI agent would you like to use?');
     });
 
@@ -72,9 +88,8 @@ describe('--features flag', () => {
       });
 
       await navigatePastWelcome(session);
-      await navigatePastAuth(session);
-
       // Browser SDK (react) — should auto-advance past SelectGoal
+      await navigatePastAuth(session);
       await session.waitForText('Which CLI agent would you like to use?');
     });
   });

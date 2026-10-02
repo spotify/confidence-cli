@@ -5,10 +5,10 @@ import { Colors, Icons } from '../../styles.js';
 import { PromptPanel } from '../../components/PromptPanel.js';
 import { MainLayout } from '../../components/MainLayout.js';
 import { TaskList } from '../../components/TaskList.js';
-import { buildWizardTasks } from '../../lib/wizard-tasks.js';
 import { ScreenId, track } from '@spotify-confidence/core';
 import { useLogger } from '../../hooks/useLog.js';
 import { useNavigation } from '../../hooks/useNavigation.js';
+import { useWizardTasks } from '../../hooks/useWizardTasks.js';
 import { useSystemCheck } from './useSystemCheck.js';
 import { systemCheckPassed, systemCheckQuit } from './log-messages.js';
 import * as te from './telemetry-events.js';
@@ -42,7 +42,7 @@ export function SystemCheckScreen() {
     [allPassed, running, navigate, log, formatChecksOutput],
   );
 
-  const tasks = buildWizardTasks('systemCheck', running ? 'active' : allPassed ? 'done' : 'error');
+  const tasks = useWizardTasks('systemCheck', running ? 'active' : allPassed ? 'done' : 'error');
 
   const main = (
     <Box flexDirection="column">

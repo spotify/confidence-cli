@@ -6,8 +6,8 @@ exports[`when MCP config has expired auth tokens > allows skipping when auth is 
  Ready to start?                                                      Todo (5/6)
 
  The wizard will:                                                     ● Check system
- ✔ add the Confidence SDK                                             ● Log in to Confidence
- ✔ create your first feature flag                                     ● Select features
+ ✔ add the Confidence SDK                                             ● Select features
+ ✔ create your first feature flag                                     ● Log in to Confidence
                                                                       ● Set up your agent
  ◆ The AI agent will be able to run commands, install packages, and   ● Connect tools
  modify files in your project.                                        ▶ Onboard project
@@ -28,8 +28,8 @@ exports[`when MCP config has expired auth tokens > shows auth-expired status and
  Teach your AI Confidence                                             Todo (4/6)
 
  Give your AI assistant direct access to flags, docs, and             ● Check system
- integration tools via Confidence MCP. With it, you'll be able to:    ● Log in to Confidence
-                                                                      ● Select features
+ integration tools via Confidence MCP. With it, you'll be able to:    ● Select features
+                                                                      ● Log in to Confidence
  ● Ask your agent to create and manage feature flags.                 ● Set up your agent
  ● Search docs and generate code, all from your IDE.                  ▶ Connect tools
  ● Avoid context-switching or manual lookups. Your assistant has the  ○ Onboard project
@@ -61,8 +61,8 @@ exports[`when MCP config has expired auth tokens > shows auth-expired status and
  Teach your AI Confidence                                             Todo (5/6)
 
  Give your AI assistant direct access to flags, docs, and             ● Check system
- integration tools via Confidence MCP. With it, you'll be able to:    ● Log in to Confidence
-                                                                      ● Select features
+ integration tools via Confidence MCP. With it, you'll be able to:    ● Select features
+                                                                      ● Log in to Confidence
  ● Ask your agent to create and manage feature flags.                 ● Set up your agent
  ● Search docs and generate code, all from your IDE.                  ● Connect tools
  ● Avoid context-switching or manual lookups. Your assistant has the  ○ Onboard project
