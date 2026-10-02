@@ -6,7 +6,7 @@ export const nextjsFramework: FrameworkConfig = {
   id: 'nextjs',
   name: 'Next.js',
   docsUrl: 'https://confidence.spotify.com/docs/sdks/server/nextjs',
-  sdkPackage: '@spotify-confidence/sdk',
+  sdkPackage: '@spotify-confidence/openfeature-server-provider-local',
   detect: async (dir) => {
     const pkgPath = join(dir, 'package.json');
     if (!existsSync(pkgPath)) return false;

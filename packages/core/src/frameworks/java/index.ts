@@ -6,7 +6,7 @@ export const javaFramework: FrameworkConfig = {
   id: 'java',
   name: 'Java',
   docsUrl: 'https://confidence.spotify.com/docs/sdks/server/java',
-  sdkPackage: 'com.spotify.confidence:openfeature-provider',
+  sdkPackage: 'com.spotify.confidence:openfeature-provider-local',
   detect: async (dir) => {
     if (existsSync(join(dir, 'pom.xml'))) return true;
     const hasGradle =

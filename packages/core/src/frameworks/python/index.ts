@@ -6,7 +6,7 @@ export const pythonFramework: FrameworkConfig = {
   id: 'python',
   name: 'Python',
   docsUrl: 'https://confidence.spotify.com/docs/sdks/server/python',
-  sdkPackage: 'spotify-confidence-sdk',
+  sdkPackage: 'confidence-openfeature-provider',
   detect: async (dir) => {
     return (
       existsSync(join(dir, 'requirements.txt')) ||

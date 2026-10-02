@@ -6,7 +6,7 @@ export const nodeFramework: FrameworkConfig = {
   id: 'node',
   name: 'Node.js',
   docsUrl: 'https://confidence.spotify.com/docs/sdks/server/javascript',
-  sdkPackage: '@spotify-confidence/server-sdk',
+  sdkPackage: '@spotify-confidence/openfeature-server-provider-local',
   detect: async (dir) => {
     const pkgPath = join(dir, 'package.json');
     return existsSync(pkgPath);
