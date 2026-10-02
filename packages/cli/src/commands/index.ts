@@ -2,5 +2,8 @@ export { loginCommand } from './login.js';
 export { logoutCommand } from './logout.js';
 export { whoamiCommand } from './whoami.js';
 export { configCommand } from './config.js';
+export { eventsCommand } from './events.js';
+export { flagsCommand } from './flags.js';
+export { recordingsCommand } from './recordings.js';
 export { quickstartCommand } from './quickstart.js';
 export type { GlobalFlags } from './types.js';
