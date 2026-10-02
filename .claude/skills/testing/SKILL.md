@@ -92,6 +92,7 @@ packages/testing/src/               # Shared test infrastructure
   env/                              # Environment overlay, platform detection
   terminal/                         # Key-map, key resolution
   msw/                              # MSW server + handlers
+  e2e/                              # E2E framework (see testing-e2e skill)
 ```
 
 ### Test infrastructure imports
@@ -104,6 +105,7 @@ import { createProjectDir } from '@spotify-confidence/testing/scaffold';
 import { isWindows } from '@spotify-confidence/testing/env';
 import { resolveKey } from '@spotify-confidence/testing/terminal';
 import { server } from '@spotify-confidence/testing'; // MSW server (main barrel)
+import { createSession } from '@spotify-confidence/testing/e2e'; // E2E framework
 ```
 
 ## UI Testing Framework (`packages/quickstart/__tests__/ui/testing-framework/`)
