@@ -54,6 +54,7 @@ export async function uninstallMcpServers(ideId: IdeId, projectDir: string): Pro
   const integration = getIntegration(ideId);
   const servers = getAvailableMcpServers();
   const spinner = ora(`Removing MCP servers from ${integration.name}...`).start();
+  const failed: string[] = [];
 
   for (const server of servers) {
     spinner.text = `Removing ${server.name}...`;
@@ -62,12 +63,14 @@ export async function uninstallMcpServers(ideId: IdeId, projectDir: string): Pro
         serverName: server.name,
         projectDir,
       });
-    } catch {
-      // best-effort — server may not have been installed
+    } catch (err) {
+      failed.push(`${server.name}: ${(err as Error).message}`);
     }
   }
 
-  spinner.succeed(`MCP servers removed from ${integration.name}`);
+  const action = 'uninstall';
+  const success = `MCP servers removed from ${integration.name}`;
+  reportResults({ spinner, servers, failed, action, success });
 }
 
 export async function getMcpStatuses(
@@ -144,7 +147,7 @@ async function resolveAuthToken(opts?: {
 function reportResults(opts: {
   spinner: Ora;
   servers: McpServer[];
-  action: 'install' | 'update';
+  action: 'install' | 'uninstall' | 'update';
   failed: string[];
   success: string;
 }) {
