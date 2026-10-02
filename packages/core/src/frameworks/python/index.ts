@@ -5,8 +5,8 @@ import { join } from 'node:path';
 export const pythonFramework: FrameworkConfig = {
   id: 'python',
   name: 'Python',
-  docsUrl: 'https://confidence.spotify.com/docs/sdk/python',
-  sdkPackage: 'spotify-confidence-sdk',
+  docsUrl: 'https://confidence.spotify.com/docs/sdks/server/python',
+  sdkPackage: 'confidence-openfeature-provider',
   detect: async (dir) => {
     return (
       existsSync(join(dir, 'requirements.txt')) ||

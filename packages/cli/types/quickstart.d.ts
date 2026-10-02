@@ -7,4 +7,5 @@ declare module '@spotify-confidence/quickstart' {
   };
 
   function startTui(opts?: StoreOptions): Promise<void>;
+  function resolveGoals(features?: string[]): string[] | undefined;
 }

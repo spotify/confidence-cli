@@ -12,6 +12,7 @@ import { integrateRecording } from './sections/recording.js';
 import { instrumentEvents } from './sections/event-tracking.js';
 import { generateReport } from './sections/report.js';
 import { summary, rules } from './sections/summary.js';
+import { sdkOnly } from './sections/sdk-only.js';
 
 type PromptOptions = {
   framework: string;
@@ -32,6 +33,10 @@ export function buildOnboardingPrompt({
   hasProviders = false,
   pluginInstallMethod = null,
 }: PromptOptions): string {
+  if (goals.length === 0) {
+    return sdkOnly(framework, projectDir, ide);
+  }
+
   const steps = new StepCounter(isEmptyProject ? 2 : 1);
   const tools = buildToolVars(ide);
 

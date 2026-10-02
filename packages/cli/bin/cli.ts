@@ -11,6 +11,8 @@ import {
   flagsCommand,
   recordingsCommand,
   quickstartCommand,
+  mcpCommand,
+  sdkCommand,
 } from '../src/commands/index.js';
 
 const APP_NAME = 'confidence';
@@ -68,6 +70,8 @@ const cli = yargs(hideBin(process.argv))
   .command(flagsCommand)
   .command(recordingsCommand)
   .command(quickstartCommand)
+  .command(mcpCommand)
+  .command(sdkCommand)
   .demandCommand(1, 'Run "confidence --help" to see available commands.')
   .strict()
   .help()

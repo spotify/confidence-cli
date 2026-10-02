@@ -5,8 +5,8 @@ import { join } from 'node:path';
 export const nodeFramework: FrameworkConfig = {
   id: 'node',
   name: 'Node.js',
-  docsUrl: 'https://confidence.spotify.com/docs/sdk/node',
-  sdkPackage: '@spotify-confidence/server-sdk',
+  docsUrl: 'https://confidence.spotify.com/docs/sdks/server/javascript',
+  sdkPackage: '@spotify-confidence/openfeature-server-provider-local',
   detect: async (dir) => {
     const pkgPath = join(dir, 'package.json');
     return existsSync(pkgPath);

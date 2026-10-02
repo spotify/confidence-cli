@@ -1,4 +1,5 @@
 import { clearTokens } from '@spotify-confidence/core';
+import { message } from '@output/print.js';
 
 export const logoutCommand = {
   command: 'logout',
@@ -6,6 +7,6 @@ export const logoutCommand = {
   handler(argv: Record<string, unknown>) {
     const profile = argv.profile as string | undefined;
     clearTokens(profile);
-    console.log('Logged out.');
+    message('Logged out.');
   },
 };

@@ -1,9 +1,3 @@
-const FEATURE_TO_GOAL: Record<string, string> = {
-  flags: 'feature-flags',
-  events: 'event-tracking',
-  recordings: 'session-recordings',
-};
-
 export const QUICKSTART_BUILDER = {
   dir: {
     type: 'string' as const,
@@ -18,8 +12,8 @@ export const QUICKSTART_BUILDER = {
   features: {
     type: 'string' as const,
     array: true,
-    choices: ['flags', 'events', 'recordings'] as const,
-    describe: 'Pre-select onboarding features',
+    choices: ['none', 'flags', 'events', 'recordings'] as const,
+    describe: 'Pre-select onboarding features (use "none" for SDK-only setup)',
   },
 } as const;
 
@@ -32,12 +26,11 @@ export async function launchQuickstart(
   const dir = argv.dir as string | undefined;
   const noTelemetry = argv.telemetry === false;
   const features = (argv.features as string[] | undefined) ?? defaults?.features;
-  const goals = features?.map((f) => FEATURE_TO_GOAL[f]).filter(Boolean);
 
   if (noTelemetry) {
     process.env.CONFIDENCE_TELEMETRY = 'false';
   }
 
-  const { startTui } = await import('@spotify-confidence/quickstart');
-  await startTui({ dryRun, debug, dir, goals });
+  const { startTui, resolveGoals } = await import('@spotify-confidence/quickstart');
+  await startTui({ dryRun, debug, dir, goals: resolveGoals(features) });
 }

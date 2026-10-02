@@ -6,7 +6,7 @@ import { join } from 'node:path';
 export const swiftFramework: FrameworkConfig = {
   id: 'swift',
   name: 'Swift',
-  docsUrl: 'https://confidence.spotify.com/docs/sdk/swift',
+  docsUrl: 'https://confidence.spotify.com/docs/sdks/client/ios',
   sdkPackage: 'confidence-sdk-swift',
   detect: async (dir) => {
     if (existsSync(join(dir, 'Package.swift'))) return true;

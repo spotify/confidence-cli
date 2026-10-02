@@ -1,5 +1,8 @@
+export type FrameworkId =
+  'nextjs' | 'react' | 'swift' | 'kotlin' | 'java' | 'go' | 'python' | 'node';
+
 export type FrameworkConfig = {
-  id: string;
+  id: FrameworkId;
   name: string;
   docsUrl: string;
   sdkPackage: string;

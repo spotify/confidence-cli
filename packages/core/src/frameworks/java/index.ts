@@ -5,8 +5,8 @@ import { join } from 'node:path';
 export const javaFramework: FrameworkConfig = {
   id: 'java',
   name: 'Java',
-  docsUrl: 'https://confidence.spotify.com/docs/sdk/java',
-  sdkPackage: 'com.spotify.confidence:openfeature-provider',
+  docsUrl: 'https://confidence.spotify.com/docs/sdks/server/java',
+  sdkPackage: 'com.spotify.confidence:openfeature-provider-local',
   detect: async (dir) => {
     if (existsSync(join(dir, 'pom.xml'))) return true;
     const hasGradle =

@@ -5,7 +5,7 @@ import { join } from 'node:path';
 export const kotlinFramework: FrameworkConfig = {
   id: 'kotlin',
   name: 'Android (Kotlin)',
-  docsUrl: 'https://confidence.spotify.com/docs/sdk/android',
+  docsUrl: 'https://confidence.spotify.com/docs/sdks/client/android',
   sdkPackage: 'com.spotify.confidence:openfeature-provider-android',
   detect: async (dir) => {
     const hasGradle =

@@ -8,3 +8,4 @@ export {
   verifyMcpServer,
 } from './servers.js';
 export { loadMcpPreference, persistMcpPreference, clearMcpPreference } from './preference.js';
+export { callMcpTool } from './client.js';

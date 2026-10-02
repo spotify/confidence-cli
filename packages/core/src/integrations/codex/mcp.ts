@@ -1,6 +1,6 @@
 import { readFileSync, writeFileSync } from 'node:fs';
 import { execFile } from '../../exec/exec.js';
-import type { McpConnectOpts } from '../types.js';
+import type { McpConnectOpts, McpDisconnectOpts } from '../types.js';
 import {
   MCP_SERVERS,
   type McpServerName,
@@ -22,7 +22,7 @@ export async function connectMcpServer(opts: McpConnectOpts): Promise<void> {
   try {
     await execFile('codex', ['mcp', 'remove', opts.serverName]);
   } catch {
-    // Not registered yet — that's fine
+    // Server may not be registered yet; the subsequent `mcp add` is idempotent
   }
 
   await execFile('codex', ['mcp', 'add', opts.serverName, '--url', opts.serverUrl]);
@@ -35,6 +35,10 @@ export async function connectMcpServer(opts: McpConnectOpts): Promise<void> {
   patchHttpHeaders(opts.serverName, headers);
 }
 
+export async function disconnectMcpServer(opts: McpDisconnectOpts): Promise<void> {
+  await execFile('codex', ['mcp', 'remove', opts.serverName]);
+}
+
 function getRegisteredMcpNames(projectDir: string): McpServerName[] {
   const names = Object.keys(MCP_SERVERS) as McpServerName[];
   const paths = [globalConfigPath(), projectConfigPath(projectDir)];
@@ -45,6 +49,7 @@ function getRegisteredMcpNames(projectDir: string): McpServerName[] {
         const content = readFileSync(configPath, 'utf-8');
         return content.includes(`[mcp_servers.${name}]`) || content.includes(`"${name}"`);
       } catch {
+        // Config file doesn't exist — server is not registered in this scope
         return false;
       }
     }),
@@ -63,6 +68,7 @@ function getStoredAuthToken(serverName: McpServerName): string | null {
     const match = section.match(/"Authorization"\s*=\s*"Bearer\s+([^"]+)"/);
     return match?.[1] ?? null;
   } catch {
+    // Config file missing or unreadable — treat as no stored token
     return null;
   }
 }
@@ -105,6 +111,6 @@ export function patchHttpHeaders(
 
     writeFileSync(configPath, content, 'utf-8');
   } catch {
-    // Best-effort — MCP still works without the header
+    // Config may not exist yet if `codex mcp add` failed; MCP still works without custom headers
   }
 }

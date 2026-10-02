@@ -6,4 +6,6 @@ export { eventsCommand } from './events.js';
 export { flagsCommand } from './flags.js';
 export { recordingsCommand } from './recordings.js';
 export { quickstartCommand } from './quickstart.js';
+export { mcpCommand } from './mcp.js';
+export { sdkCommand } from './sdk.js';
 export type { GlobalFlags } from './types.js';

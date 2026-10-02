@@ -16,6 +16,11 @@ export type McpConnectOpts = {
   accessToken?: string;
 };
 
+export type McpDisconnectOpts = {
+  serverName: string;
+  projectDir: string;
+};
+
 export type OnboardingCallbacks = {
   onStatus: (text: string) => void;
   onStdout: (line: string) => void;
@@ -49,6 +54,7 @@ export type IdeIntegration = {
 
   detectMcpStatuses: (projectDir: string) => Promise<Record<McpServerName, McpServerStatus>>;
   connectMcpServer: (opts: McpConnectOpts) => Promise<void>;
+  disconnectMcpServer: (opts: McpDisconnectOpts) => Promise<void>;
 
   runOnboarding: (opts: OnboardingOpts, callbacks: OnboardingCallbacks) => ChildProcess | null;
 
