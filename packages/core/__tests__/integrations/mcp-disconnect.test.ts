@@ -86,15 +86,11 @@ describe('cursor disconnectMcpServer', () => {
 
     await sut({ serverName: 'confidence-flags', projectDir: project.path });
 
-    const updatedMcp = JSON.parse(
-      readFileSync(join(project.path, '.cursor', 'mcp.json'), 'utf-8'),
-    );
+    const updatedMcp = JSON.parse(readFileSync(join(project.path, '.cursor', 'mcp.json'), 'utf-8'));
     expect(updatedMcp.mcpServers).not.toHaveProperty('confidence-flags');
     expect(updatedMcp.mcpServers).toHaveProperty('other-server');
 
-    const updatedCli = JSON.parse(
-      readFileSync(join(project.path, '.cursor', 'cli.json'), 'utf-8'),
-    );
+    const updatedCli = JSON.parse(readFileSync(join(project.path, '.cursor', 'cli.json'), 'utf-8'));
     expect(updatedCli.permissions.allow).toEqual(['Mcp(other:*)']);
   });
 
