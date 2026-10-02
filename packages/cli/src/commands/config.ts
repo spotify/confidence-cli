@@ -6,7 +6,7 @@ import {
   resetConfig,
   validKeys,
 } from '@features/config/index.js';
-import { print, extractFlags } from '@output/print.js';
+import { print, message, fail, extractFlags } from '@output/print.js';
 
 export const configCommand = {
   command: 'config <action>',
@@ -23,10 +23,9 @@ export const configCommand = {
         (argv) => {
           try {
             setConfigValue(argv.key as string, argv.value as string);
-            console.log(`Set ${argv.key} = ${argv.value}`);
+            message(`Set ${argv.key} = ${argv.value}`);
           } catch (err) {
-            console.error((err as Error).message);
-            process.exitCode = 1;
+            fail((err as Error).message);
           }
         },
       )
@@ -38,13 +37,12 @@ export const configCommand = {
           try {
             const value = getConfigValue(argv.key as string);
             if (value === undefined) {
-              console.log(`${argv.key} is not set`);
+              message(`${argv.key} is not set`);
             } else {
-              console.log(value);
+              message(value);
             }
           } catch (err) {
-            console.error((err as Error).message);
-            process.exitCode = 1;
+            fail((err as Error).message);
           }
         },
       )
@@ -70,7 +68,7 @@ export const configCommand = {
         () => {},
         () => {
           resetConfig();
-          console.log('Configuration reset.');
+          message('Configuration reset.');
         },
       )
       .demandCommand(

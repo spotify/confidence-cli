@@ -1,4 +1,5 @@
 import { authenticate } from '@spotify-confidence/core';
+import { message, fail } from '@output/print.js';
 
 export const loginCommand = {
   command: 'login',
@@ -7,15 +8,14 @@ export const loginCommand = {
     const profile = argv.profile as string | undefined;
 
     try {
-      console.log('Opening browser for authentication...');
+      message('Opening browser for authentication...');
       const result = await authenticate('login', undefined, profile, (url) => {
-        console.log(`If the browser did not open, visit:\n${url}`);
+        message(`If the browser did not open, visit:\n${url}`);
       });
-      console.log(`Authenticated as ${result.workspace ?? 'unknown'} (${result.region})`);
+      message(`Authenticated as ${result.workspace ?? 'unknown'} (${result.region})`);
     } catch (err) {
       const msg = err instanceof Error ? err.message : 'Authentication failed';
-      console.error(`Login failed: ${msg}`);
-      process.exitCode = 1;
+      fail(`Login failed: ${msg}`);
     }
   },
 };

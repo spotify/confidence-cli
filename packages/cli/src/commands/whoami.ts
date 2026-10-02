@@ -1,5 +1,5 @@
 import { loadPersistedToken, validateToken, decodeJwtPayload } from '@spotify-confidence/core';
-import { print, extractFlags } from '@output/print.js';
+import { print, fail, extractFlags } from '@output/print.js';
 
 export const whoamiCommand = {
   command: 'whoami',
@@ -9,15 +9,13 @@ export const whoamiCommand = {
 
     const token = loadPersistedToken(profile);
     if (!token) {
-      console.error('Not logged in. Run "confidence login" first.');
-      process.exitCode = 1;
+      fail('Not logged in. Run "confidence login" first.');
       return;
     }
 
     const validation = validateToken(token);
     if (!validation.valid) {
-      console.error('Token is expired. Run "confidence login" to re-authenticate.');
-      process.exitCode = 1;
+      fail('Token is expired. Run "confidence login" to re-authenticate.');
       return;
     }
 
