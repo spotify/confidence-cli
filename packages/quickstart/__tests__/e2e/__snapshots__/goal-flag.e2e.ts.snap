@@ -8,7 +8,7 @@ exports[`--features flag > omits "Select features" from the task list when --fea
  Your agent will get Confidence skills for flag management,           ● Check system
  warehouse setup, migrations, and onboarding — so it can help         ● Log in to Confidence
  without searching the docs.                                          ▶ Set up your agent
-                                                                      ○ Connect tools
+                                                                      ○ Install MCPs
  ◆ Cursor and Codex require full file system access to run            ○ Onboard project
  onboarding.
 

@@ -9,7 +9,7 @@ exports[`when auth token is stale > allows re-authentication after expired token
  warehouse setup, migrations, and onboarding — so it can help         ● Select features
  without searching the docs.                                          ● Log in to Confidence
                                                                       ▶ Set up your agent
- ◆ Cursor and Codex require full file system access to run            ○ Connect tools
+ ◆ Cursor and Codex require full file system access to run            ○ Install MCPs
  onboarding.                                                          ○ Onboard project
 
 
@@ -32,7 +32,7 @@ exports[`when auth token is stale > allows signing in after failed refresh and p
  warehouse setup, migrations, and onboarding — so it can help         ● Select features
  without searching the docs.                                          ● Log in to Confidence
                                                                       ▶ Set up your agent
- ◆ Cursor and Codex require full file system access to run            ○ Connect tools
+ ◆ Cursor and Codex require full file system access to run            ○ Install MCPs
  onboarding.                                                          ○ Onboard project
 
 
@@ -55,7 +55,7 @@ exports[`when auth token is stale > falls back to sign-in when choosing existing
                                                                       ● Select features
  Your session expired. Log in again.                                  ▶ Log in to Confidence
                                                                       ○ Set up your agent
-                                                                      ○ Connect tools
+                                                                      ○ Install MCPs
                                                                       ○ Onboard project
 
 
@@ -76,7 +76,7 @@ exports[`when auth token is stale > prompts user to sign in again instead of usi
                                                                       ● Select features
                                                                       ▶ Log in to Confidence
                                                                       ○ Set up your agent
-                                                                      ○ Connect tools
+                                                                      ○ Install MCPs
                                                                       ○ Onboard project
 
 
@@ -97,7 +97,7 @@ exports[`when auth token is stale > refreshes and authenticates when choosing ex
  warehouse setup, migrations, and onboarding — so it can help         ● Select features
  without searching the docs.                                          ● Log in to Confidence
                                                                       ▶ Set up your agent
- ◆ Cursor and Codex require full file system access to run            ○ Connect tools
+ ◆ Cursor and Codex require full file system access to run            ○ Install MCPs
  onboarding.                                                          ○ Onboard project
 
 
@@ -120,7 +120,7 @@ exports[`when auth token is stale > shows "Use existing account" when the token 
                                                                       ● Select features
                                                                       ▶ Log in to Confidence
                                                                       ○ Set up your agent
-                                                                      ○ Connect tools
+                                                                      ○ Install MCPs
                                                                       ○ Onboard project
 
 
@@ -142,7 +142,7 @@ exports[`when auth token is stale > treats a malformed token as invalid and prom
                                                                       ● Select features
                                                                       ▶ Log in to Confidence
                                                                       ○ Set up your agent
-                                                                      ○ Connect tools
+                                                                      ○ Install MCPs
                                                                       ○ Onboard project
 
 
@@ -163,7 +163,7 @@ exports[`when auth token is stale > treats a near-expiry token as valid > auth-n
                                                                       ● Select features
                                                                       ▶ Log in to Confidence
                                                                       ○ Set up your agent
-                                                                      ○ Connect tools
+                                                                      ○ Install MCPs
                                                                       ○ Onboard project
 
 

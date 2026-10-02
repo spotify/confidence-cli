@@ -9,7 +9,7 @@ exports[`when MCP config has expired auth tokens > allows skipping when auth is 
  ✔ add the Confidence SDK                                             ● Select features
  ✔ create your first feature flag                                     ● Log in to Confidence
                                                                       ● Set up your agent
- ◆ The AI agent will be able to run commands, install packages, and   ● Connect tools
+ ◆ The AI agent will be able to run commands, install packages, and   ● Install MCPs
  modify files in your project.                                        ▶ Onboard project
 
 
@@ -31,7 +31,7 @@ exports[`when MCP config has expired auth tokens > shows auth-expired status and
  integration tools via Confidence MCP. With it, you'll be able to:    ● Select features
                                                                       ● Log in to Confidence
  ● Ask your agent to create and manage feature flags.                 ● Set up your agent
- ● Search docs and generate code, all from your IDE.                  ▶ Connect tools
+ ● Search docs and generate code, all from your IDE.                  ▶ Install MCPs
  ● Avoid context-switching or manual lookups. Your assistant has the  ○ Onboard project
     keys.
 
@@ -64,7 +64,7 @@ exports[`when MCP config has expired auth tokens > shows auth-expired status and
  integration tools via Confidence MCP. With it, you'll be able to:    ● Select features
                                                                       ● Log in to Confidence
  ● Ask your agent to create and manage feature flags.                 ● Set up your agent
- ● Search docs and generate code, all from your IDE.                  ● Connect tools
+ ● Search docs and generate code, all from your IDE.                  ● Install MCPs
  ● Avoid context-switching or manual lookups. Your assistant has the  ○ Onboard project
     keys.
 

@@ -6,7 +6,7 @@ const WIZARD_STEPS = {
   selectGoal: 'Select features',
   authenticate: 'Log in to Confidence',
   installPlugins: 'Set up your agent',
-  connectTools: 'Connect tools',
+  connectTools: 'Install MCPs',
   onboardProject: 'Onboard project',
 } as const;
 

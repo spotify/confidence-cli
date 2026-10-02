@@ -9,7 +9,7 @@ exports[`happy-path flow > navigates Welcome → SystemCheck → SelectGoal → 
                                                                       ● Select features
  ✔ Authenticated as test@example.com                                  ● Log in to Confidence
                                                                       ○ Set up your agent
- Continuing...                                                        ○ Connect tools
+ Continuing...                                                        ○ Install MCPs
                                                                       ○ Onboard project"
 `;
 
@@ -22,7 +22,7 @@ exports[`happy-path flow > navigates Welcome → SystemCheck → SelectGoal → 
  integration tools via Confidence MCP. With it, you'll be able to:    ● Select features
                                                                       ● Log in to Confidence
  ● Ask your agent to create and manage feature flags.                 ● Set up your agent
- ● Search docs and generate code, all from your IDE.                  ▶ Connect tools
+ ● Search docs and generate code, all from your IDE.                  ▶ Install MCPs
  ● Avoid context-switching or manual lookups. Your assistant has the  ○ Onboard project
     keys.
 
@@ -78,7 +78,7 @@ exports[`happy-path flow > navigates Welcome → SystemCheck → SelectGoal → 
  warehouse setup, migrations, and onboarding — so it can help         ● Select features
  without searching the docs.                                          ● Log in to Confidence
                                                                       ▶ Set up your agent
- ◆ Cursor and Codex require full file system access to run            ○ Connect tools
+ ◆ Cursor and Codex require full file system access to run            ○ Install MCPs
  onboarding.                                                          ○ Onboard project
 
 
@@ -101,7 +101,7 @@ exports[`happy-path flow > navigates Welcome → SystemCheck → SelectGoal → 
  ✔ add the Confidence SDK                                             ● Select features
  ✔ create your first feature flag                                     ● Log in to Confidence
                                                                       ● Set up your agent
- ◆ The AI agent will be able to run commands, install packages, and   ● Connect tools
+ ◆ The AI agent will be able to run commands, install packages, and   ● Install MCPs
  modify files in your project.                                        ▶ Onboard project
 
 
@@ -123,7 +123,7 @@ exports[`happy-path flow > navigates Welcome → SystemCheck → SelectGoal → 
                                                                       ▶ Select features
  ◆ Event tracking works best with Confidence Cloud or an existing     ○ Log in to Confidence
  warehouse setup.                                                     ○ Set up your agent
-                                                                      ○ Connect tools
+                                                                      ○ Install MCPs
                                                                       ○ Onboard project
 
 
@@ -146,7 +146,7 @@ exports[`happy-path flow > navigates Welcome → SystemCheck → SelectGoal → 
                                                                       ○ Select features
  ✔ Node.js vX.Y.Z                                                     ○ Log in to Confidence
  ✔ Git X.Y.Z                                                          ○ Set up your agent
-                                                                      ○ Connect tools
+                                                                      ○ Install MCPs
  All checks passed. Continuing...                                     ○ Onboard project"
 `;
 
