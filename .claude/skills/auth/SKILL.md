@@ -1,14 +1,20 @@
+---
+name: auth
+description: OAuth2 PKCE authentication flow with Confidence via Auth0
+version: '0.2'
+---
+
 # Authentication Skill
 
 Handles OAuth2 PKCE authentication with Confidence via Auth0.
 
 ## Flow
 
-1. **Check existing credentials** — Look for persisted token at `$TMPDIR/confidence_token`. Validate JWT expiry.
+1. **Check existing credentials** — Look for persisted token at `$CONFIDENCE_CONFIG_DIR/credentials.json` (or `$TMPDIR/confidence_token` legacy path). Validate JWT expiry.
 2. **Prompt user** — If valid token exists, offer to reuse or re-authenticate. If no token, ask whether to create a new account or sign in.
 3. **Browser-based OAuth2 PKCE** — Start local HTTP server on port 8084, open browser to Auth0 authorize endpoint, wait for callback with authorization code.
 4. **Token exchange** — Exchange authorization code + PKCE verifier for access token and refresh token.
-5. **Persist tokens** — Write access token to `$TMPDIR/confidence_token`, refresh token to `$TMPDIR/confidence_refresh_token`, and the Auth0 organization (`org_id` claim, falling back to `https://confidence.dev/org_login_id`) to `$TMPDIR/confidence_organization`.
+5. **Persist tokens** — Write credentials to the config directory.
 6. **Extract region** — Decode JWT payload, read `https://confidence.dev/region` claim (EU or US) to determine regional API endpoints.
 
 ## Auth0 Configuration
@@ -42,13 +48,15 @@ The auth flow is implemented in `packages/core/src/auth/authenticate.ts` using N
 - `fetch` for token exchange with Auth0
 - JWT payload decoded manually (base64url) — no external JWT library needed
 
-## Token Files
+## Token Persistence
 
-| File                               | Content                                                       |
-| ---------------------------------- | ------------------------------------------------------------- |
-| `$TMPDIR/confidence_token`         | JWT access token                                              |
-| `$TMPDIR/confidence_refresh_token` | Refresh token for silent re-auth                              |
-| `$TMPDIR/confidence_organization`  | Auth0 organization for skipping the workspace prompt on login |
+Tokens are stored in the Confidence config directory (`$CONFIDENCE_CONFIG_DIR` or `~/.config/confidence/`):
+
+| File               | Content                                       |
+| ------------------ | --------------------------------------------- |
+| `credentials.json` | JWT access token, refresh token, organization |
+
+The `CONFIDENCE_TOKEN` env var overrides persisted tokens when present.
 
 ## Remembered Workspace
 

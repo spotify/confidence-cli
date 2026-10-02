@@ -1,10 +1,10 @@
-# Confidence Wizard
+# Confidence CLI
 
-CLI wizard for setting up and integrating [Confidence](https://confidence.spotify.com/) with user projects.
+CLI tools for setting up and integrating [Confidence](https://confidence.spotify.com/) with user projects.
 
 ## Monorepo Structure
 
-pnpm workspace with five packages under `packages/`:
+pnpm workspace with six packages under `packages/`:
 
 | Package                   | Published                              | Purpose                                                                                                                                                                                                |
 | ------------------------- | -------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
@@ -13,6 +13,7 @@ pnpm workspace with five packages under `packages/`:
 | `packages/core/`          | No (private)                           | Shared infrastructure — auth, session, telemetry, exec, system, sdk, utils, constants, frameworks, integrations, providers. Depends on `shared-kernel`.                                                |
 | `packages/testing/`       | No (private)                           | Test infrastructure — auth scaffolds, project scaffolds, env helpers, terminal helpers, MSW handlers. Sub-path exports: `/auth`, `/scaffold`, `/env`, `/terminal`, `/msw`. Depends on `shared-kernel`. |
 | `packages/quickstart/`    | Yes (`@spotify-confidence/quickstart`) | Interactive TUI wizard. Depends on `core` and `shared-kernel`.                                                                                                                                         |
+| `packages/cli/`           | Yes (`@spotify-confidence/cli`)        | CLI for managing Confidence (flags, events, recordings, config). Depends on `quickstart`.                                                                                                              |
 
 ### Dependency graph
 
@@ -21,7 +22,8 @@ shared-kernel (types-only leaf)
     ▲
     ├── core (infrastructure)
     ├── testing (test scaffolds)
-    └── quickstart (TUI wizard) ──► core
+    ├── quickstart (TUI wizard) ──► core
+    └── cli (CLI) ──► quickstart ──► core
 ```
 
 ### packages/core/ modules
@@ -45,6 +47,13 @@ shared-kernel (types-only leaf)
 - **`src/features/`** — Vertical feature slices (`onboarding/` prompt builder)
 - **`src/ui/`** — Ink/React TUI (screens, components, hooks, theme, store, router)
 
+### packages/cli/ structure
+
+- **`bin/cli.ts`** — Entry point (yargs, `confidence` binary)
+- **`src/commands/`** — Command definitions (login, logout, whoami, config, flags, events, recordings, quickstart)
+- **`src/features/`** — Feature implementations (config management, quickstart launcher)
+- **`src/output/`** — Output formatters (json, table, format detection)
+
 ## Key Patterns
 
 - **Reactive state**: `WizardStore` uses nanostores atoms. Screens subscribe via `useSyncExternalStore`.
@@ -58,7 +67,8 @@ shared-kernel (types-only leaf)
 ```bash
 pnpm install                                          # Install all workspace deps
 pnpm --filter @spotify-confidence/quickstart try      # Run the wizard locally via tsx
-pnpm test                                             # Run all tests (core + quickstart)
+pnpm --filter @spotify-confidence/cli try             # Run the CLI locally via tsx
+pnpm test                                             # Run all tests (core + quickstart + cli)
 pnpm test:e2e                                         # Build + run quickstart e2e tests
 pnpm lint                                             # ESLint + Prettier check across all packages
 pnpm typecheck                                        # TypeScript type checking across all packages
@@ -71,7 +81,9 @@ Per-package commands:
 ```bash
 pnpm --filter @spotify-confidence/core test           # Core unit tests only
 pnpm --filter @spotify-confidence/quickstart test     # Quickstart unit tests only
+pnpm --filter @spotify-confidence/cli test            # CLI unit tests only
 pnpm --filter @spotify-confidence/quickstart build    # Build quickstart for distribution
+pnpm --filter @spotify-confidence/cli build           # Build CLI for distribution
 ```
 
 ## Tech Stack
@@ -87,7 +99,7 @@ pnpm --filter @spotify-confidence/quickstart build    # Build quickstart for dis
 
 ## Confidence MCP Tools
 
-The wizard works alongside Confidence MCP servers:
+The CLI works alongside Confidence MCP servers:
 
 - `confidence-flags` — Feature flag management (create, list, resolve, target, archive)
 - `confidence-docs` — Documentation search and SDK integration guides
@@ -108,6 +120,7 @@ The stable `node-pty` release (v1.1.0) doesn't ship prebuilt binaries for Node.j
 
 - **Cross-package imports** use npm package names: `import { authenticate } from '@spotify-confidence/core'`, `import type { IdeId } from '@spotify-confidence/shared-kernel'`.
 - **Within quickstart**, use path aliases (`@commands/*`, `@features/*`, `@ui/*`) for cross-domain imports. Keep relative imports within the same domain.
+- **Within cli**, use path aliases (`@commands/*`, `@features/*`, `@output/*`, `@api/*`) for cross-domain imports. Keep relative imports within the same domain.
 - **Within core source** (`packages/core/src/`), use relative imports. Core's `__tests__/` may use tsconfig path aliases (`@auth/*`, `@integrations/*`, etc.).
 - **Test imports** from `@spotify-confidence/testing` use sub-path exports: `@spotify-confidence/testing/auth`, `@spotify-confidence/testing/scaffold`, `@spotify-confidence/testing/env`, `@spotify-confidence/testing/terminal`.
 - Use `@inkjs/ui` components over standalone `ink-*` packages.
@@ -119,19 +132,24 @@ The stable `node-pty` release (v1.1.0) doesn't ship prebuilt binaries for Node.j
 - Prefer `AbortController` for removing event listeners instead of manual `removeEventListener`.
 - All commits must follow Conventional Commits. The `commit-msg` hook enforces this via commitlint.
 - Run `pnpm qa` before pushing to ensure CI will pass.
-- When writing or modifying code, always use the `wizard-architecture` skill first to load the project's architecture and coding conventions.
-- When writing, modifying, or adding any test file (unit, integration, or e2e), always use the `wizard-testing` skill first to load the project's testing guidelines, conventions, and test framework structure.
-- When making commits or working with the CI/release pipeline, use the `wizard-development-harness` skill for guidelines.
+- When writing or modifying code, always use the `architecture` and `coding-conventions` skills first.
+- When writing, modifying, or adding any test file (unit, integration, or e2e), always use the `testing` skill first. For e2e tests, also load `testing-e2e`.
+- When working on the `packages/cli/` package, load the `cli` skill.
+- When making commits or working with the CI/release pipeline, use the `development-harness` skill for guidelines.
 
 ## Skills (Mandatory)
 
 Before making any changes, agents MUST load the relevant skill(s) from `.claude/skills/`. These skills contain the authoritative guidelines for this project — architecture constraints, coding conventions, testing philosophy, and development harness rules. Skipping them leads to guideline violations.
 
-| Skill                        | When to load                | Key rules                                                                                                                                                                                                          |
-| ---------------------------- | --------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
-| `wizard-architecture`        | Any code change             | Cross-package imports, dependency direction, dry-run separation, initialization hooks, TypeScript style (`type` over `interface`, `satisfies never` in switch defaults, object params for 4+ args), module exports |
-| `wizard-testing`             | Any test change or addition | Observable behavior only, AAA pattern, `sut` naming, `using` for disposables, `waitFor` over `delay`, MSW for HTTP mocks, `@spotify-confidence/testing` sub-path imports, `press('Enter')` for e2e keys            |
-| `wizard-ink-tui`             | Any TUI/screen change       | Ink rendering model, `@inkjs/ui` over standalone packages, `Colors`/`Icons`/`HAlign`/`VAlign` from `styles.ts`, named functions in `useEffect`                                                                     |
-| `wizard-integrations`        | IDE integration changes     | Strategy pattern, self-contained IDE subdirs, adding new IDEs, MCP/chat/plugin flows                                                                                                                               |
-| `wizard-development-harness` | Commits, CI, releases       | Conventional Commits, `pnpm qa` before push, pre-commit hooks, release-please                                                                                                                                      |
-| `wizard-workflows`           | Workflow changes            | Hash-pinned actions with version comments, minimal permissions, per-secret references                                                                                                                              |
+| Skill                 | When to load                | Key rules                                                                                                                                       |
+| --------------------- | --------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------- |
+| `architecture`        | Any code change             | Monorepo structure, dependency graph, domain separation, package boundaries, cross-package imports                                              |
+| `coding-conventions`  | Any code change             | TypeScript style (`type` over `interface`, `satisfies never`, object params for 4+ args), import ordering, module exports, linting, React hooks |
+| `auth`                | Authentication changes      | OAuth PKCE flow, token persistence, Auth0 config, JWT handling, regional endpoints                                                              |
+| `cli`                 | `packages/cli/` changes     | Command architecture, output formatting, config feature, quickstart integration, path aliases                                                   |
+| `ink-tui`             | Any TUI/screen change       | Ink rendering model, `@inkjs/ui` over standalone packages, `Colors`/`Icons`/`HAlign`/`VAlign` from `styles.ts`, named functions in `useEffect`  |
+| `integrations`        | IDE integration changes     | Strategy pattern, self-contained IDE subdirs, adding new IDEs, MCP/chat/plugin flows                                                            |
+| `testing`             | Any test change or addition | Observable behavior only, AAA pattern, `sut` naming, `using` for disposables, `waitFor` over `delay`, MSW for HTTP mocks                        |
+| `testing-e2e`         | E2E test changes            | node-pty framework, `createSession()`, `press('Enter')`, `waitForText`, `checkpoint`, navigation helpers                                        |
+| `development-harness` | Commits, CI, releases       | Conventional Commits, `pnpm qa` before push, pre-commit hooks, release-please                                                                   |
+| `workflows`           | Workflow changes            | Hash-pinned actions with version comments, minimal permissions, per-secret references                                                           |
