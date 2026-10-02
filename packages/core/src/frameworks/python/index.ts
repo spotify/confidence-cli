@@ -5,7 +5,7 @@ import { join } from 'node:path';
 export const pythonFramework: FrameworkConfig = {
   id: 'python',
   name: 'Python',
-  docsUrl: 'https://confidence.spotify.com/docs/sdk/python',
+  docsUrl: 'https://confidence.spotify.com/docs/sdks/server/python',
   sdkPackage: 'spotify-confidence-sdk',
   detect: async (dir) => {
     return (

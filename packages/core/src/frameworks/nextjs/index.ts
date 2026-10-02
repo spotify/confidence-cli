@@ -5,7 +5,7 @@ import { join } from 'node:path';
 export const nextjsFramework: FrameworkConfig = {
   id: 'nextjs',
   name: 'Next.js',
-  docsUrl: 'https://confidence.spotify.com/docs/sdk/nextjs',
+  docsUrl: 'https://confidence.spotify.com/docs/sdks/server/nextjs',
   sdkPackage: '@spotify-confidence/sdk',
   detect: async (dir) => {
     const pkgPath = join(dir, 'package.json');
