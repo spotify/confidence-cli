@@ -1,13 +1,10 @@
 import confirm from '@inquirer/confirm';
 import { extractText } from '@spotify-confidence/core';
-import { deleteEventDefinition } from '@network/events.js';
+import { deleteEventDefinition } from '@network/index.js';
 import { message, fail } from '@output/print.js';
-import { requireAuth } from '../../utils/require-auth.js';
+import { withAuth } from '../../utils/require-auth.js';
 
-export async function deleteEvent(argv: Record<string, unknown>): Promise<void> {
-  const token = requireAuth(argv.profile as string | undefined);
-  if (!token) return;
-
+export const deleteEvent = withAuth(async function deleteEvent(argv, token) {
   const name = argv.name as string;
 
   if (argv['dry-run']) {
@@ -32,10 +29,6 @@ export async function deleteEvent(argv: Record<string, unknown>): Promise<void> 
     }
   }
 
-  try {
-    extractText(await deleteEventDefinition(token, name));
-    message(`Event definition "${name}" deleted.`);
-  } catch (err) {
-    fail((err as Error).message);
-  }
-}
+  extractText(await deleteEventDefinition(token, name));
+  message(`Event definition "${name}" deleted.`);
+});

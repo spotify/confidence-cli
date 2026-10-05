@@ -1,32 +1,17 @@
-import { updateEventDefinition } from '@network/events.js';
-import { fail, printMcpResult } from '@output/print.js';
-import { requireAuth } from '../../utils/require-auth.js';
+import { updateEventDefinition } from '@network/index.js';
+import { printMcpResult } from '@output/print.js';
+import { withAuth } from '../../utils/require-auth.js';
 import { parseFieldArg } from './field-spec.js';
 
-export async function updateEvent(argv: Record<string, unknown>): Promise<void> {
-  const token = requireAuth(argv.profile as string | undefined);
-  if (!token) return;
-
+export const updateEvent = withAuth(async function updateEvent(argv, token) {
   const name = argv.name as string;
   const fieldSpecs = (argv.field as string[] | undefined) ?? [];
 
   if (fieldSpecs.length === 0) {
-    fail('Provide at least one --field to add.');
-    return;
+    throw new Error('Provide at least one --field to add.');
   }
 
-  let schema: Record<string, unknown>;
-  try {
-    schema = Object.fromEntries(fieldSpecs.map(parseFieldArg));
-  } catch (err) {
-    fail((err as Error).message);
-    return;
-  }
-
-  try {
-    const result = await updateEventDefinition(token, name, schema);
-    printMcpResult(result, argv);
-  } catch (err) {
-    fail((err as Error).message);
-  }
-}
+  const schema = Object.fromEntries(fieldSpecs.map(parseFieldArg));
+  const result = await updateEventDefinition(token, name, schema);
+  printMcpResult(result, argv);
+});

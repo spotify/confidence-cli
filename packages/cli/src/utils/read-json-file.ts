@@ -1,6 +1,6 @@
 import { readFileSync } from 'node:fs';
 
-export function readJsonFile<T>(filePath: string): T {
+function readJsonFile<T>(filePath: string): T {
   let content: string;
   try {
     content = readFileSync(filePath, 'utf-8');
@@ -13,4 +13,10 @@ export function readJsonFile<T>(filePath: string): T {
   } catch (err) {
     throw new Error(`Invalid JSON in "${filePath}".`, { cause: err });
   }
+}
+
+export function resolveTargetFile<T>(argv: Record<string, unknown>, fromArgv: () => T): T {
+  const filePath = argv['from-file'] as string | undefined;
+  if (filePath) return readJsonFile<T>(filePath);
+  return fromArgv();
 }

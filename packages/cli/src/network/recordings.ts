@@ -43,14 +43,7 @@ export async function addRecordingRule(
   token: string,
   params: AddRecordingRuleParams,
 ): Promise<CallToolResult> {
-  return mcpCallTool(serverOpts(token), 'addRecordingRule', {
-    recordingPolicy: params.recordingPolicy,
-    displayName: params.displayName,
-    targetingKeySelector: params.targetingKeySelector,
-    stableAudiencePercentage: params.stableAudiencePercentage,
-    sessionSampleRate: params.sessionSampleRate,
-    enabled: params.enabled,
-  });
+  return mcpCallTool(serverOpts(token), 'addRecordingRule', params);
 }
 
 export async function setRecordingRuleEnabled(

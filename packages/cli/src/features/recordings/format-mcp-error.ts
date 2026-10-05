@@ -4,16 +4,16 @@ import { error, fail } from '@output/print.js';
 export function handleMcpError(result: CallToolResult): boolean {
   if (!result.isError) return false;
 
-  const text = extractText(result);
-  if (!formatClientListError(text)) {
-    formatPlainError(text);
+  try {
+    extractText(result);
+  } catch (err) {
+    const text = (err as Error).message;
+    if (!formatClientListError(text)) {
+      fail(text);
+    }
   }
 
   return true;
-}
-
-function formatPlainError(text: string): void {
-  fail(text);
 }
 
 function formatClientListError(text: string): boolean {
