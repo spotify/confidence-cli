@@ -8,7 +8,7 @@
       "@commands/*": ["./src/commands/*"],
       "@features/*": ["./src/features/*"],
       "@output/*": ["./src/output/*"],
-      "@api/*": ["./src/api/*"]
+      "@network/*": ["./src/network/*"]
     }
   },
   "include": [

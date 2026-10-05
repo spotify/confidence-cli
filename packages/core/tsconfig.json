@@ -12,7 +12,8 @@
       "@sdk/*": ["./src/sdk/*"],
       "@frameworks/*": ["./src/frameworks/*"],
       "@integrations/*": ["./src/integrations/*"],
-      "@providers/*": ["./src/providers/*"]
+      "@providers/*": ["./src/providers/*"],
+      "@api/*": ["./src/api/*"]
     }
   },
   "include": ["src", "__tests__", "types", "vitest.config.ts"]

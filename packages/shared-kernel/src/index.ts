@@ -7,3 +7,4 @@ export type {
   DetectedProvider,
 } from './types.js';
 export { noop } from './noop.js';
+export { isDefined } from './guards.js';

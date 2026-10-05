@@ -1,4 +1,6 @@
+export * from './api/index.js';
 export * from './auth/index.js';
+export * from './mcp/index.js';
 export * from './session/index.js';
 export * from './telemetry/index.js';
 export * from './exec/index.js';

@@ -4,3 +4,4 @@ export * from './env/index.js';
 export * from './terminal/index.js';
 export { server } from './msw/server.js';
 export { handlers } from './msw/handlers.js';
+export { http, HttpResponse } from 'msw';
