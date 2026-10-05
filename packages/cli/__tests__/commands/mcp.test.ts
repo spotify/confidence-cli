@@ -1,10 +1,10 @@
 import { resolve } from 'node:path';
-import yargs from 'yargs';
 import { buildTestJwt } from '@spotify-confidence/testing/auth';
 import { prepareAuthTokens } from '@spotify-confidence/testing/auth';
 import { mcpCommand } from '@commands/mcp.js';
 import { captureOutput } from '../helpers/capture.js';
 import { createMockIntegration } from '../helpers/mock-integration.js';
+import { createRunner } from '../helpers/run-command.js';
 
 const mockIntegration = createMockIntegration({
   detectMcpStatuses: vi.fn().mockResolvedValue({
@@ -32,14 +32,7 @@ beforeEach(() => {
   vi.clearAllMocks();
 });
 
-function run(args: string[]) {
-  return yargs(args)
-    .option('json', { type: 'boolean', default: false })
-    .option('output', { type: 'string' })
-    .option('profile', { type: 'string' })
-    .command(mcpCommand)
-    .parse();
-}
+const run = createRunner(mcpCommand);
 
 describe('mcp list', () => {
   it('outputs available servers as JSON', async () => {

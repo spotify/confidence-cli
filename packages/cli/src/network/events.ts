@@ -1,19 +1,6 @@
-import { createRequire } from 'node:module';
 import { isDefined } from '@spotify-confidence/shared-kernel';
-import {
-  mcpCallTool,
-  MCP_SERVERS,
-  type McpClientOptions,
-  type CallToolResult,
-} from '@spotify-confidence/core';
-
-const { version: CLI_VERSION } = createRequire(import.meta.url)(
-  '@spotify-confidence/cli/package.json',
-) as { version: string };
-
-function serverOpts(token: string): McpClientOptions {
-  return { serverUrl: MCP_SERVERS['confidence-flags'].url, token, clientVersion: CLI_VERSION };
-}
+import { mcpCallTool, type CallToolResult } from '@spotify-confidence/core';
+import { serverOpts } from './config.js';
 
 export async function listEventDefinitions(
   token: string,

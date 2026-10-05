@@ -16,3 +16,13 @@ export function requireAuth(profile?: string): string | null {
 
   return token;
 }
+
+export function withAuth(
+  fn: (argv: Record<string, unknown>, token: string) => Promise<void>,
+): (argv: Record<string, unknown>) => Promise<void> {
+  return async (argv) => {
+    const token = requireAuth(argv.profile as string | undefined);
+    if (!token) return;
+    await fn(argv, token);
+  };
+}
