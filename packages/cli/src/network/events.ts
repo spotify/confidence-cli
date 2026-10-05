@@ -1,11 +1,9 @@
 import {
   mcpCallTool,
-  parseToolJson,
+  extractText,
   MCP_SERVERS,
   type McpClientOptions,
-  type CallToolResult,
 } from '@spotify-confidence/core';
-import type { EventDefinition, CreateEventRequest, ValidateEventResponse } from './types.js';
 
 function serverOpts(token: string): McpClientOptions {
   return { serverUrl: MCP_SERVERS['confidence-flags'].url, token };
@@ -13,43 +11,56 @@ function serverOpts(token: string): McpClientOptions {
 
 export async function listEventDefinitions(
   token: string,
-  opts?: { pageSize?: number; pageToken?: string },
-): Promise<EventDefinition[]> {
-  const result = await mcpCallTool(serverOpts(token), 'list-events', {
-    pageSize: opts?.pageSize,
+  opts?: { pageToken?: string },
+): Promise<string> {
+  const result = await mcpCallTool(serverOpts(token), 'listEventDefinitions', {
     pageToken: opts?.pageToken,
   });
-  return parseToolJson<EventDefinition[]>(result);
+  return extractText(result);
 }
 
-export async function getEventDefinition(token: string, name: string): Promise<EventDefinition> {
-  const result = await mcpCallTool(serverOpts(token), 'get-event', { name });
-  return parseToolJson<EventDefinition>(result);
+export async function getEventDefinition(token: string, name: string): Promise<string> {
+  const result = await mcpCallTool(serverOpts(token), 'getEventDefinition', { name });
+  return extractText(result);
 }
 
 export async function createEventDefinition(
   token: string,
-  body: CreateEventRequest,
-): Promise<EventDefinition> {
-  const result = await mcpCallTool(
-    serverOpts(token),
-    'create-event',
-    body as Record<string, unknown>,
-  );
-  return parseToolJson<EventDefinition>(result);
+  eventDefinitionId: string,
+  schema: Record<string, unknown>,
+): Promise<string> {
+  const result = await mcpCallTool(serverOpts(token), 'createEventDefinition', {
+    eventDefinitionId,
+    schema: JSON.stringify(schema),
+  });
+  return extractText(result);
 }
 
-export async function publishEvent(
+export async function updateEventDefinition(
   token: string,
-  event: { eventDefinition: string; payload: Record<string, unknown> },
-): Promise<CallToolResult> {
-  return mcpCallTool(serverOpts(token), 'track-event', event);
+  name: string,
+  schema: Record<string, unknown>,
+): Promise<string> {
+  const result = await mcpCallTool(serverOpts(token), 'updateEventDefinition', {
+    name,
+    schema: JSON.stringify(schema),
+  });
+  return extractText(result);
 }
 
-export async function validateEvent(
+export async function deleteEventDefinition(token: string, name: string): Promise<string> {
+  const result = await mcpCallTool(serverOpts(token), 'deleteEventDefinition', { name });
+  return extractText(result);
+}
+
+export async function queryEventsUsage(
   token: string,
-  event: { eventDefinition: string; payload: Record<string, unknown> },
-): Promise<ValidateEventResponse> {
-  const result = await mcpCallTool(serverOpts(token), 'validate-event', event);
-  return parseToolJson<ValidateEventResponse>(result);
+  name: string,
+  opts?: { daysBack?: number },
+): Promise<string> {
+  const result = await mcpCallTool(serverOpts(token), 'queryEventsUsage', {
+    eventDefinitionName: name,
+    daysBack: opts?.daysBack ? String(opts.daysBack) : undefined,
+  });
+  return extractText(result);
 }

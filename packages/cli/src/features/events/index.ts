@@ -1,5 +1,6 @@
 export { listEvents } from './list.js';
 export { getEvent } from './get.js';
-export { createEvent, parseFieldSpec } from './create.js';
-export { trackEvent } from './track.js';
-export { validateEventData } from './validate.js';
+export { createEvent, parseFieldArg } from './create.js';
+export { updateEvent } from './update.js';
+export { deleteEvent } from './delete.js';
+export { eventUsage } from './usage.js';

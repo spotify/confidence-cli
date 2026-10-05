@@ -1,5 +1,7 @@
 import { listEventDefinitions } from '@network/events.js';
-import { print, fail, extractFlags } from '@output/print.js';
+import { message, fail, extractFlags } from '@output/print.js';
+import { formatJson } from '@output/json.js';
+import { resolveFormat } from '@output/detect.js';
 import { requireAuth } from './require-auth.js';
 
 export async function listEvents(argv: Record<string, unknown>): Promise<void> {
@@ -7,27 +9,16 @@ export async function listEvents(argv: Record<string, unknown>): Promise<void> {
   if (!token) return;
 
   try {
-    const items = await listEventDefinitions(token, {
-      pageSize: argv['page-size'] as number | undefined,
+    const text = await listEventDefinitions(token, {
       pageToken: argv['page-token'] as string | undefined,
     });
 
-    print({
-      data: items.map((e) => ({
-        name: e.name,
-        displayName: e.displayName,
-        fields: String(e.fields.length),
-        created: e.createTime ?? '',
-      })),
-      columns: [
-        { key: 'name', header: 'Name', width: 30 },
-        { key: 'displayName', header: 'Display Name', width: 25 },
-        { key: 'fields', header: 'Fields' },
-        { key: 'created', header: 'Created' },
-      ],
-      flags: extractFlags(argv),
-      empty: 'No event definitions found.',
-    });
+    const format = resolveFormat(extractFlags(argv));
+    if (format === 'json') {
+      message(formatJson(text));
+    } else {
+      message(text);
+    }
   } catch (err) {
     fail((err as Error).message);
   }

@@ -2,16 +2,7 @@ export {
   listEventDefinitions,
   getEventDefinition,
   createEventDefinition,
-  publishEvent,
-  validateEvent,
+  updateEventDefinition,
+  deleteEventDefinition,
+  queryEventsUsage,
 } from './events.js';
-export type {
-  EventFieldType,
-  EventField,
-  EventDefinition,
-  CreateEventRequest,
-  TrackEventRequest,
-  ValidateEventRequest,
-  ValidateEventResponse,
-  ValidationError,
-} from './types.js';

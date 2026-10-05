@@ -4,8 +4,9 @@ import {
   listEvents,
   getEvent,
   createEvent,
-  trackEvent,
-  validateEventData,
+  updateEvent,
+  deleteEvent,
+  eventUsage,
 } from '@features/events/index.js';
 import { safely } from '../utils/safely.js';
 
@@ -25,10 +26,7 @@ export const eventsCommand = {
       .command(
         'list',
         'List event definitions',
-        (y: Argv) =>
-          y
-            .option('page-size', { type: 'number', describe: 'Results per page', default: 25 })
-            .option('page-token', { type: 'string', describe: 'Pagination token' }),
+        (y: Argv) => y.option('page-token', { type: 'string', describe: 'Pagination token' }),
         safely(listEvents),
       )
       .command(
@@ -42,47 +40,45 @@ export const eventsCommand = {
         'Create an event definition',
         (y: Argv) =>
           y
-            .option('name', { type: 'string', describe: 'Event display name', demandOption: true })
-            .option('description', { type: 'string', describe: 'Event description' })
+            .option('name', { type: 'string', describe: 'Event definition ID', demandOption: true })
             .option('field', {
               type: 'string',
               array: true,
-              describe: 'Field spec as name:TYPE (e.g. page:STRING)',
+              describe: 'Field spec as name:type (e.g. amount:double, page:string)',
             })
-            .option('from-file', { type: 'string', describe: 'Read definition from JSON file' }),
+            .option('from-file', { type: 'string', describe: 'Read schema from JSON file' }),
         safely(createEvent),
       )
       .command(
-        'track',
-        'Publish an event',
+        'update <name>',
+        'Add fields to an event definition',
         (y: Argv) =>
-          y
-            .option('event', {
-              type: 'string',
-              describe: 'Event definition name',
-              demandOption: true,
-            })
-            .option('data', { type: 'string', describe: 'Event payload as JSON' })
-            .option('from-file', { type: 'string', describe: 'Read payload from JSON file' }),
-        safely(trackEvent),
+          y.positional('name', { type: 'string', demandOption: true }).option('field', {
+            type: 'string',
+            array: true,
+            describe: 'Field spec as name:type (e.g. referrer:string)',
+            demandOption: true,
+          }),
+        safely(updateEvent),
       )
       .command(
-        'validate',
-        'Validate event data against a definition',
+        'delete <name>',
+        'Delete an event definition',
+        (y: Argv) => y.positional('name', { type: 'string', demandOption: true }),
+        safely(deleteEvent),
+      )
+      .command(
+        'usage <name>',
+        'Show event publish and validation stats',
         (y: Argv) =>
           y
-            .option('event', {
-              type: 'string',
-              describe: 'Event definition name',
-              demandOption: true,
-            })
-            .option('data', { type: 'string', describe: 'Event payload as JSON' })
-            .option('from-file', { type: 'string', describe: 'Read payload from JSON file' }),
-        safely(validateEventData),
+            .positional('name', { type: 'string', demandOption: true })
+            .option('days', { type: 'number', describe: 'Number of days (1-7)', default: 7 }),
+        safely(eventUsage),
       )
       .demandCommand(
         1,
-        'Available actions: setup, list, get, create, track, validate. Run "confidence events --help" for details.',
+        'Available actions: setup, list, get, create, update, delete, usage. Run "confidence events --help" for details.',
       )
       .strict();
   },
