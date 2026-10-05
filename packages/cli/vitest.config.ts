@@ -21,5 +21,7 @@ export default defineConfig({
     maxWorkers: isCI ? 1 : 4,
     pool: 'forks',
     passWithNoTests: true,
+    setupFiles: ['../testing/src/msw/setup.ts'],
+    execArgv: ['--import', '../testing/src/msw/localstorage-fake.mjs'],
   },
 });
