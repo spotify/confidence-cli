@@ -1,23 +1,8 @@
-import { readFileSync } from 'node:fs';
 import { createEventDefinition } from '@network/events.js';
 import { message, fail, printMcpResult } from '@output/print.js';
 import { requireAuth } from '../../utils/require-auth.js';
+import { readJsonFile } from '../../utils/read-json-file.js';
 import { parseFieldArg } from './field-spec.js';
-
-function readSchemaFromFile(filePath: string): Record<string, unknown> {
-  let content: string;
-  try {
-    content = readFileSync(filePath, 'utf-8');
-  } catch (err) {
-    throw new Error(`Could not read file "${filePath}": ${(err as Error).message}`, { cause: err });
-  }
-
-  try {
-    return JSON.parse(content) as Record<string, unknown>;
-  } catch (err) {
-    throw new Error(`Invalid JSON in "${filePath}".`, { cause: err });
-  }
-}
 
 export async function createEvent(argv: Record<string, unknown>): Promise<void> {
   const token = requireAuth(argv.profile as string | undefined);
@@ -29,7 +14,7 @@ export async function createEvent(argv: Record<string, unknown>): Promise<void> 
   try {
     const fromFile = argv['from-file'] as string | undefined;
     if (fromFile) {
-      schema = readSchemaFromFile(fromFile);
+      schema = readJsonFile<Record<string, unknown>>(fromFile);
     } else {
       const fieldSpecs = (argv.field as string[] | undefined) ?? [];
       if (fieldSpecs.length === 0) {
