@@ -64,7 +64,10 @@ export const eventsCommand = {
       .command(
         'delete <name>',
         'Delete an event definition',
-        (y: Argv) => y.positional('name', { type: 'string', demandOption: true }),
+        (y: Argv) =>
+          y
+            .positional('name', { type: 'string', demandOption: true })
+            .option('force', { alias: 'f', type: 'boolean', describe: 'Skip confirmation prompt' }),
         safely(deleteEvent),
       )
       .command(

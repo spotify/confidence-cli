@@ -3,6 +3,7 @@ import { prepareAuthTokens } from '@spotify-confidence/testing/auth';
 import type { CallToolResult } from '@spotify-confidence/core';
 import { eventsCommand } from '@commands/events.js';
 import { captureOutput } from '../helpers/capture.js';
+import { simulateTTY } from '../helpers/simulate-tty.js';
 
 const mockConfirm = vi.fn<() => Promise<boolean>>();
 const mockMcpCallTool = vi.fn<(...args: unknown[]) => Promise<CallToolResult>>();
@@ -181,6 +182,7 @@ describe('events update', () => {
 describe('events delete', () => {
   it('deletes after confirmation', async () => {
     using _auth = prepareAuthTokens('valid');
+    using _tty = simulateTTY(true);
     using output = captureOutput();
     mockConfirm.mockResolvedValueOnce(true);
     mockMcpCallTool.mockResolvedValueOnce(textResult('Deleted'));
@@ -192,12 +194,46 @@ describe('events delete', () => {
 
   it('aborts when user declines', async () => {
     using _auth = prepareAuthTokens('valid');
+    using _tty = simulateTTY(true);
     using output = captureOutput();
     mockConfirm.mockResolvedValueOnce(false);
 
     await run(['events', 'delete', 'old-event']);
 
     expect(output.stdout).toContain('Aborted.');
+    expect(mockMcpCallTool).not.toHaveBeenCalled();
+  });
+
+  it('skips confirmation with --force', async () => {
+    using _auth = prepareAuthTokens('valid');
+    using output = captureOutput();
+    mockMcpCallTool.mockResolvedValueOnce(textResult('Deleted'));
+
+    await run(['events', 'delete', 'old-event', '--force']);
+
+    expect(output.stdout).toContain('Event definition "old-event" deleted.');
+    expect(mockConfirm).not.toHaveBeenCalled();
+  });
+
+  it('fails without TTY when --force is not set', async () => {
+    using _auth = prepareAuthTokens('valid');
+    using _tty = simulateTTY(false);
+    using output = captureOutput();
+
+    await run(['events', 'delete', 'old-event']);
+
+    expect(output.stderr).toContain('Cannot prompt for confirmation without a TTY');
+    expect(mockMcpCallTool).not.toHaveBeenCalled();
+  });
+
+  it('prints request body in dry-run mode', async () => {
+    using _auth = prepareAuthTokens('valid');
+    using output = captureOutput();
+
+    await run(['events', 'delete', 'old-event', '--dry-run']);
+
+    const parsed = JSON.parse(output.stdout);
+    expect(parsed).toEqual({ action: 'delete', name: 'old-event' });
     expect(mockMcpCallTool).not.toHaveBeenCalled();
   });
 });

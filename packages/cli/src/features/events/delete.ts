@@ -10,14 +10,26 @@ export async function deleteEvent(argv: Record<string, unknown>): Promise<void> 
 
   const name = argv.name as string;
 
-  const confirmed = await confirm({
-    message: `Delete event definition "${name}"? This cannot be undone.`,
-    default: false,
-  });
-
-  if (!confirmed) {
-    message('Aborted.');
+  if (argv['dry-run']) {
+    message(JSON.stringify({ action: 'delete', name }, null, 2));
     return;
+  }
+
+  if (!argv.force) {
+    if (!process.stdin.isTTY) {
+      fail('Cannot prompt for confirmation without a TTY. Use --force to skip.');
+      return;
+    }
+
+    const confirmed = await confirm({
+      message: `Delete event definition "${name}"? This cannot be undone.`,
+      default: false,
+    });
+
+    if (!confirmed) {
+      message('Aborted.');
+      return;
+    }
   }
 
   try {
