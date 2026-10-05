@@ -102,6 +102,19 @@ describe('events get', () => {
 
     expect(output.stderr).toContain('Event definition not found');
   });
+
+  it('reports server-side isError as failure', async () => {
+    using _auth = prepareAuthTokens('valid');
+    using output = captureOutput();
+    mockMcpCallTool.mockResolvedValueOnce({
+      content: [{ type: 'text', text: 'Event definition not found' }],
+      isError: true,
+    });
+
+    await run(['events', 'get', 'missing']);
+
+    expect(output.stderr).toContain('Event definition not found');
+  });
 });
 
 describe('events create', () => {

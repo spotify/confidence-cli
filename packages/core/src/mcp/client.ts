@@ -34,7 +34,14 @@ export function parseToolJson<T>(result: CallToolResult): T {
 }
 
 export function extractText(result: CallToolResult): string {
-  return unwrapPotentiallyJsonEncodedString(joinTextBlocks(result));
+  const raw = joinTextBlocks(result);
+  const text = unwrapPotentiallyJsonEncodedString(raw);
+
+  if (result.isError) {
+    throw new Error(text || 'MCP tool call failed');
+  }
+
+  return text;
 }
 
 type TextBlock = Extract<CallToolResult['content'][number], { type: 'text' }>;
