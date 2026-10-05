@@ -112,7 +112,7 @@ export const mcpCommand = {
           }
         },
       )
-      .demandCommand(1, 'Available actions: install, uninstall, status, list, auth')
+      .demandCommand(1)
       .strict();
   },
   handler() {},

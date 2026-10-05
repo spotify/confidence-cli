@@ -79,10 +79,7 @@ export const eventsCommand = {
             .option('days', { type: 'number', describe: 'Number of days (1-7)', default: 7 }),
         safely(eventUsage),
       )
-      .demandCommand(
-        1,
-        'Available actions: setup, list, get, create, update, delete, usage. Run "confidence events --help" for details.',
-      )
+      .demandCommand(1)
       .strict();
   },
   handler() {},
