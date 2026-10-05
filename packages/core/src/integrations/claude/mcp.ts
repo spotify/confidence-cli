@@ -1,7 +1,7 @@
 import { existsSync, readFileSync, writeFileSync, mkdirSync } from 'node:fs';
 import { join } from 'node:path';
 import { execFile } from '../../exec/exec.js';
-import type { McpConnectOpts } from '../types.js';
+import type { McpConnectOpts, McpDisconnectOpts } from '../types.js';
 import {
   type McpServerName,
   type McpServerStatus,
@@ -26,7 +26,7 @@ export async function connectMcpServer(opts: McpConnectOpts): Promise<void> {
       cwd: opts.projectDir,
     });
   } catch {
-    // Not registered yet — that's fine
+    // Server may not be registered yet; the subsequent `mcp add` is idempotent
   }
 
   const headers: Record<string, string> = { ...opts.serverHeaders };
@@ -53,6 +53,37 @@ export async function connectMcpServer(opts: McpConnectOpts): Promise<void> {
   allowMcpToolsInSettings(opts.serverName, opts.projectDir);
 }
 
+export async function disconnectMcpServer(opts: McpDisconnectOpts): Promise<void> {
+  removeMcpToolsFromSettings(opts.serverName, opts.projectDir);
+
+  await execFile('claude', ['mcp', 'remove', '--scope', 'project', opts.serverName], {
+    cwd: opts.projectDir,
+  });
+}
+
+function removeMcpToolsFromSettings(serverName: string, projectDir: string): void {
+  const settingsPath = join(projectDir, '.claude', 'settings.local.json');
+  if (!existsSync(settingsPath)) return;
+
+  let settings: ClaudeSettings;
+  try {
+    settings = JSON.parse(readFileSync(settingsPath, 'utf-8')) as ClaudeSettings;
+  } catch {
+    return;
+  }
+
+  const toolPattern = `mcp__${serverName}__*`;
+  if (settings.permissions?.allow) {
+    settings.permissions.allow = settings.permissions.allow.filter((p) => p !== toolPattern);
+  }
+
+  if (settings.enabledMcpjsonServers) {
+    settings.enabledMcpjsonServers = settings.enabledMcpjsonServers.filter((s) => s !== serverName);
+  }
+
+  writeFileSync(settingsPath, JSON.stringify(settings, null, 2) + '\n', 'utf-8');
+}
+
 type ClaudeSettings = {
   permissions?: {
     allow?: string[];
@@ -75,7 +106,7 @@ function allowMcpToolsInSettings(serverName: string, projectDir: string): void {
     try {
       settings = JSON.parse(readFileSync(settingsPath, 'utf-8')) as ClaudeSettings;
     } catch {
-      // overwrite
+      // Corrupt JSON — fall through to overwrite with valid settings
     }
   }
 

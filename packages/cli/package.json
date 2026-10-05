@@ -22,7 +22,9 @@
     "qa": "pnpm typecheck && pnpm lint && pnpm test"
   },
   "dependencies": {
+    "@inquirer/select": "^5.2.5",
     "@spotify-confidence/quickstart": "workspace:*",
+    "ora": "^9.4.1",
     "yargs": "^18.2.0"
   },
   "devDependencies": {
