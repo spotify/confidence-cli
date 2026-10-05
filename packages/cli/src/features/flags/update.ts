@@ -1,5 +1,5 @@
 import type { JsonObject } from '@spotify-confidence/shared-kernel';
-import { updateFlag } from '@network/index.js';
+import { getFlag, updateFlag } from '@network/index.js';
 import { extractFlags, fail, message, print } from '@output/index.js';
 import { withAuth } from '@utils/require-auth.js';
 import { flagStatus } from './status.js';
@@ -15,7 +15,15 @@ export const updateFlagCmd = withAuth(async function updateFlagCmd(argv, token) 
   const body: JsonObject = {};
   if (description !== undefined) body.description = description;
   if (addVariants && addVariants.length > 0) {
-    body.variants = addVariants.map((v) => ({ name: `flags/${flagKey}/variants/${v}` }));
+    const existing = await getFlag(token, flagKey);
+    if (!existing.ok) {
+      fail(existing.error.message);
+      return;
+    }
+
+    const existingVariants = existing.data.variants ?? [];
+    const newVariants = addVariants.map((v) => ({ name: `flags/${flagKey}/variants/${v}` }));
+    body.variants = [...existingVariants, ...newVariants];
   }
 
   if (Object.keys(body).length === 0) {
