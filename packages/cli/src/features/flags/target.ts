@@ -1,4 +1,5 @@
 import { getFlag, addTargetingRule } from '@network/index.js';
+import { validateAllocations } from '@utils/validation.js';
 import {
   resolveFormat,
   formatJson,
@@ -25,6 +26,7 @@ function parseAllocations(spec: string): Record<string, number> {
     }
     allocations[variant] = pct;
   }
+  validateAllocations(allocations);
   return allocations;
 }
 
@@ -40,6 +42,8 @@ export const targetFlagCmd = withAuth(async function targetFlagCmd(argv, token) 
       fail('File must contain "variantAllocations" (e.g. {"variantAllocations": {"on": 80}}).');
       return;
     }
+
+    validateAllocations(allocations);
 
     if (argv['dry-run']) {
       message(JSON.stringify({ flagKey, variantAllocations: allocations, targetingKey }, null, 2));
