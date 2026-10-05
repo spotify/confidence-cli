@@ -10,6 +10,9 @@ export default defineConfig({
       '@features': fileURLToPath(new URL('./src/features', import.meta.url)),
       '@output': fileURLToPath(new URL('./src/output', import.meta.url)),
       '@network': fileURLToPath(new URL('./src/network', import.meta.url)),
+      '@spotify-confidence/quickstart': fileURLToPath(
+        new URL('../quickstart/src/index.ts', import.meta.url),
+      ),
     },
   },
   test: {
