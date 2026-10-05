@@ -1,8 +1,20 @@
 import yargs from 'yargs';
-import { http, HttpResponse, server, EVENTS_EU_BASE } from '@spotify-confidence/testing';
 import { prepareAuthTokens } from '@spotify-confidence/testing/auth';
+import type { CallToolResult } from '@spotify-confidence/core';
 import { eventsCommand } from '@commands/events.js';
 import { captureOutput } from '../helpers/capture.js';
+import { textResult } from '../helpers/mock-mcp.js';
+import { SAMPLE_EVENTS } from '../helpers/stubs.js';
+
+const mockMcpCallTool = vi.fn<(...args: unknown[]) => Promise<CallToolResult>>();
+
+vi.mock('@spotify-confidence/core', async (importOriginal) => {
+  const actual = await importOriginal<typeof import('@spotify-confidence/core')>();
+  return {
+    ...actual,
+    mcpCallTool: (...args: unknown[]) => mockMcpCallTool(...args),
+  };
+});
 
 function run(args: string[]) {
   return yargs(args)
@@ -18,6 +30,7 @@ describe('events list', () => {
   it('outputs event definitions as JSON', async () => {
     using _auth = prepareAuthTokens('valid');
     using output = captureOutput();
+    mockMcpCallTool.mockResolvedValueOnce(textResult(SAMPLE_EVENTS));
 
     await run(['events', 'list', '--json']);
 
@@ -30,6 +43,7 @@ describe('events list', () => {
   it('outputs event definitions as a table', async () => {
     using _auth = prepareAuthTokens('valid');
     using output = captureOutput();
+    mockMcpCallTool.mockResolvedValueOnce(textResult(SAMPLE_EVENTS));
 
     await run(['events', 'list', '--output', 'table']);
 
@@ -41,33 +55,24 @@ describe('events list', () => {
   it('shows empty message when no events exist', async () => {
     using _auth = prepareAuthTokens('valid');
     using output = captureOutput();
-    server.use(
-      http.get(`${EVENTS_EU_BASE}/v1/events`, () => {
-        return HttpResponse.json({ items: [] });
-      }),
-    );
+    mockMcpCallTool.mockResolvedValueOnce(textResult([]));
 
     await run(['events', 'list', '--output', 'table']);
 
     expect(output.stdout).toContain('No event definitions found.');
   });
 
-  it('forwards pagination params', async () => {
+  it('calls list-events tool with pagination args', async () => {
     using _auth = prepareAuthTokens('valid');
     using _output = captureOutput();
-    let capturedParams: Record<string, string> = {};
-    server.use(
-      http.get(`${EVENTS_EU_BASE}/v1/events`, (info) => {
-        const url = new URL(info.request.url);
-        capturedParams = Object.fromEntries(url.searchParams);
-        return HttpResponse.json({ items: [] });
-      }),
-    );
+    mockMcpCallTool.mockResolvedValueOnce(textResult([]));
 
     await run(['events', 'list', '--page-size', '10', '--page-token', 'abc123']);
 
-    expect(capturedParams).toEqual(
-      expect.objectContaining({ pageSize: '10', pageToken: 'abc123' }),
+    expect(mockMcpCallTool).toHaveBeenCalledWith(
+      expect.anything(),
+      'list-events',
+      expect.objectContaining({ pageSize: 10, pageToken: 'abc123' }),
     );
   });
 
@@ -85,6 +90,16 @@ describe('events get', () => {
   it('outputs event definition as JSON', async () => {
     using _auth = prepareAuthTokens('valid');
     using output = captureOutput();
+    mockMcpCallTool.mockResolvedValueOnce(
+      textResult({
+        name: 'page-viewed',
+        displayName: 'Page Viewed',
+        description: 'Tracks page views',
+        fields: [{ name: 'url', type: 'STRING' }],
+        createTime: '2026-01-01T00:00:00Z',
+        updateTime: '2026-01-02T00:00:00Z',
+      }),
+    );
 
     await run(['events', 'get', 'page-viewed', '--json']);
 
@@ -94,18 +109,14 @@ describe('events get', () => {
     );
   });
 
-  it('reports not found for missing events', async () => {
+  it('reports MCP errors', async () => {
     using _auth = prepareAuthTokens('valid');
     using output = captureOutput();
-    server.use(
-      http.get(`${EVENTS_EU_BASE}/v1/events/:name`, () => {
-        return HttpResponse.json({ code: 404, message: 'Not Found' }, { status: 404 });
-      }),
-    );
+    mockMcpCallTool.mockRejectedValueOnce(new Error('Event definition not found'));
 
     await run(['events', 'get', 'missing']);
 
-    expect(output.stderr).toContain('Event definition "missing" not found.');
+    expect(output.stderr).toContain('Event definition not found');
   });
 });
 
@@ -113,6 +124,18 @@ describe('events create', () => {
   it('creates an event definition', async () => {
     using _auth = prepareAuthTokens('valid');
     using output = captureOutput();
+    mockMcpCallTool.mockResolvedValueOnce(
+      textResult({
+        name: 'purchase',
+        displayName: 'Purchase',
+        description: 'Track purchases',
+        fields: [
+          { name: 'amount', type: 'NUMBER' },
+          { name: 'item', type: 'STRING' },
+        ],
+        createTime: '2026-10-05T00:00:00Z',
+      }),
+    );
 
     await run([
       'events',
@@ -129,7 +152,7 @@ describe('events create', () => {
     ]);
 
     const parsed = JSON.parse(output.stdout);
-    expect(parsed.data).toEqual(expect.objectContaining({ name: 'new-event' }));
+    expect(parsed.data).toEqual(expect.objectContaining({ name: 'purchase' }));
   });
 
   it('prints request body in dry-run mode', async () => {
@@ -157,10 +180,16 @@ describe('events track', () => {
   it('publishes an event', async () => {
     using _auth = prepareAuthTokens('valid');
     using output = captureOutput();
+    mockMcpCallTool.mockResolvedValueOnce({ content: [] });
 
     await run(['events', 'track', '--event', 'page-viewed', '--data', '{"url":"/home"}']);
 
     expect(output.stdout).toContain('Event published successfully.');
+    expect(mockMcpCallTool).toHaveBeenCalledWith(
+      expect.anything(),
+      'track-event',
+      expect.objectContaining({ eventDefinition: 'page-viewed', payload: { url: '/home' } }),
+    );
   });
 
   it('prints request body in dry-run mode', async () => {
@@ -205,6 +234,7 @@ describe('events validate', () => {
   it('reports valid event data', async () => {
     using _auth = prepareAuthTokens('valid');
     using output = captureOutput();
+    mockMcpCallTool.mockResolvedValueOnce(textResult({ valid: true }));
 
     await run(['events', 'validate', '--event', 'page-viewed', '--data', '{"url":"/home"}']);
 
@@ -214,12 +244,10 @@ describe('events validate', () => {
   it('reports validation errors', async () => {
     using _auth = prepareAuthTokens('valid');
     using output = captureOutput();
-    server.use(
-      http.post(`${EVENTS_EU_BASE}/v1/events\\:validate`, () => {
-        return HttpResponse.json({
-          valid: false,
-          errors: [{ field: 'url', message: 'Required field missing' }],
-        });
+    mockMcpCallTool.mockResolvedValueOnce(
+      textResult({
+        valid: false,
+        errors: [{ field: 'url', message: 'Required field missing' }],
       }),
     );
 

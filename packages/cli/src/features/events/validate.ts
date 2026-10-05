@@ -1,8 +1,7 @@
 import { readFileSync } from 'node:fs';
-import { validateEvent } from '@api/events.js';
+import { validateEvent } from '@network/events.js';
 import { print, message, fail, extractFlags } from '@output/print.js';
 import { requireAuth } from './require-auth.js';
-import { formatApiError } from './format-error.js';
 
 function readPayload(argv: Record<string, unknown>): Record<string, unknown> {
   const data = argv.data as string | undefined;
@@ -36,8 +35,8 @@ function readPayload(argv: Record<string, unknown>): Record<string, unknown> {
 }
 
 export async function validateEventData(argv: Record<string, unknown>): Promise<void> {
-  const auth = requireAuth(argv.profile as string | undefined);
-  if (!auth) return;
+  const token = requireAuth(argv.profile as string | undefined);
+  if (!token) return;
 
   const eventDefinition = argv.event as string;
 
@@ -56,31 +55,30 @@ export async function validateEventData(argv: Record<string, unknown>): Promise<
     return;
   }
 
-  const result = await validateEvent(auth.token, auth.region, body);
+  try {
+    const result = await validateEvent(token, body);
 
-  if (!result.ok) {
-    fail(formatApiError(result));
-    return;
+    if (result.valid) {
+      message('Event data is valid.');
+      return;
+    }
+
+    const errors = result.errors ?? [];
+    if (errors.length === 0) {
+      fail('Event data is invalid.');
+      return;
+    }
+
+    print({
+      data: errors.map((e) => ({ field: e.field, error: e.message })),
+      columns: [
+        { key: 'field', header: 'Field', width: 20 },
+        { key: 'error', header: 'Error' },
+      ],
+      flags: extractFlags(argv),
+    });
+    process.exitCode = 1;
+  } catch (err) {
+    fail((err as Error).message);
   }
-
-  if (result.data.valid) {
-    message('Event data is valid.');
-    return;
-  }
-
-  const errors = result.data.errors ?? [];
-  if (errors.length === 0) {
-    fail('Event data is invalid.');
-    return;
-  }
-
-  print({
-    data: errors.map((e) => ({ field: e.field, error: e.message })),
-    columns: [
-      { key: 'field', header: 'Field', width: 20 },
-      { key: 'error', header: 'Error' },
-    ],
-    flags: extractFlags(argv),
-  });
-  process.exitCode = 1;
 }

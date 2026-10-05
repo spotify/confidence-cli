@@ -1,9 +1,8 @@
 import { readFileSync } from 'node:fs';
-import { createEventDefinition } from '@api/events.js';
-import type { EventField, EventFieldType, CreateEventRequest } from '@api/types.js';
+import { createEventDefinition } from '@network/events.js';
+import type { EventField, EventFieldType, CreateEventRequest } from '@network/types.js';
 import { print, message, fail, extractFlags } from '@output/print.js';
 import { requireAuth } from './require-auth.js';
-import { formatApiError } from './format-error.js';
 
 const VALID_FIELD_TYPES = new Set<string>(['STRING', 'NUMBER', 'BOOLEAN', 'STRUCT']);
 
@@ -48,8 +47,8 @@ function readDefinitionFromFile(filePath: string): CreateEventRequest {
 }
 
 export async function createEvent(argv: Record<string, unknown>): Promise<void> {
-  const auth = requireAuth(argv.profile as string | undefined);
-  if (!auth) return;
+  const token = requireAuth(argv.profile as string | undefined);
+  if (!token) return;
 
   let body: CreateEventRequest;
 
@@ -74,26 +73,24 @@ export async function createEvent(argv: Record<string, unknown>): Promise<void> 
     return;
   }
 
-  const result = await createEventDefinition(auth.token, auth.region, body);
+  try {
+    const event = await createEventDefinition(token, body);
 
-  if (!result.ok) {
-    fail(formatApiError(result));
-    return;
+    print({
+      data: {
+        name: event.name,
+        displayName: event.displayName,
+        description: event.description ?? '',
+        fields: String(event.fields.length),
+        created: event.createTime ?? '',
+      },
+      columns: [
+        { key: 'key', header: 'Field', width: 14 },
+        { key: 'value', header: 'Value' },
+      ],
+      flags: extractFlags(argv),
+    });
+  } catch (err) {
+    fail((err as Error).message);
   }
-
-  const event = result.data;
-  print({
-    data: {
-      name: event.name,
-      displayName: event.displayName,
-      description: event.description ?? '',
-      fields: String(event.fields.length),
-      created: event.createTime ?? '',
-    },
-    columns: [
-      { key: 'key', header: 'Field', width: 14 },
-      { key: 'value', header: 'Value' },
-    ],
-    flags: extractFlags(argv),
-  });
 }

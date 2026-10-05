@@ -1,8 +1,7 @@
 import { readFileSync } from 'node:fs';
-import { publishEvent } from '@api/events.js';
+import { publishEvent } from '@network/events.js';
 import { message, fail } from '@output/print.js';
 import { requireAuth } from './require-auth.js';
-import { formatApiError } from './format-error.js';
 
 function readPayload(argv: Record<string, unknown>): Record<string, unknown> {
   const data = argv.data as string | undefined;
@@ -36,8 +35,8 @@ function readPayload(argv: Record<string, unknown>): Record<string, unknown> {
 }
 
 export async function trackEvent(argv: Record<string, unknown>): Promise<void> {
-  const auth = requireAuth(argv.profile as string | undefined);
-  if (!auth) return;
+  const token = requireAuth(argv.profile as string | undefined);
+  if (!token) return;
 
   const eventDefinition = argv.event as string;
 
@@ -56,12 +55,10 @@ export async function trackEvent(argv: Record<string, unknown>): Promise<void> {
     return;
   }
 
-  const result = await publishEvent(auth.token, auth.region, body);
-
-  if (!result.ok) {
-    fail(formatApiError(result));
-    return;
+  try {
+    await publishEvent(token, body);
+    message('Event published successfully.');
+  } catch (err) {
+    fail((err as Error).message);
   }
-
-  message('Event published successfully.');
 }

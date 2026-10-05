@@ -9,7 +9,7 @@ export default defineConfig({
       '@commands': fileURLToPath(new URL('./src/commands', import.meta.url)),
       '@features': fileURLToPath(new URL('./src/features', import.meta.url)),
       '@output': fileURLToPath(new URL('./src/output', import.meta.url)),
-      '@api': fileURLToPath(new URL('./src/api', import.meta.url)),
+      '@network': fileURLToPath(new URL('./src/network', import.meta.url)),
     },
   },
   test: {
