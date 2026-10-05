@@ -3,6 +3,7 @@ import { prepareAuthTokens } from '@spotify-confidence/testing/auth';
 import type { CallToolResult } from '@spotify-confidence/core';
 import { eventsCommand } from '@commands/events.js';
 import { captureOutput } from '../helpers/capture.js';
+import { textResult, jsonResult } from '../helpers/mcp-result.js';
 import { simulateTTY } from '../helpers/simulate-tty.js';
 
 const mockConfirm = vi.fn<() => Promise<boolean>>();
@@ -16,14 +17,6 @@ vi.mock('@spotify-confidence/core', async (importOriginal) => {
     mcpCallTool: (...args: unknown[]) => mockMcpCallTool(...args),
   };
 });
-
-function textResult(text: string): CallToolResult {
-  return { content: [{ type: 'text', text }] };
-}
-
-function jsonResult(data: unknown): CallToolResult {
-  return textResult(JSON.stringify(data));
-}
 
 function run(args: string[]) {
   return yargs(args)
