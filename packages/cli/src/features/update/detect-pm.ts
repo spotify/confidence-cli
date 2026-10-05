@@ -1,20 +1,25 @@
 export type PackageManager = 'npm' | 'pnpm' | 'yarn' | 'bun' | 'npx';
 
-export function detectPackageManager(): PackageManager {
-  const userAgent = process.env.npm_config_user_agent ?? '';
-
-  if (process.env.npm_command === 'exec' || userAgent.startsWith('npx/')) {
-    return 'npx';
-  }
-
-  if (userAgent.startsWith('yarn/')) return 'yarn';
-  if (userAgent.startsWith('pnpm/')) return 'pnpm';
-  if (userAgent.startsWith('bun/')) return 'bun';
-
-  const scriptPath = process.argv[1] ?? '';
+function fromInstallPath(scriptPath: string): PackageManager | undefined {
   if (scriptPath.includes('/pnpm/') || scriptPath.includes('\\pnpm\\')) return 'pnpm';
   if (scriptPath.includes('/yarn/') || scriptPath.includes('\\yarn\\')) return 'yarn';
   if (scriptPath.includes('/.bun/') || scriptPath.includes('\\.bun\\')) return 'bun';
+  if (scriptPath.includes('/npm/') || scriptPath.includes('\\npm\\')) return 'npm';
+  return undefined;
+}
 
-  return 'npm';
+function isEphemeralRunner(): boolean {
+  const userAgent = process.env.npm_config_user_agent ?? '';
+
+  if (process.env.npm_command === 'exec' || userAgent.startsWith('npx/')) return true;
+  if (process.env.npm_execpath?.includes('dlx')) return true;
+
+  return false;
+}
+
+export function detectPackageManager(): PackageManager {
+  if (isEphemeralRunner()) return 'npx';
+
+  const scriptPath = process.argv[1] ?? '';
+  return fromInstallPath(scriptPath) ?? 'npm';
 }
