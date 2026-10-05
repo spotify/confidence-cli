@@ -33,35 +33,24 @@ function parseAllocations(spec: string): Record<string, number> {
 export const targetFlagCmd = withAuth(async function targetFlagCmd(argv, token) {
   const flagKey = argv['flag-key'] as string;
 
+  let allocations: Record<string, number> | undefined;
+  let targetingKey = argv['targeting-key'] as string | undefined;
+
   if (argv['from-file']) {
     const opts = resolveInput(argv, ['targeting-key', 'variant-allocations']);
-    const allocations = (opts['variant-allocations'] as Record<string, number>) ?? {};
-    const targetingKey = opts['targeting-key'] as string | undefined;
+    allocations = (opts['variant-allocations'] as Record<string, number>) ?? {};
+    targetingKey = opts['targeting-key'] as string | undefined;
 
     if (Object.keys(allocations).length === 0) {
       fail('File must contain "variantAllocations" (e.g. {"variantAllocations": {"on": 80}}).');
       return;
     }
-
-    validateAllocations(allocations);
-
-    if (argv['dry-run']) {
-      message(JSON.stringify({ flagKey, variantAllocations: allocations, targetingKey }, null, 2));
-      return;
-    }
-
-    const result = await addTargetingRule(token, flagKey, {
-      variantAllocations: allocations,
-      targetingKey,
-    });
-    printMcpResult(result, argv);
-    return;
+  } else if (argv.add) {
+    allocations = parseAllocations(argv.add as string);
   }
 
-  const addSpec = argv.add as string | undefined;
-  if (addSpec) {
-    const allocations = parseAllocations(addSpec);
-    const targetingKey = argv['targeting-key'] as string | undefined;
+  if (allocations) {
+    validateAllocations(allocations);
 
     if (argv['dry-run']) {
       message(JSON.stringify({ flagKey, variantAllocations: allocations, targetingKey }, null, 2));

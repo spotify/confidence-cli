@@ -24,8 +24,9 @@ export function resolveInput<T extends JsonObject>(
   const fileData = applyAliases(readFileData(argv));
 
   if (typeof keysOrDefaults === 'function') {
-    if (Object.keys(fileData).length > 0) return fileData as T;
-    return keysOrDefaults();
+    const defaults = keysOrDefaults();
+    if (Object.keys(fileData).length > 0) return { ...defaults, ...fileData } as T;
+    return defaults;
   }
 
   const unknown = Object.keys(fileData).filter((k) => !keysOrDefaults.includes(k));

@@ -10,7 +10,8 @@
       "@input/*": ["./src/input/*"],
       "@output/*": ["./src/output/*"],
       "@network/*": ["./src/network/*"],
-      "@utils/*": ["./src/utils/*"]
+      "@utils/*": ["./src/utils/*"],
+      "@meta": ["./src/meta.ts"]
     }
   },
   "include": [

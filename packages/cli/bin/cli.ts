@@ -12,9 +12,9 @@ import {
   recordingsCommand,
   quickstartCommand,
   mcpCommand,
+  updateCommand,
 } from '../src/commands/index.js';
-
-const APP_NAME = 'confidence';
+import { APP_NAME, CLI_VERSION } from '@meta';
 
 const cli = yargs(hideBin(process.argv))
   .scriptName(APP_NAME)
@@ -70,9 +70,16 @@ const cli = yargs(hideBin(process.argv))
   .command(recordingsCommand)
   .command(quickstartCommand)
   .command(mcpCommand)
+  .command(updateCommand)
+  .example('$0 login', 'Sign in to Confidence')
+  .example('$0 flags setup', 'Set up feature flags in your project')
+  .example('$0 events list', 'List all event definitions')
+  .example('$0 quickstart', 'Launch the interactive setup wizard')
+  .example('$0 update', 'Update to the latest CLI version')
+  .epilogue('Docs: https://confidence.spotify.com/docs')
   .demandCommand(1, 'Run "confidence --help" to see available commands.')
   .strict()
   .help()
-  .version();
+  .version(CLI_VERSION);
 
 cli.parse();

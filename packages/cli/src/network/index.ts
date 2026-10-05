@@ -1,3 +1,5 @@
+export { fetchLatestVersion } from './registry.js';
+
 export {
   listEventDefinitions,
   getEventDefinition,

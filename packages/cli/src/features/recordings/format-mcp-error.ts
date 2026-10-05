@@ -1,16 +1,12 @@
-import { extractText, type CallToolResult } from '@spotify-confidence/core';
+import { readMcpText, type CallToolResult } from '@spotify-confidence/core';
 import { error, fail } from '@output/print.js';
 
 export function tryHandleMcpError(result: CallToolResult): boolean {
   if (!result.isError) return false;
 
-  try {
-    extractText(result);
-  } catch (err) {
-    const text = (err as Error).message;
-    if (!formatClientListError(text)) {
-      fail(text);
-    }
+  const text = readMcpText(result) || 'MCP tool call failed';
+  if (!formatClientListError(text)) {
+    fail(text);
   }
 
   return true;
