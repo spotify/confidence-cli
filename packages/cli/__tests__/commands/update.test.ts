@@ -96,6 +96,35 @@ describe('update', () => {
     expect(output.stderr).toContain('npm registry');
   });
 
+  it('advises Yarn Berry users to reinstall with npm', async () => {
+    using output = captureOutput();
+    registryReturns('2.0.0');
+    mockDetectPM.mockReturnValue('yarn');
+    mockExecFile.mockResolvedValueOnce({ stdout: '4.1.0\n', stderr: '' });
+
+    await run(['update']);
+
+    expect(output.stdout).toContain('Yarn Berry');
+    expect(output.stdout).toContain('npm install -g');
+    expect(mockExecFile).toHaveBeenCalledTimes(2);
+  });
+
+  it('runs yarn global add for Yarn Classic', async () => {
+    using _output = captureOutput();
+    registryReturns('2.0.0');
+    mockDetectPM.mockReturnValue('yarn');
+    mockExecFile.mockResolvedValueOnce({ stdout: '1.22.19\n', stderr: '' });
+    mockExecFile.mockResolvedValueOnce({ stdout: '', stderr: '' });
+
+    await run(['update']);
+
+    expect(mockExecFile).toHaveBeenCalledWith('yarn', [
+      'global',
+      'add',
+      '@spotify-confidence/cli@latest',
+    ]);
+  });
+
   it('reports permission errors with a sudo hint', async () => {
     using output = captureOutput();
     registryReturns('2.0.0');

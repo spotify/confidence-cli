@@ -14,9 +14,19 @@ async function fetchLatestVersion(): Promise<string> {
 const UPDATE_COMMANDS: Record<Exclude<PackageManager, 'npx'>, [string, string[]]> = {
   npm: ['npm', ['install', '-g', `${PACKAGE_NAME}@latest`]],
   pnpm: ['pnpm', ['add', '-g', `${PACKAGE_NAME}@latest`]],
-  yarn: ['yarn', ['add', '-g', `${PACKAGE_NAME}@latest`]],
+  yarn: ['yarn', ['global', 'add', `${PACKAGE_NAME}@latest`]],
   bun: ['bun', ['install', '-g', `${PACKAGE_NAME}@latest`]],
 };
+
+async function isYarnBerry(): Promise<boolean> {
+  try {
+    const { stdout } = await execFile('yarn', ['--version']);
+    const major = Number(stdout.trim().split('.')[0]);
+    return major >= 2;
+  } catch {
+    return false;
+  }
+}
 
 export async function runUpdate(): Promise<void> {
   const spinner = ora('Checking for updates...').start();
@@ -43,6 +53,15 @@ export async function runUpdate(): Promise<void> {
     message(
       `A newer version is available: v${CLI_VERSION} → v${latest}\n` +
         `You're running via npx. Run \`npx ${PACKAGE_NAME}@latest\` to use the latest version.`,
+    );
+    return;
+  }
+
+  if (pm === 'yarn' && (await isYarnBerry())) {
+    message(
+      `A newer version is available: v${CLI_VERSION} → v${latest}\n` +
+        `Yarn Berry (v2+) does not support global installs. Reinstall with:\n` +
+        `  npm install -g ${PACKAGE_NAME}@latest`,
     );
     return;
   }
