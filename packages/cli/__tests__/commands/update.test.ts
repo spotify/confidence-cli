@@ -1,3 +1,9 @@
+import {
+  server,
+  registryReturns as registryReturnsHandler,
+  registryFails as registryFailsHandler,
+} from '@spotify-confidence/testing';
+
 import { updateCommand } from '@commands/update.js';
 import { captureOutput } from '../helpers/capture.js';
 import { createRunner } from '../helpers/run-command.js';
@@ -37,11 +43,11 @@ beforeEach(() => {
 });
 
 function registryReturns(version: string) {
-  mockExecFile.mockResolvedValueOnce({ stdout: `${version}\n`, stderr: '' });
+  server.use(registryReturnsHandler(version));
 }
 
 function registryFails() {
-  mockExecFile.mockRejectedValueOnce(new Error('npm ERR! network'));
+  server.use(registryFailsHandler());
 }
 
 describe('update', () => {
@@ -52,12 +58,6 @@ describe('update', () => {
     await run(['update']);
 
     expect(output.stderr).toBe('');
-    expect(mockExecFile).toHaveBeenCalledTimes(1);
-    expect(mockExecFile).toHaveBeenCalledWith('npm', [
-      'view',
-      '@spotify-confidence/cli',
-      'version',
-    ]);
   });
 
   it('runs the install command for the detected package manager', async () => {
@@ -84,7 +84,7 @@ describe('update', () => {
 
     expect(output.stdout).toContain('npx');
     expect(output.stdout).toContain('@latest');
-    expect(mockExecFile).toHaveBeenCalledTimes(1);
+    expect(mockExecFile).not.toHaveBeenCalled();
   });
 
   it('reports a friendly error when the registry is unreachable', async () => {
@@ -106,7 +106,7 @@ describe('update', () => {
 
     expect(output.stdout).toContain('Yarn Berry');
     expect(output.stdout).toContain('npm install -g');
-    expect(mockExecFile).toHaveBeenCalledTimes(2);
+    expect(mockExecFile).toHaveBeenCalledTimes(1);
   });
 
   it('runs yarn global add for Yarn Classic', async () => {
@@ -134,18 +134,5 @@ describe('update', () => {
 
     expect(output.stderr).toContain('Permission denied');
     expect(output.stderr).toContain('docs.npmjs.com');
-  });
-
-  it('checks version via npm view', async () => {
-    using _output = captureOutput();
-    registryReturns('1.0.0');
-
-    await run(['update']);
-
-    expect(mockExecFile).toHaveBeenCalledWith('npm', [
-      'view',
-      '@spotify-confidence/cli',
-      'version',
-    ]);
   });
 });

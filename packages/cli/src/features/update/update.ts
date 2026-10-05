@@ -1,15 +1,11 @@
 import ora from 'ora';
 import { execFile, isNewerVersion } from '@spotify-confidence/core';
 import { CLI_VERSION } from '@meta';
+import { fetchLatestVersion } from '@network/index.js';
 import { message, fail } from '@output/print.js';
 import { detectPackageManager, type PackageManager } from './detect-pm.js';
 
 const PACKAGE_NAME = '@spotify-confidence/cli';
-
-async function fetchLatestVersion(): Promise<string> {
-  const { stdout } = await execFile('npm', ['view', PACKAGE_NAME, 'version']);
-  return stdout.trim();
-}
 
 const UPDATE_COMMANDS: Record<Exclude<PackageManager, 'npx'>, [string, string[]]> = {
   npm: ['npm', ['install', '-g', `${PACKAGE_NAME}@latest`]],
