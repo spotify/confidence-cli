@@ -53,7 +53,11 @@ describe('update', () => {
 
     expect(output.stderr).toBe('');
     expect(mockExecFile).toHaveBeenCalledTimes(1);
-    expect(mockExecFile).toHaveBeenCalledWith('npm', ['view', '@spotify-confidence/cli', 'version']);
+    expect(mockExecFile).toHaveBeenCalledWith('npm', [
+      'view',
+      '@spotify-confidence/cli',
+      'version',
+    ]);
   });
 
   it('runs the install command for the detected package manager', async () => {
