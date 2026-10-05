@@ -163,6 +163,16 @@ describe('events create', () => {
 
     expect(output.stderr).toContain('Invalid field format');
   });
+
+  it('fails on unknown field type', async () => {
+    using _auth = prepareAuthTokens('valid');
+    using output = captureOutput();
+
+    await run(['events', 'create', '--name', 'bad-event', '--field', 'amount:dobule']);
+
+    expect(output.stderr).toContain('Unknown field type "dobule"');
+    expect(output.stderr).toContain('Supported types');
+  });
 });
 
 describe('events update', () => {

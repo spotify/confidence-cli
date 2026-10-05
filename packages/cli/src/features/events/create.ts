@@ -51,6 +51,8 @@ export async function createEvent(argv: Record<string, unknown>): Promise<void> 
   }
 }
 
+const FIELD_TYPES = ['string', 'int', 'double', 'bool', 'struct'] as const;
+
 export function parseFieldArg(spec: string): [string, Record<string, unknown>] {
   const colonIndex = spec.indexOf(':');
   if (colonIndex === -1) {
@@ -65,6 +67,12 @@ export function parseFieldArg(spec: string): [string, Record<string, unknown>] {
 
   if (!name) {
     throw new Error(`Invalid field format "${spec}". Field name cannot be empty.`);
+  }
+
+  if (!FIELD_TYPES.includes(type as (typeof FIELD_TYPES)[number])) {
+    throw new Error(
+      `Unknown field type "${type}" in "${spec}". Supported types: ${FIELD_TYPES.join(', ')}.`,
+    );
   }
 
   const schemaKey = `${type}Schema`;
