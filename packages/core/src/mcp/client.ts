@@ -6,7 +6,7 @@ import type { McpClientOptions } from './types.js';
 export type { CallToolResult };
 
 export async function createMcpClient(opts: McpClientOptions): Promise<Client> {
-  const client = new Client({ name: 'confidence-cli', version: '1.0.0' });
+  const client = new Client({ name: 'confidence-cli', version: opts.clientVersion ?? '0.0.0' });
   const transport = new StreamableHTTPClientTransport(new URL(opts.serverUrl), {
     requestInit: { headers: { Authorization: `Bearer ${opts.token}` } },
   });
