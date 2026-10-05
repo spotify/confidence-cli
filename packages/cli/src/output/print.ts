@@ -42,6 +42,10 @@ export function error(text: string): void {
   process.stderr.write(text + '\n');
 }
 
+export function warn(text: string): void {
+  process.stderr.write(`Warning: ${text}\n`);
+}
+
 export function fail(text: string): void {
   error(text);
   process.exitCode = 1;

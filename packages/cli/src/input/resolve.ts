@@ -1,12 +1,17 @@
 import type { JsonObject } from '@spotify-confidence/shared-kernel';
+import { warn } from '@output/index.js';
 import { readFileData } from './read-file.js';
 import { applyAliases } from './aliases.js';
 
 function pickDefined(source: JsonObject, keys: string[]): JsonObject {
   const out: JsonObject = {};
+
   for (const key of keys) {
-    if (source[key] != null) out[key] = source[key];
+    if (source[key] != null) {
+      out[key] = source[key];
+    }
   }
+
   return out;
 }
 
@@ -23,5 +28,10 @@ export function resolveInput<T extends JsonObject>(
     return keysOrDefaults();
   }
 
-  return { ...pickDefined(argv, keysOrDefaults), ...fileData } as T;
+  const unknown = Object.keys(fileData).filter((k) => !keysOrDefaults.includes(k));
+  if (unknown.length > 0) {
+    warn(`unknown keys in file ignored: ${unknown.join(', ')}`);
+  }
+
+  return { ...pickDefined(argv, keysOrDefaults), ...pickDefined(fileData, keysOrDefaults) } as T;
 }
