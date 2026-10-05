@@ -31,6 +31,11 @@ export async function createEvent(argv: Record<string, unknown>): Promise<void> 
       schema = readSchemaFromFile(fromFile);
     } else {
       const fieldSpecs = (argv.field as string[] | undefined) ?? [];
+      if (fieldSpecs.length === 0) {
+        fail('Provide at least one --field or --from-file.');
+        return;
+      }
+
       schema = Object.fromEntries(fieldSpecs.map(parseFieldArg));
     }
   } catch (err) {

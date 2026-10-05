@@ -173,6 +173,16 @@ describe('events create', () => {
     expect(output.stderr).toContain('Unknown field type "dobule"');
     expect(output.stderr).toContain('Supported types');
   });
+
+  it('fails when no fields or file provided', async () => {
+    using _auth = prepareAuthTokens('valid');
+    using output = captureOutput();
+
+    await run(['events', 'create', '--name', 'empty-event']);
+
+    expect(output.stderr).toContain('Provide at least one --field or --from-file');
+    expect(mockMcpCallTool).not.toHaveBeenCalled();
+  });
 });
 
 describe('events update', () => {
