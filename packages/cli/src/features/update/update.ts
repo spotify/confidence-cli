@@ -1,5 +1,5 @@
 import ora from 'ora';
-import { execFile } from '@spotify-confidence/core';
+import { execFile, isNewerVersion } from '@spotify-confidence/core';
 import { CLI_VERSION } from '../../meta.js';
 import { message, fail } from '@output/print.js';
 import { detectPackageManager, type PackageManager } from './detect-pm.js';
@@ -30,7 +30,7 @@ export async function runUpdate(): Promise<void> {
     return;
   }
 
-  if (latest === CLI_VERSION) {
+  if (!isNewerVersion(latest, CLI_VERSION)) {
     spinner.succeed(`Already up to date (v${CLI_VERSION}).`);
     return;
   }
