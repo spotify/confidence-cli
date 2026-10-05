@@ -8,6 +8,7 @@ const mockConfirm = vi.fn<() => Promise<boolean>>();
 const mockMcpCallTool = vi.fn<(...args: unknown[]) => Promise<CallToolResult>>();
 
 vi.mock('@inquirer/confirm', () => ({ default: () => mockConfirm() }));
+vi.mock('@spotify-confidence/quickstart', () => ({ startTui: vi.fn() }));
 vi.mock('@spotify-confidence/core', async (importOriginal) => {
   const actual = await importOriginal<typeof import('@spotify-confidence/core')>();
   return {
