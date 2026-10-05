@@ -1,6 +1,6 @@
 import { extractText, parseToolJson } from '@spotify-confidence/core';
 import { getRecordingPolicy } from '@network/index.js';
-import { message, print, extractFlags } from '@output/print.js';
+import { resolveFormat, formatJson, message, print, extractFlags } from '@output/index.js';
 import { withAuth } from '../../utils/require-auth.js';
 import { handleMcpError } from './format-mcp-error.js';
 
@@ -25,6 +25,19 @@ export const getPolicy = withAuth(async function getPolicy(argv, token) {
   }
 
   const flags = extractFlags(argv);
+  const format = resolveFormat(flags);
+
+  if (format === 'json') {
+    message(
+      formatJson({
+        name: data.name,
+        displayName: data.displayName || '',
+        clients: data.clients,
+        rules: data.rules ?? [],
+      }),
+    );
+    return;
+  }
 
   print({
     data: {
