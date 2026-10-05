@@ -77,7 +77,8 @@ export async function runUpdate(): Promise<void> {
     const msg = err instanceof Error ? err.message : String(err);
     fail(
       msg.includes('EACCES')
-        ? `Permission denied. Try running with sudo:\n  sudo ${cmd} ${args.join(' ')}`
+        ? `Permission denied. Fix your npm global prefix to avoid this:\n` +
+          `  https://docs.npmjs.com/resolving-eacces-permissions-errors-when-installing-packages-globally`
         : `${cmd} ${args.join(' ')} failed: ${msg}`,
     );
   }

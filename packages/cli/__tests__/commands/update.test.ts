@@ -125,14 +125,15 @@ describe('update', () => {
     ]);
   });
 
-  it('reports permission errors with a sudo hint', async () => {
+  it('reports permission errors with a link to npm docs', async () => {
     using output = captureOutput();
     registryReturns('2.0.0');
     mockExecFile.mockRejectedValueOnce(new Error('EACCES: permission denied'));
 
     await run(['update']);
 
-    expect(output.stderr).toContain('sudo');
+    expect(output.stderr).toContain('Permission denied');
+    expect(output.stderr).toContain('docs.npmjs.com');
   });
 
   it('checks version via npm view', async () => {
