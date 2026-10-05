@@ -1,6 +1,6 @@
 import type { JsonObject } from '@spotify-confidence/shared-kernel';
 import { getFlag, updateFlag } from '@network/index.js';
-import { extractFlags, fail, message, print } from '@output/index.js';
+import { resolveFormat, formatJson, extractFlags, fail, message, print } from '@output/index.js';
 import { withAuth } from '@utils/require-auth.js';
 import { flagStatus } from './status.js';
 import { resolveInput } from '@input/index.js';
@@ -44,6 +44,13 @@ export const updateFlagCmd = withAuth(async function updateFlagCmd(argv, token) 
   }
 
   const flag = result.data;
+  const flags = extractFlags(argv);
+  const format = resolveFormat(flags);
+
+  if (format === 'json') {
+    message(formatJson(flag));
+    return;
+  }
 
   print({
     data: {
@@ -56,6 +63,6 @@ export const updateFlagCmd = withAuth(async function updateFlagCmd(argv, token) 
       { key: 'key', header: 'Field', width: 14 },
       { key: 'value', header: 'Value' },
     ],
-    flags: extractFlags(argv),
+    flags,
   });
 });
