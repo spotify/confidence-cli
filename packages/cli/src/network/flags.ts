@@ -64,7 +64,7 @@ export async function listFlags(
 export async function getFlag(token: string, flagKey: string): Promise<ApiResponse<FlagResource>> {
   return apiRequest<FlagResource>({
     ...restOpts(token),
-    path: `/v1/flags/${flagKey}`,
+    path: `/v1/flags/${encodeURIComponent(flagKey)}`,
   });
 }
 
@@ -88,7 +88,7 @@ export async function updateFlag(
 ): Promise<ApiResponse<FlagResource>> {
   return apiRequest<FlagResource>({
     ...restOpts(token),
-    path: `/v1/flags/${flagKey}`,
+    path: `/v1/flags/${encodeURIComponent(flagKey)}`,
     method: 'PATCH',
     body,
     params: { update_mask: Object.keys(body).join(',') },
@@ -102,7 +102,7 @@ export async function toggleFlag(
 ): Promise<ApiResponse<FlagResource>> {
   return apiRequest<FlagResource>({
     ...restOpts(token),
-    path: `/v1/flags/${flagKey}`,
+    path: `/v1/flags/${encodeURIComponent(flagKey)}`,
     method: 'PATCH',
     body: { enabled },
     params: { update_mask: 'enabled' },
@@ -145,7 +145,7 @@ export async function archiveFlag(
 ): Promise<ApiResponse<FlagResource>> {
   return apiRequest<FlagResource>({
     ...restOpts(token),
-    path: `/v1/flags/${flagKey}:archive`,
+    path: `/v1/flags/${encodeURIComponent(flagKey)}:archive`,
     method: 'POST',
   });
 }
