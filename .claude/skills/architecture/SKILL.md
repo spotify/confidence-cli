@@ -42,7 +42,7 @@ import { buildTestJwt } from '@spotify-confidence/testing/auth';
 | Package    | Aliases                                                           |
 | ---------- | ----------------------------------------------------------------- |
 | quickstart | `@commands/*`, `@features/*`, `@ui/*`                             |
-| cli        | `@commands/*`, `@features/*`, `@output/*`, `@api/*`               |
+| cli        | `@commands/*`, `@features/*`, `@output/*`, `@network/*`           |
 | core       | Relative imports in `src/`; tsconfig aliases in `__tests__/` only |
 
 ## Domain Boundaries

@@ -120,7 +120,7 @@ The stable `node-pty` release (v1.1.0) doesn't ship prebuilt binaries for Node.j
 
 - **Cross-package imports** use npm package names: `import { authenticate } from '@spotify-confidence/core'`, `import type { IdeId } from '@spotify-confidence/shared-kernel'`.
 - **Within quickstart**, use path aliases (`@commands/*`, `@features/*`, `@ui/*`) for cross-domain imports. Keep relative imports within the same domain.
-- **Within cli**, use path aliases (`@commands/*`, `@features/*`, `@output/*`, `@api/*`) for cross-domain imports. Keep relative imports within the same domain.
+- **Within cli**, use path aliases (`@commands/*`, `@features/*`, `@output/*`, `@network/*`) for cross-domain imports. Keep relative imports within the same domain.
 - **Within core source** (`packages/core/src/`), use relative imports. Core's `__tests__/` may use tsconfig path aliases (`@auth/*`, `@integrations/*`, etc.).
 - **Test imports** from `@spotify-confidence/testing` use sub-path exports: `@spotify-confidence/testing/auth`, `@spotify-confidence/testing/scaffold`, `@spotify-confidence/testing/env`, `@spotify-confidence/testing/terminal`.
 - Use `@inkjs/ui` components over standalone `ink-*` packages.
