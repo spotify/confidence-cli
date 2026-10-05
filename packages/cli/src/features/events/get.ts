@@ -1,7 +1,5 @@
 import { getEventDefinition } from '@network/events.js';
-import { message, fail, extractFlags } from '@output/print.js';
-import { formatJson } from '@output/json.js';
-import { resolveFormat } from '@output/detect.js';
+import { fail, printMcpResult } from '@output/print.js';
 import { requireAuth } from './require-auth.js';
 
 export async function getEvent(argv: Record<string, unknown>): Promise<void> {
@@ -11,13 +9,8 @@ export async function getEvent(argv: Record<string, unknown>): Promise<void> {
   const name = argv.name as string;
 
   try {
-    const text = await getEventDefinition(token, name);
-    const format = resolveFormat(extractFlags(argv));
-    if (format === 'json') {
-      message(formatJson(text));
-    } else {
-      message(text);
-    }
+    const result = await getEventDefinition(token, name);
+    printMcpResult(result, argv);
   } catch (err) {
     fail((err as Error).message);
   }

@@ -20,6 +20,10 @@ function textResult(text: string): CallToolResult {
   return { content: [{ type: 'text', text }] };
 }
 
+function jsonResult(data: unknown): CallToolResult {
+  return textResult(JSON.stringify(data));
+}
+
 function run(args: string[]) {
   return yargs(args)
     .option('json', { type: 'boolean', default: false })
@@ -47,12 +51,14 @@ describe('events list', () => {
   it('wraps response in JSON envelope with --json', async () => {
     using _auth = prepareAuthTokens('valid');
     using output = captureOutput();
-    mockMcpCallTool.mockResolvedValueOnce(textResult('Found 1 event(s):\n- page-viewed'));
+    mockMcpCallTool.mockResolvedValueOnce(
+      jsonResult({ eventDefinitions: [{ name: 'page-viewed' }] }),
+    );
 
     await run(['events', 'list', '--json']);
 
     const parsed = JSON.parse(output.stdout);
-    expect(parsed.data).toContain('page-viewed');
+    expect(parsed.data.eventDefinitions[0].name).toBe('page-viewed');
   });
 
   it('passes pagination args to MCP tool', async () => {

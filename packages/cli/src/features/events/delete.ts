@@ -1,4 +1,5 @@
 import confirm from '@inquirer/confirm';
+import { extractText } from '@spotify-confidence/core';
 import { deleteEventDefinition } from '@network/events.js';
 import { message, fail } from '@output/print.js';
 import { requireAuth } from './require-auth.js';
@@ -20,7 +21,7 @@ export async function deleteEvent(argv: Record<string, unknown>): Promise<void> 
   }
 
   try {
-    await deleteEventDefinition(token, name);
+    extractText(await deleteEventDefinition(token, name));
     message(`Event definition "${name}" deleted.`);
   } catch (err) {
     fail((err as Error).message);

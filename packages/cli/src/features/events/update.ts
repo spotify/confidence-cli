@@ -1,7 +1,5 @@
 import { updateEventDefinition } from '@network/events.js';
-import { message, fail, extractFlags } from '@output/print.js';
-import { formatJson } from '@output/json.js';
-import { resolveFormat } from '@output/detect.js';
+import { fail, printMcpResult } from '@output/print.js';
 import { requireAuth } from './require-auth.js';
 import { parseFieldArg } from './create.js';
 
@@ -26,13 +24,8 @@ export async function updateEvent(argv: Record<string, unknown>): Promise<void> 
   }
 
   try {
-    const text = await updateEventDefinition(token, name, schema);
-    const format = resolveFormat(extractFlags(argv));
-    if (format === 'json') {
-      message(formatJson(text));
-    } else {
-      message(text);
-    }
+    const result = await updateEventDefinition(token, name, schema);
+    printMcpResult(result, argv);
   } catch (err) {
     fail((err as Error).message);
   }

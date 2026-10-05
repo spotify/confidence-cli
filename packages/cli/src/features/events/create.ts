@@ -1,8 +1,6 @@
 import { readFileSync } from 'node:fs';
 import { createEventDefinition } from '@network/events.js';
-import { message, fail, extractFlags } from '@output/print.js';
-import { formatJson } from '@output/json.js';
-import { resolveFormat } from '@output/detect.js';
+import { message, fail, printMcpResult } from '@output/print.js';
 import { requireAuth } from './require-auth.js';
 
 function readSchemaFromFile(filePath: string): Record<string, unknown> {
@@ -46,13 +44,8 @@ export async function createEvent(argv: Record<string, unknown>): Promise<void> 
   }
 
   try {
-    const text = await createEventDefinition(token, eventDefinitionId, schema);
-    const format = resolveFormat(extractFlags(argv));
-    if (format === 'json') {
-      message(formatJson(text));
-    } else {
-      message(text);
-    }
+    const result = await createEventDefinition(token, eventDefinitionId, schema);
+    printMcpResult(result, argv);
   } catch (err) {
     fail((err as Error).message);
   }
