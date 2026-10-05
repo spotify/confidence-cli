@@ -1,7 +1,7 @@
 import { updateEventDefinition } from '@network/events.js';
 import { fail, printMcpResult } from '@output/print.js';
 import { requireAuth } from './require-auth.js';
-import { parseFieldArg } from './create.js';
+import { parseFieldArg } from './field-spec.js';
 
 export async function updateEvent(argv: Record<string, unknown>): Promise<void> {
   const token = requireAuth(argv.profile as string | undefined);
