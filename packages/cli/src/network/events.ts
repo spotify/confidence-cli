@@ -1,3 +1,4 @@
+import { isDefined } from '@spotify-confidence/shared-kernel';
 import {
   mcpCallTool,
   MCP_SERVERS,
@@ -55,6 +56,6 @@ export async function queryEventsUsage(
 ): Promise<CallToolResult> {
   return mcpCallTool(serverOpts(token), 'queryEventsUsage', {
     eventDefinitionName: name,
-    daysBack: opts?.daysBack ? String(opts.daysBack) : undefined,
+    daysBack: isDefined(opts?.daysBack) ? String(opts.daysBack) : undefined,
   });
 }

@@ -270,4 +270,14 @@ describe('events usage', () => {
 
     expect(output.stdout).toContain('150 published');
   });
+
+  it('rejects --days outside 1-7', async () => {
+    using _auth = prepareAuthTokens('valid');
+    using output = captureOutput();
+
+    await run(['events', 'usage', 'page-viewed', '--days', '0']);
+
+    expect(output.stderr).toContain('--days must be between 1 and 7');
+    expect(mockMcpCallTool).not.toHaveBeenCalled();
+  });
 });
