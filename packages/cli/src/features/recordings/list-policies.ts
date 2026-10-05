@@ -1,6 +1,6 @@
 import { extractText, parseToolJson } from '@spotify-confidence/core';
 import { listRecordingPolicies } from '@network/index.js';
-import { message, print, extractFlags } from '@output/print.js';
+import { resolveFormat, formatJson, message, print, extractFlags } from '@output/index.js';
 import { withAuth } from '../../utils/require-auth.js';
 import { handleMcpError } from './format-mcp-error.js';
 
@@ -29,6 +29,24 @@ export const listPolicies = withAuth(async function listPolicies(argv, token) {
     return;
   }
 
+  const flags = extractFlags(argv);
+  const format = resolveFormat(flags);
+
+  if (format === 'json') {
+    const meta = data.nextPageToken ? { nextPageToken: data.nextPageToken } : undefined;
+    message(
+      formatJson(
+        data.recordingPolicies.map((p) => ({
+          name: p.name,
+          displayName: p.displayName || '',
+          clients: p.clients,
+        })),
+        meta,
+      ),
+    );
+    return;
+  }
+
   print<PolicyRow>({
     data: data.recordingPolicies.map((p) => ({
       name: p.name,
@@ -40,7 +58,7 @@ export const listPolicies = withAuth(async function listPolicies(argv, token) {
       { key: 'displayName', header: 'Display Name', width: 20 },
       { key: 'clients', header: 'Clients' },
     ],
-    flags: extractFlags(argv),
+    flags,
     empty: 'No recording policies found.',
   });
 
