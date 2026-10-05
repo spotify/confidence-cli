@@ -83,7 +83,7 @@ export async function addContextField(
     fieldName: params.fieldName,
     fieldType: params.fieldType,
     ...(params.displayName ? { displayName: params.displayName } : {}),
-    isEntity: String(params.isEntity),
+    isEntity: params.isEntity,
     ...(params.entityReference ? { entityReference: params.entityReference } : {}),
     ...(params.clients.length > 0 ? { clients: params.clients } : {}),
   });

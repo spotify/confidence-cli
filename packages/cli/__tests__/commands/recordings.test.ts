@@ -356,7 +356,7 @@ describe('recordings targeting-key add', () => {
       expect.objectContaining({
         fieldName: 'visitor_id',
         fieldType: 'string',
-        isEntity: 'true',
+        isEntity: true,
       }),
     );
   });
