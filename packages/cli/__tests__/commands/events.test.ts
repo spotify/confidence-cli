@@ -1,9 +1,9 @@
-import yargs from 'yargs';
 import { prepareAuthTokens } from '@spotify-confidence/testing/auth';
 import type { CallToolResult } from '@spotify-confidence/core';
 import { eventsCommand } from '@commands/events.js';
 import { captureOutput } from '../helpers/capture.js';
 import { textResult, jsonResult } from '../helpers/mcp-result.js';
+import { createRunner } from '../helpers/run-command.js';
 import { simulateTTY } from '../helpers/simulate-tty.js';
 
 const mockConfirm = vi.fn<() => Promise<boolean>>();
@@ -18,15 +18,7 @@ vi.mock('@spotify-confidence/core', async (importOriginal) => {
   };
 });
 
-function run(args: string[]) {
-  return yargs(args)
-    .option('json', { type: 'boolean', default: false })
-    .option('output', { type: 'string' })
-    .option('profile', { type: 'string' })
-    .option('dry-run', { type: 'boolean', default: false })
-    .command(eventsCommand)
-    .parse();
-}
+const run = createRunner(eventsCommand);
 
 describe('events list', () => {
   it('outputs MCP text response', async () => {
