@@ -11,6 +11,7 @@ import {
   addTargetingKey,
 } from '@features/recordings/index.js';
 import { safely } from '../utils/safely.js';
+import { validateRange } from '../utils/validation.js';
 
 export const recordingsCommand = {
   command: 'recordings <action>',
@@ -107,7 +108,7 @@ export const recordingsCommand = {
                 .option('enabled', {
                   type: 'boolean',
                   describe: 'Enable the rule immediately',
-                  default: true,
+                  default: false,
                 })
                 .option('from-file', {
                   type: 'string',
@@ -118,6 +119,10 @@ export const recordingsCommand = {
                     throw new Error(
                       '--policy and --targeting-key are required (or use --from-file)',
                     );
+                  }
+                  if (!argv['from-file']) {
+                    validateRange(argv['audience-percentage'], '--audience-percentage', 0, 100);
+                    validateRange(argv['sample-rate'], '--sample-rate', 0, 1);
                   }
                   return true;
                 }),

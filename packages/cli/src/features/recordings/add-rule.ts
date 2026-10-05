@@ -2,7 +2,7 @@ import { addRecordingRule } from '@network/index.js';
 import { printMcpResult } from '@output/print.js';
 import { withAuth } from '../../utils/require-auth.js';
 import { resolveTargetFile } from '../../utils/read-json-file.js';
-import { requireKeys } from '../../utils/validation.js';
+import { requireKeys, validateRange } from '../../utils/validation.js';
 
 type RuleParams = {
   policy: string;
@@ -28,6 +28,8 @@ export const addRule = withAuth(async function addRule(argv, token) {
   );
 
   requireKeys(params, ['policy', 'targeting-key']);
+  validateRange(params['audience-percentage'], 'audience-percentage', 0, 100);
+  validateRange(params['sample-rate'], 'sample-rate', 0, 1);
 
   const result = await addRecordingRule(token, {
     recordingPolicy: params.policy,
