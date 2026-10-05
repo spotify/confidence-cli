@@ -33,9 +33,12 @@ export function parseToolJson<T>(result: CallToolResult): T {
   return JSON.parse(text) as T;
 }
 
+export function readMcpText(result: CallToolResult): string {
+  return unwrapPotentiallyJsonEncodedString(joinTextBlocks(result));
+}
+
 export function extractText(result: CallToolResult): string {
-  const raw = joinTextBlocks(result);
-  const text = unwrapPotentiallyJsonEncodedString(raw);
+  const text = readMcpText(result);
 
   if (result.isError) {
     throw new Error(text || 'MCP tool call failed');

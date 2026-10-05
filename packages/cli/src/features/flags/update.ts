@@ -22,7 +22,10 @@ export const updateFlagCmd = withAuth(async function updateFlagCmd(argv, token) 
     }
 
     const existingVariants = existing.data.variants ?? [];
-    const newVariants = addVariants.map((v) => ({ name: `flags/${flagKey}/variants/${v}` }));
+    const existingNames = new Set(existingVariants.map((v) => v.name.split('/').pop()));
+    const newVariants = addVariants
+      .filter((v) => !existingNames.has(v))
+      .map((v) => ({ name: `flags/${flagKey}/variants/${v}` }));
     body.variants = [...existingVariants, ...newVariants];
   }
 
