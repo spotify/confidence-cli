@@ -14,6 +14,7 @@ export default defineConfig({
       '@frameworks': fileURLToPath(new URL('./src/frameworks', import.meta.url)),
       '@integrations': fileURLToPath(new URL('./src/integrations', import.meta.url)),
       '@providers': fileURLToPath(new URL('./src/providers', import.meta.url)),
+      '@api': fileURLToPath(new URL('./src/api', import.meta.url)),
     },
   },
   test: {

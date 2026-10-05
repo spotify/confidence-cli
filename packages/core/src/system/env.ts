@@ -12,7 +12,8 @@ type EnvKey =
   | 'CONFIDENCE_SKILLS_URL'
   | 'CONFIDENCE_MCP_URL'
   | 'CONFIDENCE_TELEMETRY_KEY_URL'
-  | 'CONFIDENCE_TELEMETRY_EVENTS_URL';
+  | 'CONFIDENCE_TELEMETRY_EVENTS_URL'
+  | 'CONFIDENCE_API_BASE_URL';
 
 export function env(key: EnvKey): string | undefined;
 export function env(key: EnvKey, defaultValue: string): string;
