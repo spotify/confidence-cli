@@ -31,7 +31,7 @@ describe('recordings policy list', () => {
       }),
     );
 
-    await run(['recordings', 'policy', 'list']);
+    await run(['recordings', 'policy', 'list', '--output', 'table']);
 
     expect(output.stdout).toContain('my-app');
     expect(output.stdout).toContain('recordingPolicies/abc');
@@ -82,7 +82,7 @@ describe('recordings policy list', () => {
       }),
     );
 
-    await run(['recordings', 'policy', 'list']);
+    await run(['recordings', 'policy', 'list', '--output', 'table']);
 
     expect(output.stdout).toContain('--page-token next123');
   });
@@ -154,7 +154,7 @@ describe('recordings policy get', () => {
       }),
     );
 
-    await run(['recordings', 'policy', 'get', 'recordingPolicies/123']);
+    await run(['recordings', 'policy', 'get', 'recordingPolicies/123', '--output', 'table']);
 
     expect(output.stdout).toContain('recordingPolicies/123');
     expect(output.stdout).toContain('my-app');
@@ -216,7 +216,7 @@ describe('recordings rule add', () => {
         targetingKeySelector: 'visitor_id',
         stableAudiencePercentage: 100,
         sessionSampleRate: 1,
-        enabled: true,
+        enabled: false,
       }),
     );
   });
@@ -298,7 +298,7 @@ describe('recordings targeting-key show', () => {
       }),
     );
 
-    await run(['recordings', 'targeting-key', 'show', 'my-app']);
+    await run(['recordings', 'targeting-key', 'show', 'my-app', '--output', 'table']);
 
     expect(output.stdout).toContain('visitor_id');
     expect(output.stdout).toContain('yes');

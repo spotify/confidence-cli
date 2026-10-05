@@ -66,13 +66,25 @@ export async function getContextSchema(
   });
 }
 
+type AddContextFieldParams = {
+  fieldName: string;
+  fieldType: string;
+  displayName?: string;
+  isEntity: boolean;
+  entityReference?: string;
+  clients: string[];
+};
+
 export async function addContextField(
   token: string,
-  params: { fieldName: string; fieldType: string; isEntity: boolean },
+  params: AddContextFieldParams,
 ): Promise<CallToolResult> {
   return mcpCallTool(serverOpts(token), 'addContextField', {
     fieldName: params.fieldName,
     fieldType: params.fieldType,
+    ...(params.displayName ? { displayName: params.displayName } : {}),
     isEntity: String(params.isEntity),
+    ...(params.entityReference ? { entityReference: params.entityReference } : {}),
+    ...(params.clients.length > 0 ? { clients: params.clients } : {}),
   });
 }

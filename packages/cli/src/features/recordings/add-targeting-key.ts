@@ -7,7 +7,10 @@ import { requireKeys } from '../../utils/validation.js';
 type FieldParams = {
   'field-name': string;
   'field-type': string;
+  'display-name': string | undefined;
   'is-entity': boolean;
+  'entity-reference': string | undefined;
+  client: string[];
 };
 
 export const addTargetingKey = withAuth(async function addTargetingKey(argv, token) {
@@ -16,7 +19,10 @@ export const addTargetingKey = withAuth(async function addTargetingKey(argv, tok
     () => ({
       'field-name': argv['field-name'] as string,
       'field-type': argv['field-type'] as string,
+      'display-name': argv['display-name'] as string | undefined,
       'is-entity': argv['is-entity'] as boolean,
+      'entity-reference': argv['entity-reference'] as string | undefined,
+      client: (argv.client as string[]) ?? [],
     }),
     { merge: true },
   );
@@ -26,7 +32,10 @@ export const addTargetingKey = withAuth(async function addTargetingKey(argv, tok
   const result = await addContextField(token, {
     fieldName: params['field-name'],
     fieldType: params['field-type'],
+    displayName: params['display-name'],
     isEntity: params['is-entity'],
+    entityReference: params['entity-reference'],
+    clients: params.client,
   });
   printMcpResult(result, argv);
 });

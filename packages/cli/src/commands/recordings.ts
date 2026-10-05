@@ -179,10 +179,24 @@ export const recordingsCommand = {
                   type: 'string',
                   describe: 'Field type (e.g. string)',
                 })
+                .option('display-name', {
+                  type: 'string',
+                  describe: 'Display name for the field',
+                })
                 .option('is-entity', {
                   type: 'boolean',
                   describe: 'Mark as entity field',
                   default: true,
+                })
+                .option('entity-reference', {
+                  type: 'string',
+                  describe: 'Entity reference (e.g. entities/visitor)',
+                })
+                .option('client', {
+                  type: 'string',
+                  array: true,
+                  describe: 'Client resource names (omit for all clients)',
+                  default: [] as string[],
                 })
                 .option('from-file', {
                   type: 'string',
