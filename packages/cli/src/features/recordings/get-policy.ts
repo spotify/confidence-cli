@@ -2,7 +2,7 @@ import { extractText, parseToolJson } from '@spotify-confidence/core';
 import { getRecordingPolicy } from '@network/index.js';
 import { resolveFormat, formatJson, message, print, extractFlags } from '@output/index.js';
 import { withAuth } from '../../utils/require-auth.js';
-import { handleMcpError } from './format-mcp-error.js';
+import { tryHandleMcpError } from './format-mcp-error.js';
 
 type PolicyDetail = {
   name: string;
@@ -14,7 +14,7 @@ type PolicyDetail = {
 export const getPolicy = withAuth(async function getPolicy(argv, token) {
   const policy = argv.policy as string;
   const result = await getRecordingPolicy(token, policy);
-  if (handleMcpError(result)) return;
+  if (tryHandleMcpError(result)) return;
 
   let data: PolicyDetail;
   try {

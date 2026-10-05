@@ -3,6 +3,7 @@ import { printMcpResult } from '@output/print.js';
 import { withAuth } from '../../utils/require-auth.js';
 import { resolveTargetFile } from '../../utils/read-json-file.js';
 import { requireKeys, validateRange } from '../../utils/validation.js';
+import { tryHandleMcpError } from './format-mcp-error.js';
 
 type RuleParams = {
   policy: string;
@@ -39,5 +40,6 @@ export const addRule = withAuth(async function addRule(argv, token) {
     sessionSampleRate: params['sample-rate'],
     enabled: params.enabled,
   });
+  if (tryHandleMcpError(result)) return;
   printMcpResult(result, argv);
 });

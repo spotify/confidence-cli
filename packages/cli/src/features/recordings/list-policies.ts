@@ -2,7 +2,7 @@ import { extractText, parseToolJson } from '@spotify-confidence/core';
 import { listRecordingPolicies } from '@network/index.js';
 import { resolveFormat, formatJson, message, print, extractFlags } from '@output/index.js';
 import { withAuth } from '../../utils/require-auth.js';
-import { handleMcpError } from './format-mcp-error.js';
+import { tryHandleMcpError } from './format-mcp-error.js';
 
 type PolicyRow = {
   name: string;
@@ -19,7 +19,7 @@ export const listPolicies = withAuth(async function listPolicies(argv, token) {
   const result = await listRecordingPolicies(token, {
     pageToken: argv['page-token'] as string | undefined,
   });
-  if (handleMcpError(result)) return;
+  if (tryHandleMcpError(result)) return;
 
   let data: ListResponse;
   try {

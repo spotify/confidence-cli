@@ -3,6 +3,7 @@ import { printMcpResult } from '@output/print.js';
 import { withAuth } from '../../utils/require-auth.js';
 import { resolveTargetFile } from '../../utils/read-json-file.js';
 import { requireKeys } from '../../utils/validation.js';
+import { tryHandleMcpError } from './format-mcp-error.js';
 
 type FieldParams = {
   'field-name': string;
@@ -37,5 +38,6 @@ export const addTargetingKey = withAuth(async function addTargetingKey(argv, tok
     entityReference: params['entity-reference'],
     clients: params.client,
   });
+  if (tryHandleMcpError(result)) return;
   printMcpResult(result, argv);
 });

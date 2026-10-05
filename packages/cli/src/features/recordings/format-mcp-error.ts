@@ -1,7 +1,7 @@
 import { extractText, type CallToolResult } from '@spotify-confidence/core';
 import { error, fail } from '@output/print.js';
 
-export function handleMcpError(result: CallToolResult): boolean {
+export function tryHandleMcpError(result: CallToolResult): boolean {
   if (!result.isError) return false;
 
   try {
