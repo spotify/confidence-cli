@@ -1,12 +1,13 @@
 #!/usr/bin/env bash
 #
 # Resets the local dev environment to simulate a clean machine for testing.
-# Usage: ./scripts/clean-dev-env.sh [--auth | --mcp] [project-dir]
+# Usage: ./scripts/clean-dev-env.sh [--auth | --config | --mcp] [project-dir]
 #
 # Options:
-#   --auth   Clean only auth tokens
-#   --mcp    Clean only MCP servers, permissions, and skills
-#   (none)   Clean everything (default)
+#   --auth     Clean only auth credentials
+#   --config   Clean only CLI configuration (IDE preference, project, etc.)
+#   --mcp      Clean only MCP servers, permissions, and skills
+#   (none)     Clean everything (default)
 #
 set -euo pipefail
 
@@ -15,40 +16,60 @@ SCRIPT_DIR="$(cd "$(dirname "$0")" && pwd)"
 # --- Parse arguments ---
 
 clean_auth=false
+clean_config=false
 clean_mcp=false
 PROJECT_DIR="."
 
 for arg in "$@"; do
   case "$arg" in
-    --auth) clean_auth=true ;;
-    --mcp)  clean_mcp=true ;;
-    -*)     echo "Unknown option: $arg"; exit 1 ;;
-    *)      PROJECT_DIR="$arg" ;;
+    --auth)   clean_auth=true ;;
+    --config) clean_config=true ;;
+    --mcp)    clean_mcp=true ;;
+    -*)       echo "Unknown option: $arg"; exit 1 ;;
+    *)        PROJECT_DIR="$arg" ;;
   esac
 done
 
 # Default: clean everything
-if ! $clean_auth && ! $clean_mcp; then
+if ! $clean_auth && ! $clean_config && ! $clean_mcp; then
   clean_auth=true
+  clean_config=true
   clean_mcp=true
 fi
+
+config_dir="${CONFIDENCE_CONFIG_DIR:-$HOME/.config/confidence}"
 
 removed=0
 
 # --- Auth tokens ---
 
 if $clean_auth; then
-  token_file="${TMPDIR:-/tmp}/confidence_token"
-  refresh_file="${TMPDIR:-/tmp}/confidence_refresh_token"
-  org_file="${TMPDIR:-/tmp}/confidence_organization"
+  credentials_file="$config_dir/credentials.json"
+  profiles_dir="$config_dir/profiles"
 
-  for f in "$token_file" "$refresh_file" "$org_file"; do
-    if [[ -f "$f" ]]; then
-      rm "$f"
-      echo "Removed $f"
-      ((removed++)) || true
-    fi
-  done
+  if [[ -f "$credentials_file" ]]; then
+    rm "$credentials_file"
+    echo "Removed $credentials_file"
+    ((removed++)) || true
+  fi
+
+  if [[ -d "$profiles_dir" ]]; then
+    rm -rf "$profiles_dir"
+    echo "Removed $profiles_dir"
+    ((removed++)) || true
+  fi
+fi
+
+# --- CLI configuration ---
+
+if $clean_config; then
+  cli_config_file="$config_dir/config.json"
+
+  if [[ -f "$cli_config_file" ]]; then
+    rm "$cli_config_file"
+    echo "Removed $cli_config_file"
+    ((removed++)) || true
+  fi
 fi
 
 # --- MCP-related cleanup ---

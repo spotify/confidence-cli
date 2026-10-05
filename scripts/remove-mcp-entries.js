@@ -1,7 +1,7 @@
 #!/usr/bin/env node
 const fs = require('fs');
 
-const path = process.argv[1];
+const path = process.argv[2];
 const config = JSON.parse(fs.readFileSync(path, 'utf-8'));
 
 if (!config.mcpServers || Object.keys(config.mcpServers).length === 0) {
