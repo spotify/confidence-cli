@@ -1,7 +1,7 @@
 import { readFileSync } from 'node:fs';
 import { createEventDefinition } from '@network/events.js';
 import { message, fail, printMcpResult } from '@output/print.js';
-import { requireAuth } from './require-auth.js';
+import { requireAuth } from '../../utils/require-auth.js';
 import { parseFieldArg } from './field-spec.js';
 
 function readSchemaFromFile(filePath: string): Record<string, unknown> {

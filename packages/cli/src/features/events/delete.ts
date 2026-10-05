@@ -2,7 +2,7 @@ import confirm from '@inquirer/confirm';
 import { extractText } from '@spotify-confidence/core';
 import { deleteEventDefinition } from '@network/events.js';
 import { message, fail } from '@output/print.js';
-import { requireAuth } from './require-auth.js';
+import { requireAuth } from '../../utils/require-auth.js';
 
 export async function deleteEvent(argv: Record<string, unknown>): Promise<void> {
   const token = requireAuth(argv.profile as string | undefined);
