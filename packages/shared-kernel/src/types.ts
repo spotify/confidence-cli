@@ -1,3 +1,5 @@
+export type JsonObject = Record<string, unknown>;
+
 export type IdeId = 'claude' | 'cursor' | 'codex';
 
 export type OnboardingGoal = 'feature-flags' | 'session-recordings' | 'event-tracking';

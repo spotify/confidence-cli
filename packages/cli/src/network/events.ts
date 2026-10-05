@@ -1,4 +1,4 @@
-import { isDefined } from '@spotify-confidence/shared-kernel';
+import { isDefined, type JsonObject } from '@spotify-confidence/shared-kernel';
 import { mcpCallTool, type CallToolResult } from '@spotify-confidence/core';
 import { serverOpts } from './config.js';
 
@@ -18,7 +18,7 @@ export async function getEventDefinition(token: string, name: string): Promise<C
 export async function createEventDefinition(
   token: string,
   eventDefinitionId: string,
-  schema: Record<string, unknown>,
+  schema: JsonObject,
 ): Promise<CallToolResult> {
   return mcpCallTool(serverOpts(token), 'createEventDefinition', {
     eventDefinitionId,
@@ -29,7 +29,7 @@ export async function createEventDefinition(
 export async function updateEventDefinition(
   token: string,
   name: string,
-  schema: Record<string, unknown>,
+  schema: JsonObject,
 ): Promise<CallToolResult> {
   return mcpCallTool(serverOpts(token), 'updateEventDefinition', {
     name,

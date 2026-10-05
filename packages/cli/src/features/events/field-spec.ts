@@ -1,6 +1,8 @@
+import type { JsonObject } from '@spotify-confidence/shared-kernel';
+
 const FIELD_TYPES = ['string', 'int', 'double', 'bool', 'struct'] as const;
 
-export function parseFieldArg(spec: string): [string, Record<string, unknown>] {
+export function parseFieldArg(spec: string): [string, JsonObject] {
   const colonIndex = spec.indexOf(':');
   if (colonIndex === -1) {
     throw new Error(`Invalid field format "${spec}". Expected "name:type" (e.g. "page:string").`);

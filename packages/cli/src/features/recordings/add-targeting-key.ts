@@ -1,8 +1,8 @@
 import { addContextField } from '@network/index.js';
-import { printMcpResult } from '@output/print.js';
-import { withAuth } from '../../utils/require-auth.js';
-import { resolveTargetFile } from '../../utils/read-json-file.js';
-import { requireKeys } from '../../utils/validation.js';
+import { printMcpResult } from '@output/index.js';
+import { withAuth } from '@utils/require-auth.js';
+import { resolveInput } from '@input/index.js';
+import { requireKeys } from '@utils/validation.js';
 import { tryHandleMcpError } from './format-mcp-error.js';
 
 type FieldParams = {
@@ -15,18 +15,14 @@ type FieldParams = {
 };
 
 export const addTargetingKey = withAuth(async function addTargetingKey(argv, token) {
-  const params = resolveTargetFile<FieldParams>(
-    argv,
-    () => ({
-      'field-name': argv['field-name'] as string,
-      'field-type': argv['field-type'] as string,
-      'display-name': argv['display-name'] as string | undefined,
-      'is-entity': argv['is-entity'] as boolean,
-      'entity-reference': argv['entity-reference'] as string | undefined,
-      client: (argv.client as string[]) ?? [],
-    }),
-    { merge: true },
-  );
+  const params = resolveInput<FieldParams>(argv, [
+    'field-name',
+    'field-type',
+    'display-name',
+    'is-entity',
+    'entity-reference',
+    'client',
+  ]);
 
   requireKeys(params, ['field-name', 'field-type']);
 

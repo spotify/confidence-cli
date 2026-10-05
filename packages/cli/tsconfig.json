@@ -7,8 +7,10 @@
     "paths": {
       "@commands/*": ["./src/commands/*"],
       "@features/*": ["./src/features/*"],
+      "@input/*": ["./src/input/*"],
       "@output/*": ["./src/output/*"],
-      "@network/*": ["./src/network/*"]
+      "@network/*": ["./src/network/*"],
+      "@utils/*": ["./src/utils/*"]
     }
   },
   "include": [

@@ -1,13 +1,14 @@
+import type { JsonObject } from '@spotify-confidence/shared-kernel';
 import { createEventDefinition } from '@network/index.js';
-import { message, printMcpResult } from '@output/print.js';
-import { withAuth } from '../../utils/require-auth.js';
-import { resolveTargetFile } from '../../utils/read-json-file.js';
+import { message, printMcpResult } from '@output/index.js';
+import { withAuth } from '@utils/require-auth.js';
+import { resolveInput } from '@input/index.js';
 import { parseFieldArg } from './field-spec.js';
 
 export const createEvent = withAuth(async function createEvent(argv, token) {
   const eventDefinitionId = argv.name as string;
 
-  const schema = resolveTargetFile<Record<string, unknown>>(argv, () => {
+  const schema = resolveInput<JsonObject>(argv, () => {
     const fieldSpecs = (argv.field as string[] | undefined) ?? [];
     if (fieldSpecs.length === 0) {
       throw new Error('Provide at least one --field or --from-file.');

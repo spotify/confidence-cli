@@ -1,6 +1,7 @@
 export type {
   AuthState,
   IdeId,
+  JsonObject,
   OnboardingGoal,
   PluginInstallationMethod,
   ProviderId,
