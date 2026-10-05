@@ -32,7 +32,7 @@ export const getPolicy = withAuth(async function getPolicy(argv, token) {
       formatJson({
         name: data.name,
         displayName: data.displayName || '',
-        clients: data.clients,
+        clients: data.clients ?? [],
         rules: data.rules ?? [],
       }),
     );
@@ -43,7 +43,7 @@ export const getPolicy = withAuth(async function getPolicy(argv, token) {
     data: {
       Name: data.name,
       'Display Name': data.displayName || '(unnamed)',
-      Clients: data.clients.join(', '),
+      Clients: (data.clients ?? []).join(', '),
     },
     columns: [
       { key: 'key', header: 'Field', width: 14 },

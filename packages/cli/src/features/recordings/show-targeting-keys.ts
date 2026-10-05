@@ -28,7 +28,7 @@ export const showTargetingKeys = withAuth(async function showTargetingKeys(argv,
   }
 
   print({
-    data: data.fields.map((f) => ({
+    data: (data.fields ?? []).map((f) => ({
       name: f.name,
       type: f.type,
       entity: f.isEntity ? 'yes' : 'no',

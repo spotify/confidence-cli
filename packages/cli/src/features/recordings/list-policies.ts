@@ -36,10 +36,10 @@ export const listPolicies = withAuth(async function listPolicies(argv, token) {
     const meta = data.nextPageToken ? { nextPageToken: data.nextPageToken } : undefined;
     message(
       formatJson(
-        data.recordingPolicies.map((p) => ({
+        (data.recordingPolicies ?? []).map((p) => ({
           name: p.name,
           displayName: p.displayName || '',
-          clients: p.clients,
+          clients: p.clients ?? [],
         })),
         meta,
       ),
@@ -48,10 +48,10 @@ export const listPolicies = withAuth(async function listPolicies(argv, token) {
   }
 
   print<PolicyRow>({
-    data: data.recordingPolicies.map((p) => ({
+    data: (data.recordingPolicies ?? []).map((p) => ({
       name: p.name,
       displayName: p.displayName || '(unnamed)',
-      clients: p.clients.join(', '),
+      clients: (p.clients ?? []).join(', '),
     })),
     columns: [
       { key: 'name', header: 'Name' },
