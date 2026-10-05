@@ -14,7 +14,7 @@ vi.mock('../../src/features/update/detect-pm.js', () => ({
   detectPackageManager: () => mockDetectPM(),
 }));
 
-vi.mock('../../src/meta.js', () => ({
+vi.mock('@meta', () => ({
   APP_NAME: 'confidence',
   CLI_VERSION: '1.0.0',
 }));

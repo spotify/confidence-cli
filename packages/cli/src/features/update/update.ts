@@ -1,6 +1,6 @@
 import ora from 'ora';
 import { execFile, isNewerVersion } from '@spotify-confidence/core';
-import { CLI_VERSION } from '../../meta.js';
+import { CLI_VERSION } from '@meta';
 import { message, fail } from '@output/print.js';
 import { detectPackageManager, type PackageManager } from './detect-pm.js';
 
@@ -78,7 +78,7 @@ export async function runUpdate(): Promise<void> {
     fail(
       msg.includes('EACCES')
         ? `Permission denied. Fix your npm global prefix to avoid this:\n` +
-          `  https://docs.npmjs.com/resolving-eacces-permissions-errors-when-installing-packages-globally`
+            `  https://docs.npmjs.com/resolving-eacces-permissions-errors-when-installing-packages-globally`
         : `${cmd} ${args.join(' ')} failed: ${msg}`,
     );
   }

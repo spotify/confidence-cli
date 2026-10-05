@@ -12,6 +12,7 @@ export default defineConfig({
       '@output': fileURLToPath(new URL('./src/output', import.meta.url)),
       '@network': fileURLToPath(new URL('./src/network', import.meta.url)),
       '@utils': fileURLToPath(new URL('./src/utils', import.meta.url)),
+      '@meta': fileURLToPath(new URL('./src/meta.ts', import.meta.url)),
       '@spotify-confidence/quickstart': fileURLToPath(
         new URL('../quickstart/src/index.ts', import.meta.url),
       ),

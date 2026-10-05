@@ -14,7 +14,7 @@ import {
   mcpCommand,
   updateCommand,
 } from '../src/commands/index.js';
-import { APP_NAME, CLI_VERSION } from '../src/meta.js';
+import { APP_NAME, CLI_VERSION } from '@meta';
 
 const cli = yargs(hideBin(process.argv))
   .scriptName(APP_NAME)
