@@ -8,8 +8,10 @@ export default defineConfig({
     alias: {
       '@commands': fileURLToPath(new URL('./src/commands', import.meta.url)),
       '@features': fileURLToPath(new URL('./src/features', import.meta.url)),
+      '@input': fileURLToPath(new URL('./src/input', import.meta.url)),
       '@output': fileURLToPath(new URL('./src/output', import.meta.url)),
       '@network': fileURLToPath(new URL('./src/network', import.meta.url)),
+      '@utils': fileURLToPath(new URL('./src/utils', import.meta.url)),
       '@spotify-confidence/quickstart': fileURLToPath(
         new URL('../quickstart/src/index.ts', import.meta.url),
       ),

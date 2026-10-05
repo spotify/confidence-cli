@@ -16,3 +16,18 @@ export {
   getContextSchema,
   addContextField,
 } from './recordings.js';
+
+export {
+  listFlags,
+  getFlag,
+  createFlag,
+  updateFlag,
+  toggleFlag,
+  resolveFlag,
+  addTargetingRule,
+  archiveFlag,
+  type FlagResource,
+  type FlagVariant,
+  type FlagRule,
+  type FlagListResponse,
+} from './flags.js';

@@ -1,8 +1,8 @@
 import { createRecordingPolicy } from '@network/index.js';
-import { printMcpResult } from '@output/print.js';
-import { withAuth } from '../../utils/require-auth.js';
-import { resolveTargetFile } from '../../utils/read-json-file.js';
-import { requireKeys } from '../../utils/validation.js';
+import { printMcpResult } from '@output/index.js';
+import { withAuth } from '@utils/require-auth.js';
+import { resolveInput } from '@input/index.js';
+import { requireKeys } from '@utils/validation.js';
 import { tryHandleMcpError } from './format-mcp-error.js';
 
 type PolicyParams = {
@@ -11,14 +11,7 @@ type PolicyParams = {
 };
 
 export const createPolicy = withAuth(async function createPolicy(argv, token) {
-  const params = resolveTargetFile<PolicyParams>(
-    argv,
-    () => ({
-      'display-name': argv['display-name'] as string,
-      'client-name': argv['client-name'] as string,
-    }),
-    { merge: true },
-  );
+  const params = resolveInput<PolicyParams>(argv, ['display-name', 'client-name']);
 
   requireKeys(params, ['display-name', 'client-name']);
 

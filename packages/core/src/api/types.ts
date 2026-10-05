@@ -29,7 +29,7 @@ export type ApiRequestOptions = {
   region: Region;
   service: string;
   path: string;
-  method?: 'GET' | 'POST' | 'PUT' | 'DELETE';
+  method?: 'GET' | 'POST' | 'PUT' | 'PATCH' | 'DELETE';
   body?: unknown;
   params?: Record<string, string>;
 };
