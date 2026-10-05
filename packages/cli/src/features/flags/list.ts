@@ -15,20 +15,21 @@ export const listFlagsCmd = withAuth(async function listFlagsCmd(argv, token) {
 
   const flags = extractFlags(argv);
   const format = resolveFormat(flags);
+
+  if (format === 'json') {
+    const meta = result.data.nextPageToken
+      ? { nextPageToken: result.data.nextPageToken }
+      : undefined;
+    message(formatJson(result.data.flags ?? [], meta));
+    return;
+  }
+
   const rows = (result.data.flags ?? []).map((f) => ({
     key: f.flagId ?? f.name.replace(/^flags\//, ''),
     status: flagStatus(f),
     variants: String(f.variants?.length ?? 0),
     updated: f.updateTime ?? '',
   }));
-
-  if (format === 'json') {
-    const meta = result.data.nextPageToken
-      ? { nextPageToken: result.data.nextPageToken }
-      : undefined;
-    message(formatJson(rows, meta));
-    return;
-  }
 
   print({
     data: rows,

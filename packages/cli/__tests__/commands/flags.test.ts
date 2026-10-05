@@ -69,7 +69,7 @@ describe('flags list', () => {
 
     const parsed = JSON.parse(output.stdout);
     expect(parsed.data).toHaveLength(1);
-    expect(parsed.data[0].key).toBe('dark-mode');
+    expect(parsed.data[0].flagId).toBe('dark-mode');
   });
 
   it('shows empty message when no flags exist', async () => {
