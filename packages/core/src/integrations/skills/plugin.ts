@@ -49,7 +49,9 @@ export async function uninstallPlugin(
     await integration.uninstallPlugin(projectDir, scope);
   }
 
-  await removeSkills(integration.skillsDir(projectDir));
+  if (method === 'download' || !scope || scope === 'project') {
+    await removeSkills(integration.skillsDir(projectDir));
+  }
 }
 
 export async function updatePlugin(

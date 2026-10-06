@@ -99,6 +99,16 @@ describe('uninstallPlugin', () => {
     expect(mockIntegration.uninstallPlugin).not.toHaveBeenCalled();
     expect(removeSkills).toHaveBeenCalledWith('/project/.claude/skills');
   });
+
+  it('does not remove local skills when scope is not project', async () => {
+    const { removeSkills } = await import('../../src/integrations/skills/local.js');
+    vi.mocked(mockIntegration.detectPlugin).mockResolvedValueOnce('cli');
+
+    await uninstallPlugin('claude', '/project', 'global');
+
+    expect(mockIntegration.uninstallPlugin).toHaveBeenCalledWith('/project', 'global');
+    expect(removeSkills).not.toHaveBeenCalled();
+  });
 });
 
 describe('updatePlugin', () => {
