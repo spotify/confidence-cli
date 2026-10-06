@@ -2,6 +2,7 @@ export { loginCommand } from './login.js';
 export { logoutCommand } from './logout.js';
 export { whoamiCommand } from './whoami.js';
 export { configCommand } from './config.js';
+export { docsCommand } from './docs.js';
 export { eventsCommand } from './events.js';
 export { flagsCommand } from './flags.js';
 export { recordingsCommand } from './recordings.js';

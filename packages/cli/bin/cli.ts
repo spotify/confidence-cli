@@ -7,6 +7,7 @@ import {
   logoutCommand,
   whoamiCommand,
   configCommand,
+  docsCommand,
   eventsCommand,
   flagsCommand,
   recordingsCommand,
@@ -66,6 +67,7 @@ const cli = yargs(hideBin(process.argv))
   .command(logoutCommand)
   .command(whoamiCommand)
   .command(configCommand)
+  .command(docsCommand)
   .command(eventsCommand)
   .command(flagsCommand)
   .command(recordingsCommand)
@@ -75,6 +77,7 @@ const cli = yargs(hideBin(process.argv))
   .command(migrateCommand)
   .example('$0 login', 'Sign in to Confidence')
   .example('$0 flags setup', 'Set up feature flags in your project')
+  .example('$0 docs search "feature flags"', 'Search the documentation')
   .example('$0 events list', 'List all event definitions')
   .example('$0 quickstart', 'Launch the interactive setup wizard')
   .example('$0 update', 'Update to the latest CLI version')

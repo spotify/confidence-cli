@@ -1,5 +1,7 @@
 export { fetchLatestVersion } from './registry.js';
 
+export { searchDocumentation, grepDocumentation, getFullSource } from './docs.js';
+
 export {
   listEventDefinitions,
   getEventDefinition,
