@@ -5,7 +5,6 @@ import type {
 } from '@spotify-confidence/shared-kernel';
 import type { InstalledPlugin } from '../types.js';
 import { getIntegration, getIntegrations } from '../registry.js';
-import { isBinaryMissing } from '../utils.js';
 import { downloadSkills, removeSkills } from './local.js';
 
 export async function detectInstalledPlugins(projectDir: string): Promise<InstalledPlugin[]> {
@@ -30,8 +29,7 @@ export async function installPlugin(
   try {
     await integration.installPlugin(projectDir, scope);
     return 'cli';
-  } catch (error) {
-    guardDownloadFallback(error, scope);
+  } catch {
     await downloadSkills(integration.skillsDir(projectDir));
     return 'download';
   }
@@ -64,15 +62,8 @@ export async function updatePlugin(
   try {
     await integration.updatePlugin(projectDir, scope);
     return 'cli';
-  } catch (error) {
-    guardDownloadFallback(error, scope);
+  } catch {
     await downloadSkills(integration.skillsDir(projectDir), true);
     return 'download';
-  }
-}
-
-function guardDownloadFallback(error: unknown, scope?: PluginScope): void {
-  if (!isBinaryMissing(error) || (scope && scope !== 'project')) {
-    throw error;
   }
 }
