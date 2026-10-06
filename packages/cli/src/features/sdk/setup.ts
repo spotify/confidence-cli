@@ -3,16 +3,10 @@ import { fail } from '@output/print.js';
 import { resolveIde, resolveFlag, resolveProjectDir } from '@features/ide/index.js';
 import { resolveAuthToken } from '@features/mcp/index.js';
 
-function buildSdkSetupPrompt(): string {
-  return `Set up the Confidence SDK in this project.
-
-Use the "analyze-project" skill from the Confidence plugin to determine the correct SDK
-for this project, install it, and create a working configuration file.
-
+const SDK_SETUP_PROMPT = `Set up the Confidence SDK in this project.
+Use the "analyze-project" skill from the Confidence plugin to determine the correct SDK, install it, and create a working configuration file.
 Only set up the SDK — do not create feature flags, event tracking, or session recordings.
-
 Use the Confidence MCP tools for SDK references and best practices.`;
-}
 
 export async function runSdkSetup(argv: Record<string, unknown>): Promise<void> {
   const ideId = await resolveIde(resolveFlag('ide', argv));
@@ -44,6 +38,5 @@ export async function runSdkSetup(argv: Record<string, unknown>): Promise<void> 
     return;
   }
 
-  const prompt = buildSdkSetupPrompt();
-  integration.launchChat({ prompt, cwd: projectDir, token });
+  integration.launchChat({ userPrompt: SDK_SETUP_PROMPT, cwd: projectDir, token });
 }

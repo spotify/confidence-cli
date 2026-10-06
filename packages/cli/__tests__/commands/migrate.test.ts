@@ -101,9 +101,9 @@ describe('migrate <provider>', () => {
 
     await run(['migrate', 'statsig', '--ide', 'claude']);
 
-    const { prompt } = vi.mocked(mockIntegration.launchChat).mock.calls[0][0];
-    expect(prompt).toContain('migrate-statsig');
-    expect(prompt).toContain('(statsig)');
+    const { userPrompt } = vi.mocked(mockIntegration.launchChat).mock.calls[0][0];
+    expect(userPrompt).toContain('migrate-statsig');
+    expect(userPrompt).toContain('(statsig)');
   });
 
   it('fails when plugin is not installed', async () => {

@@ -35,6 +35,6 @@ export async function launchMigration(
   const token = await resolveAuthToken({ profile: resolveFlag('profile', argv) });
   if (!token) return;
 
-  const prompt = buildMigrationPrompt(provider);
-  integration.launchChat({ prompt, cwd: projectDir, token });
+  const userPrompt = buildMigrationPrompt(provider);
+  integration.launchChat({ userPrompt, cwd: projectDir, token });
 }
