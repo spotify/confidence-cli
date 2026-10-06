@@ -23,8 +23,6 @@ export function resolveScope(argv: Record<string, unknown>): PluginScope {
 
 export function requireClaudeForScope(ideId: IdeId, scope: PluginScope): void {
   if (scope !== 'project' && ideId !== 'claude') {
-    throw new Error(
-      `--scope is only supported for Claude Code. ${ideId} always uses project scope.`,
-    );
+    throw new Error(`--scope is only supported for Claude Code. `);
   }
 }
