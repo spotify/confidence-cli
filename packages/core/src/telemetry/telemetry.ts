@@ -1,3 +1,4 @@
+import { randomUUID } from 'node:crypto';
 import { env, isCI } from '../system/env.js';
 
 const TELEMETRY_KEY_URL = env(
@@ -11,12 +12,15 @@ const TELEMETRY_EVENTS_URL_TEMPLATE = env(
 );
 
 const TELEMETRY_EVENT_DEFINITION = 'eventDefinitions/agent-telemetry';
-const TELEMETRY_SOURCE = 'wizard';
+const TELEMETRY_TIMEOUT_MS = 3000;
 
 type TelemetryRegion = 'EU' | 'US';
+type TelemetryKeyResponse = {
+  clientSecret?: string;
+  client_secret?: string;
+};
 
 export type TelemetrySentiment = 'positive' | 'neutral' | 'confused' | 'frustrated';
-
 export type TelemetryCompletion = 'starting' | 'in_progress' | 'completing' | 'done';
 
 export type TelemetryEvent = {
@@ -26,22 +30,30 @@ export type TelemetryEvent = {
   completion?: TelemetryCompletion;
 };
 
+export type TelemetryOptions = {
+  source: string;
+  sessionId?: string;
+  region?: TelemetryRegion;
+};
+
 export type TelemetryClient = {
-  track: (event: TelemetryEvent) => void;
   updateRegion: (region: TelemetryRegion) => void;
+  track: (event: TelemetryEvent) => void;
+  flush: () => Promise<void>;
 };
 
 function eventsUrl(region: TelemetryRegion): string {
   return TELEMETRY_EVENTS_URL_TEMPLATE.replace('{region}', region.toLowerCase());
 }
 
-function createTelemetryClient(opts: {
-  sessionId: string;
-  region?: TelemetryRegion;
-}): TelemetryClient {
+function createTelemetryClient(opts: TelemetryOptions): TelemetryClient {
+  const sessionId = opts.sessionId ?? randomUUID();
+  const pending = new Set<Promise<void>>();
+  const source = opts.source;
+
   let region = opts.region ?? 'EU';
-  let clientSecret: string | null = null;
-  let acquirePromise: Promise<void> | null = null;
+  let secret: string | null = null;
+  let acquire: Promise<void> | null = null;
   let failed = false;
 
   async function acquireKey(): Promise<void> {
@@ -49,25 +61,30 @@ function createTelemetryClient(opts: {
       const res = await fetch(TELEMETRY_KEY_URL, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ session_id: opts.sessionId }),
-        signal: AbortSignal.timeout(5000),
+        body: JSON.stringify({ session_id: sessionId }),
+        signal: AbortSignal.timeout(TELEMETRY_TIMEOUT_MS),
       });
+
       if (!res.ok) {
         failed = true;
         return;
       }
-      const data = (await res.json()) as { clientSecret?: string; client_secret?: string };
-      clientSecret = data.clientSecret ?? data.client_secret ?? null;
-      if (!clientSecret) failed = true;
+
+      const data = (await res.json()) as TelemetryKeyResponse;
+      secret = data.clientSecret ?? data.client_secret ?? null;
+
+      if (!secret) {
+        failed = true;
+      }
     } catch {
       failed = true;
     }
   }
 
-  async function ensureKey(): Promise<void> {
-    if (clientSecret) return;
-    if (!acquirePromise) acquirePromise = acquireKey();
-    await acquirePromise;
+  async function ensureKey(): Promise<boolean> {
+    if (secret) return true;
+    await (acquire ??= acquireKey());
+    return !!secret;
   }
 
   async function publish(event: TelemetryEvent): Promise<void> {
@@ -77,13 +94,13 @@ function createTelemetryClient(opts: {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
-          client_secret: clientSecret,
+          client_secret: secret,
           events: [
             {
               event_definition: TELEMETRY_EVENT_DEFINITION,
               payload: {
-                session_id: opts.sessionId,
-                skill: TELEMETRY_SOURCE,
+                session_id: sessionId,
+                skill: source,
                 step: event.step,
                 action: event.action,
                 sentiment: event.sentiment ?? 'neutral',
@@ -94,7 +111,7 @@ function createTelemetryClient(opts: {
           ],
           send_time: now,
         }),
-        signal: AbortSignal.timeout(5000),
+        signal: AbortSignal.timeout(TELEMETRY_TIMEOUT_MS),
       });
     } catch {
       // fire-and-forget
@@ -102,18 +119,28 @@ function createTelemetryClient(opts: {
   }
 
   async function doTrack(event: TelemetryEvent): Promise<void> {
-    if (failed) return;
-    await ensureKey();
-    if (!clientSecret) return;
-    await publish(event);
+    try {
+      if (failed) return;
+      if (!(await ensureKey())) return;
+      await publish(event);
+    } catch {
+      // Don't surface telemetry errors.
+    }
   }
 
+  void ensureKey();
+
   return {
-    track(event: TelemetryEvent): void {
-      doTrack(event).catch(() => {});
+    updateRegion(updated: TelemetryRegion): void {
+      region = updated;
     },
-    updateRegion(newRegion: TelemetryRegion): void {
-      region = newRegion;
+    track(event: TelemetryEvent): void {
+      const p = doTrack(event).finally(() => pending.delete(p));
+      pending.add(p);
+    },
+    async flush(): Promise<void> {
+      const timeout = new Promise((r) => setTimeout(r, TELEMETRY_TIMEOUT_MS).unref());
+      await Promise.race([Promise.allSettled([...pending]), timeout]);
     },
   };
 }
@@ -121,6 +148,7 @@ function createTelemetryClient(opts: {
 function createNoopClient(): TelemetryClient {
   return {
     track() {},
+    async flush() {},
     updateRegion() {},
   };
 }
@@ -138,7 +166,7 @@ export function isTelemetryEnabled(): boolean {
 
 let client: TelemetryClient = createNoopClient();
 
-export function initTelemetry(opts: { sessionId: string; region?: TelemetryRegion }): void {
+export function initTelemetry(opts: TelemetryOptions): void {
   if (!isTelemetryEnabled()) return;
   client = createTelemetryClient(opts);
 }
@@ -149,6 +177,10 @@ export function getTelemetry(): TelemetryClient {
 
 export function track(event: TelemetryEvent): void {
   client.track(event);
+}
+
+export async function flush(): Promise<void> {
+  await client.flush();
 }
 
 export function resetTelemetry(): void {

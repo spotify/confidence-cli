@@ -6,7 +6,7 @@ import { initTelemetry } from '@spotify-confidence/core';
 
 export async function startTui(opts?: StoreOptions) {
   store.init(opts);
-  initTelemetry({ sessionId: $session.get().sessionId });
+  initTelemetry({ source: 'wizard', sessionId: $session.get().sessionId });
 
   const debug = $session.get().debug;
 
