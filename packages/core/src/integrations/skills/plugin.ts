@@ -41,12 +41,13 @@ export async function uninstallPlugin(
   scope?: PluginScope,
 ): Promise<void> {
   const integration = getIntegration(ide);
+  const method = await integration.detectPlugin(projectDir);
 
-  try {
+  if (method === 'cli') {
     await integration.uninstallPlugin(projectDir, scope);
-  } finally {
-    await removeSkills(integration.skillsDir(projectDir));
   }
+
+  await removeSkills(integration.skillsDir(projectDir));
 }
 
 export async function updatePlugin(

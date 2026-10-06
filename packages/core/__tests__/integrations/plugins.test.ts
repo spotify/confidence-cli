@@ -53,8 +53,9 @@ describe('installPlugin', () => {
 });
 
 describe('uninstallPlugin', () => {
-  it('calls CLI uninstall and removes downloaded skills', async () => {
+  it('calls CLI uninstall and removes skills when installed via cli', async () => {
     const { removeSkills } = await import('../../src/integrations/skills/local.js');
+    vi.mocked(mockIntegration.detectPlugin).mockResolvedValueOnce('cli');
 
     await uninstallPlugin('claude', '/project');
 
@@ -62,12 +63,23 @@ describe('uninstallPlugin', () => {
     expect(removeSkills).toHaveBeenCalledWith('/project/.claude/skills');
   });
 
-  it('still removes downloaded skills when CLI uninstall throws', async () => {
+  it('only removes downloaded skills when installed via download', async () => {
     const { removeSkills } = await import('../../src/integrations/skills/local.js');
-    vi.mocked(mockIntegration.uninstallPlugin).mockRejectedValueOnce(new Error('not supported'));
+    vi.mocked(mockIntegration.detectPlugin).mockResolvedValueOnce('download');
 
-    await expect(uninstallPlugin('claude', '/project')).rejects.toThrow('not supported');
+    await uninstallPlugin('claude', '/project');
 
+    expect(mockIntegration.uninstallPlugin).not.toHaveBeenCalled();
+    expect(removeSkills).toHaveBeenCalledWith('/project/.claude/skills');
+  });
+
+  it('only removes downloaded skills when no plugin detected', async () => {
+    const { removeSkills } = await import('../../src/integrations/skills/local.js');
+    vi.mocked(mockIntegration.detectPlugin).mockResolvedValueOnce(null);
+
+    await uninstallPlugin('claude', '/project');
+
+    expect(mockIntegration.uninstallPlugin).not.toHaveBeenCalled();
     expect(removeSkills).toHaveBeenCalledWith('/project/.claude/skills');
   });
 });
