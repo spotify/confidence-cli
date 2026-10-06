@@ -12,10 +12,7 @@ export async function searchDocumentation(
   });
 }
 
-export async function grepDocumentation(
-  token: string,
-  pattern: string,
-): Promise<CallToolResult> {
+export async function grepDocumentation(token: string, pattern: string): Promise<CallToolResult> {
   return mcpCallTool(serverOpts(token, 'confidence-docs'), 'grepDocumentation', { pattern });
 }
 

@@ -6,7 +6,9 @@ import { withAuth } from '@utils/require-auth.js';
 
 function normalizeSource(input: string): string {
   if (input.includes('://')) return input;
-  const path = input.startsWith('/docs/') ? input.slice('/docs/'.length) : input.replace(/^\/+/, '');
+  const path = input.startsWith('/docs/')
+    ? input.slice('/docs/'.length)
+    : input.replace(/^\/+/, '');
   return `${CONFIDENCE_DOCS_URL}/${path}`;
 }
 
