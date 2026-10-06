@@ -29,7 +29,7 @@ function buildInstallCommand(fw: FrameworkConfig, dir: string): InstallCommand {
     case 'swift':
       return buildSwiftInstall(fw.sdkPackage);
     default: {
-      const _exhaustive: never = fw.id as never;
+      const _exhaustive: never = fw.id;
       throw new Error(`Unknown framework: ${_exhaustive}`);
     }
   }
