@@ -6,6 +6,7 @@ import {
   type FrameworkConfig,
 } from '@spotify-confidence/core';
 import { message, fail } from '@output/print.js';
+import { resolveProjectDir } from '@features/ide/index.js';
 import type { InstallCommand } from './install-types.js';
 import { buildNodeInstall } from './install-node.js';
 import { buildPythonInstall } from './install-python.js';
@@ -36,7 +37,7 @@ function buildInstallCommand(fw: FrameworkConfig, dir: string): InstallCommand {
 }
 
 export async function runSdkInstall(argv: Record<string, unknown>): Promise<void> {
-  const dir = (argv.dir as string | undefined) ?? process.cwd();
+  const dir = resolveProjectDir(argv);
   const spinner = ora('Detecting framework...').start();
 
   const fw = await detectFramework(dir);
