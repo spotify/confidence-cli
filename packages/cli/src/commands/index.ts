@@ -5,6 +5,7 @@ export { configCommand } from './config.js';
 export { eventsCommand } from './events.js';
 export { flagsCommand } from './flags.js';
 export { recordingsCommand } from './recordings.js';
+export { sdkCommand } from './sdk.js';
 export { quickstartCommand } from './quickstart.js';
 export { mcpCommand } from './mcp.js';
 export { pluginCommand } from './plugin.js';
