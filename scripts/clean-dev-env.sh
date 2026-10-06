@@ -121,7 +121,7 @@ if $clean_mcp; then
   marketplace_name="confidence"
 
   # Claude Code: uninstall plugin (may be from official or custom marketplace)
-  for scope in project user; do
+  for scope in local project user; do
     if (cd "$PROJECT_DIR" && claude plugin uninstall "$plugin_name" --scope "$scope") 2>/dev/null; then
       echo "Uninstalled Claude plugin ($scope scope)"
       ((removed++)) || true

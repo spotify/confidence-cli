@@ -1,5 +1,9 @@
 import type { ChildProcess } from 'node:child_process';
-import type { IdeId, PluginInstallationMethod } from '@spotify-confidence/shared-kernel';
+import type {
+  IdeId,
+  PluginInstallationMethod,
+  PluginScope,
+} from '@spotify-confidence/shared-kernel';
 import type { McpServerName, McpServerStatus } from './mcp/servers.js';
 
 export type InstalledPlugin = {
@@ -49,9 +53,9 @@ export type IdeIntegration = {
 
   skillsDir: (projectDir: string) => string;
   detectPlugin: (projectDir: string) => Promise<PluginInstallationMethod | null>;
-  installPlugin: (projectDir: string) => Promise<void>;
-  updatePlugin: (projectDir: string) => Promise<void>;
-  uninstallPlugin: (projectDir: string) => Promise<void>;
+  installPlugin: (projectDir: string, scope?: PluginScope) => Promise<void>;
+  updatePlugin: (projectDir: string, scope?: PluginScope) => Promise<void>;
+  uninstallPlugin: (projectDir: string, scope?: PluginScope) => Promise<void>;
 
   detectMcpStatuses: (projectDir: string) => Promise<Record<McpServerName, McpServerStatus>>;
   connectMcpServer: (opts: McpConnectOpts) => Promise<void>;

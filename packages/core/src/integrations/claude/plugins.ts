@@ -1,9 +1,15 @@
 import { resolve } from 'node:path';
 import { execFile } from '../../exec/exec.js';
 import { PLUGIN_NAME } from '../../constants.js';
-import type { PluginInstallationMethod } from '@spotify-confidence/shared-kernel';
+import type { PluginInstallationMethod, PluginScope } from '@spotify-confidence/shared-kernel';
 import { hasDownloadedSkills } from '../skills/local.js';
 import { skillsDir } from './paths.js';
+
+const SCOPE_MAP: Record<PluginScope, string> = {
+  project: 'project',
+  local: 'local',
+  global: 'user',
+};
 
 type PluginEntry = {
   id: string;
@@ -26,18 +32,29 @@ export async function detectPlugin(projectDir: string): Promise<PluginInstallati
   return hasDownloadedSkills(skillsDir(projectDir)) ? 'download' : null;
 }
 
-export async function installPlugin(projectDir: string): Promise<void> {
-  await execFile('claude', ['plugin', 'install', PLUGIN_NAME, '--scope', 'project'], {
+export async function installPlugin(
+  projectDir: string,
+  scope: PluginScope = 'project',
+): Promise<void> {
+  await execFile('claude', ['plugin', 'install', PLUGIN_NAME, '--scope', SCOPE_MAP[scope]], {
     cwd: projectDir,
   });
 }
 
-export async function updatePlugin(projectDir: string): Promise<void> {
-  await execFile('claude', ['plugin', 'update', PLUGIN_NAME], { cwd: projectDir });
+export async function updatePlugin(
+  projectDir: string,
+  scope: PluginScope = 'project',
+): Promise<void> {
+  await execFile('claude', ['plugin', 'update', PLUGIN_NAME, '--scope', SCOPE_MAP[scope]], {
+    cwd: projectDir,
+  });
 }
 
-export async function uninstallPlugin(projectDir: string): Promise<void> {
-  await execFile('claude', ['plugin', 'uninstall', PLUGIN_NAME, '--scope', 'project'], {
+export async function uninstallPlugin(
+  projectDir: string,
+  scope: PluginScope = 'project',
+): Promise<void> {
+  await execFile('claude', ['plugin', 'uninstall', PLUGIN_NAME, '--scope', SCOPE_MAP[scope]], {
     cwd: projectDir,
   });
 }

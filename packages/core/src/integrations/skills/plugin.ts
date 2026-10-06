@@ -1,4 +1,8 @@
-import type { IdeId, PluginInstallationMethod } from '@spotify-confidence/shared-kernel';
+import type {
+  IdeId,
+  PluginInstallationMethod,
+  PluginScope,
+} from '@spotify-confidence/shared-kernel';
 import type { InstalledPlugin } from '../types.js';
 import { getIntegration, getIntegrations } from '../registry.js';
 import { downloadSkills, removeSkills } from './local.js';
@@ -18,11 +22,12 @@ export function prepareIde(ide: IdeId): Promise<void> {
 export async function installPlugin(
   ide: IdeId,
   projectDir: string,
+  scope?: PluginScope,
 ): Promise<PluginInstallationMethod> {
   const integration = getIntegration(ide);
 
   try {
-    await integration.installPlugin(projectDir);
+    await integration.installPlugin(projectDir, scope);
     return 'cli';
   } catch {
     await downloadSkills(integration.skillsDir(projectDir));
@@ -30,11 +35,15 @@ export async function installPlugin(
   }
 }
 
-export async function uninstallPlugin(ide: IdeId, projectDir: string): Promise<void> {
+export async function uninstallPlugin(
+  ide: IdeId,
+  projectDir: string,
+  scope?: PluginScope,
+): Promise<void> {
   const integration = getIntegration(ide);
 
   try {
-    await integration.uninstallPlugin(projectDir);
+    await integration.uninstallPlugin(projectDir, scope);
   } finally {
     await removeSkills(integration.skillsDir(projectDir));
   }
@@ -43,11 +52,12 @@ export async function uninstallPlugin(ide: IdeId, projectDir: string): Promise<v
 export async function updatePlugin(
   ide: IdeId,
   projectDir: string,
+  scope?: PluginScope,
 ): Promise<PluginInstallationMethod> {
   const integration = getIntegration(ide);
 
   try {
-    await integration.updatePlugin(projectDir);
+    await integration.updatePlugin(projectDir, scope);
     return 'cli';
   } catch {
     await downloadSkills(integration.skillsDir(projectDir), true);
