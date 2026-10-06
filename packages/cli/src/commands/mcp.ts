@@ -57,60 +57,45 @@ export const mcpCommand = {
           }
         },
       )
-      .command(
-        'status',
-        'Show MCP server connection status',
-        noop,
-        async (argv) => {
-          try {
-            const ideId = await resolveIde(resolveFlag('ide', argv));
-            const statuses = await getMcpStatuses(ideId, resolveProjectDir(argv));
-            const rows = Object.entries(statuses).map(([server, status]) => ({
-              server,
-              status: STATUS_LABELS[status] ?? status,
-            }));
-            print({
-              data: rows,
-              columns: [
-                { key: 'server', header: 'Server', width: 20 },
-                { key: 'status', header: 'Status' },
-              ],
-              flags: extractFlags(argv),
-            });
-          } catch (err) {
-            fail((err as Error).message);
-          }
-        },
-      )
-      .command(
-        'list',
-        'List available Confidence MCP servers',
-        noop,
-        (argv) => {
-          const servers = getAvailableMcpServers();
+      .command('status', 'Show MCP server connection status', noop, async (argv) => {
+        try {
+          const ideId = await resolveIde(resolveFlag('ide', argv));
+          const statuses = await getMcpStatuses(ideId, resolveProjectDir(argv));
+          const rows = Object.entries(statuses).map(([server, status]) => ({
+            server,
+            status: STATUS_LABELS[status] ?? status,
+          }));
           print({
-            data: servers.map((s) => ({ name: s.name, url: s.url })),
+            data: rows,
             columns: [
-              { key: 'name', header: 'Server', width: 20 },
-              { key: 'url', header: 'URL' },
+              { key: 'server', header: 'Server', width: 20 },
+              { key: 'status', header: 'Status' },
             ],
             flags: extractFlags(argv),
           });
-        },
-      )
-      .command(
-        'auth',
-        'Re-authenticate MCP servers with a fresh token',
-        noop,
-        async (argv) => {
-          try {
-            const ideId = await resolveIde(resolveFlag('ide', argv));
-            await refreshMcpAuth(ideId, resolveProjectDir(argv), resolveFlag('profile', argv));
-          } catch (err) {
-            fail((err as Error).message);
-          }
-        },
-      )
+        } catch (err) {
+          fail((err as Error).message);
+        }
+      })
+      .command('list', 'List available Confidence MCP servers', noop, (argv) => {
+        const servers = getAvailableMcpServers();
+        print({
+          data: servers.map((s) => ({ name: s.name, url: s.url })),
+          columns: [
+            { key: 'name', header: 'Server', width: 20 },
+            { key: 'url', header: 'URL' },
+          ],
+          flags: extractFlags(argv),
+        });
+      })
+      .command('auth', 'Re-authenticate MCP servers with a fresh token', noop, async (argv) => {
+        try {
+          const ideId = await resolveIde(resolveFlag('ide', argv));
+          await refreshMcpAuth(ideId, resolveProjectDir(argv), resolveFlag('profile', argv));
+        } catch (err) {
+          fail((err as Error).message);
+        }
+      })
       .demandCommand(1)
       .strict();
   },

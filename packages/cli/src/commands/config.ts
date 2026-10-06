@@ -47,32 +47,22 @@ export const configCommand = {
           }
         },
       )
-      .command(
-        'list',
-        'Show all config values',
-        noop,
-        (argv) => {
-          const config = readConfig();
-          print({
-            data: config,
-            columns: [
-              { key: 'key', header: 'Key', width: 14 },
-              { key: 'value', header: 'Value' },
-            ],
-            flags: extractFlags(argv),
-            empty: 'No configuration set.',
-          });
-        },
-      )
-      .command(
-        'reset',
-        'Reset all config to defaults',
-        noop,
-        () => {
-          resetConfig();
-          message('Configuration reset.');
-        },
-      )
+      .command('list', 'Show all config values', noop, (argv) => {
+        const config = readConfig();
+        print({
+          data: config,
+          columns: [
+            { key: 'key', header: 'Key', width: 14 },
+            { key: 'value', header: 'Value' },
+          ],
+          flags: extractFlags(argv),
+          empty: 'No configuration set.',
+        });
+      })
+      .command('reset', 'Reset all config to defaults', noop, () => {
+        resetConfig();
+        message('Configuration reset.');
+      })
       .demandCommand(
         1,
         `Available actions: set, get, list, reset\nValid keys: ${validKeys().join(', ')}`,
