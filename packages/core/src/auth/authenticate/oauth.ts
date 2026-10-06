@@ -10,7 +10,7 @@ import {
   AUTH_CALLBACK_PORT,
 } from './constants.js';
 import { generatePKCE } from './pkce.js';
-import { openBrowser } from './browser.js';
+import { openBrowser } from '../../system/browser.js';
 import { exchangeCode, buildAuthUrl, type TokenResponse } from './exchange.js';
 
 export type AuthResult = {
