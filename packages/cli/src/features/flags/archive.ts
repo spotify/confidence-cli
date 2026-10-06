@@ -1,7 +1,7 @@
 import confirm from '@inquirer/confirm';
 import { archiveFlag } from '@network/index.js';
 import { message, fail } from '@output/index.js';
-import { withAuth } from '@utils/require-auth.js';
+import { withAuth } from '@utils/index.js';
 
 export const archiveFlagCmd = withAuth(async function archiveFlagCmd(argv, token) {
   const flagKey = argv['flag-key'] as string;

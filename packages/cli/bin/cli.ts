@@ -2,6 +2,8 @@
 
 import yargs from 'yargs';
 import { hideBin } from 'yargs/helpers';
+import { APP_NAME, CLI_VERSION } from '@meta';
+import { flushTelemetry, telemetryMiddleware } from '@utils/index.js';
 import {
   loginCommand,
   logoutCommand,
@@ -18,7 +20,6 @@ import {
   pluginCommand,
   migrateCommand,
 } from '../src/commands/index.js';
-import { APP_NAME, CLI_VERSION } from '@meta';
 
 const cli = yargs(hideBin(process.argv))
   .scriptName(APP_NAME)
@@ -65,6 +66,12 @@ const cli = yargs(hideBin(process.argv))
     describe: 'Verbose/diagnostic output',
     hidden: true,
   })
+  .option('telemetry', {
+    type: 'boolean',
+    default: true,
+    describe: 'Collect anonymous usage telemetry (disable with --no-telemetry)',
+  })
+  .middleware(telemetryMiddleware)
   .command(loginCommand)
   .command(logoutCommand)
   .command(whoamiCommand)
@@ -91,4 +98,8 @@ const cli = yargs(hideBin(process.argv))
   .help()
   .version(CLI_VERSION);
 
-cli.parse();
+try {
+  await cli.parseAsync();
+} finally {
+  await flushTelemetry();
+}

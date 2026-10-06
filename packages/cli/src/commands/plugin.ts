@@ -11,7 +11,7 @@ import {
   uninstallPluginForIde,
   updatePluginForIde,
 } from '@features/plugin/index.js';
-import { safely } from '@utils/safely.js';
+import { safely } from '@utils/index.js';
 
 export const pluginCommand = {
   command: 'plugin <action>',

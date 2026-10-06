@@ -38,7 +38,7 @@ describe('when telemetry is initialized', () => {
       }),
     );
 
-    initTelemetry({ sessionId: 'test-session-id' });
+    initTelemetry({ source: 'test', sessionId: 'test-session-id' });
     const sut = getTelemetry();
 
     sut.track({ step: 'welcome.menu', action: 'start' });
@@ -55,7 +55,7 @@ describe('when telemetry is initialized', () => {
           event_definition: 'eventDefinitions/agent-telemetry',
           payload: {
             session_id: 'test-session-id',
-            skill: 'wizard',
+            skill: 'test',
             step: 'welcome.menu',
             action: 'start',
             sentiment: 'neutral',
@@ -81,7 +81,7 @@ describe('when telemetry is initialized', () => {
       }),
     );
 
-    initTelemetry({ sessionId: 'region-test' });
+    initTelemetry({ source: 'test', sessionId: 'region-test' });
     const sut = getTelemetry();
 
     sut.track({ step: 'warmup', action: 'init' });
@@ -109,7 +109,7 @@ describe('when telemetry is initialized', () => {
       }),
     );
 
-    initTelemetry({ sessionId: 'defaults-test' });
+    initTelemetry({ source: 'test', sessionId: 'defaults-test' });
     getTelemetry().track({ step: 'test.step', action: 'test' });
 
     await vi.waitFor(() => {
@@ -133,7 +133,7 @@ describe('when telemetry is initialized', () => {
       }),
     );
 
-    initTelemetry({ sessionId: 'explicit-test' });
+    initTelemetry({ source: 'test', sessionId: 'explicit-test' });
     getTelemetry().track({
       step: 'done.action',
       action: 'exit',
@@ -166,7 +166,7 @@ describe('when key acquisition fails', () => {
       }),
     );
 
-    initTelemetry({ sessionId: 'fail-test' });
+    initTelemetry({ source: 'test', sessionId: 'fail-test' });
     const sut = getTelemetry();
 
     sut.track({ step: 'welcome.menu', action: 'start' });
@@ -185,7 +185,7 @@ describe('when event publishing fails', () => {
       }),
     );
 
-    initTelemetry({ sessionId: 'publish-fail-test' });
+    initTelemetry({ source: 'test', sessionId: 'publish-fail-test' });
     const sut = getTelemetry();
 
     expect(() => sut.track({ step: 'test', action: 'test' })).not.toThrow();

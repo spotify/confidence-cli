@@ -2,7 +2,7 @@ import ora from 'ora';
 import { CONFIDENCE_DOCS_URL } from '@spotify-confidence/core';
 import { getFullSource } from '@network/index.js';
 import { printMcpResult } from '@output/print.js';
-import { withAuth } from '@utils/require-auth.js';
+import { withAuth } from '@utils/index.js';
 
 function normalizeSource(input: string): string {
   if (input.includes('://')) return input;

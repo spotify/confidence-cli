@@ -9,7 +9,7 @@ import {
   print,
   printMcpResult,
 } from '@output/index.js';
-import { withAuth } from '@utils/require-auth.js';
+import { withAuth } from '@utils/index.js';
 import { resolveInput } from '@input/index.js';
 
 function parseAllocations(spec: string): Record<string, number> {

@@ -1,7 +1,7 @@
 import { isDefined } from '@spotify-confidence/shared-kernel';
 import { queryEventsUsage } from '@network/index.js';
 import { printMcpResult } from '@output/print.js';
-import { withAuth } from '../../utils/require-auth.js';
+import { withAuth } from '@utils/index.js';
 
 export const eventUsage = withAuth(async function eventUsage(argv, token) {
   const name = argv.name as string;
