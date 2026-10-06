@@ -1,5 +1,3 @@
-import { existsSync, readFileSync } from 'node:fs';
-import { join } from 'node:path';
 import ora from 'ora';
 import {
   detectFramework,
@@ -8,87 +6,28 @@ import {
   type FrameworkConfig,
 } from '@spotify-confidence/core';
 import { message, fail } from '@output/print.js';
-
-type ProjectPM = 'npm' | 'pnpm' | 'yarn' | 'bun';
-
-type AutoInstall = { type: 'auto'; cmd: string; args: string[] };
-type ManualInstall = { type: 'manual'; snippet: string };
-
-type InstallCommand = AutoInstall | ManualInstall;
-
-function detectProjectPM(dir: string): ProjectPM {
-  if (existsSync(join(dir, 'pnpm-lock.yaml'))) return 'pnpm';
-  if (existsSync(join(dir, 'yarn.lock'))) return 'yarn';
-  if (existsSync(join(dir, 'bun.lockb')) || existsSync(join(dir, 'bun.lock'))) return 'bun';
-  return 'npm';
-}
-
-function hasPackageJsonWorkspaces(dir: string): boolean {
-  const pkgPath = join(dir, 'package.json');
-  if (!existsSync(pkgPath)) return false;
-
-  try {
-    const pkg = JSON.parse(readFileSync(pkgPath, 'utf-8'));
-    return Array.isArray(pkg.workspaces) || typeof pkg.workspaces === 'object';
-  } catch {
-    return false;
-  }
-}
-
-function workspaceRootArgs(pm: ProjectPM, dir: string): string[] {
-  if (pm === 'pnpm' && existsSync(join(dir, 'pnpm-workspace.yaml'))) return ['-w'];
-  if (pm === 'yarn' && hasPackageJsonWorkspaces(dir) && !existsSync(join(dir, '.yarnrc.yml'))) {
-    return ['-W'];
-  }
-
-  return [];
-}
+import type { InstallCommand } from './install-types.js';
+import { buildNodeInstall } from './install-node.js';
+import { buildPythonInstall } from './install-python.js';
+import { buildJavaInstall, buildKotlinInstall } from './install-jvm.js';
+import { buildGoInstall, buildSwiftInstall } from './install-native.js';
 
 function buildInstallCommand(fw: FrameworkConfig, dir: string): InstallCommand {
   switch (fw.id) {
     case 'react':
     case 'nextjs':
-    case 'node': {
-      const pm = detectProjectPM(dir);
-      return { type: 'auto', cmd: pm, args: ['add', ...workspaceRootArgs(pm, dir), fw.sdkPackage] };
-    }
+    case 'node':
+      return buildNodeInstall(fw.sdkPackage, dir);
     case 'python':
-      return { type: 'auto', cmd: 'pip', args: ['install', fw.sdkPackage] };
+      return buildPythonInstall(fw.sdkPackage, dir);
     case 'go':
-      return { type: 'auto', cmd: 'go', args: ['get', fw.sdkPackage] };
+      return buildGoInstall(fw.sdkPackage);
     case 'kotlin':
-      return {
-        type: 'manual',
-        snippet:
-          `Add the following to your app/build.gradle.kts:\n\n` +
-          `  dependencies {\n` +
-          `      implementation("${fw.sdkPackage}:<version>")\n` +
-          `  }`,
-      };
+      return buildKotlinInstall(fw.sdkPackage);
     case 'java':
-      return {
-        type: 'manual',
-        snippet:
-          `Add the following to your build.gradle.kts or pom.xml:\n\n` +
-          `  Gradle:\n` +
-          `      implementation("${fw.sdkPackage}:<version>")\n\n` +
-          `  Maven:\n` +
-          `      <dependency>\n` +
-          `          <groupId>com.spotify.confidence</groupId>\n` +
-          `          <artifactId>openfeature-provider</artifactId>\n` +
-          `          <version>VERSION</version>\n` +
-          `      </dependency>`,
-      };
+      return buildJavaInstall(fw.sdkPackage);
     case 'swift':
-      return {
-        type: 'manual',
-        snippet:
-          `Add the following to your Package.swift dependencies:\n\n` +
-          `  .package(\n` +
-          `      url: "https://github.com/spotify/${fw.sdkPackage}.git",\n` +
-          `      from: "<version>"\n` +
-          `  )`,
-      };
+      return buildSwiftInstall(fw.sdkPackage);
     default: {
       const _exhaustive: never = fw.id as never;
       throw new Error(`Unknown framework: ${_exhaustive}`);

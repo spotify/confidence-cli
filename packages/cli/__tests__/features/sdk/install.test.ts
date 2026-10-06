@@ -4,6 +4,8 @@ import type { FrameworkConfig } from '@spotify-confidence/core';
 import { runSdkInstall } from '@features/sdk/install.js';
 
 const mockExecFile = vi.fn<() => Promise<void>>();
+const mockDetectFramework = vi.fn<() => Promise<FrameworkConfig | null>>();
+const mockMessage = vi.fn();
 
 vi.mock('ora', () => ({
   default: () => ({ start: () => ({ succeed: vi.fn(), fail: vi.fn() }) }),
@@ -13,13 +15,13 @@ vi.mock('@spotify-confidence/core', async (importOriginal) => {
   const actual = await importOriginal<typeof import('@spotify-confidence/core')>();
   return {
     ...actual,
-    detectFramework: async (_dir: string) => REACT_FRAMEWORK,
+    detectFramework: (...args: unknown[]) => mockDetectFramework(...(args as [])),
     execFile: (...args: unknown[]) => mockExecFile(...(args as [])),
   };
 });
 
 vi.mock('@output/print.js', () => ({
-  message: vi.fn(),
+  message: (...args: unknown[]) => mockMessage(...args),
   fail: vi.fn(),
 }));
 
@@ -31,16 +33,27 @@ const REACT_FRAMEWORK: FrameworkConfig = {
   detect: async () => true,
 };
 
+const PYTHON_FRAMEWORK: FrameworkConfig = {
+  id: 'python',
+  name: 'Python',
+  docsUrl: 'https://confidence.spotify.com/docs/sdk/python',
+  sdkPackage: 'spotify-confidence-sdk',
+  detect: async () => true,
+};
+
 const tmpDir = join(process.env.TMPDIR ?? '/tmp', 'sdk-install-test');
 
 beforeEach(() => {
   mkdirSync(tmpDir, { recursive: true });
   mockExecFile.mockResolvedValue(undefined);
+  mockDetectFramework.mockResolvedValue(REACT_FRAMEWORK);
 });
 
 afterEach(() => {
   rmSync(tmpDir, { recursive: true, force: true });
   mockExecFile.mockReset();
+  mockDetectFramework.mockReset();
+  mockMessage.mockReset();
 });
 
 describe('runSdkInstall workspace root handling', () => {
@@ -131,5 +144,54 @@ describe('runSdkInstall workspace root handling', () => {
       ['add', '@spotify-confidence/sdk'],
       expect.objectContaining({ cwd: tmpDir }),
     );
+  });
+});
+
+describe('runSdkInstall Python package manager detection', () => {
+  beforeEach(() => {
+    mockDetectFramework.mockResolvedValue(PYTHON_FRAMEWORK);
+  });
+
+  it('uses poetry add when poetry.lock is present', async () => {
+    writeFileSync(join(tmpDir, 'poetry.lock'), '');
+
+    await runSdkInstall({ dir: tmpDir });
+
+    expect(mockExecFile).toHaveBeenCalledWith(
+      'poetry',
+      ['add', 'spotify-confidence-sdk'],
+      expect.objectContaining({ cwd: tmpDir }),
+    );
+  });
+
+  it('uses uv add when uv.lock is present', async () => {
+    writeFileSync(join(tmpDir, 'uv.lock'), '');
+
+    await runSdkInstall({ dir: tmpDir });
+
+    expect(mockExecFile).toHaveBeenCalledWith(
+      'uv',
+      ['add', 'spotify-confidence-sdk'],
+      expect.objectContaining({ cwd: tmpDir }),
+    );
+  });
+
+  it('uses pipenv install when Pipfile is present', async () => {
+    writeFileSync(join(tmpDir, 'Pipfile'), '');
+
+    await runSdkInstall({ dir: tmpDir });
+
+    expect(mockExecFile).toHaveBeenCalledWith(
+      'pipenv',
+      ['install', 'spotify-confidence-sdk'],
+      expect.objectContaining({ cwd: tmpDir }),
+    );
+  });
+
+  it('falls back to manual install when no Python PM is detected', async () => {
+    await runSdkInstall({ dir: tmpDir });
+
+    expect(mockExecFile).not.toHaveBeenCalled();
+    expect(mockMessage).toHaveBeenCalledWith(expect.stringContaining('pip install'));
   });
 });
