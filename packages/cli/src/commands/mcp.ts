@@ -1,10 +1,8 @@
 import type { Argv } from 'yargs';
 import { print, fail, extractFlags } from '@output/print.js';
 import { getAvailableMcpServers, type McpServerStatus } from '@spotify-confidence/core';
+import { resolveIde, resolveFlag, resolveProjectDir } from '@features/ide/index.js';
 import {
-  resolveIde,
-  resolveFlag,
-  resolveProjectDir,
   installMcpServers,
   uninstallMcpServers,
   getMcpStatuses,

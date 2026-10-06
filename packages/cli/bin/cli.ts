@@ -13,6 +13,7 @@ import {
   quickstartCommand,
   mcpCommand,
   updateCommand,
+  pluginCommand,
 } from '../src/commands/index.js';
 import { APP_NAME, CLI_VERSION } from '@meta';
 
@@ -71,6 +72,7 @@ const cli = yargs(hideBin(process.argv))
   .command(quickstartCommand)
   .command(mcpCommand)
   .command(updateCommand)
+  .command(pluginCommand)
   .example('$0 login', 'Sign in to Confidence')
   .example('$0 flags setup', 'Set up feature flags in your project')
   .example('$0 events list', 'List all event definitions')

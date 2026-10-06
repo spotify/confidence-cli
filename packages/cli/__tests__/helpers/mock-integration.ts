@@ -11,6 +11,7 @@ export function createMockIntegration(overrides?: Partial<IdeIntegration>): IdeI
     detectPlugin: vi.fn().mockResolvedValue(null),
     installPlugin: vi.fn().mockResolvedValue(undefined),
     updatePlugin: vi.fn().mockResolvedValue(undefined),
+    uninstallPlugin: vi.fn().mockResolvedValue(undefined),
     detectMcpStatuses: vi.fn().mockResolvedValue({}),
     connectMcpServer: vi.fn().mockResolvedValue(undefined),
     disconnectMcpServer: vi.fn().mockResolvedValue(undefined),

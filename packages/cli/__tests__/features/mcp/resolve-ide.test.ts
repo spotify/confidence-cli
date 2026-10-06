@@ -10,7 +10,7 @@ import select from '@inquirer/select';
 
 describe('resolveIde', () => {
   async function loadResolveIde() {
-    const mod = await import('@features/mcp/resolve-ide.js');
+    const mod = await import('@features/ide/resolve-ide.js');
     return mod.resolveIde;
   }
 
