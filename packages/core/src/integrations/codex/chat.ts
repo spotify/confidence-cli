@@ -1,8 +1,9 @@
 import { spawn } from '../../exec/exec.js';
 import type { ChatOpts } from '../types.js';
 
-export function launchChat({ prompt, cwd, token }: ChatOpts): void {
+export function launchChat({ userPrompt, systemPrompt, cwd, token }: ChatOpts): void {
   const env = token ? { ...globalThis.process.env, CONFIDENCE_ACCESS_TOKEN: token } : undefined;
+  const prompt = [systemPrompt, userPrompt].filter(Boolean).join('\n\n');
 
   spawn('codex', ['-C', cwd, prompt], {
     cwd,
