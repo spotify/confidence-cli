@@ -1,7 +1,7 @@
 import type { IdeId, PluginInstallationMethod } from '@spotify-confidence/shared-kernel';
 import type { InstalledPlugin } from '../types.js';
 import { getIntegration, getIntegrations } from '../registry.js';
-import { downloadSkills } from './local.js';
+import { downloadSkills, removeSkills } from './local.js';
 
 export async function detectInstalledPlugins(projectDir: string): Promise<InstalledPlugin[]> {
   return (
@@ -27,6 +27,16 @@ export async function installPlugin(
   } catch {
     await downloadSkills(integration.skillsDir(projectDir));
     return 'download';
+  }
+}
+
+export async function uninstallPlugin(ide: IdeId, projectDir: string): Promise<void> {
+  const integration = getIntegration(ide);
+
+  try {
+    await integration.uninstallPlugin(projectDir);
+  } finally {
+    await removeSkills(integration.skillsDir(projectDir));
   }
 }
 

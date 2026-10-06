@@ -36,6 +36,12 @@ export async function updatePlugin(projectDir: string): Promise<void> {
   await execFile('claude', ['plugin', 'update', PLUGIN_NAME], { cwd: projectDir });
 }
 
+export async function uninstallPlugin(projectDir: string): Promise<void> {
+  await execFile('claude', ['plugin', 'uninstall', PLUGIN_NAME, '--scope', 'project'], {
+    cwd: projectDir,
+  });
+}
+
 function isAvailable(plugin: PluginEntry, projectDir: string): boolean {
   if (!plugin.id.startsWith(`${PLUGIN_NAME}@`)) return false;
   if (!plugin.enabled) return false;

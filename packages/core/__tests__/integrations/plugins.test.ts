@@ -1,8 +1,9 @@
-import { installPlugin, updatePlugin } from '@integrations/skills/plugin.js';
+import { installPlugin, uninstallPlugin, updatePlugin } from '@integrations/skills/plugin.js';
 import type { IdeIntegration } from '@integrations/types.js';
 
 vi.mock('../../src/integrations/skills/local.js', () => ({
   downloadSkills: vi.fn().mockResolvedValue(undefined),
+  removeSkills: vi.fn().mockResolvedValue(undefined),
   hasDownloadedSkills: vi.fn().mockReturnValue(false),
 }));
 
@@ -16,6 +17,7 @@ const mockIntegration: IdeIntegration = {
   detectPlugin: vi.fn().mockResolvedValue(null),
   installPlugin: vi.fn().mockResolvedValue(undefined),
   updatePlugin: vi.fn().mockResolvedValue(undefined),
+  uninstallPlugin: vi.fn().mockResolvedValue(undefined),
   detectMcpStatuses: vi.fn().mockResolvedValue({}),
   connectMcpServer: vi.fn().mockResolvedValue(undefined),
   disconnectMcpServer: vi.fn().mockResolvedValue(undefined),
@@ -47,6 +49,26 @@ describe('installPlugin', () => {
     expect(sut).toBe('download');
     expect(mockIntegration.installPlugin).toHaveBeenCalledWith('/project');
     expect(downloadSkills).toHaveBeenCalledWith('/project/.claude/skills');
+  });
+});
+
+describe('uninstallPlugin', () => {
+  it('calls CLI uninstall and removes downloaded skills', async () => {
+    const { removeSkills } = await import('../../src/integrations/skills/local.js');
+
+    await uninstallPlugin('claude', '/project');
+
+    expect(mockIntegration.uninstallPlugin).toHaveBeenCalledWith('/project');
+    expect(removeSkills).toHaveBeenCalledWith('/project/.claude/skills');
+  });
+
+  it('still removes downloaded skills when CLI uninstall throws', async () => {
+    const { removeSkills } = await import('../../src/integrations/skills/local.js');
+    vi.mocked(mockIntegration.uninstallPlugin).mockRejectedValueOnce(new Error('not supported'));
+
+    await expect(uninstallPlugin('claude', '/project')).rejects.toThrow('not supported');
+
+    expect(removeSkills).toHaveBeenCalledWith('/project/.claude/skills');
   });
 });
 

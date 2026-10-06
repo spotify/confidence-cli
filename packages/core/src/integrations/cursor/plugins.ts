@@ -19,3 +19,7 @@ export async function installPlugin(projectDir: string): Promise<void> {
 export async function updatePlugin(_projectDir: string): Promise<void> {
   throw new Error("Cursor doesn't support CLI plugin updates yet.");
 }
+
+export async function uninstallPlugin(_projectDir: string): Promise<void> {
+  // Cursor doesn't support CLI plugin uninstallation — local skills are removed by the caller.
+}
