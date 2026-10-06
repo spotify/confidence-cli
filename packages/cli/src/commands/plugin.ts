@@ -1,4 +1,5 @@
 import type { Argv } from 'yargs';
+import { noop } from '@spotify-confidence/shared-kernel';
 import {
   resolveIde,
   resolveFlag,
@@ -35,19 +36,19 @@ export const pluginCommand = {
       .command(
         'install',
         'Install the Confidence AI plugin for your AI coding agent',
-        () => {},
+        noop,
         safely(installCmd),
       )
       .command(
         'update',
         'Update the Confidence AI plugin to the latest version',
-        () => {},
+        noop,
         safely(updateCmd),
       )
       .command(
         'uninstall',
         'Remove the Confidence AI plugin from your AI coding agent',
-        () => {},
+        noop,
         safely(uninstallCmd),
       )
       .demandCommand(1, 'Run "confidence plugin --help" to see available actions.')

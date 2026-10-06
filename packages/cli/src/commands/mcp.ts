@@ -1,4 +1,5 @@
 import type { Argv } from 'yargs';
+import { noop } from '@spotify-confidence/shared-kernel';
 import { print, fail, extractFlags } from '@output/print.js';
 import { getAvailableMcpServers, type McpServerStatus } from '@spotify-confidence/core';
 import { resolveIde, resolveFlag, resolveProjectDir } from '@features/ide/index.js';
@@ -33,7 +34,7 @@ export const mcpCommand = {
       .command(
         'install',
         'Install Confidence MCP servers for your AI coding agent',
-        () => {},
+        noop,
         async (argv) => {
           try {
             const ideId = await resolveIde(resolveFlag('ide', argv));
@@ -46,7 +47,7 @@ export const mcpCommand = {
       .command(
         'uninstall',
         'Remove Confidence MCP servers from your AI coding agent',
-        () => {},
+        noop,
         async (argv) => {
           try {
             const ideId = await resolveIde(resolveFlag('ide', argv));
@@ -59,7 +60,7 @@ export const mcpCommand = {
       .command(
         'status',
         'Show MCP server connection status',
-        () => {},
+        noop,
         async (argv) => {
           try {
             const ideId = await resolveIde(resolveFlag('ide', argv));
@@ -84,7 +85,7 @@ export const mcpCommand = {
       .command(
         'list',
         'List available Confidence MCP servers',
-        () => {},
+        noop,
         (argv) => {
           const servers = getAvailableMcpServers();
           print({
@@ -100,7 +101,7 @@ export const mcpCommand = {
       .command(
         'auth',
         'Re-authenticate MCP servers with a fresh token',
-        () => {},
+        noop,
         async (argv) => {
           try {
             const ideId = await resolveIde(resolveFlag('ide', argv));

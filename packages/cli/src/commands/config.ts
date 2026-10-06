@@ -1,4 +1,5 @@
 import type { Argv } from 'yargs';
+import { noop } from '@spotify-confidence/shared-kernel';
 import {
   readConfig,
   getConfigValue,
@@ -49,7 +50,7 @@ export const configCommand = {
       .command(
         'list',
         'Show all config values',
-        () => {},
+        noop,
         (argv) => {
           const config = readConfig();
           print({
@@ -66,7 +67,7 @@ export const configCommand = {
       .command(
         'reset',
         'Reset all config to defaults',
-        () => {},
+        noop,
         () => {
           resetConfig();
           message('Configuration reset.');
