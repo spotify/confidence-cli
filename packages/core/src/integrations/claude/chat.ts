@@ -5,7 +5,7 @@ export function launchChat({ userPrompt, systemPrompt, cwd }: ChatOpts): void {
   const args: string[] = [];
 
   if (systemPrompt) args.push('--append-system-prompt', systemPrompt);
-  if (userPrompt) args.push('--prompt', userPrompt);
+  if (userPrompt) args.push(userPrompt);
 
   spawn('claude', args, {
     cwd,
