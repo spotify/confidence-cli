@@ -30,8 +30,7 @@ export const pluginCommand = {
       .option('scope', {
         type: 'string',
         choices: ['project', 'local', 'global'] as const,
-        default: 'project',
-        describe: 'Installation scope (currently supports only by Claude Code)',
+        describe: 'Installation scope (only supported for Claude Code)',
       })
       .command(
         'install',
