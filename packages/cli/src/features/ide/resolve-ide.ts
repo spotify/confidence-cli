@@ -13,8 +13,8 @@ const VALID_IDE_LIST = [...VALID_IDE_IDS].join(', ');
 export async function resolveIde(explicit?: string): Promise<IdeId> {
   if (explicit) return validateIdeId(explicit);
 
-  const saved = getConfigValue('ide') as IdeId | undefined;
-  if (saved) return saved;
+  const saved = getConfigValue('ide') as string | undefined;
+  if (saved) return validateIdeId(saved);
 
   return promptForIde();
 }

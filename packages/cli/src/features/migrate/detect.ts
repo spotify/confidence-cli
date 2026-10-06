@@ -1,6 +1,6 @@
 import { detectProviders } from '@spotify-confidence/core';
 import { print, message, extractFlags } from '@output/print.js';
-import { resolveProjectDir } from '@features/mcp/index.js';
+import { resolveProjectDir } from '@features/ide/index.js';
 
 export async function detectAndPrint(argv: Record<string, unknown>): Promise<void> {
   const projectDir = resolveProjectDir(argv);

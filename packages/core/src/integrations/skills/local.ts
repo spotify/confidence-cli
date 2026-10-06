@@ -1,5 +1,5 @@
 import { existsSync } from 'node:fs';
-import { mkdir, writeFile } from 'node:fs/promises';
+import { mkdir, rm, writeFile } from 'node:fs/promises';
 import { join } from 'node:path';
 import { SKILLS_BASE_URL } from '../../constants.js';
 
@@ -20,6 +20,12 @@ const SKILL_NAMES = [
 
 export function hasDownloadedSkills(skillsDir: string): boolean {
   return SKILL_NAMES.some((name) => existsSync(join(skillsDir, name, 'SKILL.md')));
+}
+
+export async function removeSkills(skillsDir: string): Promise<void> {
+  await Promise.all(
+    SKILL_NAMES.map((name) => rm(join(skillsDir, name), { recursive: true, force: true })),
+  );
 }
 
 export async function downloadSkills(skillsDir: string, force = false): Promise<void> {

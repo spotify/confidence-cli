@@ -28,3 +28,9 @@ export async function updatePlugin(projectDir: string): Promise<void> {
     cwd: projectDir,
   });
 }
+
+export async function uninstallPlugin(projectDir: string): Promise<void> {
+  await execFile('codex', ['plugin', 'remove', `${PLUGIN_NAME}@${PLUGIN_MARKETPLACE_NAME}`], {
+    cwd: projectDir,
+  });
+}

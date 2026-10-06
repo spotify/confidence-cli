@@ -19,3 +19,9 @@ export async function installPlugin(projectDir: string): Promise<void> {
 export async function updatePlugin(_projectDir: string): Promise<void> {
   throw new Error("Cursor doesn't support CLI plugin updates yet.");
 }
+
+export async function uninstallPlugin(projectDir: string): Promise<void> {
+  await execFile('cursor', ['agent', 'plugin', 'marketplace', 'remove', PLUGIN_REPO_URL], {
+    cwd: projectDir,
+  });
+}

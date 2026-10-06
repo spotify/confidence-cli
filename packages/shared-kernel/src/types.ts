@@ -6,6 +6,8 @@ export type OnboardingGoal = 'feature-flags' | 'session-recordings' | 'event-tra
 
 export type PluginInstallationMethod = 'cli' | 'download';
 
+export type PluginScope = 'project' | 'local' | 'global';
+
 export type ProviderId = 'eppo' | 'optimizely' | 'posthog' | 'statsig';
 
 export type DetectedProvider = {

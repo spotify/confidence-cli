@@ -1,12 +1,8 @@
 import type { ProviderConfig } from '@spotify-confidence/core';
 import { getIntegration } from '@spotify-confidence/core';
 import { fail } from '@output/print.js';
-import {
-  resolveIde,
-  resolveFlag,
-  resolveProjectDir,
-  resolveAuthToken,
-} from '@features/mcp/index.js';
+import { resolveIde, resolveFlag, resolveProjectDir } from '@features/ide/index.js';
+import { resolveAuthToken } from '@features/mcp/index.js';
 import { buildMigrationPrompt } from './prompt.js';
 
 export async function launchMigration(

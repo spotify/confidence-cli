@@ -4,6 +4,7 @@ export type {
   JsonObject,
   OnboardingGoal,
   PluginInstallationMethod,
+  PluginScope,
   ProviderId,
   DetectedProvider,
 } from './types.js';
