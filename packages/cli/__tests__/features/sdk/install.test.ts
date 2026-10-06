@@ -1,6 +1,7 @@
-import { writeFileSync, mkdirSync, rmSync } from 'node:fs';
+import { writeFileSync } from 'node:fs';
 import { join } from 'node:path';
 import type { FrameworkConfig } from '@spotify-confidence/core';
+import { createProjectDir } from '@spotify-confidence/testing/scaffold';
 import { runSdkInstall } from '@features/sdk/install.js';
 
 const mockExecFile = vi.fn<() => Promise<void>>();
@@ -41,108 +42,117 @@ const PYTHON_FRAMEWORK: FrameworkConfig = {
   detect: async () => true,
 };
 
-const tmpDir = join(process.env.TMPDIR ?? '/tmp', 'sdk-install-test');
-
 beforeEach(() => {
-  mkdirSync(tmpDir, { recursive: true });
   mockExecFile.mockResolvedValue(undefined);
   mockDetectFramework.mockResolvedValue(REACT_FRAMEWORK);
 });
 
-afterEach(() => {
-  rmSync(tmpDir, { recursive: true, force: true });
-  mockExecFile.mockReset();
-  mockDetectFramework.mockReset();
-  mockMessage.mockReset();
-});
-
 describe('runSdkInstall workspace root handling', () => {
   it('passes -w when pnpm-workspace.yaml is present', async () => {
-    writeFileSync(join(tmpDir, 'pnpm-lock.yaml'), '');
-    writeFileSync(join(tmpDir, 'pnpm-workspace.yaml'), 'packages:\n  - packages/*');
+    using project = createProjectDir('empty');
+    writeFileSync(join(project.path, 'pnpm-lock.yaml'), '');
+    writeFileSync(join(project.path, 'pnpm-workspace.yaml'), 'packages:\n  - packages/*');
 
-    await runSdkInstall({ dir: tmpDir });
+    await runSdkInstall({ dir: project.path });
 
     expect(mockExecFile).toHaveBeenCalledWith(
       'pnpm',
       ['add', '-w', '@spotify-confidence/sdk'],
-      expect.objectContaining({ cwd: tmpDir }),
+      expect.objectContaining({ cwd: project.path }),
     );
   });
 
   it('omits -w for pnpm without workspace config', async () => {
-    writeFileSync(join(tmpDir, 'pnpm-lock.yaml'), '');
+    using project = createProjectDir('empty');
+    writeFileSync(join(project.path, 'pnpm-lock.yaml'), '');
 
-    await runSdkInstall({ dir: tmpDir });
+    await runSdkInstall({ dir: project.path });
 
     expect(mockExecFile).toHaveBeenCalledWith(
       'pnpm',
       ['add', '@spotify-confidence/sdk'],
-      expect.objectContaining({ cwd: tmpDir }),
+      expect.objectContaining({ cwd: project.path }),
     );
   });
 
   it('passes -W for yarn classic with workspaces', async () => {
-    writeFileSync(join(tmpDir, 'yarn.lock'), '');
-    writeFileSync(join(tmpDir, 'package.json'), JSON.stringify({ workspaces: ['packages/*'] }));
+    using project = createProjectDir('empty');
+    writeFileSync(join(project.path, 'yarn.lock'), '');
+    writeFileSync(
+      join(project.path, 'package.json'),
+      JSON.stringify({ workspaces: ['packages/*'] }),
+    );
 
-    await runSdkInstall({ dir: tmpDir });
+    await runSdkInstall({ dir: project.path });
 
     expect(mockExecFile).toHaveBeenCalledWith(
       'yarn',
       ['add', '-W', '@spotify-confidence/sdk'],
-      expect.objectContaining({ cwd: tmpDir }),
+      expect.objectContaining({ cwd: project.path }),
     );
   });
 
   it('omits -W for yarn berry with workspaces', async () => {
-    writeFileSync(join(tmpDir, 'yarn.lock'), '');
-    writeFileSync(join(tmpDir, 'package.json'), JSON.stringify({ workspaces: ['packages/*'] }));
-    writeFileSync(join(tmpDir, '.yarnrc.yml'), 'nodeLinker: node-modules');
+    using project = createProjectDir('empty');
+    writeFileSync(join(project.path, 'yarn.lock'), '');
+    writeFileSync(
+      join(project.path, 'package.json'),
+      JSON.stringify({ workspaces: ['packages/*'] }),
+    );
+    writeFileSync(join(project.path, '.yarnrc.yml'), 'nodeLinker: node-modules');
 
-    await runSdkInstall({ dir: tmpDir });
+    await runSdkInstall({ dir: project.path });
 
     expect(mockExecFile).toHaveBeenCalledWith(
       'yarn',
       ['add', '@spotify-confidence/sdk'],
-      expect.objectContaining({ cwd: tmpDir }),
+      expect.objectContaining({ cwd: project.path }),
     );
   });
 
   it('omits -W for yarn without workspaces', async () => {
-    writeFileSync(join(tmpDir, 'yarn.lock'), '');
+    using project = createProjectDir('empty');
+    writeFileSync(join(project.path, 'yarn.lock'), '');
 
-    await runSdkInstall({ dir: tmpDir });
+    await runSdkInstall({ dir: project.path });
 
     expect(mockExecFile).toHaveBeenCalledWith(
       'yarn',
       ['add', '@spotify-confidence/sdk'],
-      expect.objectContaining({ cwd: tmpDir }),
+      expect.objectContaining({ cwd: project.path }),
     );
   });
 
   it('does not add flags for npm at a workspace root', async () => {
-    writeFileSync(join(tmpDir, 'package.json'), JSON.stringify({ workspaces: ['packages/*'] }));
+    using project = createProjectDir('empty');
+    writeFileSync(
+      join(project.path, 'package.json'),
+      JSON.stringify({ workspaces: ['packages/*'] }),
+    );
 
-    await runSdkInstall({ dir: tmpDir });
+    await runSdkInstall({ dir: project.path });
 
     expect(mockExecFile).toHaveBeenCalledWith(
       'npm',
       ['add', '@spotify-confidence/sdk'],
-      expect.objectContaining({ cwd: tmpDir }),
+      expect.objectContaining({ cwd: project.path }),
     );
   });
 
   it('does not add flags for bun at a workspace root', async () => {
-    writeFileSync(join(tmpDir, 'bun.lockb'), '');
-    writeFileSync(join(tmpDir, 'package.json'), JSON.stringify({ workspaces: ['packages/*'] }));
+    using project = createProjectDir('empty');
+    writeFileSync(join(project.path, 'bun.lockb'), '');
+    writeFileSync(
+      join(project.path, 'package.json'),
+      JSON.stringify({ workspaces: ['packages/*'] }),
+    );
 
-    await runSdkInstall({ dir: tmpDir });
+    await runSdkInstall({ dir: project.path });
 
     expect(mockExecFile).toHaveBeenCalledWith(
       'bun',
       ['add', '@spotify-confidence/sdk'],
-      expect.objectContaining({ cwd: tmpDir }),
+      expect.objectContaining({ cwd: project.path }),
     );
   });
 });
@@ -153,43 +163,48 @@ describe('runSdkInstall Python package manager detection', () => {
   });
 
   it('uses poetry add when poetry.lock is present', async () => {
-    writeFileSync(join(tmpDir, 'poetry.lock'), '');
+    using project = createProjectDir('empty');
+    writeFileSync(join(project.path, 'poetry.lock'), '');
 
-    await runSdkInstall({ dir: tmpDir });
+    await runSdkInstall({ dir: project.path });
 
     expect(mockExecFile).toHaveBeenCalledWith(
       'poetry',
       ['add', 'spotify-confidence-sdk'],
-      expect.objectContaining({ cwd: tmpDir }),
+      expect.objectContaining({ cwd: project.path }),
     );
   });
 
   it('uses uv add when uv.lock is present', async () => {
-    writeFileSync(join(tmpDir, 'uv.lock'), '');
+    using project = createProjectDir('empty');
+    writeFileSync(join(project.path, 'uv.lock'), '');
 
-    await runSdkInstall({ dir: tmpDir });
+    await runSdkInstall({ dir: project.path });
 
     expect(mockExecFile).toHaveBeenCalledWith(
       'uv',
       ['add', 'spotify-confidence-sdk'],
-      expect.objectContaining({ cwd: tmpDir }),
+      expect.objectContaining({ cwd: project.path }),
     );
   });
 
   it('uses pipenv install when Pipfile is present', async () => {
-    writeFileSync(join(tmpDir, 'Pipfile'), '');
+    using project = createProjectDir('empty');
+    writeFileSync(join(project.path, 'Pipfile'), '');
 
-    await runSdkInstall({ dir: tmpDir });
+    await runSdkInstall({ dir: project.path });
 
     expect(mockExecFile).toHaveBeenCalledWith(
       'pipenv',
       ['install', 'spotify-confidence-sdk'],
-      expect.objectContaining({ cwd: tmpDir }),
+      expect.objectContaining({ cwd: project.path }),
     );
   });
 
   it('falls back to manual install when no Python PM is detected', async () => {
-    await runSdkInstall({ dir: tmpDir });
+    using project = createProjectDir('empty');
+
+    await runSdkInstall({ dir: project.path });
 
     expect(mockExecFile).not.toHaveBeenCalled();
     expect(mockMessage).toHaveBeenCalledWith(expect.stringContaining('pip install'));
