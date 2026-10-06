@@ -1,5 +1,11 @@
 import type { Argv } from 'yargs';
-import { resolveIde, resolveFlag, resolveProjectDir } from '@features/ide/index.js';
+import {
+  resolveIde,
+  resolveFlag,
+  resolveProjectDir,
+  resolveScope,
+  requireClaudeForScope,
+} from '@features/ide/index.js';
 import {
   installPluginForIde,
   uninstallPluginForIde,
@@ -20,6 +26,12 @@ export const pluginCommand = {
         type: 'string',
         choices: ['claude', 'cursor', 'codex'] as const,
         describe: 'AI coding agent to configure',
+      })
+      .option('scope', {
+        type: 'string',
+        choices: ['project', 'local', 'global'] as const,
+        default: 'project',
+        describe: 'Installation scope (currently supports only by Claude Code)',
       })
       .command(
         'install',
@@ -47,15 +59,21 @@ export const pluginCommand = {
 
 async function installCmd(argv: Record<string, unknown>): Promise<void> {
   const ideId = await resolveIde(resolveFlag('ide', argv));
-  await installPluginForIde(ideId, resolveProjectDir(argv));
+  const scope = resolveScope(argv);
+  requireClaudeForScope(ideId, scope);
+  await installPluginForIde(ideId, resolveProjectDir(argv), scope);
 }
 
 async function updateCmd(argv: Record<string, unknown>): Promise<void> {
   const ideId = await resolveIde(resolveFlag('ide', argv));
-  await updatePluginForIde(ideId, resolveProjectDir(argv));
+  const scope = resolveScope(argv);
+  requireClaudeForScope(ideId, scope);
+  await updatePluginForIde(ideId, resolveProjectDir(argv), scope);
 }
 
 async function uninstallCmd(argv: Record<string, unknown>): Promise<void> {
   const ideId = await resolveIde(resolveFlag('ide', argv));
-  await uninstallPluginForIde(ideId, resolveProjectDir(argv));
+  const scope = resolveScope(argv);
+  requireClaudeForScope(ideId, scope);
+  await uninstallPluginForIde(ideId, resolveProjectDir(argv), scope);
 }

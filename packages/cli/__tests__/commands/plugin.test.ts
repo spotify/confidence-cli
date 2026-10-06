@@ -30,13 +30,13 @@ beforeEach(() => {
 const run = createRunner(pluginCommand);
 
 describe('plugin install', () => {
-  it('installs the plugin for the specified IDE', async () => {
+  it('installs the plugin for the specified IDE with default project scope', async () => {
     using _auth = prepareAuthTokens('none');
     using _output = captureOutput();
 
     await run(['plugin', 'install', '--ide', 'claude']);
 
-    expect(mockInstallPlugin).toHaveBeenCalledWith('claude', process.cwd());
+    expect(mockInstallPlugin).toHaveBeenCalledWith('claude', process.cwd(), 'project');
   });
 
   it('passes --dir as project directory', async () => {
@@ -45,7 +45,20 @@ describe('plugin install', () => {
 
     await run(['plugin', 'install', '--ide', 'claude', '--dir', 'some/relative/path']);
 
-    expect(mockInstallPlugin).toHaveBeenCalledWith('claude', resolve('some/relative/path'));
+    expect(mockInstallPlugin).toHaveBeenCalledWith(
+      'claude',
+      resolve('some/relative/path'),
+      'project',
+    );
+  });
+
+  it('passes --scope to the installer', async () => {
+    using _auth = prepareAuthTokens('none');
+    using _output = captureOutput();
+
+    await run(['plugin', 'install', '--ide', 'claude', '--scope', 'global']);
+
+    expect(mockInstallPlugin).toHaveBeenCalledWith('claude', process.cwd(), 'global');
   });
 
   it('reports failure to stderr', async () => {
@@ -60,13 +73,13 @@ describe('plugin install', () => {
 });
 
 describe('plugin update', () => {
-  it('updates the plugin for the specified IDE', async () => {
+  it('updates the plugin for the specified IDE with default project scope', async () => {
     using _auth = prepareAuthTokens('none');
     using _output = captureOutput();
 
     await run(['plugin', 'update', '--ide', 'claude']);
 
-    expect(mockUpdatePlugin).toHaveBeenCalledWith('claude', process.cwd());
+    expect(mockUpdatePlugin).toHaveBeenCalledWith('claude', process.cwd(), 'project');
   });
 
   it('passes --dir as project directory', async () => {
@@ -75,7 +88,16 @@ describe('plugin update', () => {
 
     await run(['plugin', 'update', '--ide', 'claude', '--dir', '/tmp/my-project']);
 
-    expect(mockUpdatePlugin).toHaveBeenCalledWith('claude', '/tmp/my-project');
+    expect(mockUpdatePlugin).toHaveBeenCalledWith('claude', '/tmp/my-project', 'project');
+  });
+
+  it('passes --scope to the updater', async () => {
+    using _auth = prepareAuthTokens('none');
+    using _output = captureOutput();
+
+    await run(['plugin', 'update', '--ide', 'claude', '--scope', 'local']);
+
+    expect(mockUpdatePlugin).toHaveBeenCalledWith('claude', process.cwd(), 'local');
   });
 
   it('reports failure to stderr', async () => {
@@ -90,13 +112,13 @@ describe('plugin update', () => {
 });
 
 describe('plugin uninstall', () => {
-  it('uninstalls the plugin for the specified IDE', async () => {
+  it('uninstalls the plugin for the specified IDE with default project scope', async () => {
     using _auth = prepareAuthTokens('none');
     using _output = captureOutput();
 
     await run(['plugin', 'uninstall', '--ide', 'claude']);
 
-    expect(mockUninstallPlugin).toHaveBeenCalledWith('claude', process.cwd());
+    expect(mockUninstallPlugin).toHaveBeenCalledWith('claude', process.cwd(), 'project');
   });
 
   it('passes --dir as project directory', async () => {
@@ -105,7 +127,16 @@ describe('plugin uninstall', () => {
 
     await run(['plugin', 'uninstall', '--ide', 'claude', '--dir', '/tmp/my-project']);
 
-    expect(mockUninstallPlugin).toHaveBeenCalledWith('claude', '/tmp/my-project');
+    expect(mockUninstallPlugin).toHaveBeenCalledWith('claude', '/tmp/my-project', 'project');
+  });
+
+  it('passes --scope to the uninstaller', async () => {
+    using _auth = prepareAuthTokens('none');
+    using _output = captureOutput();
+
+    await run(['plugin', 'uninstall', '--ide', 'claude', '--scope', 'global']);
+
+    expect(mockUninstallPlugin).toHaveBeenCalledWith('claude', process.cwd(), 'global');
   });
 
   it('reports failure to stderr', async () => {
