@@ -32,6 +32,12 @@ beforeEach(() => {
   vi.clearAllMocks();
 });
 
+function enoent() {
+  const err = new Error('spawn claude ENOENT') as NodeJS.ErrnoException;
+  err.code = 'ENOENT';
+  return err;
+}
+
 describe('installPlugin', () => {
   it('returns cli when IDE install succeeds', async () => {
     const sut = await installPlugin('claude', '/project');
@@ -40,15 +46,26 @@ describe('installPlugin', () => {
     expect(mockIntegration.installPlugin).toHaveBeenCalledWith('/project', undefined);
   });
 
-  it('falls back to download when CLI install throws', async () => {
+  it('falls back to download when CLI binary is missing', async () => {
     const { downloadSkills } = await import('../../src/integrations/skills/local.js');
-    vi.mocked(mockIntegration.installPlugin).mockRejectedValueOnce(new Error('not supported'));
+    vi.mocked(mockIntegration.installPlugin).mockRejectedValueOnce(enoent());
 
     const sut = await installPlugin('claude', '/project');
 
     expect(sut).toBe('download');
-    expect(mockIntegration.installPlugin).toHaveBeenCalledWith('/project', undefined);
     expect(downloadSkills).toHaveBeenCalledWith('/project/.claude/skills');
+  });
+
+  it('propagates non-ENOENT errors', async () => {
+    vi.mocked(mockIntegration.installPlugin).mockRejectedValueOnce(new Error('network error'));
+
+    await expect(installPlugin('claude', '/project')).rejects.toThrow('network error');
+  });
+
+  it('propagates ENOENT when scope is not project', async () => {
+    vi.mocked(mockIntegration.installPlugin).mockRejectedValueOnce(enoent());
+
+    await expect(installPlugin('claude', '/project', 'global')).rejects.toThrow('ENOENT');
   });
 });
 
@@ -92,14 +109,25 @@ describe('updatePlugin', () => {
     expect(mockIntegration.updatePlugin).toHaveBeenCalledWith('/project', undefined);
   });
 
-  it('falls back to download when CLI update throws', async () => {
+  it('falls back to download when CLI binary is missing', async () => {
     const { downloadSkills } = await import('../../src/integrations/skills/local.js');
-    vi.mocked(mockIntegration.updatePlugin).mockRejectedValueOnce(new Error('not supported'));
+    vi.mocked(mockIntegration.updatePlugin).mockRejectedValueOnce(enoent());
 
     const sut = await updatePlugin('claude', '/project');
 
     expect(sut).toBe('download');
-    expect(mockIntegration.updatePlugin).toHaveBeenCalledWith('/project', undefined);
     expect(downloadSkills).toHaveBeenCalledWith('/project/.claude/skills', true);
+  });
+
+  it('propagates non-ENOENT errors', async () => {
+    vi.mocked(mockIntegration.updatePlugin).mockRejectedValueOnce(new Error('network error'));
+
+    await expect(updatePlugin('claude', '/project')).rejects.toThrow('network error');
+  });
+
+  it('propagates ENOENT when scope is not project', async () => {
+    vi.mocked(mockIntegration.updatePlugin).mockRejectedValueOnce(enoent());
+
+    await expect(updatePlugin('claude', '/project', 'local')).rejects.toThrow('ENOENT');
   });
 });

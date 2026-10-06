@@ -45,8 +45,13 @@ function stripMarkdown(text: string) {
   return text.replace(/\*\*(.*?)\*\*/g, '$1').replace(/`([^`]+)`/g, '$1');
 }
 
+export function isBinaryMissing(error: unknown): boolean {
+  const code = (error as NodeJS.ErrnoException).code;
+  return code === 'ENOENT' || code === 'ENOEXEC';
+}
+
 export function spawnErrorMessage(bin: string, err: NodeJS.ErrnoException): string {
-  if (err.code === 'ENOEXEC' || err.code === 'ENOENT') {
+  if (isBinaryMissing(err)) {
     return `${bin} CLI not found or not executable. Make sure it is installed and on your PATH.`;
   }
   return err.message;
