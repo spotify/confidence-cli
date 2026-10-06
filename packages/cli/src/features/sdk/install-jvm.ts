@@ -4,7 +4,7 @@ export function buildKotlinInstall(pkg: string): InstallCommand {
   return {
     type: 'manual',
     snippet:
-      `Add the following to your app/build.gradle.kts:\n\n` +
+      `Add the following to your module's build.gradle.kts:\n\n` +
       `  dependencies {\n` +
       `      implementation("${pkg}:<version>")\n` +
       `  }`,
