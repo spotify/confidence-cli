@@ -12,6 +12,7 @@ export function buildKotlinInstall(pkg: string): InstallCommand {
 }
 
 export function buildJavaInstall(pkg: string): InstallCommand {
+  const [groupId, artifactId] = pkg.split(':');
   return {
     type: 'manual',
     snippet:
@@ -20,9 +21,9 @@ export function buildJavaInstall(pkg: string): InstallCommand {
       `      implementation("${pkg}:<version>")\n\n` +
       `  Maven:\n` +
       `      <dependency>\n` +
-      `          <groupId>com.spotify.confidence</groupId>\n` +
-      `          <artifactId>openfeature-provider</artifactId>\n` +
-      `          <version>VERSION</version>\n` +
+      `          <groupId>${groupId}</groupId>\n` +
+      `          <artifactId>${artifactId}</artifactId>\n` +
+      `          <version><version></version>\n` +
       `      </dependency>`,
   };
 }
