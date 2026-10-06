@@ -37,7 +37,7 @@ describe('installPlugin', () => {
     const sut = await installPlugin('claude', '/project');
 
     expect(sut).toBe('cli');
-    expect(mockIntegration.installPlugin).toHaveBeenCalledWith('/project');
+    expect(mockIntegration.installPlugin).toHaveBeenCalledWith('/project', undefined);
   });
 
   it('falls back to download when CLI install throws', async () => {
@@ -47,7 +47,7 @@ describe('installPlugin', () => {
     const sut = await installPlugin('claude', '/project');
 
     expect(sut).toBe('download');
-    expect(mockIntegration.installPlugin).toHaveBeenCalledWith('/project');
+    expect(mockIntegration.installPlugin).toHaveBeenCalledWith('/project', undefined);
     expect(downloadSkills).toHaveBeenCalledWith('/project/.claude/skills');
   });
 });
@@ -58,7 +58,7 @@ describe('uninstallPlugin', () => {
 
     await uninstallPlugin('claude', '/project');
 
-    expect(mockIntegration.uninstallPlugin).toHaveBeenCalledWith('/project');
+    expect(mockIntegration.uninstallPlugin).toHaveBeenCalledWith('/project', undefined);
     expect(removeSkills).toHaveBeenCalledWith('/project/.claude/skills');
   });
 
@@ -77,7 +77,7 @@ describe('updatePlugin', () => {
     const sut = await updatePlugin('claude', '/project');
 
     expect(sut).toBe('cli');
-    expect(mockIntegration.updatePlugin).toHaveBeenCalledWith('/project');
+    expect(mockIntegration.updatePlugin).toHaveBeenCalledWith('/project', undefined);
   });
 
   it('falls back to download when CLI update throws', async () => {
@@ -87,7 +87,7 @@ describe('updatePlugin', () => {
     const sut = await updatePlugin('claude', '/project');
 
     expect(sut).toBe('download');
-    expect(mockIntegration.updatePlugin).toHaveBeenCalledWith('/project');
+    expect(mockIntegration.updatePlugin).toHaveBeenCalledWith('/project', undefined);
     expect(downloadSkills).toHaveBeenCalledWith('/project/.claude/skills', true);
   });
 });
