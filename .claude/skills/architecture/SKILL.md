@@ -1,7 +1,7 @@
 ---
 name: architecture
 description: Monorepo structure, dependency graph, domain boundaries, and package-level constraints for the Confidence CLI project
-version: '0.4'
+version: '0.5'
 ---
 
 # Architecture Guidelines
@@ -12,9 +12,9 @@ Structural rules, domain boundaries, and constraints for the Confidence CLI mono
 
 | Package                   | Published | Purpose                                                                                                  |
 | ------------------------- | --------- | -------------------------------------------------------------------------------------------------------- |
-| `packages/shared-kernel/` | No        | Cross-domain types and `noop` helper                                                                     |
+| `packages/shared-kernel/` | No        | Cross-domain types and helpers (`noop`, `isDefined`). No runtime deps                                    |
 | `packages/eslint-config/` | No        | Shared ESLint config (base + react presets)                                                              |
-| `packages/core/`          | No        | Shared infrastructure (auth, session, telemetry, exec, system, sdk, frameworks, integrations, providers) |
+| `packages/core/`          | No        | Shared infrastructure (api, auth, config, session, telemetry, exec, system, sdk, mcp, frameworks, integrations, providers) |
 | `packages/testing/`       | No        | Test infrastructure (sub-paths: `/auth`, `/scaffold`, `/env`, `/terminal`, `/msw`, `/e2e`)               |
 | `packages/quickstart/`    | Yes       | TUI wizard — `@spotify-confidence/quickstart`                                                            |
 | `packages/cli/`           | Yes       | CLI — `@spotify-confidence/cli`                                                                          |
@@ -41,8 +41,8 @@ import { buildTestJwt } from '@spotify-confidence/testing/auth';
 
 | Package    | Aliases                                                           |
 | ---------- | ----------------------------------------------------------------- |
-| quickstart | `@commands/*`, `@features/*`, `@ui/*`                             |
-| cli        | `@commands/*`, `@features/*`, `@output/*`, `@network/*`           |
+| quickstart | `@commands/*`, `@features/*`, `@ui/*`                                             |
+| cli        | `@commands/*`, `@features/*`, `@input/*`, `@output/*`, `@network/*`, `@utils/*`, `@meta` |
 | core       | Relative imports in `src/`; tsconfig aliases in `__tests__/` only |
 
 ## Domain Boundaries

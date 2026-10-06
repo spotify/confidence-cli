@@ -1,7 +1,7 @@
 ---
 name: cli
 description: Structure, commands, output formatting, and conventions for the packages/cli/ package
-version: '0.2'
+version: '0.3'
 ---
 
 # CLI Package
@@ -20,16 +20,24 @@ Each command exports a yargs command object:
 export const exampleCommand = {
   command: 'example',
   describe: 'One-line description',
-  builder(yargs: Argv) { ... },    // optional — for subcommands or extra options
+  builder(yargs: Argv) { ... },
   async handler(argv: Record<string, unknown>) { ... },
 };
 ```
 
+For parent commands with subcommands, use `noop` from `@spotify-confidence/shared-kernel` as the empty builder, not `() => {}`.
+
 ### Command Types
 
-- **Standalone** — `login`, `logout`, `whoami`, `config` — directly perform their action
+- **Standalone** — `login`, `logout`, `whoami`, `config`, `update` — directly perform their action
+- **API commands** — `flags`, `events`, `recordings`, `docs` — CRUD operations against Confidence APIs via `@network/*`
+- **Integration** — `mcp`, `plugin`, `sdk`, `migrate` — manage IDE tooling and SDK setup
 - **Setup** — `flags setup`, `events setup`, `recordings setup` — delegate to quickstart TUI with pre-selected features
 - **TUI launcher** — `quickstart` — launches the full interactive wizard
+
+### Path Aliases
+
+`@commands/*`, `@features/*`, `@input/*`, `@output/*`, `@network/*`, `@utils/*`, `@meta` — use these for cross-domain imports within the CLI package.
 
 ## Output Formatting
 
@@ -50,3 +58,4 @@ Commands never call `JSON.stringify` directly.
 - Commands must not contain UI rendering logic — delegate to quickstart for TUI flows.
 - Auth logic lives in `@spotify-confidence/core`, not in command handlers.
 - The CLI must not import from quickstart's internal modules — only from its public `startTui` export.
+- Use `noop` from `@spotify-confidence/shared-kernel` for empty yargs builders, not `() => {}`.
