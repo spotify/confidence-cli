@@ -4,9 +4,9 @@ import { resolveIde, resolveFlag, resolveProjectDir } from '@features/ide/index.
 import { resolveAuthToken } from '@features/mcp/index.js';
 
 const SDK_SETUP_PROMPT = `Set up the Confidence SDK in this project.
-Use the "analyze-project" skill from the Confidence plugin to determine the correct SDK, install it, and create a working configuration file.
-Only set up the SDK — do not create feature flags, event tracking, or session recordings.
-Use the Confidence MCP tools for SDK references and best practices.`;
+Detect the project's framework, then use the getCodeSnippetAndSdkIntegrationTips tool from the confidence-docs MCP server to get the integration guide for that SDK.
+Install the SDK package and create a working configuration file following the guide.
+Only set up the SDK — do not create feature flags, event tracking, or session recordings.`;
 
 export async function runSdkSetup(argv: Record<string, unknown>): Promise<void> {
   const ideId = await resolveIde(resolveFlag('ide', argv));
