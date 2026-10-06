@@ -1,4 +1,4 @@
-import { existsSync } from 'node:fs';
+import { existsSync, readFileSync } from 'node:fs';
 import { join } from 'node:path';
 import ora from 'ora';
 import {
@@ -23,13 +23,34 @@ function detectProjectPM(dir: string): ProjectPM {
   return 'npm';
 }
 
+function hasPackageJsonWorkspaces(dir: string): boolean {
+  const pkgPath = join(dir, 'package.json');
+  if (!existsSync(pkgPath)) return false;
+
+  try {
+    const pkg = JSON.parse(readFileSync(pkgPath, 'utf-8'));
+    return Array.isArray(pkg.workspaces) || typeof pkg.workspaces === 'object';
+  } catch {
+    return false;
+  }
+}
+
+function workspaceRootArgs(pm: ProjectPM, dir: string): string[] {
+  if (pm === 'pnpm' && existsSync(join(dir, 'pnpm-workspace.yaml'))) return ['-w'];
+  if (pm === 'yarn' && hasPackageJsonWorkspaces(dir) && !existsSync(join(dir, '.yarnrc.yml'))) {
+    return ['-W'];
+  }
+
+  return [];
+}
+
 function buildInstallCommand(fw: FrameworkConfig, dir: string): InstallCommand {
   switch (fw.id) {
     case 'react':
     case 'nextjs':
     case 'node': {
       const pm = detectProjectPM(dir);
-      return { type: 'auto', cmd: pm, args: ['add', fw.sdkPackage] };
+      return { type: 'auto', cmd: pm, args: ['add', ...workspaceRootArgs(pm, dir), fw.sdkPackage] };
     }
     case 'python':
       return { type: 'auto', cmd: 'pip', args: ['install', fw.sdkPackage] };
