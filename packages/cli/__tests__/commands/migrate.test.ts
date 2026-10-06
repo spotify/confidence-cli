@@ -89,7 +89,7 @@ describe('migrate <provider>', () => {
 
     expect(mockIntegration.launchChat).toHaveBeenCalledWith(
       expect.objectContaining({
-        prompt: expect.stringContaining('Statsig'),
+        userPrompt: expect.stringContaining('Statsig'),
         cwd: process.cwd(),
       }),
     );
