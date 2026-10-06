@@ -46,7 +46,7 @@ function buildChatPrompt(session: WizardSession): string {
 export function launchChatSession(session: WizardSession, ide: IdeId): void {
   const integration = getIntegration(ide);
   integration.launchChat({
-    prompt: buildChatPrompt(session),
+    systemPrompt: buildChatPrompt(session),
     cwd: session.projectDir,
     token: session.authState.token,
   });

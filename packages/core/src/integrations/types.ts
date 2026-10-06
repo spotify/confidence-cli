@@ -40,7 +40,8 @@ export type OnboardingOpts = {
 };
 
 export type ChatOpts = {
-  prompt: string;
+  userPrompt?: string;
+  systemPrompt?: string;
   cwd: string;
   token?: string;
 };

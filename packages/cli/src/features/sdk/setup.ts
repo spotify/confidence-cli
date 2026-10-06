@@ -1,14 +1,14 @@
-import type { ProviderConfig } from '@spotify-confidence/core';
 import { getIntegration } from '@spotify-confidence/core';
 import { fail } from '@output/print.js';
 import { resolveIde, resolveFlag, resolveProjectDir } from '@features/ide/index.js';
 import { resolveAuthToken } from '@features/mcp/index.js';
-import { buildMigrationPrompt } from './prompt.js';
 
-export async function launchMigration(
-  argv: Record<string, unknown>,
-  provider: ProviderConfig,
-): Promise<void> {
+const SDK_SETUP_PROMPT = `Set up the Confidence SDK in this project.
+Detect the project's framework, then use the getCodeSnippetAndSdkIntegrationTips tool from the confidence-docs MCP server to get the integration guide for that SDK.
+Install the SDK package and create a working configuration file following the guide.
+Only set up the SDK — do not create feature flags, event tracking, or session recordings.`;
+
+export async function runSdkSetup(argv: Record<string, unknown>): Promise<void> {
   const ideId = await resolveIde(resolveFlag('ide', argv));
   const projectDir = resolveProjectDir(argv);
   const integration = getIntegration(ideId);
@@ -33,8 +33,10 @@ export async function launchMigration(
   }
 
   const token = await resolveAuthToken({ profile: resolveFlag('profile', argv) });
-  if (!token) return;
+  if (!token) {
+    fail('Not authenticated. Run "confidence login" to sign in.');
+    return;
+  }
 
-  const userPrompt = buildMigrationPrompt(provider);
-  integration.launchChat({ userPrompt, cwd: projectDir, token });
+  integration.launchChat({ userPrompt: SDK_SETUP_PROMPT, cwd: projectDir, token });
 }

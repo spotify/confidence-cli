@@ -11,6 +11,7 @@ import {
   eventsCommand,
   flagsCommand,
   recordingsCommand,
+  sdkCommand,
   quickstartCommand,
   mcpCommand,
   updateCommand,
@@ -72,6 +73,7 @@ const cli = yargs(hideBin(process.argv))
   .command(eventsCommand)
   .command(flagsCommand)
   .command(recordingsCommand)
+  .command(sdkCommand)
   .command(quickstartCommand)
   .command(mcpCommand)
   .command(updateCommand)

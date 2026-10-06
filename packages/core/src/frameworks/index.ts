@@ -8,7 +8,7 @@ import { javaFramework } from './java/index.js';
 import { goFramework } from './go/index.js';
 import { pythonFramework } from './python/index.js';
 
-export type { FrameworkConfig } from './types.js';
+export type { FrameworkConfig, FrameworkId } from './types.js';
 
 const FRAMEWORKS: FrameworkConfig[] = [
   nextjsFramework,
