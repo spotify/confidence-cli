@@ -1,7 +1,7 @@
 import type { Argv } from 'yargs';
 import { getProviders } from '@spotify-confidence/core';
 import { detectAndPrint, launchMigration } from '@features/migrate/index.js';
-import { safely } from '../utils/safely.js';
+import { safely } from '@utils/index.js';
 
 export const migrateCommand = {
   command: 'migrate <action>',

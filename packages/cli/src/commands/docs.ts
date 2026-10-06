@@ -1,6 +1,6 @@
 import type { Argv } from 'yargs';
 import { searchDocs, grepDocs, readDocs } from '@features/docs/index.js';
-import { safely } from '../utils/safely.js';
+import { safely } from '@utils/index.js';
 
 export const docsCommand = {
   command: 'docs <action>',

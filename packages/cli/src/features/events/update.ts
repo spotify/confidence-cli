@@ -1,6 +1,6 @@
 import { updateEventDefinition } from '@network/index.js';
 import { printMcpResult } from '@output/print.js';
-import { withAuth } from '../../utils/require-auth.js';
+import { withAuth } from '@utils/index.js';
 import { parseFieldArg } from './field-spec.js';
 
 export const updateEvent = withAuth(async function updateEvent(argv, token) {

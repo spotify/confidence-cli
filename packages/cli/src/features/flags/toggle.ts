@@ -1,6 +1,6 @@
 import { toggleFlag } from '@network/index.js';
 import { fail, message } from '@output/index.js';
-import { withAuth } from '@utils/require-auth.js';
+import { withAuth } from '@utils/index.js';
 
 export const toggleFlagCmd = withAuth(async function toggleFlagCmd(argv, token) {
   const flagKey = argv['flag-key'] as string;

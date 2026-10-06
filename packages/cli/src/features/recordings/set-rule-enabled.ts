@@ -1,6 +1,6 @@
 import { setRecordingRuleEnabled } from '@network/index.js';
 import { printMcpResult } from '@output/print.js';
-import { withAuth } from '../../utils/require-auth.js';
+import { withAuth } from '@utils/index.js';
 import { tryHandleMcpError } from './format-mcp-error.js';
 
 function makeToggle(enabled: boolean) {

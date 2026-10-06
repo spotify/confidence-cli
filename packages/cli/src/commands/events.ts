@@ -8,7 +8,7 @@ import {
   deleteEvent,
   eventUsage,
 } from '@features/events/index.js';
-import { safely } from '../utils/safely.js';
+import { safely } from '@utils/index.js';
 
 export const eventsCommand = {
   command: 'events <action>',

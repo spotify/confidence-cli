@@ -1,6 +1,6 @@
 import { getFlag } from '@network/index.js';
 import { resolveFormat, formatJson, extractFlags, fail, message, print } from '@output/index.js';
-import { withAuth } from '@utils/require-auth.js';
+import { withAuth } from '@utils/index.js';
 import { flagStatus } from './status.js';
 
 export const getFlagCmd = withAuth(async function getFlagCmd(argv, token) {

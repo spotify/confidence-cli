@@ -1,6 +1,6 @@
 import { addRecordingRule } from '@network/index.js';
 import { printMcpResult } from '@output/index.js';
-import { withAuth } from '@utils/require-auth.js';
+import { withAuth } from '@utils/index.js';
 import { resolveInput } from '@input/index.js';
 import { requireKeys, validateRange } from '@utils/validation.js';
 import { tryHandleMcpError } from './format-mcp-error.js';

@@ -10,7 +10,7 @@ import {
   targetFlagCmd,
   archiveFlagCmd,
 } from '@features/flags/index.js';
-import { safely } from '../utils/safely.js';
+import { safely } from '@utils/index.js';
 
 export const flagsCommand = {
   command: 'flags <action>',

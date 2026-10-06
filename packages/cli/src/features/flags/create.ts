@@ -1,6 +1,6 @@
 import { createFlag } from '@network/index.js';
 import { message, printMcpResult } from '@output/index.js';
-import { withAuth } from '@utils/require-auth.js';
+import { withAuth } from '@utils/index.js';
 import { resolveInput } from '@input/index.js';
 
 export const createFlagCmd = withAuth(async function createFlagCmd(argv, token) {

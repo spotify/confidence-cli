@@ -1,7 +1,7 @@
 import ora from 'ora';
 import { grepDocumentation } from '@network/index.js';
 import { printMcpResult } from '@output/print.js';
-import { withAuth } from '@utils/require-auth.js';
+import { withAuth } from '@utils/index.js';
 
 export const grepDocs = withAuth(async function grepDocs(argv, token) {
   const pattern = argv.pattern as string;

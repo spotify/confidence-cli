@@ -1,7 +1,7 @@
 import { extractText, parseToolJson } from '@spotify-confidence/core';
 import { getRecordingPolicy } from '@network/index.js';
 import { resolveFormat, formatJson, message, print, extractFlags } from '@output/index.js';
-import { withAuth } from '../../utils/require-auth.js';
+import { withAuth } from '@utils/index.js';
 import { tryHandleMcpError } from './format-mcp-error.js';
 
 type PolicyDetail = {

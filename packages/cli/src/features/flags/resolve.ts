@@ -1,6 +1,6 @@
 import { resolveFlag } from '@network/index.js';
 import { printMcpResult } from '@output/index.js';
-import { withAuth } from '@utils/require-auth.js';
+import { withAuth } from '@utils/index.js';
 
 function parseContextPair(spec: string): [string, string] {
   const eqIndex = spec.indexOf('=');

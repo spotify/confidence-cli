@@ -1,7 +1,7 @@
 import type { JsonObject } from '@spotify-confidence/shared-kernel';
 import { getFlag, updateFlag } from '@network/index.js';
 import { resolveFormat, formatJson, extractFlags, fail, message, print } from '@output/index.js';
-import { withAuth } from '@utils/require-auth.js';
+import { withAuth } from '@utils/index.js';
 import { flagStatus } from './status.js';
 import { resolveInput } from '@input/index.js';
 

@@ -2,7 +2,7 @@ import confirm from '@inquirer/confirm';
 import { extractText } from '@spotify-confidence/core';
 import { deleteEventDefinition } from '@network/index.js';
 import { message, fail } from '@output/print.js';
-import { withAuth } from '../../utils/require-auth.js';
+import { withAuth } from '@utils/index.js';
 
 export const deleteEvent = withAuth(async function deleteEvent(argv, token) {
   const name = argv.name as string;

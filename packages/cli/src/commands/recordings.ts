@@ -10,8 +10,7 @@ import {
   showTargetingKeys,
   addTargetingKey,
 } from '@features/recordings/index.js';
-import { safely } from '../utils/safely.js';
-import { validateRange } from '../utils/validation.js';
+import { safely, validateRange } from '@utils/index.js';
 
 export const recordingsCommand = {
   command: 'recordings <action>',
