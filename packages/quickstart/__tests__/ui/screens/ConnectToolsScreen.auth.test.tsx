@@ -1,25 +1,28 @@
-import { mkdirSync, writeFileSync } from 'node:fs';
-import { join } from 'node:path';
 import { http, HttpResponse } from 'msw';
 import {
   act,
   renderScreen,
   createProjectDir,
+  prepareAuthTokens,
   waitFor,
   buildExpiredJwt,
   buildAuthState,
   ENTER,
 } from '../testing-framework/index.js';
 import { ConnectToolsScreen } from '@ui/screens/connect-tools/index.js';
-import {
-  ScreenId,
-  persistMcpPreference,
-  clearMcpPreference,
-  MCP_SERVERS,
-  type McpServerName,
-} from '@spotify-confidence/core';
+import { ScreenId, persistMcpPreference, clearMcpPreference } from '@spotify-confidence/core';
 import type { IdeId } from '@spotify-confidence/shared-kernel';
 import { server } from '@spotify-confidence/testing';
+import {
+  writeClaudeGlobalConfig,
+  writeCursorMcpConfig,
+  writeCodexConfig,
+} from '@spotify-confidence/testing/scaffold';
+
+vi.mock('../../../../core/src/exec/exec.js', () => ({
+  execFile: vi.fn().mockResolvedValue({ stdout: '', stderr: '' }),
+  spawn: vi.fn(),
+}));
 
 type IntegrationTestCase = {
   ide: IdeId;
@@ -35,8 +38,8 @@ describe('ConnectToolsScreen', () => {
       );
 
       using _pref = createMcpPreference('connected');
+      using _auth = prepareAuthTokens('none');
       using project = createProjectDir();
-      writeMcpConfig(project.path, 'cursor');
 
       // Act
       using sut = renderScreen(<ConnectToolsScreen />, {
@@ -58,8 +61,10 @@ describe('ConnectToolsScreen', () => {
       'shows auth-expired status for $ide',
       async ({ ide }) => {
         // Arrange
+        const token = buildExpiredJwt();
         using project = createProjectDir();
-        writeMcpConfig(project.path, ide, { token: buildExpiredJwt() });
+        using _mcp = seedMcpRegistration(project.path, { token });
+        using _creds = prepareAuthTokens('expired');
 
         // Act
         using sut = renderScreen(<ConnectToolsScreen />, {
@@ -79,7 +84,8 @@ describe('ConnectToolsScreen', () => {
 
     it('shows expired auth warning message', async () => {
       using project = createProjectDir();
-      writeMcpConfig(project.path, 'cursor', { token: buildExpiredJwt() });
+      using _mcp = seedMcpRegistration(project.path, { token: buildExpiredJwt() });
+      using _creds = prepareAuthTokens('expired');
 
       using sut = renderScreen(<ConnectToolsScreen />, {
         screen: ScreenId.ConnectTools,
@@ -98,7 +104,8 @@ describe('ConnectToolsScreen', () => {
     it('reconnects successfully when user selects reconnect', async () => {
       // Arrange
       using project = createProjectDir();
-      writeMcpConfig(project.path, 'cursor', { token: buildExpiredJwt() });
+      using _mcp = seedMcpRegistration(project.path, { token: buildExpiredJwt() });
+      using _creds = prepareAuthTokens('expired');
 
       using sut = renderScreen(<ConnectToolsScreen />, {
         screen: ScreenId.ConnectTools,
@@ -122,8 +129,8 @@ describe('ConnectToolsScreen', () => {
   });
 
   describe('when server returns 401 during detection', () => {
-    // Arrange
     it('shows auth-expired for codex', async () => {
+      // Arrange
       server.use(
         http.post(
           'https://mcp.confidence.dev/mcp/flags',
@@ -136,7 +143,8 @@ describe('ConnectToolsScreen', () => {
       );
 
       using project = createProjectDir();
-      writeMcpConfig(project.path, 'codex');
+      using _mcp = seedMcpRegistration(project.path);
+      using _auth = prepareAuthTokens();
 
       // Act
       using sut = renderScreen(<ConnectToolsScreen />, {
@@ -154,102 +162,78 @@ describe('ConnectToolsScreen', () => {
   });
 
   describe('when server returns 401 after connecting', () => {
-    it.each<IntegrationTestCase>([{ ide: 'claude' }, { ide: 'cursor' }])(
-      'shows auth-expired for $ide',
-      async ({ ide }) => {
-        // Arrange
-        server.use(
-          http.post(
-            'https://mcp.confidence.dev/mcp/flags',
-            () => new HttpResponse(null, { status: 401 }),
-          ),
-          http.post(
-            'https://mcp.confidence.dev/mcp/docs',
-            () => new HttpResponse(null, { status: 401 }),
-          ),
-        );
+    it('shows auth-expired after connect attempt', async () => {
+      // Arrange
+      server.use(
+        http.post(
+          'https://mcp.confidence.dev/mcp/flags',
+          () => new HttpResponse(null, { status: 401 }),
+        ),
+        http.post(
+          'https://mcp.confidence.dev/mcp/docs',
+          () => new HttpResponse(null, { status: 401 }),
+        ),
+      );
 
-        using project = createProjectDir();
+      using _auth = prepareAuthTokens('none');
+      using project = createProjectDir();
 
-        using sut = renderScreen(<ConnectToolsScreen />, {
-          screen: ScreenId.ConnectTools,
-          dir: project.path,
-          ide,
-        });
+      using sut = renderScreen(<ConnectToolsScreen />, {
+        screen: ScreenId.ConnectTools,
+        dir: project.path,
+      });
 
-        await waitFor(() => {
-          expect(sut.lastFrame()).toContain('Connect all tools');
-        });
+      await waitFor(() => {
+        expect(sut.lastFrame()).toContain('Connect all tools');
+      });
 
-        // Act
-        await act(() => sut.stdin.write(ENTER));
+      // Act
+      await act(() => sut.stdin.write(ENTER));
 
-        // Assert
-        await waitFor(() => {
-          expect(sut.lastFrame()).toContain('auth expired');
-        });
-      },
-      10000,
-    );
+      // Assert
+      await waitFor(() => {
+        expect(sut.lastFrame()).toContain('auth expired');
+      });
+    }, 10000);
   });
 });
 
+type SeedMcpOpts = {
+  token?: string;
+};
+
+function seedMcpRegistration(projectDir: string, opts?: SeedMcpOpts) {
+  vi.stubEnv('HOME', projectDir);
+
+  const headers = opts?.token ? { Authorization: `Bearer ${opts.token}` } : undefined;
+  const servers = {
+    'confidence-flags': { type: 'http', url: 'https://mcp.confidence.dev/mcp/flags', headers },
+    'confidence-docs': { type: 'http', url: 'https://mcp.confidence.dev/mcp/docs', headers },
+  };
+  const codexHeaders = opts?.token
+    ? `\nhttp_headers = { "Authorization" = "Bearer ${opts.token}" }`
+    : '';
+
+  writeClaudeGlobalConfig(projectDir, projectDir, servers);
+  writeCursorMcpConfig(projectDir, { mcpServers: servers });
+  writeCodexConfig(
+    projectDir,
+    `[mcp_servers.confidence-flags]\nurl = "https://mcp.confidence.dev/mcp/flags"${codexHeaders}\n\n[mcp_servers.confidence-docs]\nurl = "https://mcp.confidence.dev/mcp/docs"${codexHeaders}\n`,
+  );
+
+  return {
+    [Symbol.dispose]() {
+      vi.unstubAllEnvs();
+    },
+  };
+}
+
 function createMcpPreference(value: 'connected' | 'skipped') {
   persistMcpPreference(value);
+
   return {
     [Symbol.dispose]() {
       clearMcpPreference();
     },
   };
-}
-
-type McpConfigOpts = {
-  token?: string;
-};
-
-function writeMcpConfig(projectDir: string, ide: IdeId, opts?: McpConfigOpts): void {
-  switch (ide) {
-    case 'claude':
-      return writeJsonMcpConfig(join(projectDir, '.mcp.json'), opts);
-
-    case 'cursor':
-      mkdirSync(join(projectDir, '.cursor'), { recursive: true });
-      return writeJsonMcpConfig(join(projectDir, '.cursor', 'mcp.json'), opts);
-
-    case 'codex':
-      return writeCodexMcpConfig(projectDir);
-
-    default: {
-      const _exhaustive: never = ide satisfies never;
-      throw new Error(`Unhandled IDE: ${_exhaustive}`);
-    }
-  }
-}
-
-function writeJsonMcpConfig(configPath: string, opts?: McpConfigOpts): void {
-  writeFileSync(
-    configPath,
-    JSON.stringify({
-      mcpServers: Object.fromEntries(
-        Object.entries(MCP_SERVERS).map(([name, { type, url }]) => {
-          const server: Record<string, unknown> = { type, url };
-
-          if (opts?.token) {
-            server.headers = { Authorization: `Bearer ${opts.token}` };
-          }
-
-          return [name, server];
-        }),
-      ),
-    }),
-  );
-}
-
-function writeCodexMcpConfig(projectDir: string): void {
-  const content = (Object.keys(MCP_SERVERS) as McpServerName[])
-    .map((name) => `[mcp_servers.${name}]\nurl = "${MCP_SERVERS[name].url}"`)
-    .join('\n\n');
-
-  mkdirSync(join(projectDir, '.codex'), { recursive: true });
-  writeFileSync(join(projectDir, '.codex', 'config.toml'), content);
 }

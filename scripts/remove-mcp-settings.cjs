@@ -17,9 +17,15 @@ if (Array.isArray(allow)) {
   }
 }
 
-if (Array.isArray(config.enabledMcpjsonServers) && config.enabledMcpjsonServers.length > 0) {
-  delete config.enabledMcpjsonServers;
-  changed = true;
+const mcpServers = config.mcpServers;
+if (mcpServers && typeof mcpServers === 'object') {
+  for (const name of ['confidence-flags', 'confidence-docs']) {
+    if (name in mcpServers) {
+      delete mcpServers[name];
+      changed = true;
+    }
+  }
+  if (Object.keys(mcpServers).length === 0) delete config.mcpServers;
 }
 
 if (!changed) {

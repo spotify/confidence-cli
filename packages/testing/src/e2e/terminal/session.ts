@@ -84,18 +84,24 @@ export class TerminalSession {
     this.cwd = cwd ?? process.cwd();
     this.tempDirs.push(isolatedTmpDir);
 
+    const isolationDefaults: Record<string, string> = {
+      HOME: isolatedTmpDir,
+      TMPDIR: isolatedTmpDir,
+      ...(isWindows
+        ? {
+            USERPROFILE: isolatedTmpDir,
+            TEMP: isolatedTmpDir,
+            TMP: isolatedTmpDir,
+          }
+        : {}),
+    };
+
     this.pty = ptySpawn(process.execPath, [cliPath, ...args], {
       name: 'xterm-256color',
       cols,
       rows,
       cwd: this.cwd,
-      env: overlayEnv(process.env, E2E_BASE_ENV, env, {
-        HOME: isolatedTmpDir,
-        TMPDIR: isolatedTmpDir,
-        ...(isWindows
-          ? { USERPROFILE: isolatedTmpDir, TEMP: isolatedTmpDir, TMP: isolatedTmpDir }
-          : {}),
-      }),
+      env: overlayEnv(process.env, E2E_BASE_ENV, isolationDefaults, env),
     });
 
     this.pty.onData((data) => {

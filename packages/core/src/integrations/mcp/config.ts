@@ -13,12 +13,16 @@ function readMcpJsonConfig(configPath: string): McpJsonConfig | null {
   }
 }
 
-export function getRegisteredMcpNames(configPath: string): string[] {
+export function onlyKnownServerNames(names: string[]): McpServerName[] {
+  const known = Object.keys(MCP_SERVERS) as McpServerName[];
+  return known.filter((name) => names.includes(name));
+}
+
+export function getRegisteredMcpNames(configPath: string): McpServerName[] {
   const config = readMcpJsonConfig(configPath);
   if (!config) return [];
 
-  const mcpServers = config.mcpServers ?? {};
-  return (Object.keys(MCP_SERVERS) as McpServerName[]).filter((name) => name in mcpServers);
+  return onlyKnownServerNames(Object.keys(config.mcpServers ?? {}));
 }
 
 export function getStoredAuthToken(configPath: string, serverName: McpServerName): string | null {

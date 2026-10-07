@@ -70,6 +70,10 @@ export function createSession({
     sessionEnv.CONFIDENCE_CONFIG_DIR = configDir;
   }
 
+  if (token) {
+    sessionEnv.CONFIDENCE_TOKEN ??= token;
+  }
+
   const session = new TerminalSession({
     cliPath: process.env.E2E_CLI_PATH!,
     args: ['--debug', '--dir', projectDir, ...extraArgs],
