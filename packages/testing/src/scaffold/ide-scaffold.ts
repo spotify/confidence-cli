@@ -3,7 +3,7 @@ import { join } from 'node:path';
 
 type ClaudeSettings = {
   permissions?: { allow?: string[] };
-  enabledMcpjsonServers?: string[];
+  mcpServers?: Record<string, unknown>;
 };
 
 type CursorMcpConfig = {
@@ -18,6 +18,18 @@ export function writeClaudeSettings(projectDir: string, settings: ClaudeSettings
   const dir = join(projectDir, '.claude');
   mkdirSync(dir, { recursive: true });
   writeFileSync(join(dir, 'settings.local.json'), JSON.stringify(settings, null, 2));
+}
+
+export function writeClaudeGlobalConfig(
+  homeDir: string,
+  projectDir: string,
+  mcpServers: Record<string, unknown>,
+): void {
+  const configPath = join(homeDir, '.claude.json');
+  writeFileSync(
+    configPath,
+    JSON.stringify({ projects: { [projectDir]: { mcpServers } } }, null, 2),
+  );
 }
 
 export function writeCursorMcpConfig(projectDir: string, config: CursorMcpConfig): void {

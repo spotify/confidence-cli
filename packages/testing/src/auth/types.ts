@@ -7,5 +7,6 @@
  * - `'none'` — no tokens (clears any existing files)
  * - `'valid'` — valid JWT for `existing@example.com`, no refresh token
  * - `'with-refresh'` — valid JWT + refresh token (enables token refresh flow)
+ * - `'expired'` — expired JWT (triggers auth-expired detection)
  */
-export type TokenType = 'none' | 'valid' | 'with-refresh';
+export type TokenType = 'none' | 'valid' | 'with-refresh' | 'expired';
