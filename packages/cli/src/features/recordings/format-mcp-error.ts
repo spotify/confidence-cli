@@ -1,20 +1,17 @@
-import { readMcpText, type CallToolResult } from '@spotify-confidence/core';
+import type { CallToolResult } from '@spotify-confidence/core';
 import { error, fail } from '@output/print.js';
+import { tryHandleMcpError as baseTryHandleMcpError } from '@utils/index.js';
 
 export function tryHandleMcpError(result: CallToolResult): boolean {
-  if (!result.isError) return false;
-
-  const text = readMcpText(result) || 'MCP tool call failed';
-  if (!formatClientListError(text)) {
-    fail(text);
-  }
-
-  return true;
+  return baseTryHandleMcpError(result, { formatError: formatClientListError });
 }
 
-function formatClientListError(text: string): boolean {
+function formatClientListError(text: string): void {
   const match = text.match(/^(.*?Available clients are: )(.+)$/s);
-  if (!match) return false;
+  if (!match) {
+    fail(text);
+    return;
+  }
 
   const [, prefix, clientList] = match;
   fail(prefix.trim());
@@ -22,5 +19,4 @@ function formatClientListError(text: string): boolean {
   for (const client of clientList.split(/,\s*/)) {
     error(`  ${client.trim()}`);
   }
-  return true;
 }

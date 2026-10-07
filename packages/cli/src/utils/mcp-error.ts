@@ -1,9 +1,17 @@
 import { readMcpText, type CallToolResult } from '@spotify-confidence/core';
 import { fail } from '@output/print.js';
 
-export function tryHandleMcpError(result: CallToolResult): boolean {
+type Options = {
+  formatError?: (text: string) => void;
+  defaultMessage?: string;
+};
+
+export function tryHandleMcpError(result: CallToolResult, opts?: Options): boolean {
   if (!result.isError) return false;
 
-  fail(readMcpText(result) || 'MCP tool call failed');
+  const formatError = opts?.formatError ?? fail;
+  const defaultMessage = opts?.defaultMessage ?? 'MCP tool call failed';
+
+  formatError(readMcpText(result) || defaultMessage);
   return true;
 }
