@@ -7,6 +7,7 @@ import {
   createEventConnectionCmd,
   createAssignmentTableCmd,
   createCryptoKeyCmd,
+  runWarehouseSetup,
 } from '@features/warehouse/index.js';
 import { safely } from '@utils/index.js';
 
@@ -40,6 +41,28 @@ export const warehouseCommand = {
   describe: 'Manage data warehouse connections',
   builder(yargs: Argv) {
     return yargs
+      .command(
+        'setup',
+        'Launch guided warehouse setup in your AI coding agent',
+        (y: Argv) =>
+          y
+            .option('warehouse-type', {
+              type: 'string',
+              choices: WAREHOUSE_TYPES,
+              demandOption: true,
+              describe: 'Data warehouse type',
+            })
+            .option('ide', {
+              type: 'string',
+              choices: ['claude', 'cursor', 'codex'] as const,
+              describe: 'AI coding agent to use',
+            })
+            .option('profile', {
+              type: 'string',
+              describe: 'Auth profile to use',
+            }),
+        safely(runWarehouseSetup),
+      )
       .command(
         'validate',
         'Validate warehouse configuration',
@@ -153,7 +176,7 @@ export const warehouseCommand = {
       )
       .demandCommand(
         1,
-        'Available actions: validate, create, connector, assignment-table, crypto-key. Run "confidence warehouse --help" for details.',
+        'Available actions: setup, validate, create, connector, assignment-table, crypto-key. Run "confidence warehouse --help" for details.',
       )
       .strict();
   },
