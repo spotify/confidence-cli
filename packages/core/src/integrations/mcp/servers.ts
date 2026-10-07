@@ -23,6 +23,7 @@ export type McpServer = {
 };
 
 export type McpServerStatus = 'not-installed' | 'installed' | 'auth-expired' | 'connected';
+export type McpStatusMap = Record<McpServerName, McpServerStatus>;
 
 export function allServersConnected(statuses: Record<string, McpServerStatus>): boolean {
   return Object.values(statuses).every((s) => s === 'connected');
@@ -35,7 +36,7 @@ export function getAvailableMcpServers(): McpServer[] {
 export async function detectMcpStatuses(deps: {
   getRegisteredNames: () => string[];
   getAuthToken: (name: McpServerName) => string | null;
-}): Promise<Record<McpServerName, McpServerStatus>> {
+}): Promise<McpStatusMap> {
   const registered = deps.getRegisteredNames();
   const names = Object.keys(MCP_SERVERS) as McpServerName[];
 
@@ -51,7 +52,7 @@ export async function detectMcpStatuses(deps: {
     }),
   );
 
-  return Object.fromEntries(statuses) as Record<McpServerName, McpServerStatus>;
+  return Object.fromEntries(statuses) as McpStatusMap;
 }
 
 export type McpVerifyOpts = {

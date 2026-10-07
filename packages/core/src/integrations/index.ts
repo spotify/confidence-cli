@@ -15,6 +15,7 @@ export {
   type McpServer,
   type McpServerName,
   type McpServerStatus,
+  type McpStatusMap,
   MCP_SERVERS,
   allServersConnected,
   getAvailableMcpServers,

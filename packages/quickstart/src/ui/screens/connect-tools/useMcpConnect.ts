@@ -122,6 +122,7 @@ export function useMcpConnect(): McpConnectState {
 
       async function run() {
         const statuses = await integration.detectMcpStatuses(session.projectDir);
+        const preference = loadMcpPreference();
 
         for (const [name, status] of Object.entries(statuses)) {
           const server = available.find((s) => s.name === name);
@@ -130,13 +131,14 @@ export function useMcpConnect(): McpConnectState {
         setServerStatuses(statuses);
 
         const allOk = allServersConnected(statuses);
-        if (allOk) {
+        const hasExplicitlyConnected = preference === 'connected';
+
+        if (allOk && hasExplicitlyConnected) {
           setPhase('already-connected');
           return;
         }
 
-        const preference = loadMcpPreference();
-        if (preference !== 'connected') {
+        if (!hasExplicitlyConnected) {
           setPhase(resolvePhaseFromStatuses(statuses));
           return;
         }

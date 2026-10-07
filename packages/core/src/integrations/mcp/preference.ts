@@ -1,24 +1,24 @@
-import { existsSync, readFileSync, writeFileSync, unlinkSync } from 'node:fs';
+import { existsSync, readFileSync, writeFileSync, unlinkSync, mkdirSync } from 'node:fs';
 import { join } from 'node:path';
-import { tmpdir } from 'node:os';
+import { getConfigDir } from '../../auth/credentials/paths.js';
 
 type McpPreference = 'connected' | 'skipped';
 
-const PREFERENCE_FILE = join(tmpdir(), 'confidence_mcp_preference');
+const PREFERENCE_FILE = join(getConfigDir(), 'mcp_preference');
 
 export function loadMcpPreference(): McpPreference | null {
   if (!existsSync(PREFERENCE_FILE)) return null;
 
   try {
     const value = readFileSync(PREFERENCE_FILE, 'utf-8').trim();
-    if (value === 'connected' || value === 'skipped') return value;
-    return null;
+    return ['connected', 'skipped'].includes(value) ? (value as McpPreference) : null;
   } catch {
     return null;
   }
 }
 
 export function persistMcpPreference(preference: McpPreference): void {
+  mkdirSync(getConfigDir(), { recursive: true });
   writeFileSync(PREFERENCE_FILE, preference, 'utf-8');
 }
 

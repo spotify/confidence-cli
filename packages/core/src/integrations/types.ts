@@ -4,7 +4,7 @@ import type {
   PluginInstallationMethod,
   PluginScope,
 } from '@spotify-confidence/shared-kernel';
-import type { McpServerName, McpServerStatus } from './mcp/servers.js';
+import type { McpServerName, McpStatusMap } from './mcp/servers.js';
 
 export type InstalledPlugin = {
   ide: IdeId;
@@ -58,7 +58,7 @@ export type IdeIntegration = {
   updatePlugin: (projectDir: string, scope?: PluginScope) => Promise<void>;
   uninstallPlugin: (projectDir: string, scope?: PluginScope) => Promise<void>;
 
-  detectMcpStatuses: (projectDir: string) => Promise<Record<McpServerName, McpServerStatus>>;
+  detectMcpStatuses: (projectDir: string) => Promise<McpStatusMap>;
   connectMcpServer: (opts: McpConnectOpts) => Promise<void>;
   disconnectMcpServer: (opts: McpDisconnectOpts) => Promise<void>;
 
