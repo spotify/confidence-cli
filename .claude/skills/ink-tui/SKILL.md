@@ -1,7 +1,7 @@
 ---
 name: ink-tui
 description: Develop and modify the Ink-based terminal UI in the packages/quickstart/ package
-version: '0.2'
+version: '0.3'
 ---
 
 # Ink TUI Skill
@@ -16,16 +16,16 @@ The TUI follows a **reactive session-driven pattern**: the rendered screen deriv
 
 - **WizardSession** (`packages/core/src/session/session.ts`) — Source of truth for wizard state
 - **WizardStore** (`packages/quickstart/src/ui/store.ts`) — Nanostores-backed reactive store with explicit setters
-- **WizardRouter** (`packages/quickstart/src/ui/router.ts`) — Declarative sequence-based navigation
+- **WizardRouter** (`packages/quickstart/src/ui/router.ts`) — State-machine navigation using transition map
 - **ScreenContainer** (`packages/quickstart/src/ui/components/ScreenContainer.tsx`) — Root layout orchestrating screens
 - **Screen Registry** (`packages/quickstart/src/ui/screen-registry.tsx`) — Factory mapping ScreenId to components
 
 ## Adding a Screen
 
-1. Create the component in `packages/quickstart/src/ui/screens/YourScreen.tsx`
+1. Create subdir in `packages/quickstart/src/ui/screens/` with component + barrel `index.ts` + collocated slice files (`telemetry-events.ts`, `log-messages.ts`, `actions.ts` as needed)
 2. Add a `ScreenId` entry in `packages/core/src/session/session.ts`
 3. Register the mapping in `packages/quickstart/src/ui/screen-registry.tsx`
-4. Add to the sequence in `packages/quickstart/src/ui/screen-sequences.ts`
+4. Add transitions in `packages/quickstart/src/ui/screen-transitions.ts`
 
 No other files need changes.
 
@@ -47,9 +47,9 @@ For display-only state:
 
 Reusable building blocks and composites: `TextBlock`, `Divider`, `KeyboardHintsBar`, `ScreenContainer`, `TitleBar`, etc. Barrel-exported from `index.ts`.
 
-### Theme (`packages/quickstart/src/ui/styles.ts`)
+### Theme (`packages/quickstart/src/ui/theme/`)
 
-Shared constants: `Colors`, `Icons`, `HAlign`, `VAlign`. Import from here for consistent styling.
+Split into `colors.ts`, `icons.ts`, `layout.ts`, re-exported via `ui/styles.ts`. Exports: `Colors`, `Icons`, `Emoji`, `HAlign`, `VAlign`. Import from `styles.ts` for consistent styling.
 
 ## Key Dependencies
 

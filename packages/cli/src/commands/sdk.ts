@@ -1,4 +1,5 @@
 import type { Argv } from 'yargs';
+import { noop } from '@spotify-confidence/shared-kernel';
 import { runSdkInstall, runSdkSetup } from '@features/sdk/index.js';
 import { safely } from '../utils/safely.js';
 
@@ -15,7 +16,7 @@ export const sdkCommand = {
       .command(
         'install',
         'Detect framework and install the Confidence SDK',
-        () => {},
+        noop,
         safely(runSdkInstall),
       )
       .command(

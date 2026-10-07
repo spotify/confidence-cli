@@ -8,10 +8,10 @@ pnpm workspace with six packages under `packages/`:
 
 | Package                   | Published                              | Purpose                                                                                                                                                                                                |
 | ------------------------- | -------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
-| `packages/shared-kernel/` | No (private)                           | Cross-domain types (`AuthState`, `IdeId`, `OnboardingGoal`, etc.) and `noop`. No runtime dependencies.                                                                                                 |
+| `packages/shared-kernel/` | No (private)                           | Cross-domain types (`AuthState`, `IdeId`, `OnboardingGoal`, etc.) and helpers (`noop`, `isDefined`). No runtime dependencies.                                                                          |
 | `packages/eslint-config/` | No (private)                           | Shared ESLint configuration. Exports base preset and `/react` preset with React Hooks rules.                                                                                                           |
-| `packages/core/`          | No (private)                           | Shared infrastructure — auth, session, telemetry, exec, system, sdk, utils, constants, frameworks, integrations, providers. Depends on `shared-kernel`.                                                |
-| `packages/testing/`       | No (private)                           | Test infrastructure — auth scaffolds, project scaffolds, env helpers, terminal helpers, MSW handlers. Sub-path exports: `/auth`, `/scaffold`, `/env`, `/terminal`, `/msw`. Depends on `shared-kernel`. |
+| `packages/core/`          | No (private)                           | Shared infrastructure — api, auth, config, session, telemetry, exec, system, sdk, mcp, utils, constants, frameworks, integrations, providers. Depends on `shared-kernel`.                              |
+| `packages/testing/`       | No (private)                           | Test infrastructure — auth scaffolds, project scaffolds, env helpers, terminal helpers, MSW handlers. Sub-path exports: `/auth`, `/scaffold`, `/env`, `/terminal`, `/msw`, `/e2e`. Depends on `shared-kernel`. |
 | `packages/quickstart/`    | Yes (`@spotify-confidence/quickstart`) | Interactive TUI wizard. Depends on `core` and `shared-kernel`.                                                                                                                                         |
 | `packages/cli/`           | Yes (`@spotify-confidence/cli`)        | CLI for managing Confidence (flags, events, recordings, config). Depends on `quickstart`.                                                                                                              |
 
@@ -28,17 +28,20 @@ shared-kernel (types-only leaf)
 
 ### packages/core/ modules
 
+- **`api/`** — HTTP client, types, and base request helpers for Confidence APIs
 - **`auth/`** — OAuth PKCE flow + token persistence
+- **`config/`** — Persistent CLI configuration (read/write/reset)
 - **`session/`** — WizardSession state, ScreenId enum, createSession
 - **`telemetry/`** — Analytics + session tracking
 - **`exec/`** — Running external commands (spawn, execFile, resolveBin)
 - **`system/`** — Environment vars, filesystem helpers, system checks
 - **`sdk/`** — SDK metadata + options
-- **`utils/`** — Generic utilities (addIf, interpolate)
+- **`mcp/`** — MCP client and server type definitions
+- **`utils/`** — Generic utilities (prompt-utils, semver)
 - **`constants.ts`** — Confidence URLs + env-derived values
 - **`frameworks/`** — Framework detection (react, nextjs, node, go, java, kotlin, python, swift)
-- **`integrations/`** — IDE integration strategies (claude, cursor, codex) + MCP, plugins, chat
-- **`providers/`** — Provider detection (Statsig, Eppo, PostHog, Optimizely)
+- **`integrations/`** — IDE integration strategies (claude, cursor, codex) + MCP, skills, chat
+- **`providers/`** — Provider detection (Statsig, Eppo, PostHog, Optimizely) + dependency scanners
 
 ### packages/quickstart/ structure
 
@@ -50,9 +53,12 @@ shared-kernel (types-only leaf)
 ### packages/cli/ structure
 
 - **`bin/cli.ts`** — Entry point (yargs, `confidence` binary)
-- **`src/commands/`** — Command definitions (login, logout, whoami, config, flags, events, recordings, quickstart)
-- **`src/features/`** — Feature implementations (config management, quickstart launcher)
+- **`src/commands/`** — Command definitions (login, logout, whoami, config, flags, events, recordings, docs, mcp, plugin, sdk, migrate, update, quickstart)
+- **`src/features/`** — Feature implementations (config, docs, events, flags, ide, mcp, migrate, plugin, quickstart, recordings, sdk, update)
+- **`src/input/`** — Input parsing (file reading, aliases, resolve)
 - **`src/output/`** — Output formatters (json, table, format detection)
+- **`src/network/`** — API clients (flags, events, recordings, docs, config, registry)
+- **`src/utils/`** — Shared utilities (auth, safely, telemetry, validation)
 
 ## Key Patterns
 
@@ -120,9 +126,9 @@ The stable `node-pty` release (v1.1.0) doesn't ship prebuilt binaries for Node.j
 
 - **Cross-package imports** use npm package names: `import { authenticate } from '@spotify-confidence/core'`, `import type { IdeId } from '@spotify-confidence/shared-kernel'`.
 - **Within quickstart**, use path aliases (`@commands/*`, `@features/*`, `@ui/*`) for cross-domain imports. Keep relative imports within the same domain.
-- **Within cli**, use path aliases (`@commands/*`, `@features/*`, `@output/*`, `@network/*`) for cross-domain imports. Keep relative imports within the same domain.
+- **Within cli**, use path aliases (`@commands/*`, `@features/*`, `@input/*`, `@output/*`, `@network/*`, `@utils/*`, `@meta`) for cross-domain imports. Keep relative imports within the same domain.
 - **Within core source** (`packages/core/src/`), use relative imports. Core's `__tests__/` may use tsconfig path aliases (`@auth/*`, `@integrations/*`, etc.).
-- **Test imports** from `@spotify-confidence/testing` use sub-path exports: `@spotify-confidence/testing/auth`, `@spotify-confidence/testing/scaffold`, `@spotify-confidence/testing/env`, `@spotify-confidence/testing/terminal`.
+- **Test imports** from `@spotify-confidence/testing` use sub-path exports: `@spotify-confidence/testing/auth`, `@spotify-confidence/testing/scaffold`, `@spotify-confidence/testing/env`, `@spotify-confidence/testing/terminal`, `@spotify-confidence/testing/e2e`.
 - Use `@inkjs/ui` components over standalone `ink-*` packages.
 - Screens go in `packages/quickstart/src/ui/screens/` (as slices), reusable components in `components/`.
 - Shared modules (`hooks/`, `lib/`, `components/`) must never import from screen slices. If a type is needed by both, put it in `ui/lib/`.
