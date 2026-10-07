@@ -7,15 +7,6 @@ import {
 } from '@spotify-confidence/testing/e2e';
 import { createProjectDir, writeClaudeGlobalConfig } from '@spotify-confidence/testing/scaffold';
 
-function buildExpiredJwt(): string {
-  return buildTestJwt({ exp: Math.floor(Date.now() / 1000) - 3600 });
-}
-
-const MCP_SERVERS = {
-  'confidence-flags': { type: 'http', url: 'https://mcp.confidence.dev/mcp/flags' },
-  'confidence-docs': { type: 'http', url: 'https://mcp.confidence.dev/mcp/docs' },
-};
-
 describe('when MCP config has expired auth tokens', () => {
   it('shows auth-expired status and reconnects successfully', async () => {
     const expiredToken = buildExpiredJwt();
@@ -24,7 +15,7 @@ describe('when MCP config has expired auth tokens', () => {
       token: expiredToken,
       env: { HOME: home.path },
     });
-    writeClaudeGlobalConfig(home.path, session.cwd, MCP_SERVERS);
+    writeClaudeGlobalConfig(home.path, session.cwd, buildMcpServers(expiredToken));
 
     // Welcome
     await session.waitForText('Start setup');
@@ -64,7 +55,7 @@ describe('when MCP config has expired auth tokens', () => {
       token: expiredToken,
       env: { HOME: home.path },
     });
-    writeClaudeGlobalConfig(home.path, session.cwd, MCP_SERVERS);
+    writeClaudeGlobalConfig(home.path, session.cwd, buildMcpServers(expiredToken));
 
     await navigatePastWelcome(session);
     await navigatePastGoalSelection(session);
@@ -87,3 +78,15 @@ describe('when MCP config has expired auth tokens', () => {
     expect(session.snapshot()).toMatchSnapshot('mcp-auth-skipped');
   });
 });
+
+function buildExpiredJwt(): string {
+  return buildTestJwt({ exp: Math.floor(Date.now() / 1000) - 3600 });
+}
+
+function buildMcpServers(token: string) {
+  const headers = { Authorization: `Bearer ${token}` };
+  return {
+    'confidence-flags': { type: 'http', url: 'https://mcp.confidence.dev/mcp/flags', headers },
+    'confidence-docs': { type: 'http', url: 'https://mcp.confidence.dev/mcp/docs', headers },
+  };
+}
