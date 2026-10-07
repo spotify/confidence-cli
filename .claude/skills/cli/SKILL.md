@@ -30,7 +30,7 @@ For parent commands with subcommands, use `noop` from `@spotify-confidence/share
 ### Command Types
 
 - **Standalone** — `login`, `logout`, `whoami`, `config`, `update` — directly perform their action
-- **API commands** — `flags`, `events`, `recordings`, `docs` — CRUD operations against Confidence APIs via `@network/*`
+- **API commands** — `flags`, `events`, `recordings`, `docs`, `warehouse` — CRUD operations against Confidence APIs via `@network/*`
 - **Integration** — `mcp`, `plugin`, `sdk`, `migrate` — manage IDE tooling and SDK setup
 - **Setup** — `flags setup`, `events setup`, `recordings setup` — delegate to quickstart TUI with pre-selected features
 - **TUI launcher** — `quickstart` — launches the full interactive wizard

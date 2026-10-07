@@ -6,14 +6,14 @@ CLI tools for setting up and integrating [Confidence](https://confidence.spotify
 
 pnpm workspace with six packages under `packages/`:
 
-| Package                   | Published                              | Purpose                                                                                                                                                                                                |
-| ------------------------- | -------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
-| `packages/shared-kernel/` | No (private)                           | Cross-domain types (`AuthState`, `IdeId`, `OnboardingGoal`, etc.) and helpers (`noop`, `isDefined`). No runtime dependencies.                                                                          |
-| `packages/eslint-config/` | No (private)                           | Shared ESLint configuration. Exports base preset and `/react` preset with React Hooks rules.                                                                                                           |
-| `packages/core/`          | No (private)                           | Shared infrastructure — api, auth, config, session, telemetry, exec, system, sdk, mcp, utils, constants, frameworks, integrations, providers. Depends on `shared-kernel`.                              |
+| Package                   | Published                              | Purpose                                                                                                                                                                                                        |
+| ------------------------- | -------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `packages/shared-kernel/` | No (private)                           | Cross-domain types (`AuthState`, `IdeId`, `OnboardingGoal`, etc.) and helpers (`noop`, `isDefined`). No runtime dependencies.                                                                                  |
+| `packages/eslint-config/` | No (private)                           | Shared ESLint configuration. Exports base preset and `/react` preset with React Hooks rules.                                                                                                                   |
+| `packages/core/`          | No (private)                           | Shared infrastructure — api, auth, config, session, telemetry, exec, system, sdk, mcp, utils, constants, frameworks, integrations, providers. Depends on `shared-kernel`.                                      |
 | `packages/testing/`       | No (private)                           | Test infrastructure — auth scaffolds, project scaffolds, env helpers, terminal helpers, MSW handlers. Sub-path exports: `/auth`, `/scaffold`, `/env`, `/terminal`, `/msw`, `/e2e`. Depends on `shared-kernel`. |
-| `packages/quickstart/`    | Yes (`@spotify-confidence/quickstart`) | Interactive TUI wizard. Depends on `core` and `shared-kernel`.                                                                                                                                         |
-| `packages/cli/`           | Yes (`@spotify-confidence/cli`)        | CLI for managing Confidence (flags, events, recordings, config). Depends on `quickstart`.                                                                                                              |
+| `packages/quickstart/`    | Yes (`@spotify-confidence/quickstart`) | Interactive TUI wizard. Depends on `core` and `shared-kernel`.                                                                                                                                                 |
+| `packages/cli/`           | Yes (`@spotify-confidence/cli`)        | CLI for managing Confidence (flags, events, recordings, config). Depends on `quickstart`.                                                                                                                      |
 
 ### Dependency graph
 
@@ -53,11 +53,11 @@ shared-kernel (types-only leaf)
 ### packages/cli/ structure
 
 - **`bin/cli.ts`** — Entry point (yargs, `confidence` binary)
-- **`src/commands/`** — Command definitions (login, logout, whoami, config, flags, events, recordings, docs, mcp, plugin, sdk, migrate, update, quickstart)
-- **`src/features/`** — Feature implementations (config, docs, events, flags, ide, mcp, migrate, plugin, quickstart, recordings, sdk, update)
+- **`src/commands/`** — Command definitions (login, logout, whoami, config, flags, events, recordings, docs, mcp, plugin, sdk, migrate, update, quickstart, warehouse)
+- **`src/features/`** — Feature implementations (config, docs, events, flags, ide, mcp, migrate, plugin, quickstart, recordings, sdk, update, warehouse)
 - **`src/input/`** — Input parsing (file reading, aliases, resolve)
 - **`src/output/`** — Output formatters (json, table, format detection)
-- **`src/network/`** — API clients (flags, events, recordings, docs, config, registry)
+- **`src/network/`** — API clients (flags, events, recordings, docs, config, registry, warehouse)
 - **`src/utils/`** — Shared utilities (auth, safely, telemetry, validation)
 
 ## Key Patterns

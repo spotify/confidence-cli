@@ -12,4 +12,5 @@ export { mcpCommand } from './mcp.js';
 export { pluginCommand } from './plugin.js';
 export { updateCommand } from './update.js';
 export { migrateCommand } from './migrate.js';
+export { warehouseCommand } from './warehouse.js';
 export type { GlobalFlags } from './types.js';
