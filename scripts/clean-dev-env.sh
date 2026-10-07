@@ -78,7 +78,7 @@ if $clean_mcp; then
 
   # --- Confidence MCP preference ---
 
-  mcp_pref_file="${TMPDIR:-/tmp}/confidence_mcp_preference"
+  mcp_pref_file="$config_dir/mcp_preference"
   if [[ -f "$mcp_pref_file" ]]; then
     rm "$mcp_pref_file"
     echo "Removed $mcp_pref_file"
@@ -122,29 +122,23 @@ if $clean_mcp; then
 
   # Claude Code: uninstall plugin (may be from official or custom marketplace)
   for scope in local project user; do
-    if (cd "$PROJECT_DIR" && claude plugin uninstall "$plugin_name" --scope "$scope") 2>/dev/null; then
+    if (cd "$PROJECT_DIR" && claude plugin uninstall "$plugin_name" --scope "$scope") >/dev/null 2>&1; then
       echo "Uninstalled Claude plugin ($scope scope)"
       ((removed++)) || true
     fi
   done
-  if (cd "$PROJECT_DIR" && claude plugin marketplace remove "$marketplace_name") 2>/dev/null; then
+  if (cd "$PROJECT_DIR" && claude plugin marketplace remove "$marketplace_name") >/dev/null 2>&1; then
     echo "Removed Claude marketplace $marketplace_name"
     ((removed++)) || true
   fi
 
   # Codex: remove plugin and marketplace
-  if codex plugin remove "$plugin_name@$marketplace_name" 2>/dev/null; then
+  if codex plugin remove "$plugin_name@$marketplace_name" >/dev/null 2>&1; then
     echo "Removed Codex plugin"
     ((removed++)) || true
   fi
-  if codex plugin marketplace remove "$marketplace_name" 2>/dev/null; then
+  if codex plugin marketplace remove "$marketplace_name" >/dev/null 2>&1; then
     echo "Removed Codex marketplace $marketplace_name"
-    ((removed++)) || true
-  fi
-
-  # Cursor: remove marketplace (no CLI plugin install to undo)
-  if cursor agent plugin marketplace remove "$marketplace_repo" 2>/dev/null; then
-    echo "Removed Cursor marketplace $marketplace_repo"
     ((removed++)) || true
   fi
 
@@ -155,7 +149,7 @@ if $clean_mcp; then
     [[ -f "$config_path" ]] || return 0
 
     local result
-    result=$(node "$SCRIPT_DIR/remove-mcp-entries.js" "$config_path" 2>/dev/null) || return 0
+    result=$(node "$SCRIPT_DIR/remove-mcp-entries.cjs" "$config_path" 2>/dev/null) || return 0
 
     local action="${result%%:*}"
     local names="${result#*:}"
@@ -183,14 +177,14 @@ if $clean_mcp; then
   # Use `claude mcp remove` to clear each server's entries and approval state (all scopes)
   for server in ${mcp_servers[@]+"${mcp_servers[@]}"}; do
     for scope in local project user; do
-      if (cd "$PROJECT_DIR" && claude mcp remove --scope "$scope" "$server") 2>/dev/null; then
+      if (cd "$PROJECT_DIR" && claude mcp remove --scope "$scope" "$server") >/dev/null 2>&1; then
         echo "Removed MCP server $server from $scope scope"
         ((removed++)) || true
       fi
     done
   done
 
-  # Remove .mcp.json entirely
+  # Remove legacy .mcp.json (Claude used --scope project before switching to --scope local)
   if [[ -f "$PROJECT_DIR/.mcp.json" ]]; then
     rm "$PROJECT_DIR/.mcp.json"
     echo "Removed $PROJECT_DIR/.mcp.json"
@@ -198,44 +192,41 @@ if $clean_mcp; then
   fi
 
   # Clean Cursor MCP configs, CLI permissions, and agent state
-  remove_all_mcp_entries "$PROJECT_DIR/.cursor/mcp.json"
   remove_all_mcp_entries "$HOME/.cursor/mcp.json"
   if [[ -f "$PROJECT_DIR/.cursor/cli.json" ]]; then
     rm "$PROJECT_DIR/.cursor/cli.json"
     echo "Removed $PROJECT_DIR/.cursor/cli.json"
     ((removed++)) || true
   fi
-  for server in confidence-flags confidence-docs; do
-    if cursor agent mcp disable "$server" 2>/dev/null; then
-      echo "Disabled Cursor agent MCP server $server"
-      ((removed++)) || true
-    fi
-  done
-
-  # Clean legacy Claude MCP config
+  # Clean Claude local-scope MCP entries (stored in global config keyed by project path)
   remove_all_mcp_entries "$HOME/.claude.json"
 
   # Clean Codex MCP config (TOML format) — both project-level and global
-  codex_configs=("$PROJECT_DIR/.codex/config.toml" "$HOME/.codex/config.toml")
-  for codex_config in "${codex_configs[@]}"; do
-    if [[ -f "$codex_config" ]]; then
-      for server in confidence-flags confidence-docs; do
-        codex mcp remove "$server" 2>/dev/null || true
-      done
-      # Remove the config if it only contained our MCP entries
-      if [[ -f "$codex_config" ]]; then
-        remaining=$(grep -c '^\[' "$codex_config" 2>/dev/null || echo "0")
-        if [[ "$remaining" -eq 0 ]]; then
-          rm "$codex_config"
-          echo "Deleted $codex_config (empty after cleanup)"
-          ((removed++)) || true
-        else
-          echo "Cleaned Codex MCP entries from $codex_config"
-          ((removed++)) || true
-        fi
-      fi
-    fi
+  # Use CLI for global config; direct file manipulation covers both scopes
+  for server in confidence-flags confidence-docs; do
+    codex mcp remove "$server" >/dev/null 2>&1 || true
   done
+
+  remove_toml_mcp_entries() {
+    local config_path="$1"
+    [[ -f "$config_path" ]] || return 0
+
+    local result
+    result=$(node "$SCRIPT_DIR/remove-toml-mcp-entries.cjs" "$config_path" 2>/dev/null) || return 0
+
+    local action="${result%%:*}"
+    local names="${result#*:}"
+    if [[ "$action" == "deleted" ]]; then
+      echo "Deleted $config_path (empty after removing MCP servers: $names)"
+      ((removed++)) || true
+    elif [[ "$action" == "cleaned" ]]; then
+      echo "Removed MCP entries from $config_path ($names)"
+      ((removed++)) || true
+    fi
+  }
+
+  remove_toml_mcp_entries "$PROJECT_DIR/.codex/config.toml"
+  remove_toml_mcp_entries "$HOME/.codex/config.toml"
 
   # --- MCP tool permissions from .claude/settings*.json ---
 
@@ -244,7 +235,7 @@ if $clean_mcp; then
     [[ -f "$settings_path" ]] || return 0
 
     local settings_result
-    settings_result=$(node "$SCRIPT_DIR/remove-mcp-settings.js" "$settings_path" 2>/dev/null) || return 0
+    settings_result=$(node "$SCRIPT_DIR/remove-mcp-settings.cjs" "$settings_path" 2>/dev/null) || return 0
 
     if [[ "$settings_result" == "deleted" ]]; then
       echo "Deleted $settings_path (empty after cleanup)"
