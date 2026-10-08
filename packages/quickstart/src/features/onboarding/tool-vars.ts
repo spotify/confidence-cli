@@ -1,5 +1,6 @@
-import type { IdeId, PluginInstallationMethod } from '@spotify-confidence/shared-kernel';
-import { PLUGIN_NAME } from '@spotify-confidence/core';
+import type { IdeId } from '@spotify-confidence/shared-kernel';
+
+export { skillInvocation, referenceInstruction, followInstruction } from '@spotify-confidence/core';
 
 type ToolFormatter = (server: string, tool: string) => string;
 
@@ -8,32 +9,6 @@ const TOOL_FORMATTERS: Record<IdeId, ToolFormatter> = {
   codex: (server, tool) => `${server}:${tool}`,
   cursor: (server, tool) => `mcp__${server}__${tool}`,
 };
-
-const SKILL_INVOCATIONS: Record<IdeId, (skill: string) => string> = {
-  claude: (skill) => `/${PLUGIN_NAME}:${skill}`,
-  codex: (skill) => `$${skill}`,
-  cursor: (skill) => `/${skill}`,
-};
-
-const SKILLS_DIRS: Record<IdeId, string> = {
-  claude: '.claude/skills',
-  cursor: '.cursor/skills',
-  codex: '.agents/skills',
-};
-
-export function skillInvocation(skillName: string, ide: IdeId): string {
-  return SKILL_INVOCATIONS[ide](skillName);
-}
-
-export function referenceInstruction(
-  skillName: string,
-  ide: IdeId,
-  method?: PluginInstallationMethod | null,
-): string {
-  return method === 'cli'
-    ? `Invoke the \`${skillInvocation(skillName, ide)}\` skill as a **methodology reference**`
-    : `Read \`${SKILLS_DIRS[ide]}/${skillName}/SKILL.md\` as a **methodology reference**`;
-}
 
 export function buildToolVars(ide: IdeId): Record<string, string> {
   const fmt = TOOL_FORMATTERS[ide];

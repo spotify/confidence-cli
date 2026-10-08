@@ -13,7 +13,7 @@ const IDE_CASES = [
     expectedArgs: ['--print', '--output-format', 'stream-json', '--verbose'],
     expectedPromptSnippets: [
       'Confidence SDK',
-      '/confidence:analyze-project',
+      '.config/confidence/skills/analyze-project/SKILL.md',
       'existing codebase',
       'mcp__confidence-flags__',
     ],
@@ -25,7 +25,7 @@ const IDE_CASES = [
     expectedArgs: ['--print', '--output-format', 'stream-json', '--approve-mcps', '--auto-review'],
     expectedPromptSnippets: [
       'Confidence SDK',
-      '.cursor/skills/analyze-project/SKILL.md',
+      '.config/confidence/skills/analyze-project/SKILL.md',
       'existing codebase',
       'mcp__confidence-flags__',
     ],
@@ -46,7 +46,7 @@ const IDE_CASES = [
     ],
     expectedPromptSnippets: [
       'Confidence SDK',
-      '$analyze-project',
+      '.config/confidence/skills/analyze-project/SKILL.md',
       'existing codebase',
       'confidence-flags:',
     ],

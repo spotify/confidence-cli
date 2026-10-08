@@ -3,7 +3,6 @@ import type {
   AuthState,
   IdeId,
   OnboardingGoal,
-  PluginInstallationMethod,
   DetectedProvider,
 } from '@spotify-confidence/shared-kernel';
 
@@ -75,11 +74,6 @@ export type WizardSession = {
    * @default []
    */
   pluginTargets: IdeId[];
-  /**
-   * How plugins were installed — via CLI marketplace or local download.
-   * @default null
-   */
-  pluginInstallMethod: PluginInstallationMethod | null;
   /**
    * MCP server names that were successfully connected.
    * @default []
@@ -175,7 +169,6 @@ export function createSession(opts?: {
     authState: { status: 'idle' },
     ide: opts?.ide ?? null,
     pluginTargets: [],
-    pluginInstallMethod: null,
     connectedMcps: [],
     isEmptyProject: false,
     detectedProviders: [],

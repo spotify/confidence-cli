@@ -1,4 +1,3 @@
-import type { IdeId, PluginInstallationMethod } from '@spotify-confidence/shared-kernel';
 import { loadStep } from '../steps/load.js';
 import { referenceInstruction } from '../tool-vars.js';
 
@@ -6,17 +5,11 @@ export function integrateRecording(
   framework: string,
   step: number,
   isEmptyProject: boolean,
-  ide: IdeId,
-  pluginInstallMethod?: PluginInstallationMethod | null,
 ): string {
   return loadStep('integrate-recording.md', {
     STEP: step,
     FRAMEWORK: framework,
-    SKILL_READ_INSTRUCTION: referenceInstruction(
-      'setup-session-recording',
-      ide,
-      pluginInstallMethod,
-    ),
+    SKILL_READ_INSTRUCTION: referenceInstruction('setup-session-recording'),
     DOMAIN_CONTEXT: isEmptyProject
       ? "The project was just scaffolded — configure recording on the sample app's main view."
       : "Identify the app's entry point or root layout where the session recorder should be initialized.",

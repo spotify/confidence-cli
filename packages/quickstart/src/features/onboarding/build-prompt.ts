@@ -1,8 +1,4 @@
-import type {
-  IdeId,
-  OnboardingGoal,
-  PluginInstallationMethod,
-} from '@spotify-confidence/shared-kernel';
+import type { IdeId, OnboardingGoal } from '@spotify-confidence/shared-kernel';
 import { addIf } from '@spotify-confidence/core';
 import { buildToolVars } from './tool-vars.js';
 import { preflight } from './sections/preflight.js';
@@ -20,7 +16,6 @@ type PromptOptions = {
   isEmptyProject?: boolean;
   goals?: OnboardingGoal[];
   hasProviders?: boolean;
-  pluginInstallMethod?: PluginInstallationMethod | null;
 };
 
 export function buildOnboardingPrompt({
@@ -30,7 +25,6 @@ export function buildOnboardingPrompt({
   isEmptyProject = false,
   goals = ['feature-flags'],
   hasProviders = false,
-  pluginInstallMethod = null,
 }: PromptOptions): string {
   const steps = new StepCounter(isEmptyProject ? 2 : 1);
   const tools = buildToolVars(ide);
@@ -42,26 +36,19 @@ export function buildOnboardingPrompt({
   const sections = [
     preamble(framework, projectDir, isEmptyProject, goals),
     preflight(tools),
+
     addIf(isEmptyProject, () => scaffold(framework, steps.next())),
-
-    addIf(withFlags, () =>
-      integrateFeatureFlags(framework, steps.next(), isEmptyProject, ide, pluginInstallMethod),
-    ),
-
-    addIf(withRecordings, () =>
-      integrateRecording(framework, steps.next(), isEmptyProject, ide, pluginInstallMethod),
-    ),
-
-    addIf(withEventTracking, () =>
-      instrumentEvents(framework, steps.next(), isEmptyProject, ide, pluginInstallMethod),
-    ),
+    addIf(withFlags, () => integrateFeatureFlags(framework, steps.next(), isEmptyProject)),
+    addIf(withRecordings, () => integrateRecording(framework, steps.next(), isEmptyProject)),
+    addIf(withEventTracking, () => instrumentEvents(framework, steps.next(), isEmptyProject)),
 
     generateReport({
       step: steps.next(),
-      isEmptyProject,
       goals,
+      isEmptyProject,
       hasProviders,
     }),
+
     summary(steps.next()),
     rules(),
   ];

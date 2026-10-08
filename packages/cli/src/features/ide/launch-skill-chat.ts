@@ -1,4 +1,4 @@
-import { getIntegration } from '@spotify-confidence/core';
+import { getIntegration, hasSkills } from '@spotify-confidence/core';
 import { fail } from '@output/print.js';
 import { resolveIde, resolveFlag, resolveProjectDir } from '@features/ide/index.js';
 import { resolveAuthToken } from '@features/mcp/index.js';
@@ -11,10 +11,9 @@ export async function launchSkillChat(
   const projectDir = resolveProjectDir(argv);
   const integration = getIntegration(ideId);
 
-  const plugin = await integration.detectPlugin(projectDir);
-  if (!plugin) {
+  if (!hasSkills()) {
     fail(
-      'Confidence AI plugin not installed. Run "confidence plugin install" to install it or "confidence quickstart" to set up your project first.',
+      'Confidence skills not installed. Run "confidence plugin install" to install them or "confidence quickstart" to set up your project first.',
     );
     return;
   }

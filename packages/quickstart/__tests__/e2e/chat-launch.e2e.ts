@@ -27,8 +27,8 @@ describe('when the user starts chat after onboarding', () => {
     expect(prompt).toContain('CONFIDENCE_QUICKSTART.md');
     expect(prompt).toContain('Help me with next steps');
     expect(prompt).toContain('Confidence AI plugin');
-    expect(prompt).toContain('/setup-warehouse');
-    expect(prompt).not.toContain('/migrate-');
+    expect(prompt).toContain('/confidence:setup-warehouse');
+    expect(prompt).not.toContain('migrate-');
   });
 
   it('includes migration hint when competitors are detected', async () => {
@@ -46,8 +46,8 @@ describe('when the user starts chat after onboarding', () => {
 
     const prompt = readFileSync(join(session.cwd, CHAT_PROMPT_FILE), 'utf-8');
     expect(prompt).toContain('Confidence AI plugin');
-    expect(prompt).toContain('/setup-warehouse');
-    expect(prompt).toContain('/migrate-');
+    expect(prompt).toContain('/confidence:setup-warehouse');
+    expect(prompt).toContain('/confidence:migrate-');
   });
 
   it('sends an integration prompt when onboarding was skipped', async () => {

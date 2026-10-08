@@ -8,7 +8,3 @@ export function globalConfigPath(): string {
 export function projectConfigPath(projectDir: string): string {
   return join(projectDir, '.codex', 'config.toml');
 }
-
-export function skillsDir(projectDir: string): string {
-  return join(projectDir, '.agents', 'skills');
-}

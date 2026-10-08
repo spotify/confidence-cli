@@ -87,7 +87,7 @@ if $clean_mcp; then
 
   # --- Confidence AI plugin skills ---
 
-  skills_dirs=("$PROJECT_DIR/.claude/skills" "$PROJECT_DIR/.cursor/skills" "$PROJECT_DIR/.agents/skills")
+  skills_dirs=("$config_dir/skills" "$PROJECT_DIR/.claude/skills" "$PROJECT_DIR/.cursor/skills" "$PROJECT_DIR/.agents/skills")
   confidence_skills=(
     analyze-project
     instrument-events

@@ -13,7 +13,8 @@
       "@frameworks/*": ["./src/frameworks/*"],
       "@integrations/*": ["./src/integrations/*"],
       "@providers/*": ["./src/providers/*"],
-      "@api/*": ["./src/api/*"]
+      "@api/*": ["./src/api/*"],
+      "@config/*": ["./src/config/*"]
     }
   },
   "include": ["src", "__tests__", "types", "vitest.config.ts"]

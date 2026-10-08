@@ -1,3 +1,4 @@
+export { getConfigDir } from './paths.js';
 export {
   readConfig,
   getConfigValue,

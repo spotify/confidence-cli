@@ -1,4 +1,3 @@
-import type { IdeId, PluginInstallationMethod } from '@spotify-confidence/shared-kernel';
 import { loadStep } from '../steps/load.js';
 import { referenceInstruction } from '../tool-vars.js';
 
@@ -6,15 +5,13 @@ export function integrateFeatureFlags(
   framework: string,
   step: number,
   isEmptyProject: boolean,
-  ide: IdeId,
-  pluginInstallMethod?: PluginInstallationMethod | null,
 ): string {
   const needsReactGotchas = /react|nextjs|next/i.test(framework);
 
   return loadStep('integrate-feature-flags.md', {
     STEP: step,
     FRAMEWORK: framework,
-    SKILL_READ_INSTRUCTION: referenceInstruction('analyze-project', ide, pluginInstallMethod),
+    SKILL_READ_INSTRUCTION: referenceInstruction('analyze-project'),
 
     DOMAIN_CONTEXT: isEmptyProject
       ? "The project was just scaffolded — treat the sample app's features as the domain."

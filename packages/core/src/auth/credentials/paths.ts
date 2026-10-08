@@ -1,10 +1,5 @@
-import { homedir } from 'node:os';
 import { join } from 'node:path';
-import { env } from '../../system/env.js';
-
-export function getConfigDir(): string {
-  return env('CONFIDENCE_CONFIG_DIR') ?? join(homedir(), '.config', 'confidence');
-}
+import { getConfigDir } from '../../config/paths.js';
 
 const VALID_PROFILE = /^[a-z0-9_-]+$/;
 

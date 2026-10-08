@@ -3,7 +3,6 @@ export type {
   IdeId,
   JsonObject,
   OnboardingGoal,
-  PluginInstallationMethod,
   PluginScope,
   ProviderId,
   DetectedProvider,

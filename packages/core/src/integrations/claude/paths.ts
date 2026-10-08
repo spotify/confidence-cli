@@ -12,7 +12,3 @@ export function projectConfigPath(projectDir: string): string {
 export function mcpConfigPath(projectDir: string): string {
   return join(projectDir, '.claude', 'settings.local.json');
 }
-
-export function skillsDir(projectDir: string): string {
-  return join(projectDir, '.claude', 'skills');
-}

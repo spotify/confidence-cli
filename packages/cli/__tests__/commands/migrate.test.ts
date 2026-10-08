@@ -5,16 +5,21 @@ import { createMockIntegration } from '../helpers/mock-integration.js';
 import { createRunner } from '../helpers/run-command.js';
 
 const mockIntegration = createMockIntegration({
-  detectPlugin: vi.fn().mockResolvedValue('cli'),
+  detectPlugin: vi.fn().mockResolvedValue(true),
   detectMcpStatuses: vi.fn().mockResolvedValue({
     'confidence-flags': 'connected',
     'confidence-docs': 'connected',
   }),
 });
 
-const mockDetectProviders = vi
-  .fn()
-  .mockReturnValue([{ id: 'statsig', name: 'Statsig', skillName: 'migrate-statsig' }]);
+const mockHasSkills = vi.fn().mockReturnValue(true);
+const mockDetectProviders = vi.fn().mockReturnValue([
+  {
+    id: 'statsig',
+    name: 'Statsig',
+    skillName: 'migrate-statsig',
+  },
+]);
 
 const mockAuthenticate = vi.fn().mockResolvedValue({
   accessToken: buildTestJwt({ email: 'test@example.com' }),
@@ -27,6 +32,7 @@ vi.mock('@spotify-confidence/core', async (importOriginal) => {
     ...actual,
     getIntegration: () => mockIntegration,
     getIntegrations: () => [mockIntegration],
+    hasSkills: () => mockHasSkills(),
     detectProviders: (...args: unknown[]) => mockDetectProviders(...args),
     authenticate: (...args: unknown[]) => mockAuthenticate(...args),
   };
@@ -109,11 +115,11 @@ describe('migrate <provider>', () => {
   it('fails when plugin is not installed', async () => {
     using _auth = prepareAuthTokens('valid');
     using output = captureOutput();
-    vi.mocked(mockIntegration.detectPlugin).mockResolvedValueOnce(null);
+    mockHasSkills.mockReturnValueOnce(false);
 
     await run(['migrate', 'statsig', '--ide', 'claude']);
 
-    expect(output.stderr).toContain('Confidence AI plugin not installed');
+    expect(output.stderr).toContain('Confidence skills not installed');
     expect(output.stderr).toContain('confidence quickstart');
     expect(mockIntegration.launchChat).not.toHaveBeenCalled();
   });

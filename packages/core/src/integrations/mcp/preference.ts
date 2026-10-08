@@ -1,6 +1,6 @@
 import { existsSync, readFileSync, writeFileSync, unlinkSync, mkdirSync } from 'node:fs';
 import { join } from 'node:path';
-import { getConfigDir } from '../../auth/credentials/paths.js';
+import { getConfigDir } from '../../config/paths.js';
 
 type McpPreference = 'connected' | 'skipped';
 

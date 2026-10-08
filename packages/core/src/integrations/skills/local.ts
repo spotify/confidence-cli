@@ -2,6 +2,7 @@ import { existsSync } from 'node:fs';
 import { mkdir, rm, writeFile } from 'node:fs/promises';
 import { join } from 'node:path';
 import { SKILLS_BASE_URL } from '../../constants.js';
+import { getConfigDir } from '../../config/paths.js';
 
 const SKILL_NAMES = [
   'analyze-project',
@@ -18,8 +19,12 @@ const SKILL_NAMES = [
   'migrate-statsig',
 ] as const;
 
-export function hasDownloadedSkills(skillsDir: string): boolean {
-  return SKILL_NAMES.some((name) => existsSync(join(skillsDir, name, 'SKILL.md')));
+export function getSkillsDir(): string {
+  return join(getConfigDir(), 'skills');
+}
+
+export function hasSkills(): boolean {
+  return SKILL_NAMES.some((name) => existsSync(join(getSkillsDir(), name, 'SKILL.md')));
 }
 
 export async function removeSkills(skillsDir: string): Promise<void> {
