@@ -76,7 +76,9 @@ export async function createFlag(
   const args: JsonObject = { flagName: flagKey };
   if (opts?.client) args.clientName = opts.client;
   if (opts?.description) args.description = opts.description;
-  if (opts?.variants) args.variants = JSON.stringify(opts.variants.map((v) => ({ name: v })));
+  if (opts?.variants) {
+    args.variants = JSON.stringify(opts.variants.map((v) => ({ name: v, value: {} })));
+  }
 
   return mcpCallTool(serverOpts(token), 'createFlag', args);
 }
