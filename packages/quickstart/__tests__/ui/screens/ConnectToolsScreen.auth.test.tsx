@@ -37,8 +37,8 @@ describe('ConnectToolsScreen', () => {
         http.post('https://mcp.confidence.dev/mcp/docs', () => HttpResponse.error()),
       );
 
-      using _pref = createMcpPreference('connected');
       using _auth = prepareAuthTokens('none');
+      using _pref = createMcpPreference('connected');
       using project = createProjectDir();
 
       // Act

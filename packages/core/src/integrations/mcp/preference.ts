@@ -4,13 +4,16 @@ import { getConfigDir } from '../../auth/credentials/paths.js';
 
 type McpPreference = 'connected' | 'skipped';
 
-const PREFERENCE_FILE = join(getConfigDir(), 'mcp_preference');
+function preferencePath(): string {
+  return join(getConfigDir(), 'mcp_preference');
+}
 
 export function loadMcpPreference(): McpPreference | null {
-  if (!existsSync(PREFERENCE_FILE)) return null;
+  const file = preferencePath();
+  if (!existsSync(file)) return null;
 
   try {
-    const value = readFileSync(PREFERENCE_FILE, 'utf-8').trim();
+    const value = readFileSync(file, 'utf-8').trim();
     return ['connected', 'skipped'].includes(value) ? (value as McpPreference) : null;
   } catch {
     return null;
@@ -19,12 +22,12 @@ export function loadMcpPreference(): McpPreference | null {
 
 export function persistMcpPreference(preference: McpPreference): void {
   mkdirSync(getConfigDir(), { recursive: true });
-  writeFileSync(PREFERENCE_FILE, preference, 'utf-8');
+  writeFileSync(preferencePath(), preference, 'utf-8');
 }
 
 export function clearMcpPreference(): void {
   try {
-    unlinkSync(PREFERENCE_FILE);
+    unlinkSync(preferencePath());
   } catch {
     // already gone
   }
