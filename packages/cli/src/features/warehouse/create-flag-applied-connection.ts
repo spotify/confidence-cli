@@ -1,4 +1,4 @@
-import { ensureJsonString } from '@spotify-confidence/shared-kernel';
+import { ensureJsonString, validateJsonString } from '@spotify-confidence/core';
 import { createFlagAppliedConnection } from '@network/index.js';
 import { printMcpResult } from '@output/index.js';
 import { withAuth, tryHandleMcpError } from '@utils/index.js';
@@ -11,13 +11,11 @@ export const createFlagAppliedConnectionCmd = withAuth(
   async function createFlagAppliedConnectionCmd(argv, token) {
     const params = resolveInput<WarehouseTypeParams>(argv, ['warehouse-type', 'config-json']);
     requireKeys(params, ['warehouse-type', 'config-json']);
-    validateWarehouseType(params['warehouse-type']);
 
-    const result = await createFlagAppliedConnection(
-      token,
-      params['warehouse-type'],
-      ensureJsonString(params['config-json']),
-    );
+    const warehouseType = validateWarehouseType(params['warehouse-type']);
+    const configJson = validateJsonString(ensureJsonString(params['config-json']));
+
+    const result = await createFlagAppliedConnection(token, warehouseType, configJson);
 
     if (tryHandleMcpError(result)) return;
     printMcpResult(result, argv);

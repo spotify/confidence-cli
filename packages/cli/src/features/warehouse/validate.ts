@@ -1,5 +1,5 @@
 import { extractText, parseToolJson } from '@spotify-confidence/core';
-import { ensureJsonString } from '@spotify-confidence/shared-kernel';
+import { ensureJsonString, validateJsonString } from '@spotify-confidence/core';
 import { validateWarehouseConfig } from '@network/index.js';
 import { resolveFormat, formatJson, message, print, extractFlags, fail } from '@output/index.js';
 import { withAuth, tryHandleMcpError } from '@utils/index.js';
@@ -31,13 +31,11 @@ type ValidationRow = {
 export const validateConfig = withAuth(async function validateConfig(argv, token) {
   const params = resolveInput<WarehouseTypeParams>(argv, ['warehouse-type', 'config-json']);
   requireKeys(params, ['warehouse-type', 'config-json']);
-  validateWarehouseType(params['warehouse-type']);
 
-  const result = await validateWarehouseConfig(
-    token,
-    params['warehouse-type'],
-    ensureJsonString(params['config-json']),
-  );
+  const warehouseType = validateWarehouseType(params['warehouse-type']);
+  const configJson = validateJsonString(ensureJsonString(params['config-json']));
+
+  const result = await validateWarehouseConfig(token, warehouseType, configJson);
   if (tryHandleMcpError(result)) return;
 
   let data: ValidateResponse;

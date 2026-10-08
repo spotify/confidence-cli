@@ -1,4 +1,4 @@
-import { ensureJsonString } from '@spotify-confidence/shared-kernel';
+import { ensureJsonString, validateJsonString } from '@spotify-confidence/core';
 import { createWarehouse } from '@network/index.js';
 import { printMcpResult } from '@output/index.js';
 import { withAuth, tryHandleMcpError } from '@utils/index.js';
@@ -10,13 +10,11 @@ import { validateWarehouseType } from './utils.js';
 export const createWarehouseCmd = withAuth(async function createWarehouseCmd(argv, token) {
   const params = resolveInput<WarehouseTypeParams>(argv, ['warehouse-type', 'config-json']);
   requireKeys(params, ['warehouse-type', 'config-json']);
-  validateWarehouseType(params['warehouse-type']);
 
-  const result = await createWarehouse(
-    token,
-    params['warehouse-type'],
-    ensureJsonString(params['config-json']),
-  );
+  const warehouseType = validateWarehouseType(params['warehouse-type']);
+  const configJson = validateJsonString(ensureJsonString(params['config-json']));
+
+  const result = await createWarehouse(token, warehouseType, configJson);
 
   if (tryHandleMcpError(result)) return;
   printMcpResult(result, argv);
