@@ -1,6 +1,6 @@
 import { writeFileSync, chmodSync } from 'node:fs';
 import { join } from 'node:path';
-import { isWindows } from '../../../env/index.js';
+import { isWindows } from '@spotify-confidence/shared-kernel';
 
 export const writeMockBinary = isWindows ? writeWindowsBinary : writeUnixBinary;
 

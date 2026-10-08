@@ -9,7 +9,7 @@ describe('resolveBin', () => {
       exists: () => true,
     });
 
-    expect(sut).toEqual({ command: 'claude', args: ['--version'] });
+    expect(sut).toEqual({ command: 'claude', args: ['--version'], shell: false });
   });
 
   it('runs a PATH .js shim with node on Windows', () => {
@@ -26,16 +26,17 @@ describe('resolveBin', () => {
     expect(sut).toEqual({
       command: '/nodejs/node.exe',
       args: [jsPath, '--version'],
+      shell: false,
     });
   });
 
-  it('returns the command unchanged on Windows when no .js shim exists', () => {
+  it('uses shell mode on Windows when no .js shim exists', () => {
     const sut = resolveBin('claude', ['--version'], {
       platform: 'win32',
       pathEnv: join('/Windows', 'System32'),
       exists: () => false,
     });
 
-    expect(sut).toEqual({ command: 'claude', args: ['--version'] });
+    expect(sut).toEqual({ command: 'claude', args: ['--version'], shell: true });
   });
 });

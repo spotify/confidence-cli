@@ -1,32 +1,38 @@
 import { realpathSync, readFileSync } from 'node:fs';
-import type { McpStatusMap } from '../../mcp/servers.js';
-import { type McpServerName, detectMcpStatuses as detectShared } from '../../mcp/servers.js';
-import { onlyKnownServerNames } from '../../mcp/config.js';
+import { normalize } from 'node:path';
 import { resolveGitRoot } from '../../../system/fs.js';
+import { onlyKnownServerNames } from '../../mcp/config.js';
+import {
+  type McpServerName,
+  type McpStatusMap,
+  detectMcpStatuses as detectShared,
+} from '../../mcp/servers.js';
 import { globalConfigPath } from '../paths.js';
 
-type McpServerEntry = {
-  headers?: Record<string, string>;
-};
+type McpServerEntry = { headers?: Record<string, string> };
+type ClaudeProjectConfig = { mcpServers?: Record<string, McpServerEntry> };
+type ClaudeGlobalConfig = { projects?: Record<string, ClaudeProjectConfig> };
 
-type ClaudeProjectConfig = {
-  mcpServers?: Record<string, McpServerEntry>;
-};
-
-type ClaudeGlobalConfig = {
-  projects?: Record<string, ClaudeProjectConfig>;
-};
+function normalizedProjects(config: ClaudeGlobalConfig): Record<string, ClaudeProjectConfig> {
+  return Object.entries(config.projects ?? {})
+    .map(([rawKey, project]) => [normalize(rawKey), project] as const)
+    .reduce<Record<string, ClaudeProjectConfig>>(
+      (acc, [normalizedKey, project]) => ({ ...acc, [normalizedKey]: project }),
+      {},
+    );
+}
 
 function readProjectMcpServers(projectDir: string): Record<string, McpServerEntry> {
   try {
     const resolved = realpathSync(projectDir);
+    const gitRoot = resolveGitRoot(resolved);
     const config = JSON.parse(readFileSync(globalConfigPath(), 'utf-8')) as ClaudeGlobalConfig;
-    const projectGitRoot = resolveGitRoot(resolved);
+    const projects = normalizedProjects(config);
 
     return (
-      config.projects?.[resolved]?.mcpServers ??
-      config.projects?.[projectDir]?.mcpServers ??
-      (projectGitRoot ? config.projects?.[projectGitRoot]?.mcpServers : {}) ??
+      projects[resolved]?.mcpServers ??
+      projects[normalize(projectDir)]?.mcpServers ??
+      (gitRoot ? projects[gitRoot]?.mcpServers : undefined) ??
       {}
     );
   } catch {

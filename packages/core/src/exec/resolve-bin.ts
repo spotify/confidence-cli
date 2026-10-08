@@ -12,20 +12,30 @@ type ResolveBinOptions = {
   exists?: (path: string) => boolean;
 };
 
+export type ResolvedBin = {
+  command: string;
+  args: string[];
+  shell: boolean;
+};
+
 /**
  * Resolves a command so `execFile`/`spawn` can run it without a shell.
  *
  * On Windows, `CreateProcess` cannot execute `.cmd` shims. If `{command}.js`
  * exists on PATH (the e2e mock layout), run it with Node instead so flags
  * like `--version` are passed to the script rather than to Node itself.
+ * When no `.js` shim is found, `shell: true` is returned so `cmd.exe`
+ * can resolve `.cmd` wrappers installed by npm.
  */
 export function resolveBin(
   command: string,
   args: readonly string[],
   options: ResolveBinOptions = {},
-): { command: string; args: string[] } {
+): ResolvedBin {
   const platform = options.platform ?? process.platform;
-  if (platform !== 'win32') return { command, args: [...args] };
+  if (platform !== 'win32') {
+    return { command, args: [...args], shell: false };
+  }
 
   const pathEnv = options.pathEnv ?? process.env.PATH ?? process.env.Path ?? '';
   const exists = options.exists ?? existsSync;
@@ -34,10 +44,13 @@ export function resolveBin(
   for (const dir of pathEnv.split(delimiter)) {
     if (!dir) continue;
     const jsPath = join(dir, `${command}.js`);
-    if (exists(jsPath)) return { command: execPath, args: [jsPath, ...args] };
+
+    if (exists(jsPath)) {
+      return { command: execPath, args: [jsPath, ...args], shell: false };
+    }
   }
 
-  return { command, args: [...args] };
+  return { command, args: [...args], shell: true };
 }
 
 export function pathFromEnv(env?: NodeJS.ProcessEnv): string | undefined {

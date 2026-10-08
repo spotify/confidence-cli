@@ -1,4 +1,4 @@
-export const isWindows = process.platform === 'win32';
+import { isWindows } from '@spotify-confidence/shared-kernel';
 
 export function perPlatform<T>(options: { windows: T; unix: T }): T {
   return isWindows ? options.windows : options.unix;

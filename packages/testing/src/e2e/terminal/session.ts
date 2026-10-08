@@ -5,7 +5,8 @@ import { join } from 'node:path';
 import { stripAnsi } from './strip-ansi.js';
 import { renderScreen, normalizeSnapshot } from './screen-buffer.js';
 import { E2E_BASE_ENV } from '../env.js';
-import { overlayEnv, isWindows } from '../../env/index.js';
+import { isWindows } from '@spotify-confidence/shared-kernel';
+import { overlayEnv } from '../../env/index.js';
 import { resolveKey, type Modifiers } from '../../terminal/index.js';
 
 const DEFAULT_COLS = 100;

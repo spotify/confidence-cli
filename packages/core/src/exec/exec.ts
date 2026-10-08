@@ -11,7 +11,7 @@ import { pathFromEnv, resolveBin } from './resolve-bin.js';
 const promisifiedExecFile = promisify(cpExecFile);
 
 /**
- * `spawn` that runs Windows `.js` PATH shims with Node instead of `.cmd` files.
+ * `spawn` that resolves Windows `.js` and `.cmd` PATH shims.
  *
  * @see {@link resolveBin}
  */
@@ -21,11 +21,11 @@ export function spawn(
   options?: SpawnOptions,
 ): ChildProcess {
   const resolved = resolveBin(command, args, { pathEnv: pathFromEnv(options?.env) });
-  return cpSpawn(resolved.command, resolved.args, options ?? {});
+  return cpSpawn(resolved.command, resolved.args, { ...options, shell: resolved.shell });
 }
 
 /**
- * `execFile` that runs Windows `.js` PATH shims with Node instead of `.cmd` files.
+ * `execFile` that resolves Windows `.js` and `.cmd` PATH shims.
  *
  * @see {@link resolveBin}
  */
@@ -38,6 +38,7 @@ export async function execFile(
   const { stdout, stderr } = await promisifiedExecFile(resolved.command, resolved.args, {
     ...options,
     encoding: 'utf8',
+    shell: resolved.shell,
   });
   return { stdout, stderr };
 }

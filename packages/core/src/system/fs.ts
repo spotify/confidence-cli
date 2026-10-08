@@ -1,5 +1,6 @@
 import { execFileSync } from 'node:child_process';
 import { readdirSync } from 'node:fs';
+import { normalize } from 'node:path';
 
 export function isDirectoryEmpty(dir: string): boolean {
   try {
@@ -13,11 +14,13 @@ export function isDirectoryEmpty(dir: string): boolean {
 
 export function resolveGitRoot(dir: string): string | null {
   try {
-    return execFileSync('git', ['rev-parse', '--show-toplevel'], {
-      cwd: dir,
-      encoding: 'utf-8',
-      stdio: ['ignore', 'pipe', 'ignore'],
-    }).trim();
+    return normalize(
+      execFileSync('git', ['rev-parse', '--show-toplevel'], {
+        cwd: dir,
+        encoding: 'utf-8',
+        stdio: ['ignore', 'pipe', 'ignore'],
+      }).trim(),
+    );
   } catch {
     return null;
   }
