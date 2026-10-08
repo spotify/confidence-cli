@@ -13,24 +13,19 @@ type AssignmentTableParams = {
   'variant-key-column': string;
 };
 
+const KEYS: (keyof AssignmentTableParams)[] = [
+  'display-name',
+  'sql',
+  'entity-column',
+  'timestamp-column',
+  'exposure-key-column',
+  'variant-key-column',
+];
+
 export const createAssignmentTableCmd = withAuth(
   async function createAssignmentTableCmd(argv, token) {
-    const params = resolveInput<AssignmentTableParams>(argv, [
-      'display-name',
-      'sql',
-      'entity-column',
-      'timestamp-column',
-      'exposure-key-column',
-      'variant-key-column',
-    ]);
-    requireKeys(params, [
-      'display-name',
-      'sql',
-      'entity-column',
-      'timestamp-column',
-      'exposure-key-column',
-      'variant-key-column',
-    ]);
+    const params = resolveInput<AssignmentTableParams>(argv, KEYS);
+    requireKeys(params, KEYS);
 
     const result = await createAssignmentTable(token, {
       displayName: params['display-name'],
@@ -40,6 +35,7 @@ export const createAssignmentTableCmd = withAuth(
       exposureKeyColumn: params['exposure-key-column'],
       variantKeyColumn: params['variant-key-column'],
     });
+
     if (tryHandleMcpError(result)) return;
     printMcpResult(result, argv);
   },
