@@ -1,6 +1,6 @@
 import { extractText, parseToolJson } from '@spotify-confidence/core';
 import { validateWarehouseConfig } from '@network/index.js';
-import { resolveFormat, formatJson, message, print, extractFlags } from '@output/index.js';
+import { resolveFormat, formatJson, message, print, extractFlags, fail } from '@output/index.js';
 import { withAuth, tryHandleMcpError } from '@utils/index.js';
 import { resolveInput } from '@input/index.js';
 import { requireKeys } from '@utils/validation.js';
@@ -45,6 +45,10 @@ export const validateConfig = withAuth(async function validateConfig(argv, token
     return;
   }
 
+  if (!data.successful) {
+    fail();
+  }
+
   const flags = extractFlags(argv);
   const format = resolveFormat(flags);
 
@@ -71,8 +75,4 @@ export const validateConfig = withAuth(async function validateConfig(argv, token
     flags,
     empty: 'No validation checks returned.',
   });
-
-  if (!data.successful) {
-    process.exitCode = 1;
-  }
 });
