@@ -100,14 +100,12 @@ export async function updateFlag(
 export async function toggleFlag(
   token: string,
   flagKey: string,
-  enabled: boolean,
-): Promise<ApiResponse<FlagResource>> {
-  return apiRequest<FlagResource>({
-    ...restOpts(token),
-    path: `/v1/flags/${encodeURIComponent(flagKey)}`,
-    method: 'PATCH',
-    body: { enabled },
-    params: { update_mask: 'enabled' },
+  opts: { enabled: boolean; client: string },
+): Promise<CallToolResult> {
+  const tool = opts.enabled ? 'addFlagToClient' : 'removeFlagFromClient';
+  return mcpCallTool(serverOpts(token), tool, {
+    flagName: flagKey,
+    clientName: opts.client,
   });
 }
 
