@@ -1,4 +1,5 @@
 import { extractText, parseToolJson } from '@spotify-confidence/core';
+import { ensureJsonString } from '@spotify-confidence/shared-kernel';
 import { validateWarehouseConfig } from '@network/index.js';
 import { resolveFormat, formatJson, message, print, extractFlags, fail } from '@output/index.js';
 import { withAuth, tryHandleMcpError } from '@utils/index.js';
@@ -33,7 +34,7 @@ export const validateConfig = withAuth(async function validateConfig(argv, token
   const result = await validateWarehouseConfig(
     token,
     params['warehouse-type'],
-    params['config-json'],
+    ensureJsonString(params['config-json']),
   );
   if (tryHandleMcpError(result)) return;
 

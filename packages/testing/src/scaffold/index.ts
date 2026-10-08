@@ -7,4 +7,5 @@ export {
   writeCursorCliConfig,
   writeCodexConfig,
 } from './ide-scaffold.js';
+export { writeJsonFile } from './file-scaffold.js';
 export type { ProjectType } from './types.js';

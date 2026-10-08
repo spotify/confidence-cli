@@ -1,4 +1,5 @@
 import { prepareAuthTokens } from '@spotify-confidence/testing/auth';
+import { createProjectDir, writeJsonFile } from '@spotify-confidence/testing/scaffold';
 import type { CallToolResult } from '@spotify-confidence/core';
 import { warehouseCommand } from '@commands/warehouse.js';
 import { captureOutput } from '../helpers/capture.js';
@@ -172,6 +173,29 @@ describe('warehouse create', () => {
       expect.anything(),
       'createWarehouse',
       expect.objectContaining({ warehouseType: 'databricks', configJson }),
+    );
+  });
+
+  it('stringifies config-json object from --from-file', async () => {
+    using _auth = prepareAuthTokens('valid');
+    using _output = captureOutput();
+    using project = createProjectDir('empty');
+    mockMcpCallTool.mockResolvedValueOnce(textResult('Created'));
+
+    const file = writeJsonFile(project.path, 'config.json', {
+      warehouseType: 'bigquery',
+      configJson: { gcpProjectId: 'my-project', dataset: 'confidence' },
+    });
+
+    await run(['warehouse', 'create', '--from-file', file]);
+
+    expect(mockMcpCallTool).toHaveBeenCalledWith(
+      expect.anything(),
+      'createWarehouse',
+      expect.objectContaining({
+        warehouseType: 'bigquery',
+        configJson: '{"gcpProjectId":"my-project","dataset":"confidence"}',
+      }),
     );
   });
 });

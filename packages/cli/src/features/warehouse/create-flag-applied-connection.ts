@@ -1,3 +1,4 @@
+import { ensureJsonString } from '@spotify-confidence/shared-kernel';
 import { createFlagAppliedConnection } from '@network/index.js';
 import { printMcpResult } from '@output/index.js';
 import { withAuth, tryHandleMcpError } from '@utils/index.js';
@@ -13,8 +14,9 @@ export const createFlagAppliedConnectionCmd = withAuth(
     const result = await createFlagAppliedConnection(
       token,
       params['warehouse-type'],
-      params['config-json'],
+      ensureJsonString(params['config-json']),
     );
+
     if (tryHandleMcpError(result)) return;
     printMcpResult(result, argv);
   },
