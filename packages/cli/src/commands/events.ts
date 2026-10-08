@@ -76,7 +76,7 @@ export const eventsCommand = {
         (y: Argv) =>
           y
             .positional('name', { type: 'string', demandOption: true })
-            .option('days', { type: 'number', describe: 'Number of days (1-7)', default: 7 }),
+            .option('days', { type: 'number', describe: 'Number of days (1-7)', default: 1 }),
         safely(eventUsage),
       )
       .demandCommand(1)
