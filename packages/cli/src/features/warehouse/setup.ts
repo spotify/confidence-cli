@@ -2,15 +2,17 @@ import { getIntegration, PLUGIN_NAME } from '@spotify-confidence/core';
 import { fail } from '@output/print.js';
 import { resolveIde, resolveFlag, resolveProjectDir } from '@features/ide/index.js';
 import { resolveAuthToken } from '@features/mcp/index.js';
+import type { WarehouseType } from './types.js';
+import { validateWarehouseType } from './utils.js';
 
-const WAREHOUSE_SKILLS: Record<string, string> = {
+const WAREHOUSE_SKILLS: Record<WarehouseType, string> = {
   bigquery: 'setup-warehouse-bigquery',
   snowflake: 'setup-warehouse-snowflake',
   databricks: 'setup-warehouse-databricks',
   redshift: 'setup-warehouse-redshift',
 };
 
-function buildSetupPrompt(warehouseType: string): string {
+function buildSetupPrompt(warehouseType: WarehouseType): string {
   const skill = WAREHOUSE_SKILLS[warehouseType];
   return `Set up a ${warehouseType} data warehouse for Confidence experimentation analytics.
 Use the "${skill}" skill from the ${PLUGIN_NAME} plugin to guide the setup process.
@@ -18,11 +20,7 @@ Follow the skill instructions step by step — collect configuration, validate, 
 }
 
 export async function runWarehouseSetup(argv: Record<string, unknown>): Promise<void> {
-  const warehouseType = argv['warehouse-type'] as string;
-  if (!WAREHOUSE_SKILLS[warehouseType]) {
-    fail(`Unknown warehouse type: ${warehouseType}`);
-    return;
-  }
+  const warehouseType = validateWarehouseType(argv['warehouse-type'] as string);
 
   const ideId = await resolveIde(resolveFlag('ide', argv));
   const projectDir = resolveProjectDir(argv);
