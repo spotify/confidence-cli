@@ -46,8 +46,8 @@ export function warn(text: string): void {
   process.stderr.write(`Warning: ${text}\n`);
 }
 
-export function fail(text: string): void {
-  error(text);
+export function fail(text?: string): void {
+  if (text) error(text);
   process.exitCode = 1;
 }
 

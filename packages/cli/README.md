@@ -72,6 +72,17 @@ confidence quickstart      # Launch the interactive setup wizard
 | `confidence recordings targeting-key show <client>` | Show available targeting keys       |
 | `confidence recordings targeting-key add`           | Add a targeting key to a client     |
 
+### Data Warehouses
+
+| Command                                              | Description                                        |
+| ---------------------------------------------------- | -------------------------------------------------- |
+| `confidence warehouse validate`                      | Validate warehouse configuration                   |
+| `confidence warehouse create`                        | Create a data warehouse connection                 |
+| `confidence warehouse connector create-flag-applied` | Create flag assignment data connector              |
+| `confidence warehouse connector create-event`        | Create event data connector                        |
+| `confidence warehouse assignment-table create`       | Create an assignment table for experiment analysis |
+| `confidence warehouse crypto-key create`             | Create a crypto key (Snowflake)                    |
+
 ### MCP Servers
 
 | Command                    | Description                                  |

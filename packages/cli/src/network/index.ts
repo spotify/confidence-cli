@@ -35,3 +35,12 @@ export {
   type FlagRule,
   type FlagListResponse,
 } from './flags.js';
+
+export {
+  validateWarehouseConfig,
+  createWarehouse,
+  createFlagAppliedConnection,
+  createEventConnection,
+  createAssignmentTable,
+  createCryptoKey,
+} from './warehouse.js';
