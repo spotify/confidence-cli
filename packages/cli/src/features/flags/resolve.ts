@@ -22,7 +22,7 @@ export const resolveFlagCmd = withAuth(async function resolveFlagCmd(argv, token
   const flagKey = argv['flag-key'] as string;
   const entity = argv.entity as string;
   const entityValue = argv['entity-value'] as string;
-  const client = argv.client as string | undefined;
+  const client = argv.client as string;
   const contextSpecs = (argv.context as string[] | undefined) ?? [];
 
   let context: Record<string, string> | undefined;

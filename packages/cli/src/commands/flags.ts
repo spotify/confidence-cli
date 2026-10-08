@@ -119,7 +119,11 @@ export const flagsCommand = {
               array: true,
               describe: 'Additional context key=value pair',
             })
-            .option('client', { type: 'string', describe: 'Client name for resolution' }),
+            .option('client', {
+              type: 'string',
+              describe: 'Client name for resolution',
+              demandOption: true,
+            }),
         safely(resolveFlagCmd),
       )
       .command(

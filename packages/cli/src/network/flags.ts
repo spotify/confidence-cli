@@ -112,14 +112,14 @@ export async function toggleFlag(
 export async function resolveFlag(
   token: string,
   flagKey: string,
-  opts: { entity: string; entityValue: string; client?: string; context?: Record<string, string> },
+  opts: { entity: string; entityValue: string; client: string; context?: Record<string, string> },
 ): Promise<CallToolResult> {
   const args: JsonObject = {
     flagName: flagKey,
+    clientName: opts.client,
     entity: opts.entity,
     entityValue: opts.entityValue,
   };
-  if (opts.client) args.clientName = opts.client;
   if (opts.context) args.context = JSON.stringify(opts.context);
 
   return mcpCallTool(serverOpts(token), 'resolveFlag', args);

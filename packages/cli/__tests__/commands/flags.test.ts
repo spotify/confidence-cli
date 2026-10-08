@@ -351,6 +351,8 @@ describe('flags resolve', () => {
       'targeting_key',
       '--entity-value',
       'user-123',
+      '--client',
+      'web-app',
     ]);
 
     expect(output.stdout).toContain('dark-mode');
@@ -358,7 +360,11 @@ describe('flags resolve', () => {
     expect(mockMcpCallTool).toHaveBeenCalledWith(
       expect.anything(),
       'resolveFlag',
-      expect.objectContaining({ entity: 'targeting_key', entityValue: 'user-123' }),
+      expect.objectContaining({
+        clientName: 'web-app',
+        entity: 'targeting_key',
+        entityValue: 'user-123',
+      }),
     );
   });
 
@@ -375,6 +381,8 @@ describe('flags resolve', () => {
       'targeting_key',
       '--entity-value',
       'user-123',
+      '--client',
+      'web-app',
       '--context',
       'user=alice',
       '--context',
@@ -386,6 +394,7 @@ describe('flags resolve', () => {
       'resolveFlag',
       expect.objectContaining({
         flagName: 'dark-mode',
+        clientName: 'web-app',
         context: JSON.stringify({ user: 'alice', plan: 'premium' }),
       }),
     );
@@ -403,6 +412,8 @@ describe('flags resolve', () => {
       'targeting_key',
       '--entity-value',
       'u1',
+      '--client',
+      'web-app',
       '--context',
       'no-equals',
     ]);
