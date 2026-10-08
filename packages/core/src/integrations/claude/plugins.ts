@@ -45,7 +45,8 @@ export async function updatePlugin(
   projectDir: string,
   scope: PluginScope = 'project',
 ): Promise<void> {
-  await execFile('claude', ['plugin', 'update', PLUGIN_NAME, '--scope', SCOPE_MAP[scope]], {
+  const pluginId = await resolvePluginId(projectDir);
+  await execFile('claude', ['plugin', 'update', pluginId, '--scope', SCOPE_MAP[scope]], {
     cwd: projectDir,
   });
 }
@@ -57,6 +58,18 @@ export async function uninstallPlugin(
   await execFile('claude', ['plugin', 'uninstall', PLUGIN_NAME, '--scope', SCOPE_MAP[scope]], {
     cwd: projectDir,
   });
+}
+
+async function resolvePluginId(projectDir: string): Promise<string> {
+  const { stdout } = await execFile('claude', ['plugin', 'list', '--json'], { cwd: projectDir });
+
+  const plugins = JSON.parse(stdout) as PluginEntry[];
+  const match = plugins.find((p) => p.id.startsWith(`${PLUGIN_NAME}@`));
+  if (!match) {
+    throw new Error(`Plugin "${PLUGIN_NAME}" is not installed`);
+  }
+
+  return match.id;
 }
 
 function isAvailable(plugin: PluginEntry, projectDir: string): boolean {
