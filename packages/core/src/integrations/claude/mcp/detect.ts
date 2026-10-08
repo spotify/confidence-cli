@@ -2,6 +2,7 @@ import { realpathSync, readFileSync } from 'node:fs';
 import type { McpStatusMap } from '../../mcp/servers.js';
 import { type McpServerName, detectMcpStatuses as detectShared } from '../../mcp/servers.js';
 import { onlyKnownServerNames } from '../../mcp/config.js';
+import { resolveGitRoot } from '../../../system/fs.js';
 import { globalConfigPath } from '../paths.js';
 
 type McpServerEntry = {
@@ -20,8 +21,13 @@ function readProjectMcpServers(projectDir: string): Record<string, McpServerEntr
   try {
     const resolved = realpathSync(projectDir);
     const config = JSON.parse(readFileSync(globalConfigPath(), 'utf-8')) as ClaudeGlobalConfig;
+    const projectGitRoot = resolveGitRoot(resolved);
+
     return (
-      config.projects?.[resolved]?.mcpServers ?? config.projects?.[projectDir]?.mcpServers ?? {}
+      config.projects?.[resolved]?.mcpServers ??
+      config.projects?.[projectDir]?.mcpServers ??
+      (projectGitRoot ? config.projects?.[projectGitRoot]?.mcpServers : {}) ??
+      {}
     );
   } catch {
     return {};
