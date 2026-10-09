@@ -9,6 +9,7 @@ import {
   ESCAPE,
   waitFor,
 } from '../testing-framework/index.js';
+import { createConfigDir } from '@spotify-confidence/testing/scaffold';
 import { OnboardProjectScreen } from '@ui/screens/onboard-project/index.js';
 import { ScreenId } from '@spotify-confidence/core';
 
@@ -24,6 +25,7 @@ describe('Onboarding flow', () => {
 
   describe('confirmation prompt', () => {
     it('shows confirmation prompt on mount', async () => {
+      using _config = createConfigDir();
       using project = createProjectDir();
 
       using sut = renderApp({
@@ -43,6 +45,7 @@ describe('Onboarding flow', () => {
     });
 
     it('advances to Done on skip', async () => {
+      using _config = createConfigDir();
       using project = createProjectDir();
 
       using sut = renderApp({
@@ -64,6 +67,7 @@ describe('Onboarding flow', () => {
 
   describe('when onboarding is confirmed', () => {
     it('shows progress screen after confirming', async () => {
+      using _config = createConfigDir();
       using project = createProjectDir();
       mockNextSpawn({ hang: true });
 
@@ -85,6 +89,7 @@ describe('Onboarding flow', () => {
     });
 
     it('shows status updates from spawned process', async () => {
+      using _config = createConfigDir();
       using project = createProjectDir();
       mockNextSpawn({
         lines: ['STATUS: Creating feature flag example...', 'other output without STATUS prefix'],
@@ -109,6 +114,7 @@ describe('Onboarding flow', () => {
     });
 
     it('advances to Done after successful onboarding', async () => {
+      using _config = createConfigDir();
       using project = createProjectDir();
       mockNextSpawn({
         lines: [
@@ -135,6 +141,7 @@ describe('Onboarding flow', () => {
     });
 
     it('shows error when process exits with non-zero code', async () => {
+      using _config = createConfigDir();
       using project = createProjectDir();
       mockNextSpawn({
         exitCode: 1,
@@ -159,6 +166,7 @@ describe('Onboarding flow', () => {
     });
 
     it('shows error when process fails to start', async () => {
+      using _config = createConfigDir();
       using project = createProjectDir();
       mockNextSpawn({
         error: new Error('spawn claude ENOENT'),
@@ -181,6 +189,7 @@ describe('Onboarding flow', () => {
     });
 
     it('advances to Done on cancel from progress screen', async () => {
+      using _config = createConfigDir();
       using project = createProjectDir();
       mockNextSpawn({ lines: ['STATUS: Working...'], hang: true });
 
@@ -207,6 +216,7 @@ describe('Onboarding flow', () => {
     });
 
     it('shows plain time estimate for a single goal', async () => {
+      using _config = createConfigDir();
       using project = createProjectDir();
       mockNextSpawn({ hang: true });
 
@@ -230,6 +240,7 @@ describe('Onboarding flow', () => {
     });
 
     it('shows per-feature time estimate for multiple goals', async () => {
+      using _config = createConfigDir();
       using project = createProjectDir();
       mockNextSpawn({ hang: true });
 
@@ -273,6 +284,7 @@ describe('Onboarding flow', () => {
 
   describe('IDE-specific sandbox warning', () => {
     it('shows standard warning when IDE is Claude Code', async () => {
+      using _config = createConfigDir();
       using project = createProjectDir();
 
       using sut = renderScreen(<OnboardProjectScreen />, {
@@ -290,6 +302,7 @@ describe('Onboarding flow', () => {
     });
 
     it('shows elevated warning when IDE is Cursor', async () => {
+      using _config = createConfigDir();
       using project = createProjectDir();
 
       using sut = renderScreen(<OnboardProjectScreen />, {
@@ -305,6 +318,7 @@ describe('Onboarding flow', () => {
     });
 
     it('shows elevated warning when IDE is Codex', async () => {
+      using _config = createConfigDir();
       using project = createProjectDir();
 
       using sut = renderScreen(<OnboardProjectScreen />, {
@@ -322,6 +336,7 @@ describe('Onboarding flow', () => {
 
   describe('selected goal display', () => {
     it('shows feature flag steps when goal is feature-flags', async () => {
+      using _config = createConfigDir();
       using project = createProjectDir();
 
       using sut = renderScreen(<OnboardProjectScreen />, {
@@ -339,6 +354,7 @@ describe('Onboarding flow', () => {
     });
 
     it('shows session recording steps when goal is session-recordings', async () => {
+      using _config = createConfigDir();
       using project = createProjectDir();
 
       using sut = renderScreen(<OnboardProjectScreen />, {
@@ -356,6 +372,7 @@ describe('Onboarding flow', () => {
     });
 
     it('shows combined steps when multiple goals are selected', async () => {
+      using _config = createConfigDir();
       using project = createProjectDir();
 
       using sut = renderScreen(<OnboardProjectScreen />, {
