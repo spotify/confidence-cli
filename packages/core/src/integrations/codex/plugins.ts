@@ -1,10 +1,15 @@
 import { execFile } from '../../exec/exec.js';
 import { PLUGIN_MARKETPLACE_REPO, PLUGIN_MARKETPLACE_NAME, PLUGIN_NAME } from '../../constants.js';
 
+type CodexListPluginsResult = {
+  installed: Array<{ pluginId: string }>;
+};
+
 export async function detectPlugin(projectDir: string): Promise<boolean> {
   try {
-    const { stdout } = await execFile('codex', ['plugin', 'list', '--json'], { cwd: projectDir });
-    const { installed } = JSON.parse(stdout) as { installed: Array<{ pluginId: string }> };
+    const config = { cwd: projectDir, timeout: 5_000 };
+    const { stdout } = await execFile('codex', ['plugin', 'list', '--json'], config);
+    const { installed } = JSON.parse(stdout) as CodexListPluginsResult;
     return installed.some((p) => p.pluginId.startsWith(`${PLUGIN_NAME}@`));
   } catch {
     return false;

@@ -1,7 +1,7 @@
 import type { IdeId, PluginScope } from '@spotify-confidence/shared-kernel';
 import { getIntegration, getIntegrations } from '../registry.js';
-import { track } from '../../telemetry/telemetry.js';
 import { downloadSkills, getSkillsDir, removeSkills } from './local.js';
+import { cliFailed } from './telemetry.js';
 
 export async function detectInstalledPlugins(projectDir: string): Promise<IdeId[]> {
   const results = await Promise.all(
@@ -21,13 +21,10 @@ export async function installPlugin(
 ): Promise<void> {
   const integration = getIntegration(ide);
 
-  try {
-    await integration.installPlugin(projectDir, scope);
-  } catch {
-    track({ step: 'plugin.install', action: `cli-failed:${ide}`, sentiment: 'frustrated' });
-  }
-
-  await downloadSkills(getSkillsDir());
+  await Promise.all([
+    integration.installPlugin(projectDir, scope).catch(() => cliFailed('install', ide)),
+    downloadSkills(getSkillsDir()),
+  ]);
 }
 
 export async function uninstallPlugin(
@@ -41,7 +38,7 @@ export async function uninstallPlugin(
     try {
       await integration.uninstallPlugin(projectDir, scope);
     } catch {
-      track({ step: 'plugin.uninstall', action: `cli-failed:${ide}`, sentiment: 'frustrated' });
+      cliFailed('uninstall', ide);
     }
   }
 
@@ -55,11 +52,8 @@ export async function updatePlugin(
 ): Promise<void> {
   const integration = getIntegration(ide);
 
-  try {
-    await integration.updatePlugin(projectDir, scope);
-  } catch {
-    track({ step: 'plugin.update', action: `cli-failed:${ide}`, sentiment: 'frustrated' });
-  }
-
-  await downloadSkills(getSkillsDir(), true);
+  await Promise.all([
+    integration.updatePlugin(projectDir, scope).catch(() => cliFailed('update', ide)),
+    downloadSkills(getSkillsDir()),
+  ]);
 }

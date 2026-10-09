@@ -18,8 +18,9 @@ type PluginEntry = {
 
 export async function detectPlugin(projectDir: string): Promise<boolean> {
   try {
-    const { stdout } = await execFile('claude', ['plugin', 'list', '--json'], { cwd: projectDir });
-    const plugins = JSON.parse(stdout) as PluginEntry[];
+    const config = { cwd: projectDir, timeout: 5_000 };
+    const result = await execFile('claude', ['plugin', 'list', '--json'], config);
+    const plugins = JSON.parse(result.stdout) as PluginEntry[];
     return plugins.some((p) => isAvailable(p, projectDir));
   } catch {
     return false;

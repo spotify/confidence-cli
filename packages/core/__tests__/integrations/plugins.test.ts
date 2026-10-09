@@ -83,13 +83,13 @@ describe('uninstallPlugin', () => {
 });
 
 describe('updatePlugin', () => {
-  it('attempts CLI update and force-downloads skills', async () => {
+  it('attempts CLI update and downloads skills', async () => {
     const { downloadSkills } = await import('../../src/integrations/skills/local.js');
 
     await updatePlugin('claude', '/project');
 
     expect(mockIntegration.updatePlugin).toHaveBeenCalledWith('/project', undefined);
-    expect(downloadSkills).toHaveBeenCalledWith('/mock-home/.config/confidence/skills', true);
+    expect(downloadSkills).toHaveBeenCalledWith('/mock-home/.config/confidence/skills');
   });
 
   it('still downloads skills when CLI update fails', async () => {
@@ -98,6 +98,6 @@ describe('updatePlugin', () => {
 
     await updatePlugin('claude', '/project');
 
-    expect(downloadSkills).toHaveBeenCalledWith('/mock-home/.config/confidence/skills', true);
+    expect(downloadSkills).toHaveBeenCalledWith('/mock-home/.config/confidence/skills');
   });
 });
