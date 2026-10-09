@@ -51,8 +51,12 @@ jobs:
 
   publish-cli:
     name: Publish CLI to npm
-    needs: release-please
-    if: ${{ needs.release-please.outputs.cli_released }}
+    needs: [release-please, publish-quickstart]
+    if: >-
+      always()
+      && needs.release-please.result == 'success'
+      && needs.release-please.outputs.cli_released
+      && needs.publish-quickstart.result != 'failure'
     runs-on: ubuntu-latest
     permissions:
       contents: read # checkout code
