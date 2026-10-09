@@ -21,10 +21,16 @@ export async function installPlugin(
 ): Promise<void> {
   const integration = getIntegration(ide);
 
-  await Promise.all([
-    integration.installPlugin(projectDir, scope).catch(() => cliFailed('install', ide)),
+  const [cliResult, localResult] = await Promise.allSettled([
+    integration.installPlugin(projectDir, scope),
     downloadSkills(getSkillsDir()),
   ]);
+
+  const cliOk = cliResult.status === 'fulfilled';
+  const localOk = localResult.status === 'fulfilled' && localResult.value;
+
+  if (!cliOk) cliFailed('install', ide);
+  if (!cliOk && !localOk) throw cliResult.reason;
 }
 
 export async function uninstallPlugin(
@@ -42,7 +48,10 @@ export async function uninstallPlugin(
     }
   }
 
-  await removeSkills(getSkillsDir());
+  const others = await detectInstalledPlugins(projectDir);
+  if (others.length === 0) {
+    await removeSkills(getSkillsDir());
+  }
 }
 
 export async function updatePlugin(
@@ -52,8 +61,14 @@ export async function updatePlugin(
 ): Promise<void> {
   const integration = getIntegration(ide);
 
-  await Promise.all([
-    integration.updatePlugin(projectDir, scope).catch(() => cliFailed('update', ide)),
-    downloadSkills(getSkillsDir()),
+  const [cliResult, localResult] = await Promise.allSettled([
+    integration.updatePlugin(projectDir, scope),
+    downloadSkills(getSkillsDir(), true),
   ]);
+
+  const cliOk = cliResult.status === 'fulfilled';
+  const localOk = localResult.status === 'fulfilled' && localResult.value;
+
+  if (!cliOk) cliFailed('update', ide);
+  if (!cliOk && !localOk) throw cliResult.reason;
 }

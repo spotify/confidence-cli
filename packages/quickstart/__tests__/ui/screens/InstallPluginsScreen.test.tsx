@@ -15,8 +15,8 @@ vi.mock('@spotify-confidence/core', async (importOriginal) => ({
   ...(await importOriginal<typeof import('@spotify-confidence/core')>()),
   detectInstalledPlugins: vi.fn().mockResolvedValue([]),
   prepareIde: vi.fn().mockResolvedValue(undefined),
-  installPlugin: vi.fn().mockResolvedValue('download'),
-  updatePlugin: vi.fn().mockResolvedValue('download'),
+  installPlugin: vi.fn().mockResolvedValue(undefined),
+  updatePlugin: vi.fn().mockResolvedValue(undefined),
 }));
 
 describe('InstallPluginsScreen', () => {
