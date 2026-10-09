@@ -14,27 +14,23 @@ type ClaudeProjectConfig = { mcpServers?: Record<string, McpServerEntry> };
 type ClaudeGlobalConfig = { projects?: Record<string, ClaudeProjectConfig> };
 
 function normalizedProjects(config: ClaudeGlobalConfig): Record<string, ClaudeProjectConfig> {
-  return Object.entries(config.projects ?? {})
-    .map(([rawKey, project]) => [normalize(rawKey), project] as const)
-    .reduce<Record<string, ClaudeProjectConfig>>(
-      (acc, [normalizedKey, project]) => ({ ...acc, [normalizedKey]: project }),
-      {},
-    );
+  return Object.fromEntries(
+    Object.entries(config.projects ?? {}).map(([rawKey, project]) => [normalize(rawKey), project]),
+  );
 }
 
 function readProjectMcpServers(projectDir: string): Record<string, McpServerEntry> {
   try {
     const resolved = realpathSync(projectDir);
-    const gitRoot = resolveGitRoot(resolved);
     const config = JSON.parse(readFileSync(globalConfigPath(), 'utf-8')) as ClaudeGlobalConfig;
     const projects = normalizedProjects(config);
 
-    return (
-      projects[resolved]?.mcpServers ??
-      projects[normalize(projectDir)]?.mcpServers ??
-      (gitRoot ? projects[gitRoot]?.mcpServers : undefined) ??
-      {}
-    );
+    const byResolved =
+      projects[resolved]?.mcpServers ?? projects[normalize(projectDir)]?.mcpServers;
+    if (byResolved) return byResolved;
+
+    const gitRoot = resolveGitRoot(resolved);
+    return (gitRoot ? projects[gitRoot]?.mcpServers : undefined) ?? {};
   } catch {
     return {};
   }

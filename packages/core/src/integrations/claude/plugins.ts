@@ -59,7 +59,7 @@ async function resolvePluginId(projectDir: string): Promise<string> {
   const { stdout } = await execFile('claude', ['plugin', 'list', '--json'], { cwd: projectDir });
 
   const plugins = JSON.parse(stdout) as PluginEntry[];
-  const match = plugins.find((p) => p.id.startsWith(`${PLUGIN_NAME}@`));
+  const match = plugins.find((p) => isAvailable(p, projectDir));
   if (!match) {
     throw new Error(`Plugin "${PLUGIN_NAME}" is not installed`);
   }
