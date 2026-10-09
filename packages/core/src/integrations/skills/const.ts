@@ -1,7 +1,10 @@
 export const SKILL_NAMES = [
   'analyze-project',
+  'explore-metric',
   'instrument-events',
   'onboard-confidence',
+  'onboard-confidence-dry-run',
+  'setup-session-recording',
   'setup-warehouse',
   'setup-warehouse-bigquery',
   'setup-warehouse-databricks',

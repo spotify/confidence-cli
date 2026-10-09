@@ -1,6 +1,5 @@
 import { createProjectDir } from '@spotify-confidence/testing/scaffold';
 import { launchChatSession } from '@integrations/chat.js';
-import { SKILL_NAMES } from '@integrations/skills/const.js';
 import { createSession } from '../../src/session/session.js';
 import { createMockIntegration } from './mock-integration.js';
 
@@ -66,7 +65,23 @@ describe('launchChatSession', () => {
     expect(capturedPrompt()).not.toContain("don't have Confidence MCP tools connected");
   });
 
-  it('lists all plugin skills when plugin is installed', () => {
+  it.each([
+    'analyze-project',
+    'explore-metric',
+    'instrument-events',
+    'onboard-confidence',
+    'onboard-confidence-dry-run',
+    'setup-session-recording',
+    'setup-warehouse',
+    'setup-warehouse-bigquery',
+    'setup-warehouse-databricks',
+    'setup-warehouse-redshift',
+    'setup-warehouse-snowflake',
+    'migrate-eppo',
+    'migrate-optimizely',
+    'migrate-posthog',
+    'migrate-statsig',
+  ])('includes /confidence:%s skill when plugin is installed', (skill) => {
     using project = createProjectDir('empty');
     const session = createSession({ dir: project.path });
     session.codeChanges = ['change'];
@@ -74,10 +89,7 @@ describe('launchChatSession', () => {
 
     launchChatSession(session, 'claude');
 
-    const sut = capturedPrompt();
-    for (const name of SKILL_NAMES) {
-      expect(sut).toContain(`/confidence:${name}`);
-    }
+    expect(capturedPrompt()).toContain(`/confidence:${skill}`);
   });
 
   it('formats skill invocations for the target IDE', () => {
