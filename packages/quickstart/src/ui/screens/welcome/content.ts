@@ -37,9 +37,12 @@ export function steps(session: WizardSession): readonly string[] {
   if (!session.goalsPreset) return DEFAULT_STEPS;
   const goals = session.onboardingGoals;
   const common = DEFAULT_STEPS.slice(0, 4);
-  const last =
-    goals.length === 1 && goals[0] === 'feature-flags'
-      ? DEFAULT_STEPS[4]
-      : `Set up ${goalList(goals)} in your project`;
-  return [...common, last];
+  const withFlags = goals.includes('feature-flags');
+  const others = goals.filter((g) => g !== 'feature-flags');
+
+  const tail: string[] = [];
+  if (withFlags) tail.push(DEFAULT_STEPS[4]);
+  if (others.length > 0) tail.push(`Set up ${goalList(others)} in your project`);
+
+  return [...common, ...tail];
 }

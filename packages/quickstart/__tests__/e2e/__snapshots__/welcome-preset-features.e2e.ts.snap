@@ -45,7 +45,8 @@ exports[`welcome screen with preset features > shows tailored tagline for multip
                      2. Sign you in to Confidence workspace
                      3. Teach your AI agent about Confidence
                      4. Integrate the SDK into your project
-                     5. Set up feature flags and event tracking in your project
+                     5. Show a working feature flag example
+                     6. Set up event tracking in your project
 
 
                                 Directory  ✔ <project-dir>
