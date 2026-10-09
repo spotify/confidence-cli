@@ -1,11 +1,11 @@
 import { existsSync, statSync, writeFileSync } from 'node:fs';
 import { join } from 'node:path';
 import { prepareAuthTokens } from '@spotify-confidence/testing/auth';
+import { getConfigDir } from '@config/index.js';
 import {
   readCredentials,
   writeCredentials,
   clearTokens,
-  getConfigDir,
   credentialsPath,
 } from '@auth/credentials/index.js';
 

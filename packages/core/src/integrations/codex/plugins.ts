@@ -1,20 +1,19 @@
 import { execFile } from '../../exec/exec.js';
 import { PLUGIN_MARKETPLACE_REPO, PLUGIN_MARKETPLACE_NAME, PLUGIN_NAME } from '../../constants.js';
-import type { PluginInstallationMethod } from '@spotify-confidence/shared-kernel';
-import { hasDownloadedSkills } from '../skills/local.js';
-import { skillsDir } from './paths.js';
 
-export async function detectPlugin(projectDir: string): Promise<PluginInstallationMethod | null> {
+type CodexListPluginsResult = {
+  installed: Array<{ pluginId: string }>;
+};
+
+export async function detectPlugin(projectDir: string): Promise<boolean> {
   try {
-    const cwd = projectDir;
-    const { stdout } = await execFile('codex', ['plugin', 'list', '--json'], { cwd });
-    const { installed } = JSON.parse(stdout) as { installed: Array<{ pluginId: string }> };
-    if (installed.some((p) => p.pluginId.startsWith(`${PLUGIN_NAME}@`))) return 'cli';
+    const config = { cwd: projectDir, timeout: 5_000 };
+    const { stdout } = await execFile('codex', ['plugin', 'list', '--json'], config);
+    const { installed } = JSON.parse(stdout) as CodexListPluginsResult;
+    return installed.some((p) => p.pluginId.startsWith(`${PLUGIN_NAME}@`));
   } catch {
-    // CLI unavailable; fallback to locally downloaded files.
+    return false;
   }
-
-  return hasDownloadedSkills(skillsDir(projectDir)) ? 'download' : null;
 }
 
 export async function installPlugin(projectDir: string): Promise<void> {

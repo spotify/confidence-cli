@@ -1,11 +1,8 @@
 import { execFile } from '../../exec/exec.js';
 import { PLUGIN_REPO_URL } from '../../constants.js';
-import type { PluginInstallationMethod } from '@spotify-confidence/shared-kernel';
-import { hasDownloadedSkills } from '../skills/local.js';
-import { skillsDir } from './paths.js';
 
-export async function detectPlugin(projectDir: string): Promise<PluginInstallationMethod | null> {
-  return hasDownloadedSkills(skillsDir(projectDir)) ? 'download' : null;
+export async function detectPlugin(_projectDir: string): Promise<boolean> {
+  return false;
 }
 
 export async function installPlugin(projectDir: string): Promise<void> {

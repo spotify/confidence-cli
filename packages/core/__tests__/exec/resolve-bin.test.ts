@@ -29,7 +29,7 @@ describe('resolveBin', () => {
     });
   });
 
-  it('returns the command unchanged on Windows when no .js shim exists', () => {
+  it('returns command unchanged on Windows when no .js shim exists', () => {
     const sut = resolveBin('claude', ['--version'], {
       platform: 'win32',
       pathEnv: join('/Windows', 'System32'),

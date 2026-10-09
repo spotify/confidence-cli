@@ -282,55 +282,54 @@ describe('flags update', () => {
 });
 
 describe('flags toggle', () => {
-  it('enables a flag with --on', async () => {
+  it('enables a flag with --on via MCP', async () => {
     using _auth = prepareAuthTokens('valid');
     using output = captureOutput();
-    server.use(
-      http.patch(`${FLAGS_EU_BASE}/v1/flags/dark-mode`, () => {
-        return HttpResponse.json({ name: 'flags/dark-mode', flagId: 'dark-mode', enabled: true });
-      }),
+    mockMcpCallTool.mockResolvedValueOnce(textResult('Enabled flag dark-mode for client web-app'));
+
+    await run(['flags', 'toggle', 'dark-mode', '--on', '--client', 'web-app']);
+
+    expect(output.stdout).toContain('Enabled flag dark-mode');
+    expect(mockMcpCallTool).toHaveBeenCalledWith(
+      expect.anything(),
+      'addFlagToClient',
+      expect.objectContaining({ flagName: 'dark-mode', clientName: 'web-app' }),
     );
-
-    await run(['flags', 'toggle', 'dark-mode', '--on']);
-
-    expect(output.stdout).toContain('Flag "dark-mode" enabled.');
   });
 
-  it('disables a flag with --off', async () => {
+  it('disables a flag with --off via MCP', async () => {
     using _auth = prepareAuthTokens('valid');
     using output = captureOutput();
-    server.use(
-      http.patch(`${FLAGS_EU_BASE}/v1/flags/dark-mode`, () => {
-        return HttpResponse.json({ name: 'flags/dark-mode', flagId: 'dark-mode', enabled: false });
-      }),
+    mockMcpCallTool.mockResolvedValueOnce(textResult('Disabled flag dark-mode for client web-app'));
+
+    await run(['flags', 'toggle', 'dark-mode', '--off', '--client', 'web-app']);
+
+    expect(output.stdout).toContain('Disabled flag dark-mode');
+    expect(mockMcpCallTool).toHaveBeenCalledWith(
+      expect.anything(),
+      'removeFlagFromClient',
+      expect.objectContaining({ flagName: 'dark-mode', clientName: 'web-app' }),
     );
-
-    await run(['flags', 'toggle', 'dark-mode', '--off']);
-
-    expect(output.stdout).toContain('Flag "dark-mode" disabled.');
   });
 
   it('prints request body in dry-run mode', async () => {
     using _auth = prepareAuthTokens('valid');
     using output = captureOutput();
 
-    await run(['flags', 'toggle', 'dark-mode', '--on', '--dry-run']);
+    await run(['flags', 'toggle', 'dark-mode', '--on', '--client', 'web-app', '--dry-run']);
 
     const parsed = JSON.parse(output.stdout);
     expect(parsed.flagKey).toBe('dark-mode');
     expect(parsed.enabled).toBe(true);
+    expect(parsed.client).toBe('web-app');
   });
 
-  it('reports API errors', async () => {
+  it('reports MCP errors', async () => {
     using _auth = prepareAuthTokens('valid');
     using output = captureOutput();
-    server.use(
-      http.patch(`${FLAGS_EU_BASE}/v1/flags/dark-mode`, () => {
-        return HttpResponse.json({ code: 404, message: 'Flag not found' }, { status: 404 });
-      }),
-    );
+    mockMcpCallTool.mockRejectedValueOnce(new Error('Flag not found'));
 
-    await run(['flags', 'toggle', 'dark-mode', '--on']);
+    await run(['flags', 'toggle', 'dark-mode', '--on', '--client', 'web-app']);
 
     expect(output.stderr).toContain('Flag not found');
   });
@@ -352,6 +351,8 @@ describe('flags resolve', () => {
       'targeting_key',
       '--entity-value',
       'user-123',
+      '--client',
+      'web-app',
     ]);
 
     expect(output.stdout).toContain('dark-mode');
@@ -359,7 +360,11 @@ describe('flags resolve', () => {
     expect(mockMcpCallTool).toHaveBeenCalledWith(
       expect.anything(),
       'resolveFlag',
-      expect.objectContaining({ entity: 'targeting_key', entityValue: 'user-123' }),
+      expect.objectContaining({
+        clientName: 'web-app',
+        entity: 'targeting_key',
+        entityValue: 'user-123',
+      }),
     );
   });
 
@@ -376,6 +381,8 @@ describe('flags resolve', () => {
       'targeting_key',
       '--entity-value',
       'user-123',
+      '--client',
+      'web-app',
       '--context',
       'user=alice',
       '--context',
@@ -387,6 +394,7 @@ describe('flags resolve', () => {
       'resolveFlag',
       expect.objectContaining({
         flagName: 'dark-mode',
+        clientName: 'web-app',
         context: JSON.stringify({ user: 'alice', plan: 'premium' }),
       }),
     );
@@ -404,6 +412,8 @@ describe('flags resolve', () => {
       'targeting_key',
       '--entity-value',
       'u1',
+      '--client',
+      'web-app',
       '--context',
       'no-equals',
     ]);

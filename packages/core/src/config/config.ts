@@ -1,7 +1,7 @@
 import { readFileSync, writeFileSync, existsSync } from 'node:fs';
 import { join } from 'node:path';
 import { ensureDir } from '../auth/credentials/store.js';
-import { getConfigDir } from '../auth/credentials/paths.js';
+import { getConfigDir } from './paths.js';
 
 type ConfigKey = 'project' | 'environment' | 'output' | 'profile' | 'ide';
 

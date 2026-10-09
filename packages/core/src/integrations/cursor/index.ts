@@ -3,7 +3,6 @@ import { launchChat } from './chat.js';
 import { detectMcpStatuses, connectMcpServer, disconnectMcpServer } from './mcp/index.js';
 import { runOnboarding } from './onboarding.js';
 import { detectPlugin, installPlugin, updatePlugin, uninstallPlugin } from './plugins.js';
-import { skillsDir } from './paths.js';
 import { prepare } from './prepare.js';
 
 export const cursorIntegration: IdeIntegration = {
@@ -13,7 +12,6 @@ export const cursorIntegration: IdeIntegration = {
   launchChat,
   runOnboarding,
   prepare,
-  skillsDir,
   detectPlugin,
   installPlugin,
   updatePlugin,

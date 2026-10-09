@@ -11,8 +11,8 @@ export async function updatePluginForIde(
   const spinner = ora(`Updating Confidence plugin for ${integration.name}…`).start();
 
   try {
-    const method = await updatePlugin(ideId, projectDir, scope);
-    spinner.succeed(`Confidence plugin updated for ${integration.name} (via ${method})`);
+    await updatePlugin(ideId, projectDir, scope);
+    spinner.succeed(`Confidence plugin updated for ${integration.name}`);
   } catch (err) {
     spinner.fail();
     throw err;

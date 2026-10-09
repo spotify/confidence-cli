@@ -1,4 +1,4 @@
-import type { IdeIntegration } from '@spotify-confidence/core';
+import type { IdeIntegration } from '@integrations/types.js';
 
 export function createMockIntegration(overrides?: Partial<IdeIntegration>): IdeIntegration {
   return {

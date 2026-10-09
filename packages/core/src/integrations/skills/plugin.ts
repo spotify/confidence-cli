@@ -1,18 +1,13 @@
-import type {
-  IdeId,
-  PluginInstallationMethod,
-  PluginScope,
-} from '@spotify-confidence/shared-kernel';
-import type { InstalledPlugin } from '../types.js';
+import type { IdeId, PluginScope } from '@spotify-confidence/shared-kernel';
 import { getIntegration, getIntegrations } from '../registry.js';
-import { downloadSkills, removeSkills } from './local.js';
+import { downloadSkills, getSkillsDir, removeSkills } from './local.js';
+import { cliFailed } from './telemetry.js';
 
-export async function detectInstalledPlugins(projectDir: string): Promise<InstalledPlugin[]> {
-  return (
-    await Promise.all(
-      getIntegrations().map(async (i) => ({ ide: i.id, via: await i.detectPlugin(projectDir) })),
-    )
-  ).filter((plugin): plugin is InstalledPlugin => !!plugin.via);
+export async function detectInstalledPlugins(projectDir: string): Promise<IdeId[]> {
+  const results = await Promise.all(
+    getIntegrations().map(async (i) => ((await i.detectPlugin(projectDir)) ? i.id : null)),
+  );
+  return results.filter((id): id is IdeId => id !== null);
 }
 
 export function prepareIde(ide: IdeId): Promise<void> {
@@ -23,16 +18,19 @@ export async function installPlugin(
   ide: IdeId,
   projectDir: string,
   scope?: PluginScope,
-): Promise<PluginInstallationMethod> {
+): Promise<void> {
   const integration = getIntegration(ide);
 
-  try {
-    await integration.installPlugin(projectDir, scope);
-    return 'cli';
-  } catch {
-    await downloadSkills(integration.skillsDir(projectDir));
-    return 'download';
-  }
+  const [cliResult, localResult] = await Promise.allSettled([
+    integration.installPlugin(projectDir, scope),
+    downloadSkills(getSkillsDir()),
+  ]);
+
+  const cliOk = cliResult.status === 'fulfilled';
+  const localOk = localResult.status === 'fulfilled' && localResult.value;
+
+  if (!cliOk) cliFailed('install', ide);
+  if (!cliOk && !localOk) throw cliResult.reason;
 }
 
 export async function uninstallPlugin(
@@ -41,14 +39,18 @@ export async function uninstallPlugin(
   scope?: PluginScope,
 ): Promise<void> {
   const integration = getIntegration(ide);
-  const method = await integration.detectPlugin(projectDir);
 
-  if (method === 'cli') {
-    await integration.uninstallPlugin(projectDir, scope);
+  if (await integration.detectPlugin(projectDir)) {
+    try {
+      await integration.uninstallPlugin(projectDir, scope);
+    } catch {
+      cliFailed('uninstall', ide);
+    }
   }
 
-  if (method === 'download' || !scope || scope === 'project') {
-    await removeSkills(integration.skillsDir(projectDir));
+  const others = await detectInstalledPlugins(projectDir);
+  if (others.length === 0) {
+    await removeSkills(getSkillsDir());
   }
 }
 
@@ -56,14 +58,17 @@ export async function updatePlugin(
   ide: IdeId,
   projectDir: string,
   scope?: PluginScope,
-): Promise<PluginInstallationMethod> {
+): Promise<void> {
   const integration = getIntegration(ide);
 
-  try {
-    await integration.updatePlugin(projectDir, scope);
-    return 'cli';
-  } catch {
-    await downloadSkills(integration.skillsDir(projectDir), true);
-    return 'download';
-  }
+  const [cliResult, localResult] = await Promise.allSettled([
+    integration.updatePlugin(projectDir, scope),
+    downloadSkills(getSkillsDir(), true),
+  ]);
+
+  const cliOk = cliResult.status === 'fulfilled';
+  const localOk = localResult.status === 'fulfilled' && localResult.value;
+
+  if (!cliOk) cliFailed('update', ide);
+  if (!cliOk && !localOk) throw cliResult.reason;
 }

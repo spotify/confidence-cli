@@ -41,7 +41,6 @@ export function usePluginInstall(): PluginInstallState {
       if ($session.get().dryRun) {
         setTimeout(() => {
           store.setPluginTargets([ide]);
-          store.setPluginInstallMethod('download');
           setInstallPhase('done');
         }, 1000);
         return;
@@ -51,9 +50,8 @@ export function usePluginInstall(): PluginInstallState {
 
       prepareIde(ide)
         .then(() => action(ide, $session.get().projectDir))
-        .then((method) => {
+        .then(() => {
           store.setPluginTargets([ide]);
-          store.setPluginInstallMethod(method);
           setInstallPhase('done');
         })
         .catch((err) => {

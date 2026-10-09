@@ -10,11 +10,12 @@ export const createEvent = withAuth(async function createEvent(argv, token) {
 
   const schema = resolveInput<JsonObject>(argv, () => {
     const fieldSpecs = (argv.field as string[] | undefined) ?? [];
-    if (fieldSpecs.length === 0) {
-      throw new Error('Provide at least one --field or --from-file.');
-    }
     return Object.fromEntries(fieldSpecs.map(parseFieldArg));
   });
+
+  if (Object.keys(schema).length === 0) {
+    throw new Error('Provide at least one --field or --from-file.');
+  }
 
   if (argv['dry-run']) {
     message(JSON.stringify({ eventDefinitionId, schema }, null, 2));

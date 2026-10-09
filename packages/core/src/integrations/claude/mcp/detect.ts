@@ -1,28 +1,36 @@
 import { realpathSync, readFileSync } from 'node:fs';
-import type { McpStatusMap } from '../../mcp/servers.js';
-import { type McpServerName, detectMcpStatuses as detectShared } from '../../mcp/servers.js';
+import { normalize } from 'node:path';
+import { resolveGitRoot } from '../../../system/fs.js';
 import { onlyKnownServerNames } from '../../mcp/config.js';
+import {
+  type McpServerName,
+  type McpStatusMap,
+  detectMcpStatuses as detectShared,
+} from '../../mcp/servers.js';
 import { globalConfigPath } from '../paths.js';
 
-type McpServerEntry = {
-  headers?: Record<string, string>;
-};
+type McpServerEntry = { headers?: Record<string, string> };
+type ClaudeProjectConfig = { mcpServers?: Record<string, McpServerEntry> };
+type ClaudeGlobalConfig = { projects?: Record<string, ClaudeProjectConfig> };
 
-type ClaudeProjectConfig = {
-  mcpServers?: Record<string, McpServerEntry>;
-};
-
-type ClaudeGlobalConfig = {
-  projects?: Record<string, ClaudeProjectConfig>;
-};
+function normalizedProjects(config: ClaudeGlobalConfig): Record<string, ClaudeProjectConfig> {
+  return Object.fromEntries(
+    Object.entries(config.projects ?? {}).map(([rawKey, project]) => [normalize(rawKey), project]),
+  );
+}
 
 function readProjectMcpServers(projectDir: string): Record<string, McpServerEntry> {
   try {
     const resolved = realpathSync(projectDir);
     const config = JSON.parse(readFileSync(globalConfigPath(), 'utf-8')) as ClaudeGlobalConfig;
-    return (
-      config.projects?.[resolved]?.mcpServers ?? config.projects?.[projectDir]?.mcpServers ?? {}
-    );
+    const projects = normalizedProjects(config);
+
+    const byResolved =
+      projects[resolved]?.mcpServers ?? projects[normalize(projectDir)]?.mcpServers;
+    if (byResolved) return byResolved;
+
+    const gitRoot = resolveGitRoot(resolved);
+    return (gitRoot ? projects[gitRoot]?.mcpServers : undefined) ?? {};
   } catch {
     return {};
   }

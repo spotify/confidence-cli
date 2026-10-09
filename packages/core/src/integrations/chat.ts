@@ -1,8 +1,9 @@
 import type { IdeId } from '@spotify-confidence/shared-kernel';
 import type { WizardSession } from '../session/session.js';
 import { getIntegration } from './registry.js';
+import { SKILL_NAMES, skillInvocation } from './skills/index.js';
 
-function buildChatPrompt(session: WizardSession): string {
+function buildChatPrompt(session: WizardSession, ide: IdeId): string {
   const lines =
     session.codeChanges.length <= 0
       ? [`I'd like to integrate Confidence into this project.`]
@@ -29,13 +30,10 @@ function buildChatPrompt(session: WizardSession): string {
     );
 
     if (session.pluginTargets.length) {
+      const skills = SKILL_NAMES.map((name) => `\`${skillInvocation(name, ide)}\``).join(', ');
       lines.push(
-        'I have installed Confidence AI plugin that contains useful skills and commands for working with Confidence,',
-        'for example, `/setup-warehouse` for setting up a data warehouse',
-
-        session.detectedProviders.length
-          ? "or `/migrate-<provider>` to migrate another provider's flags to Confidence."
-          : '.',
+        `The Confidence AI plugin is installed with the following skills: ${skills}.`,
+        'Use these skills for Confidence-related tasks like setting up a data warehouse, migrating from other providers, or instrumenting events.',
       );
     }
   }
@@ -46,7 +44,7 @@ function buildChatPrompt(session: WizardSession): string {
 export function launchChatSession(session: WizardSession, ide: IdeId): void {
   const integration = getIntegration(ide);
   integration.launchChat({
-    systemPrompt: buildChatPrompt(session),
+    systemPrompt: buildChatPrompt(session, ide),
     cwd: session.projectDir,
     token: session.authState.token,
   });

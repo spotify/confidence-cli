@@ -1,4 +1,4 @@
-export { getConfigDir, credentialsPath } from './paths.js';
+export { credentialsPath } from './paths.js';
 export {
   ensureDir,
   readCredentials,

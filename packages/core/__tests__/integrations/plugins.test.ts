@@ -1,27 +1,18 @@
 import { installPlugin, uninstallPlugin, updatePlugin } from '@integrations/skills/plugin.js';
-import type { IdeIntegration } from '@integrations/types.js';
+import { createMockIntegration } from './mock-integration.js';
 
-vi.mock('../../src/integrations/skills/local.js', () => ({
-  downloadSkills: vi.fn().mockResolvedValue(undefined),
-  removeSkills: vi.fn().mockResolvedValue(undefined),
-  hasDownloadedSkills: vi.fn().mockReturnValue(false),
+vi.mock('../../src/telemetry/telemetry.js', () => ({
+  track: vi.fn(),
 }));
 
-const mockIntegration: IdeIntegration = {
-  id: 'claude',
-  name: 'Claude Code',
-  launchChat: vi.fn(),
-  runOnboarding: vi.fn().mockReturnValue(null),
-  prepare: vi.fn().mockResolvedValue(undefined),
-  skillsDir: vi.fn().mockReturnValue('/project/.claude/skills'),
-  detectPlugin: vi.fn().mockResolvedValue(null),
-  installPlugin: vi.fn().mockResolvedValue(undefined),
-  updatePlugin: vi.fn().mockResolvedValue(undefined),
-  uninstallPlugin: vi.fn().mockResolvedValue(undefined),
-  detectMcpStatuses: vi.fn().mockResolvedValue({}),
-  connectMcpServer: vi.fn().mockResolvedValue(undefined),
-  disconnectMcpServer: vi.fn().mockResolvedValue(undefined),
-};
+vi.mock('../../src/integrations/skills/local.js', () => ({
+  downloadSkills: vi.fn().mockResolvedValue(true),
+  removeSkills: vi.fn().mockResolvedValue(undefined),
+  hasSkills: vi.fn().mockReturnValue(false),
+  getSkillsDir: vi.fn().mockReturnValue('/mock-home/.config/confidence/skills'),
+}));
+
+const mockIntegration = createMockIntegration();
 
 vi.mock('../../src/integrations/registry.js', () => ({
   getIntegration: () => mockIntegration,
@@ -33,81 +24,95 @@ beforeEach(() => {
 });
 
 describe('installPlugin', () => {
-  it('returns cli when IDE install succeeds', async () => {
-    const sut = await installPlugin('claude', '/project');
+  it('attempts CLI install and downloads skills', async () => {
+    await installPlugin('claude', '/project');
 
-    expect(sut).toBe('cli');
     expect(mockIntegration.installPlugin).toHaveBeenCalledWith('/project', undefined);
   });
 
-  it('falls back to download on any error', async () => {
+  it('always downloads skills to the shared directory', async () => {
+    const { downloadSkills } = await import('../../src/integrations/skills/local.js');
+
+    await installPlugin('claude', '/project');
+
+    expect(downloadSkills).toHaveBeenCalledWith('/mock-home/.config/confidence/skills');
+  });
+
+  it('succeeds via download when CLI install fails', async () => {
     const { downloadSkills } = await import('../../src/integrations/skills/local.js');
     vi.mocked(mockIntegration.installPlugin).mockRejectedValueOnce(new Error('network error'));
 
-    const sut = await installPlugin('claude', '/project');
+    await installPlugin('claude', '/project');
 
-    expect(sut).toBe('download');
-    expect(downloadSkills).toHaveBeenCalledWith('/project/.claude/skills');
+    expect(downloadSkills).toHaveBeenCalledWith('/mock-home/.config/confidence/skills');
+  });
+
+  it('throws when both CLI install and download fail', async () => {
+    const { downloadSkills } = await import('../../src/integrations/skills/local.js');
+    vi.mocked(mockIntegration.installPlugin).mockRejectedValueOnce(new Error('cli failed'));
+    vi.mocked(downloadSkills).mockResolvedValueOnce(false);
+
+    await expect(installPlugin('claude', '/project')).rejects.toThrow('cli failed');
   });
 });
 
 describe('uninstallPlugin', () => {
-  it('calls CLI uninstall and removes skills when installed via cli', async () => {
+  it('calls CLI uninstall and removes skills when no other IDE has plugin', async () => {
     const { removeSkills } = await import('../../src/integrations/skills/local.js');
-    vi.mocked(mockIntegration.detectPlugin).mockResolvedValueOnce('cli');
+    vi.mocked(mockIntegration.detectPlugin).mockResolvedValueOnce(true);
+    vi.mocked(mockIntegration.detectPlugin).mockResolvedValueOnce(false);
 
     await uninstallPlugin('claude', '/project');
 
     expect(mockIntegration.uninstallPlugin).toHaveBeenCalledWith('/project', undefined);
-    expect(removeSkills).toHaveBeenCalledWith('/project/.claude/skills');
+    expect(removeSkills).toHaveBeenCalledWith('/mock-home/.config/confidence/skills');
   });
 
-  it('only removes downloaded skills when installed via download', async () => {
+  it('preserves skills when another IDE still has the plugin', async () => {
     const { removeSkills } = await import('../../src/integrations/skills/local.js');
-    vi.mocked(mockIntegration.detectPlugin).mockResolvedValueOnce('download');
+    vi.mocked(mockIntegration.detectPlugin).mockResolvedValueOnce(true);
+    vi.mocked(mockIntegration.detectPlugin).mockResolvedValueOnce(true);
 
     await uninstallPlugin('claude', '/project');
 
-    expect(mockIntegration.uninstallPlugin).not.toHaveBeenCalled();
-    expect(removeSkills).toHaveBeenCalledWith('/project/.claude/skills');
-  });
-
-  it('only removes downloaded skills when no plugin detected', async () => {
-    const { removeSkills } = await import('../../src/integrations/skills/local.js');
-    vi.mocked(mockIntegration.detectPlugin).mockResolvedValueOnce(null);
-
-    await uninstallPlugin('claude', '/project');
-
-    expect(mockIntegration.uninstallPlugin).not.toHaveBeenCalled();
-    expect(removeSkills).toHaveBeenCalledWith('/project/.claude/skills');
-  });
-
-  it('does not remove local skills when scope is not project', async () => {
-    const { removeSkills } = await import('../../src/integrations/skills/local.js');
-    vi.mocked(mockIntegration.detectPlugin).mockResolvedValueOnce('cli');
-
-    await uninstallPlugin('claude', '/project', 'global');
-
-    expect(mockIntegration.uninstallPlugin).toHaveBeenCalledWith('/project', 'global');
+    expect(mockIntegration.uninstallPlugin).toHaveBeenCalled();
     expect(removeSkills).not.toHaveBeenCalled();
+  });
+
+  it('removes skills when CLI plugin is not detected and no other IDE has it', async () => {
+    const { removeSkills } = await import('../../src/integrations/skills/local.js');
+
+    await uninstallPlugin('claude', '/project');
+
+    expect(mockIntegration.uninstallPlugin).not.toHaveBeenCalled();
+    expect(removeSkills).toHaveBeenCalledWith('/mock-home/.config/confidence/skills');
   });
 });
 
 describe('updatePlugin', () => {
-  it('returns cli when IDE update succeeds', async () => {
-    const sut = await updatePlugin('claude', '/project');
+  it('attempts CLI update and force-downloads skills', async () => {
+    const { downloadSkills } = await import('../../src/integrations/skills/local.js');
 
-    expect(sut).toBe('cli');
+    await updatePlugin('claude', '/project');
+
     expect(mockIntegration.updatePlugin).toHaveBeenCalledWith('/project', undefined);
+    expect(downloadSkills).toHaveBeenCalledWith('/mock-home/.config/confidence/skills', true);
   });
 
-  it('falls back to download on any error', async () => {
+  it('succeeds via download when CLI update fails', async () => {
     const { downloadSkills } = await import('../../src/integrations/skills/local.js');
     vi.mocked(mockIntegration.updatePlugin).mockRejectedValueOnce(new Error('network error'));
 
-    const sut = await updatePlugin('claude', '/project');
+    await updatePlugin('claude', '/project');
 
-    expect(sut).toBe('download');
-    expect(downloadSkills).toHaveBeenCalledWith('/project/.claude/skills', true);
+    expect(downloadSkills).toHaveBeenCalledWith('/mock-home/.config/confidence/skills', true);
+  });
+
+  it('throws when both CLI update and download fail', async () => {
+    const { downloadSkills } = await import('../../src/integrations/skills/local.js');
+    vi.mocked(mockIntegration.updatePlugin).mockRejectedValueOnce(new Error('cli failed'));
+    vi.mocked(downloadSkills).mockResolvedValueOnce(false);
+
+    await expect(updatePlugin('claude', '/project')).rejects.toThrow('cli failed');
   });
 });

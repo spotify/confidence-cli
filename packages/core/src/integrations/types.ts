@@ -1,15 +1,6 @@
 import type { ChildProcess } from 'node:child_process';
-import type {
-  IdeId,
-  PluginInstallationMethod,
-  PluginScope,
-} from '@spotify-confidence/shared-kernel';
+import type { IdeId, PluginScope } from '@spotify-confidence/shared-kernel';
 import type { McpServerName, McpStatusMap } from './mcp/servers.js';
-
-export type InstalledPlugin = {
-  ide: IdeId;
-  via: PluginInstallationMethod;
-};
 
 export type McpConnectOpts = {
   serverName: McpServerName;
@@ -52,8 +43,7 @@ export type IdeIntegration = {
 
   prepare: () => Promise<void>;
 
-  skillsDir: (projectDir: string) => string;
-  detectPlugin: (projectDir: string) => Promise<PluginInstallationMethod | null>;
+  detectPlugin: (projectDir: string) => Promise<boolean>;
   installPlugin: (projectDir: string, scope?: PluginScope) => Promise<void>;
   updatePlugin: (projectDir: string, scope?: PluginScope) => Promise<void>;
   uninstallPlugin: (projectDir: string, scope?: PluginScope) => Promise<void>;
@@ -63,6 +53,5 @@ export type IdeIntegration = {
   disconnectMcpServer: (opts: McpDisconnectOpts) => Promise<void>;
 
   runOnboarding: (opts: OnboardingOpts, callbacks: OnboardingCallbacks) => ChildProcess | null;
-
   launchChat: (opts: ChatOpts) => void;
 };

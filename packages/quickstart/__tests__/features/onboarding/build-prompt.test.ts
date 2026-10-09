@@ -8,42 +8,12 @@ describe('buildOnboardingPrompt', () => {
     goals: ['feature-flags' as const],
   };
 
-  describe('when plugins are installed via CLI', () => {
-    it('references analyze-project skill with plugin namespace for claude', () => {
-      const sut = buildOnboardingPrompt({
-        ...baseOpts,
-        pluginInstallMethod: 'cli',
-      });
+  describe('skill references', () => {
+    it('references analyze-project skill as an absolute file path', () => {
+      const sut = buildOnboardingPrompt(baseOpts);
 
-      expect(sut).toContain(
-        'Invoke the `/confidence:analyze-project` skill as a **methodology reference**',
-      );
-      expect(sut).not.toContain('Read `.claude/skills/analyze-project/SKILL.md`');
-    });
-  });
-
-  describe('when plugins are installed via download', () => {
-    it('references analyze-project skill as a file path', () => {
-      const sut = buildOnboardingPrompt({
-        ...baseOpts,
-        pluginInstallMethod: 'download',
-      });
-
-      expect(sut).toContain(
-        'Read `.claude/skills/analyze-project/SKILL.md` as a **methodology reference**',
-      );
-      expect(sut).not.toContain('Invoke the `/analyze-project`');
-    });
-  });
-
-  describe('when pluginInstallMethod is null', () => {
-    it('defaults to file path references', () => {
-      const sut = buildOnboardingPrompt({
-        ...baseOpts,
-        pluginInstallMethod: null,
-      });
-
-      expect(sut).toContain('Read `.claude/skills/analyze-project/SKILL.md`');
+      expect(sut).toContain('.config/confidence/skills/analyze-project/SKILL.md');
+      expect(sut).toContain('as a **methodology reference**');
     });
 
     it('asks the summary to list Confidence resources next to file changes', () => {
@@ -69,66 +39,11 @@ describe('buildOnboardingPrompt', () => {
       goals: ['feature-flags' as const, 'event-tracking' as const],
     };
 
-    it('uses namespaced slash command when installed via CLI', () => {
-      const sut = buildOnboardingPrompt({
-        ...eventOpts,
-        pluginInstallMethod: 'cli',
-      });
+    it('references instrument-events skill as an absolute file path', () => {
+      const sut = buildOnboardingPrompt(eventOpts);
 
-      expect(sut).toContain(
-        'Invoke the `/confidence:instrument-events` skill as a **methodology reference**',
-      );
-    });
-
-    it('uses file path when installed via download', () => {
-      const sut = buildOnboardingPrompt({
-        ...eventOpts,
-        pluginInstallMethod: 'download',
-      });
-
-      expect(sut).toContain('Read `.claude/skills/instrument-events/SKILL.md`');
-    });
-  });
-
-  describe('with different IDEs', () => {
-    it('uses cursor skills dir for cursor with download method', () => {
-      const sut = buildOnboardingPrompt({
-        ...baseOpts,
-        ide: 'cursor',
-        pluginInstallMethod: 'download',
-      });
-
-      expect(sut).toContain('Read `.cursor/skills/analyze-project/SKILL.md`');
-    });
-
-    it('uses codex skills dir for codex with download method', () => {
-      const sut = buildOnboardingPrompt({
-        ...baseOpts,
-        ide: 'codex',
-        pluginInstallMethod: 'download',
-      });
-
-      expect(sut).toContain('Read `.agents/skills/analyze-project/SKILL.md`');
-    });
-
-    it('uses $ prefix for codex skill invocations via CLI', () => {
-      const sut = buildOnboardingPrompt({
-        ...baseOpts,
-        ide: 'codex',
-        pluginInstallMethod: 'cli',
-      });
-
-      expect(sut).toContain('Invoke the `$analyze-project` skill as a **methodology reference**');
-    });
-
-    it('uses bare slash for cursor skill invocations via CLI', () => {
-      const sut = buildOnboardingPrompt({
-        ...baseOpts,
-        ide: 'cursor',
-        pluginInstallMethod: 'cli',
-      });
-
-      expect(sut).toContain('Invoke the `/analyze-project` skill as a **methodology reference**');
+      expect(sut).toContain('.config/confidence/skills/instrument-events/SKILL.md');
+      expect(sut).toContain('as a **methodology reference**');
     });
   });
 
@@ -138,49 +53,11 @@ describe('buildOnboardingPrompt', () => {
       goals: ['session-recordings' as const],
     };
 
-    it('delegates to setup-session-recording skill via CLI when installed via CLI', () => {
-      const sut = buildOnboardingPrompt({
-        ...recordingOpts,
-        pluginInstallMethod: 'cli',
-      });
+    it('references setup-session-recording skill as an absolute file path', () => {
+      const sut = buildOnboardingPrompt(recordingOpts);
 
-      expect(sut).toContain(
-        'Invoke the `/confidence:setup-session-recording` skill as a **methodology reference**',
-      );
-      expect(sut).not.toContain('Read `.claude/skills/setup-session-recording/SKILL.md`');
-    });
-
-    it('delegates to setup-session-recording skill as file path when installed via download', () => {
-      const sut = buildOnboardingPrompt({
-        ...recordingOpts,
-        pluginInstallMethod: 'download',
-      });
-
-      expect(sut).toContain(
-        'Read `.claude/skills/setup-session-recording/SKILL.md` as a **methodology reference**',
-      );
-    });
-
-    it('uses cursor skills dir for cursor with download method', () => {
-      const sut = buildOnboardingPrompt({
-        ...recordingOpts,
-        ide: 'cursor',
-        pluginInstallMethod: 'download',
-      });
-
-      expect(sut).toContain('Read `.cursor/skills/setup-session-recording/SKILL.md`');
-    });
-
-    it('uses codex skill invocation for codex with CLI method', () => {
-      const sut = buildOnboardingPrompt({
-        ...recordingOpts,
-        ide: 'codex',
-        pluginInstallMethod: 'cli',
-      });
-
-      expect(sut).toContain(
-        'Invoke the `$setup-session-recording` skill as a **methodology reference**',
-      );
+      expect(sut).toContain('.config/confidence/skills/setup-session-recording/SKILL.md');
+      expect(sut).toContain('as a **methodology reference**');
     });
 
     it('overrides skill formatting with STATUS-line-only output', () => {

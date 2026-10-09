@@ -78,12 +78,17 @@ export const flagsCommand = {
       )
       .command(
         'toggle <flag-key>',
-        'Enable or disable a flag',
+        'Enable or disable a flag for a client',
         (y: Argv) =>
           y
             .positional('flag-key', { type: 'string', demandOption: true })
             .option('on', { type: 'boolean', describe: 'Enable the flag' })
             .option('off', { type: 'boolean', describe: 'Disable the flag' })
+            .option('client', {
+              type: 'string',
+              describe: 'Client name for the flag',
+              demandOption: true,
+            })
             .conflicts('on', 'off')
             .check((args) => {
               if (!args.on && !args.off) {
@@ -114,7 +119,11 @@ export const flagsCommand = {
               array: true,
               describe: 'Additional context key=value pair',
             })
-            .option('client', { type: 'string', describe: 'Client name for resolution' }),
+            .option('client', {
+              type: 'string',
+              describe: 'Client name for resolution',
+              demandOption: true,
+            }),
         safely(resolveFlagCmd),
       )
       .command(

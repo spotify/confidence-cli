@@ -1,9 +1,7 @@
 import { resolve } from 'node:path';
+import type { PluginScope } from '@spotify-confidence/shared-kernel';
 import { execFile } from '../../exec/exec.js';
 import { PLUGIN_NAME } from '../../constants.js';
-import type { PluginInstallationMethod, PluginScope } from '@spotify-confidence/shared-kernel';
-import { hasDownloadedSkills } from '../skills/local.js';
-import { skillsDir } from './paths.js';
 
 const SCOPE_MAP: Record<PluginScope, string> = {
   project: 'project',
@@ -18,18 +16,15 @@ type PluginEntry = {
   projectPath?: string;
 };
 
-export async function detectPlugin(projectDir: string): Promise<PluginInstallationMethod | null> {
+export async function detectPlugin(projectDir: string): Promise<boolean> {
   try {
-    const cwd = projectDir;
-    const { stdout } = await execFile('claude', ['plugin', 'list', '--json'], { cwd });
-    const plugins = JSON.parse(stdout) as PluginEntry[];
-
-    if (plugins.some((p) => isAvailable(p, projectDir))) return 'cli';
+    const config = { cwd: projectDir, timeout: 5_000 };
+    const result = await execFile('claude', ['plugin', 'list', '--json'], config);
+    const plugins = JSON.parse(result.stdout) as PluginEntry[];
+    return plugins.some((p) => isAvailable(p, projectDir));
   } catch {
-    // CLI unavailable; fallback to locally downloaded files.
+    return false;
   }
-
-  return hasDownloadedSkills(skillsDir(projectDir)) ? 'download' : null;
 }
 
 export async function installPlugin(
@@ -45,7 +40,8 @@ export async function updatePlugin(
   projectDir: string,
   scope: PluginScope = 'project',
 ): Promise<void> {
-  await execFile('claude', ['plugin', 'update', PLUGIN_NAME, '--scope', SCOPE_MAP[scope]], {
+  const pluginId = await resolvePluginId(projectDir);
+  await execFile('claude', ['plugin', 'update', pluginId, '--scope', SCOPE_MAP[scope]], {
     cwd: projectDir,
   });
 }
@@ -57,6 +53,18 @@ export async function uninstallPlugin(
   await execFile('claude', ['plugin', 'uninstall', PLUGIN_NAME, '--scope', SCOPE_MAP[scope]], {
     cwd: projectDir,
   });
+}
+
+async function resolvePluginId(projectDir: string): Promise<string> {
+  const { stdout } = await execFile('claude', ['plugin', 'list', '--json'], { cwd: projectDir });
+
+  const plugins = JSON.parse(stdout) as PluginEntry[];
+  const match = plugins.find((p) => isAvailable(p, projectDir));
+  if (!match) {
+    throw new Error(`Plugin "${PLUGIN_NAME}" is not installed`);
+  }
+
+  return match.id;
 }
 
 function isAvailable(plugin: PluginEntry, projectDir: string): boolean {

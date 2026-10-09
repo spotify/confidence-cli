@@ -8,7 +8,8 @@
   },
   "dependencies": {
     "@modelcontextprotocol/sdk": "^1.31.0",
-    "@spotify-confidence/shared-kernel": "workspace:*"
+    "@spotify-confidence/shared-kernel": "workspace:*",
+    "cross-spawn": "^7.0.6"
   },
   "scripts": {
     "test": "vitest run",
@@ -18,6 +19,7 @@
   "devDependencies": {
     "@spotify-confidence/eslint-config": "workspace:*",
     "@spotify-confidence/testing": "workspace:*",
+    "@types/cross-spawn": "^6.0.6",
     "@types/node": "^26.6.3",
     "eslint": "^10.11.0",
     "msw": "^2.15.0",

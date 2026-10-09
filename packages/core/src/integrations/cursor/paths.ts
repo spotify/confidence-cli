@@ -8,7 +8,3 @@ export function globalConfigPath(): string {
 export function cliConfigPath(projectDir: string): string {
   return join(projectDir, '.cursor', 'cli.json');
 }
-
-export function skillsDir(projectDir: string): string {
-  return join(projectDir, '.cursor', 'skills');
-}

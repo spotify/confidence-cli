@@ -4,7 +4,6 @@ export type {
   McpDisconnectOpts,
   OnboardingOpts,
   OnboardingCallbacks,
-  InstalledPlugin,
 } from './types.js';
 
 export { getIntegrations, getIntegration } from './registry.js';
@@ -30,4 +29,8 @@ export {
   installPlugin,
   uninstallPlugin,
   updatePlugin,
+  hasSkills,
+  skillInvocation,
+  referenceInstruction,
+  followInstruction,
 } from './skills/index.js';

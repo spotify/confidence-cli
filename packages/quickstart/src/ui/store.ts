@@ -1,11 +1,6 @@
 import { atom } from 'nanostores';
 import { useStore } from '@nanostores/react';
-import type {
-  IdeId,
-  OnboardingGoal,
-  PluginInstallationMethod,
-  DetectedProvider,
-} from '@spotify-confidence/shared-kernel';
+import type { IdeId, OnboardingGoal, DetectedProvider } from '@spotify-confidence/shared-kernel';
 import {
   type WizardSession,
   type CheckResult,
@@ -89,11 +84,6 @@ export const store = {
   setPluginTargets: (plugins: IdeId[]): void =>
     updateSession({
       pluginTargets: plugins,
-    }),
-
-  setPluginInstallMethod: (method: PluginInstallationMethod): void =>
-    updateSession({
-      pluginInstallMethod: method,
     }),
 
   setConnectedMcps: (mcps: string[]): void =>

@@ -27,27 +27,8 @@ describe('when the user starts chat after onboarding', () => {
     expect(prompt).toContain('CONFIDENCE_QUICKSTART.md');
     expect(prompt).toContain('Help me with next steps');
     expect(prompt).toContain('Confidence AI plugin');
-    expect(prompt).toContain('/setup-warehouse');
-    expect(prompt).not.toContain('/migrate-');
-  });
-
-  it('includes migration hint when competitors are detected', async () => {
-    using session = createSession({ project: 'react-statsig' });
-
-    await navigateToOnboarding(session);
-    await session.press('Enter');
-    await session.waitForText('onboarding complete', { timeout: 30_000 });
-
-    await session.waitForText('Continue work with Claude Code');
-    await session.press('Enter');
-
-    const exitCode = await session.waitForExit();
-    expect(exitCode).toBe(0);
-
-    const prompt = readFileSync(join(session.cwd, CHAT_PROMPT_FILE), 'utf-8');
-    expect(prompt).toContain('Confidence AI plugin');
-    expect(prompt).toContain('/setup-warehouse');
-    expect(prompt).toContain('/migrate-');
+    expect(prompt).toContain('/confidence:setup-warehouse');
+    expect(prompt).toContain('/confidence:migrate-eppo');
   });
 
   it('sends an integration prompt when onboarding was skipped', async () => {

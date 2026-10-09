@@ -5,13 +5,14 @@ import { createMockIntegration } from '../helpers/mock-integration.js';
 import { createRunner } from '../helpers/run-command.js';
 
 const mockIntegration = createMockIntegration({
-  detectPlugin: vi.fn().mockResolvedValue('cli'),
+  detectPlugin: vi.fn().mockResolvedValue(true),
   detectMcpStatuses: vi.fn().mockResolvedValue({
     'confidence-flags': 'connected',
     'confidence-docs': 'connected',
   }),
 });
 
+const mockHasSkills = vi.fn().mockReturnValue(true);
 const mockAuthenticate = vi.fn().mockResolvedValue({
   accessToken: buildTestJwt({ email: 'test@example.com' }),
   region: 'EU',
@@ -23,6 +24,7 @@ vi.mock('@spotify-confidence/core', async (importOriginal) => {
     ...actual,
     getIntegration: () => mockIntegration,
     getIntegrations: () => [mockIntegration],
+    hasSkills: () => mockHasSkills(),
     authenticate: (...args: unknown[]) => mockAuthenticate(...args),
   };
 });
@@ -71,11 +73,11 @@ describe('warehouse setup', () => {
   it('fails when plugin is not installed', async () => {
     using _auth = prepareAuthTokens('valid');
     using output = captureOutput();
-    vi.mocked(mockIntegration.detectPlugin).mockResolvedValueOnce(null);
+    mockHasSkills.mockReturnValueOnce(false);
 
     await run(['warehouse', 'setup', '--warehouse-type', 'bigquery', '--ide', 'claude']);
 
-    expect(output.stderr).toContain('Confidence AI plugin not installed');
+    expect(output.stderr).toContain('Confidence skills not installed');
     expect(mockIntegration.launchChat).not.toHaveBeenCalled();
   });
 

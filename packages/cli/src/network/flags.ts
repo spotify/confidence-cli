@@ -76,7 +76,9 @@ export async function createFlag(
   const args: JsonObject = { flagName: flagKey };
   if (opts?.client) args.clientName = opts.client;
   if (opts?.description) args.description = opts.description;
-  if (opts?.variants) args.variants = JSON.stringify(opts.variants.map((v) => ({ name: v })));
+  if (opts?.variants) {
+    args.variants = JSON.stringify(opts.variants.map((v) => ({ name: v, value: {} })));
+  }
 
   return mcpCallTool(serverOpts(token), 'createFlag', args);
 }
@@ -98,28 +100,26 @@ export async function updateFlag(
 export async function toggleFlag(
   token: string,
   flagKey: string,
-  enabled: boolean,
-): Promise<ApiResponse<FlagResource>> {
-  return apiRequest<FlagResource>({
-    ...restOpts(token),
-    path: `/v1/flags/${encodeURIComponent(flagKey)}`,
-    method: 'PATCH',
-    body: { enabled },
-    params: { update_mask: 'enabled' },
+  opts: { enabled: boolean; client: string },
+): Promise<CallToolResult> {
+  const tool = opts.enabled ? 'addFlagToClient' : 'removeFlagFromClient';
+  return mcpCallTool(serverOpts(token), tool, {
+    flagName: flagKey,
+    clientName: opts.client,
   });
 }
 
 export async function resolveFlag(
   token: string,
   flagKey: string,
-  opts: { entity: string; entityValue: string; client?: string; context?: Record<string, string> },
+  opts: { entity: string; entityValue: string; client: string; context?: Record<string, string> },
 ): Promise<CallToolResult> {
   const args: JsonObject = {
     flagName: flagKey,
+    clientName: opts.client,
     entity: opts.entity,
     entityValue: opts.entityValue,
   };
-  if (opts.client) args.clientName = opts.client;
   if (opts.context) args.context = JSON.stringify(opts.context);
 
   return mcpCallTool(serverOpts(token), 'resolveFlag', args);

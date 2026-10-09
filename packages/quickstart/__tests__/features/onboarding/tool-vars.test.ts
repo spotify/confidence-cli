@@ -1,4 +1,8 @@
-import { skillInvocation, referenceInstruction } from '@features/onboarding/tool-vars.js';
+import {
+  skillInvocation,
+  referenceInstruction,
+  followInstruction,
+} from '@features/onboarding/tool-vars.js';
 import type { IdeId } from '@spotify-confidence/shared-kernel';
 
 describe('skillInvocation', () => {
@@ -13,55 +17,22 @@ describe('skillInvocation', () => {
 });
 
 describe('referenceInstruction', () => {
-  describe('when method is cli', () => {
-    it.each<{ ide: IdeId; expected: string }>([
-      {
-        ide: 'claude',
-        expected: 'Invoke the `/confidence:analyze-project` skill as a **methodology reference**',
-      },
-      {
-        ide: 'codex',
-        expected: 'Invoke the `$analyze-project` skill as a **methodology reference**',
-      },
-      {
-        ide: 'cursor',
-        expected: 'Invoke the `/analyze-project` skill as a **methodology reference**',
-      },
-    ])('produces IDE-specific invocation for $ide', ({ ide, expected }) => {
-      const sut = referenceInstruction('analyze-project', ide, 'cli');
-      expect(sut).toBe(expected);
-    });
+  it('produces a read instruction with methodology reference', () => {
+    const sut = referenceInstruction('analyze-project');
+    expect(sut).toContain('analyze-project/SKILL.md');
+    expect(sut).toContain('.config/confidence/skills/');
+    expect(sut).toMatch(/^Read `/);
+    expect(sut).toContain('as a **methodology reference**');
   });
+});
 
-  describe('when method is download', () => {
-    it.each<{ ide: IdeId; expected: string }>([
-      {
-        ide: 'claude',
-        expected: 'Read `.claude/skills/analyze-project/SKILL.md` as a **methodology reference**',
-      },
-      {
-        ide: 'codex',
-        expected: 'Read `.agents/skills/analyze-project/SKILL.md` as a **methodology reference**',
-      },
-      {
-        ide: 'cursor',
-        expected: 'Read `.cursor/skills/analyze-project/SKILL.md` as a **methodology reference**',
-      },
-    ])('produces file path for $ide', ({ ide, expected }) => {
-      const sut = referenceInstruction('analyze-project', ide, 'download');
-      expect(sut).toBe(expected);
-    });
-  });
-
-  describe('when method is null or undefined', () => {
-    it('falls back to file path', () => {
-      const sut = referenceInstruction('analyze-project', 'claude', null);
-      expect(sut).toContain('Read `.claude/skills/analyze-project/SKILL.md`');
-    });
-
-    it('falls back to file path when omitted', () => {
-      const sut = referenceInstruction('analyze-project', 'claude');
-      expect(sut).toContain('Read `.claude/skills/analyze-project/SKILL.md`');
-    });
+describe('followInstruction', () => {
+  it('produces a read instruction that tells the agent to follow the skill', () => {
+    const sut = followInstruction('migrate-statsig');
+    expect(sut).toContain('migrate-statsig/SKILL.md');
+    expect(sut).toContain('.config/confidence/skills/');
+    expect(sut).toMatch(/^Read `/);
+    expect(sut).toContain('follow the skill instructions');
+    expect(sut).not.toContain('methodology reference');
   });
 });

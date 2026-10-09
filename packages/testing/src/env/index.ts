@@ -1,2 +1,2 @@
 export { overlayEnv } from './overlay-env.js';
-export { isWindows, perPlatform } from './platform.js';
+export { perPlatform } from './platform.js';

@@ -15,8 +15,8 @@ vi.mock('@spotify-confidence/core', async (importOriginal) => ({
   ...(await importOriginal<typeof import('@spotify-confidence/core')>()),
   detectInstalledPlugins: vi.fn().mockResolvedValue([]),
   prepareIde: vi.fn().mockResolvedValue(undefined),
-  installPlugin: vi.fn().mockResolvedValue('download'),
-  updatePlugin: vi.fn().mockResolvedValue('download'),
+  installPlugin: vi.fn().mockResolvedValue(undefined),
+  updatePlugin: vi.fn().mockResolvedValue(undefined),
 }));
 
 describe('InstallPluginsScreen', () => {
@@ -84,7 +84,7 @@ describe('InstallPluginsScreen', () => {
   it('shows continue option when plugins already installed', async () => {
     using _config = createConfigDir();
     const { detectInstalledPlugins } = await import('@spotify-confidence/core');
-    vi.mocked(detectInstalledPlugins).mockResolvedValueOnce([{ ide: 'claude', via: 'cli' }]);
+    vi.mocked(detectInstalledPlugins).mockResolvedValueOnce(['claude']);
 
     using sut = renderApp({ screen: ScreenId.InstallPlugins });
 
@@ -103,10 +103,7 @@ describe('InstallPluginsScreen', () => {
   it('sorts detected IDEs above non-detected ones', async () => {
     using _config = createConfigDir();
     const { detectInstalledPlugins } = await import('@spotify-confidence/core');
-    vi.mocked(detectInstalledPlugins).mockResolvedValueOnce([
-      { ide: 'claude', via: 'cli' },
-      { ide: 'codex', via: 'cli' },
-    ]);
+    vi.mocked(detectInstalledPlugins).mockResolvedValueOnce(['claude', 'codex']);
 
     using sut = renderScreen(<InstallPluginsScreen />, { screen: ScreenId.InstallPlugins });
 
