@@ -90,8 +90,11 @@ if $clean_mcp; then
   skills_dirs=("$config_dir/skills" "$PROJECT_DIR/.claude/skills" "$PROJECT_DIR/.cursor/skills" "$PROJECT_DIR/.agents/skills")
   confidence_skills=(
     analyze-project
+    explore-metric
     instrument-events
     onboard-confidence
+    onboard-confidence-dry-run
+    setup-session-recording
     setup-warehouse
     setup-warehouse-bigquery
     setup-warehouse-databricks
