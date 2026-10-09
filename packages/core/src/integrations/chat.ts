@@ -1,7 +1,7 @@
 import type { IdeId } from '@spotify-confidence/shared-kernel';
 import type { WizardSession } from '../session/session.js';
 import { getIntegration } from './registry.js';
-import { skillInvocation } from './skills/references.js';
+import { SKILL_NAMES, skillInvocation } from './skills/index.js';
 
 function buildChatPrompt(session: WizardSession, ide: IdeId): string {
   const lines =
@@ -30,13 +30,10 @@ function buildChatPrompt(session: WizardSession, ide: IdeId): string {
     );
 
     if (session.pluginTargets.length) {
-      const warehouseCmd = skillInvocation('setup-warehouse', ide);
-      const migrateHint = session.detectedProviders.length
-        ? ` or \`${skillInvocation(`migrate-${session.detectedProviders[0].id}`, ide)}\` to migrate another provider's flags to Confidence`
-        : '';
+      const skills = SKILL_NAMES.map((name) => `\`${skillInvocation(name, ide)}\``).join(', ');
       lines.push(
-        `I have installed Confidence AI plugin with skills and commands for working with Confidence,`,
-        `for example \`${warehouseCmd}\` for setting up a data warehouse${migrateHint}.`,
+        `The Confidence AI plugin is installed with the following skills: ${skills}.`,
+        'Use these skills for Confidence-related tasks like setting up a data warehouse, migrating from other providers, or instrumenting events.',
       );
     }
   }

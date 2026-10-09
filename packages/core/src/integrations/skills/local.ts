@@ -3,21 +3,7 @@ import { mkdir, rm, writeFile } from 'node:fs/promises';
 import { join } from 'node:path';
 import { SKILLS_BASE_URL } from '../../constants.js';
 import { getConfigDir } from '../../config/paths.js';
-
-const SKILL_NAMES = [
-  'analyze-project',
-  'instrument-events',
-  'onboard-confidence',
-  'setup-warehouse',
-  'setup-warehouse-bigquery',
-  'setup-warehouse-databricks',
-  'setup-warehouse-redshift',
-  'setup-warehouse-snowflake',
-  'migrate-eppo',
-  'migrate-optimizely',
-  'migrate-posthog',
-  'migrate-statsig',
-] as const;
+import { SKILL_NAMES } from './const.js';
 
 export function getSkillsDir(): string {
   return join(getConfigDir(), 'skills');

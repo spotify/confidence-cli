@@ -1,3 +1,4 @@
+export { SKILL_NAMES } from './const.js';
 export { hasSkills } from './local.js';
 export {
   detectInstalledPlugins,
