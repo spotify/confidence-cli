@@ -23,18 +23,22 @@ const DEFAULT_STEPS = [
   'Show a working feature flag example',
 ] as const;
 
+function hasPresetGoals(session: WizardSession): boolean {
+  return session.goalsPreset && session.onboardingGoals.length > 0;
+}
+
 export function tagline(session: WizardSession): string {
-  if (!session.goalsPreset) return DEFAULT_TAGLINE;
+  if (!hasPresetGoals(session)) return DEFAULT_TAGLINE;
   return `${capitalize(goalList(session.onboardingGoals))}, set up with AI in minutes.`;
 }
 
 export function intro(session: WizardSession): string {
-  if (!session.goalsPreset) return DEFAULT_INTRO;
+  if (!hasPresetGoals(session)) return DEFAULT_INTRO;
   return `This wizard will set up ${goalList(session.onboardingGoals)} in your project.`;
 }
 
 export function steps(session: WizardSession): readonly string[] {
-  if (!session.goalsPreset) return DEFAULT_STEPS;
+  if (!hasPresetGoals(session)) return DEFAULT_STEPS;
   const goals = session.onboardingGoals;
   const common = DEFAULT_STEPS.slice(0, 4);
   const withFlags = goals.includes('feature-flags');
