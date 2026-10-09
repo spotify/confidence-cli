@@ -1,17 +1,15 @@
-import {
-  execFile as cpExecFile,
-  spawn as cpSpawn,
-  type ChildProcess,
-  type ExecFileOptions,
-  type SpawnOptions,
-} from 'node:child_process';
+import { execFile as cpExecFile, type ExecFileOptions } from 'node:child_process';
+import type { ChildProcess, SpawnOptions } from 'node:child_process';
 import { promisify } from 'node:util';
+
+import crossSpawn from 'cross-spawn';
+
 import { pathFromEnv, resolveBin } from './resolve-bin.js';
 
 const promisifiedExecFile = promisify(cpExecFile);
 
 /**
- * `spawn` that resolves Windows `.js` and `.cmd` PATH shims.
+ * `spawn` that resolves Windows `.js` PATH shims via `cross-spawn`.
  *
  * @see {@link resolveBin}
  */
@@ -21,11 +19,11 @@ export function spawn(
   options?: SpawnOptions,
 ): ChildProcess {
   const resolved = resolveBin(command, args, { pathEnv: pathFromEnv(options?.env) });
-  return cpSpawn(resolved.command, resolved.args, { ...options, shell: resolved.shell });
+  return crossSpawn(resolved.command, resolved.args, options ?? {});
 }
 
 /**
- * `execFile` that resolves Windows `.js` and `.cmd` PATH shims.
+ * `execFile` that resolves Windows `.js` PATH shims via `cross-spawn`.
  *
  * @see {@link resolveBin}
  */
@@ -38,7 +36,6 @@ export async function execFile(
   const { stdout, stderr } = await promisifiedExecFile(resolved.command, resolved.args, {
     ...options,
     encoding: 'utf8',
-    shell: resolved.shell,
   });
   return { stdout, stderr };
 }
