@@ -1,23 +1,10 @@
 import { createProjectDir } from '@spotify-confidence/testing/scaffold';
 import { launchChatSession } from '@integrations/chat.js';
 import { SKILL_NAMES } from '@integrations/skills/const.js';
-import type { IdeIntegration } from '@integrations/types.js';
 import { createSession } from '../../src/session/session.js';
+import { createMockIntegration } from './mock-integration.js';
 
-const mockIntegration: IdeIntegration = {
-  id: 'claude',
-  name: 'Claude Code',
-  launchChat: vi.fn(),
-  runOnboarding: vi.fn().mockReturnValue(null),
-  prepare: vi.fn().mockResolvedValue(undefined),
-  detectPlugin: vi.fn().mockResolvedValue(false),
-  installPlugin: vi.fn().mockResolvedValue(undefined),
-  updatePlugin: vi.fn().mockResolvedValue(undefined),
-  uninstallPlugin: vi.fn().mockResolvedValue(undefined),
-  detectMcpStatuses: vi.fn().mockResolvedValue({}),
-  connectMcpServer: vi.fn().mockResolvedValue(undefined),
-  disconnectMcpServer: vi.fn().mockResolvedValue(undefined),
-};
+const mockIntegration = createMockIntegration();
 
 vi.mock('../../src/integrations/registry.js', () => ({
   getIntegration: () => mockIntegration,

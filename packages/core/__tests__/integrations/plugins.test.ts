@@ -1,5 +1,5 @@
 import { installPlugin, uninstallPlugin, updatePlugin } from '@integrations/skills/plugin.js';
-import type { IdeIntegration } from '@integrations/types.js';
+import { createMockIntegration } from './mock-integration.js';
 
 vi.mock('../../src/telemetry/telemetry.js', () => ({
   track: vi.fn(),
@@ -12,20 +12,7 @@ vi.mock('../../src/integrations/skills/local.js', () => ({
   getSkillsDir: vi.fn().mockReturnValue('/mock-home/.config/confidence/skills'),
 }));
 
-const mockIntegration: IdeIntegration = {
-  id: 'claude',
-  name: 'Claude Code',
-  launchChat: vi.fn(),
-  runOnboarding: vi.fn().mockReturnValue(null),
-  prepare: vi.fn().mockResolvedValue(undefined),
-  detectPlugin: vi.fn().mockResolvedValue(false),
-  installPlugin: vi.fn().mockResolvedValue(undefined),
-  updatePlugin: vi.fn().mockResolvedValue(undefined),
-  uninstallPlugin: vi.fn().mockResolvedValue(undefined),
-  detectMcpStatuses: vi.fn().mockResolvedValue({}),
-  connectMcpServer: vi.fn().mockResolvedValue(undefined),
-  disconnectMcpServer: vi.fn().mockResolvedValue(undefined),
-};
+const mockIntegration = createMockIntegration();
 
 vi.mock('../../src/integrations/registry.js', () => ({
   getIntegration: () => mockIntegration,
