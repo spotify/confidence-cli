@@ -1,6 +1,6 @@
 import { EventEmitter } from 'node:events';
 import { PassThrough } from 'node:stream';
-import { spawn } from 'node:child_process';
+import crossSpawn from 'cross-spawn';
 
 function toStreamJsonLine(text: string): string {
   const event = { type: 'assistant', message: { content: [{ type: 'text', text }] } };
@@ -53,5 +53,5 @@ export function createFakeChild(
 
 export function mockNextSpawn(opts?: Parameters<typeof createFakeChild>[0]) {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  vi.mocked(spawn).mockImplementationOnce((() => createFakeChild(opts)) as any);
+  vi.mocked(crossSpawn).mockImplementationOnce((() => createFakeChild(opts)) as any);
 }

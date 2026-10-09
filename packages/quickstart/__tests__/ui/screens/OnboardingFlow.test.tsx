@@ -1,4 +1,4 @@
-import { spawn } from 'node:child_process';
+import crossSpawn from 'cross-spawn';
 import {
   renderApp,
   renderScreen,
@@ -13,14 +13,14 @@ import { createConfigDir } from '@spotify-confidence/testing/scaffold';
 import { OnboardProjectScreen } from '@ui/screens/onboard-project/index.js';
 import { ScreenId } from '@spotify-confidence/core';
 
-vi.mock('node:child_process', async (importOriginal) => {
-  const actual = await importOriginal<typeof import('node:child_process')>();
-  return { ...actual, spawn: vi.fn() };
+vi.mock('cross-spawn', async (importOriginal) => {
+  const actual = await importOriginal<typeof import('cross-spawn')>();
+  return { ...actual, default: vi.fn() };
 });
 
 describe('Onboarding flow', () => {
   afterEach(() => {
-    vi.mocked(spawn).mockReset();
+    vi.mocked(crossSpawn).mockReset();
   });
 
   describe('confirmation prompt', () => {
