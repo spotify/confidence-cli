@@ -8,7 +8,7 @@ pnpm workspace with six packages under `packages/`:
 
 | Package                   | Published                              | Purpose                                                                                                                                                                                                        |
 | ------------------------- | -------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `packages/shared-kernel/` | No (private)                           | Cross-domain types (`AuthState`, `IdeId`, `OnboardingGoal`, etc.) and helpers (`noop`, `isDefined`). No runtime dependencies.                                                                                  |
+| `packages/shared-kernel/` | No (private)                           | Cross-domain types (`AuthState`, `IdeId`, `OnboardingGoal`, etc.) and lightweight helpers (`noop`, `isDefined`, `isWindows`). Breaks circular dependencies between core and testing.                           |
 | `packages/eslint-config/` | No (private)                           | Shared ESLint configuration. Exports base preset and `/react` preset with React Hooks rules.                                                                                                                   |
 | `packages/core/`          | No (private)                           | Shared infrastructure — api, auth, config, session, telemetry, exec, system, sdk, mcp, utils, constants, frameworks, integrations, providers. Depends on `shared-kernel`.                                      |
 | `packages/testing/`       | No (private)                           | Test infrastructure — auth scaffolds, project scaffolds, env helpers, terminal helpers, MSW handlers. Sub-path exports: `/auth`, `/scaffold`, `/env`, `/terminal`, `/msw`, `/e2e`. Depends on `shared-kernel`. |
@@ -18,7 +18,7 @@ pnpm workspace with six packages under `packages/`:
 ### Dependency graph
 
 ```
-shared-kernel (types-only leaf)
+shared-kernel (shared leaf)
     ▲
     ├── core (infrastructure)
     ├── testing (test scaffolds)
