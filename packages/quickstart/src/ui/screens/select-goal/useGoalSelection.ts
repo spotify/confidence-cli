@@ -1,8 +1,9 @@
 import type { OnboardingGoal } from '@spotify-confidence/shared-kernel';
-import { ScreenId, BROWSER_PLATFORMS, track } from '@spotify-confidence/core';
+import { ScreenId, track } from '@spotify-confidence/core';
 import { useNavigation } from '../../hooks/useNavigation.js';
 import { useAutoAdvance } from '../../hooks/useAutoAdvance.js';
 import { useLogger } from '../../hooks/useLog.js';
+import { isRecordingAvailable, hasIncompatibleFramework } from '../../lib/goals.js';
 import { store, useSession } from '../../store.js';
 import { goalLabel } from './actions.js';
 import { goalsChosen, recordingsIncompatible } from './log-messages.js';
@@ -20,14 +21,13 @@ export function useGoalSelection(): GoalSelection {
   const navigate = useNavigation(ScreenId.SelectGoal);
   const log = useLogger(ScreenId.SelectGoal);
 
-  const recordingAvailable = !!session.framework && BROWSER_PLATFORMS.has(session.framework);
+  const recordingAvailable = isRecordingAvailable(session.framework);
 
   const goalsPreset =
     session.onboardingGoals.length > 0 && !session.completedScreens.has(ScreenId.SelectGoal);
 
-  const hasPresetRecordings = goalsPreset && session.onboardingGoals.includes('session-recordings');
-
-  const incompatiblePreset = hasPresetRecordings && !recordingAvailable;
+  const incompatiblePreset =
+    goalsPreset && hasIncompatibleFramework(session.onboardingGoals, session.framework);
 
   useAutoAdvance({
     screen: ScreenId.SelectGoal,

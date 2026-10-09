@@ -1,11 +1,10 @@
 // Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
 
-exports[`when the project is empty > shows "Select framework" instead of "Start setup" on the Welcome screen > welcome-no-framework 1`] = `
+exports[`when the project is empty > shows "Change framework" instead of "Start setup" on the Welcome screen > welcome-no-framework 1`] = `
 " Confidence by Spotify                                              https://confidence.spotify.com/
 
 
                                         Confidence Quickstart
-
                       Feature flags and experiments, set up with AI in minutes.
                        This wizard will help you get started with Confidence.
 
@@ -24,7 +23,7 @@ exports[`when the project is empty > shows "Select framework" instead of "Start 
  ──────────────────────────────────────────────────────────────────────────────────────────────────
  Select your framework
 
- ❯ Select framework
+ ❯ Change framework
    About Confidence
    Quit
 
@@ -36,7 +35,6 @@ exports[`when the project is empty > shows "Start setup" after selecting a frame
 
 
                                         Confidence Quickstart
-
                       Feature flags and experiments, set up with AI in minutes.
                        This wizard will help you get started with Confidence.
 

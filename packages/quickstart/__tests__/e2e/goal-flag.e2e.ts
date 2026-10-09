@@ -45,45 +45,32 @@ describe('--features flag', () => {
   });
 
   describe('incompatible recordings preset', () => {
-    it('shows error when recordings are pre-set with a non-browser SDK', async () => {
-      using session = createSession({
-        project: 'python-statsig',
-        extraArgs: ['--features', 'recordings'],
-      });
-
-      await navigatePastWelcome(session);
-
-      await session.waitForText('Incompatible feature selection');
-      await session.waitForText('Session recordings are not available');
-      await session.waitForText('Quit');
-    });
-
-    it('offers continue option when other goals are also pre-set', async () => {
+    it('blocks start when recordings and other goals are pre-set on non-browser SDK', async () => {
       using session = createSession({
         project: 'python-statsig',
         extraArgs: ['--features', 'flags', '--features', 'recordings'],
       });
 
-      await navigatePastWelcome(session);
-
-      await session.waitForText('Incompatible feature selection');
-      await session.waitForText('Continue without recordings');
+      await session.waitForText('Recordings not supported');
+      await session.waitForText('Change framework');
+      expect(session.screen).not.toContain('Start setup');
     });
 
-    it('advances with remaining goals after choosing continue', async () => {
+    it('advances after changing to a compatible framework', async () => {
       using session = createSession({
         project: 'python-statsig',
         extraArgs: ['--features', 'flags', '--features', 'recordings'],
       });
 
-      await navigatePastWelcome(session);
-
-      await session.waitForText('Continue without recordings');
+      await session.waitForText('Change framework');
       await session.press('Enter');
 
-      // Advances to Authenticate after goal resolution
-      await navigatePastAuth(session);
-      await session.waitForText('Which CLI agent would you like to use?');
+      // SelectFramework — pick React (first option, browser SDK)
+      await session.waitForText('Select Framework');
+      await session.press('Enter');
+
+      // Back to Welcome — now compatible, Start setup appears
+      await session.waitForText('Start setup');
     });
 
     it('skips goal screen when recordings are pre-set with a browser SDK', async () => {

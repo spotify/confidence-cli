@@ -1,5 +1,5 @@
 import type { IdeId, OnboardingGoal } from '@spotify-confidence/shared-kernel';
-import { addIf } from '@spotify-confidence/core';
+import { addIf, conjoin } from '@spotify-confidence/core';
 import { buildToolVars } from './tool-vars.js';
 import { preflight } from './sections/preflight.js';
 import { scaffold } from './sections/scaffold.js';
@@ -73,11 +73,7 @@ const GOAL_LABELS: Record<OnboardingGoal, string> = {
 };
 
 function goalPreamble(goals: OnboardingGoal[]): string {
-  const labels = goals.map((g) => GOAL_LABELS[g]);
-
-  if (labels.length === 0) return '';
-  if (labels.length <= 2) return labels.join(' and ');
-  return labels.slice(0, -1).join(', ') + ', and ' + labels.at(-1);
+  return conjoin(goals.map((g) => GOAL_LABELS[g]));
 }
 
 function preamble(

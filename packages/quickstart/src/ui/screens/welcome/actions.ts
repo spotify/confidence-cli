@@ -9,8 +9,8 @@ export const MENU_OPTIONS: PromptOption<MenuAction>[] = [
   { label: 'Quit', value: 'quit' },
 ];
 
-export const MENU_OPTIONS_NO_FRAMEWORK: PromptOption<MenuAction>[] = [
-  { label: 'Select framework', value: 'framework' },
+export const MENU_OPTIONS_NO_START: PromptOption<MenuAction>[] = [
+  { label: 'Change framework', value: 'framework' },
   { label: 'About Confidence', value: 'about' },
   { label: 'Quit', value: 'quit' },
 ];

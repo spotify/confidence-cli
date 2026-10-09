@@ -1,13 +1,13 @@
 import { createSession } from '@spotify-confidence/testing/e2e';
 
 describe('when the project is empty', () => {
-  it('shows "Select framework" instead of "Start setup" on the Welcome screen', async () => {
+  it('shows "Change framework" instead of "Start setup" on the Welcome screen', async () => {
     using session = createSession({ project: 'empty' });
 
     await session.waitForText('Confidence Quickstart');
     await session.waitForText('Could not auto-detect');
     await session.waitForText('Select your framework');
-    await session.waitForText('Select framework');
+    await session.waitForText('Change framework');
     expect(session.snapshot()).toMatchSnapshot('welcome-no-framework');
   });
 
@@ -15,7 +15,7 @@ describe('when the project is empty', () => {
     using session = createSession({ project: 'empty' });
 
     // Welcome — no framework detected
-    await session.waitForText('Select framework');
+    await session.waitForText('Change framework');
     await session.press('Enter');
 
     // SelectFramework
