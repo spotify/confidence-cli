@@ -1,6 +1,7 @@
 import type { OnboardingGoal } from '@spotify-confidence/shared-kernel';
 import type { WizardSession } from '@spotify-confidence/core';
 import { capitalize, conjoin } from '@spotify-confidence/core';
+import { hasIncompatibleFramework } from '../../lib/goals.js';
 
 const GOAL_NAMES: Record<OnboardingGoal, string> = {
   'feature-flags': 'feature flags',
@@ -34,6 +35,9 @@ export function tagline(session: WizardSession): string {
 
 export function intro(session: WizardSession): string {
   if (!hasPresetGoals(session)) return DEFAULT_INTRO;
+  if (hasIncompatibleFramework(session.onboardingGoals, session.framework)) {
+    return `Recordings not supported for non-browser frameworks.`;
+  }
   return `This wizard will set up ${goalList(session.onboardingGoals)} in your project.`;
 }
 

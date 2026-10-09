@@ -38,4 +38,16 @@ describe('welcome screen with preset features', () => {
 
     await session.waitForText('Show a working feature flag example');
   });
+
+  it('shows incompatibility notice when recordings preset on non-browser framework', async () => {
+    using session = createSession({
+      project: 'python-statsig',
+      extraArgs: ['--features', 'recordings'],
+    });
+
+    await session.waitForText('Recordings not supported');
+    await session.waitForText('Change framework');
+    expect(session.snapshot()).not.toContain('Start setup');
+    expect(session.snapshot()).toMatchSnapshot('welcome-preset-recordings-incompatible');
+  });
 });

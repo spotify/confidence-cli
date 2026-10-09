@@ -2,6 +2,7 @@ import { Box, Text } from 'ink';
 import { Colors, HAlign, Icons, VAlign } from '../../styles.js';
 import { PromptPanel } from '../../components/PromptPanel.js';
 import { SDK_OPTIONS, ScreenId, track, isTelemetryEnabled } from '@spotify-confidence/core';
+import { hasIncompatibleFramework } from '../../lib/goals.js';
 import { useLogger } from '../../hooks/useLog.js';
 import { useNavigation } from '../../hooks/useNavigation.js';
 import { useProjectDetection } from '../../hooks/useProjectDetection.js';
@@ -10,7 +11,7 @@ import { useIsShort } from '../../hooks/useIsShort.js';
 import { useSession } from '../../store.js';
 import { welcomeMenuSelect } from './log-messages.js';
 import { welcomeMenuSelected } from './telemetry-events.js';
-import { MENU_OPTIONS, MENU_OPTIONS_NO_FRAMEWORK, type MenuAction } from './actions.js';
+import { MENU_OPTIONS, MENU_OPTIONS_NO_START, type MenuAction } from './actions.js';
 import { tagline, intro, steps } from './content.js';
 
 export function WelcomeScreen() {
@@ -34,10 +35,16 @@ export function WelcomeScreen() {
   const align = narrow ? HAlign.Left : HAlign.Center;
 
   const telemetryOn = isTelemetryEnabled();
-  const frameworkIcon = frameworkLabel ? Icons.check : Icons.cross;
-  const frameworkColor = frameworkLabel ? Colors.success : Colors.warning;
+  const incompatible = hasIncompatibleFramework(session.onboardingGoals, session.framework);
+  const frameworkIcon = incompatible ? Icons.diamond : frameworkLabel ? Icons.check : Icons.cross;
+  const frameworkColor = incompatible
+    ? Colors.warning
+    : frameworkLabel
+      ? Colors.success
+      : Colors.warning;
+
   const frameworkUnknown = detectionAttempted && frameworkLabel === null;
-  const menuOptions = frameworkUnknown ? MENU_OPTIONS_NO_FRAMEWORK : MENU_OPTIONS;
+  const menuOptions = frameworkUnknown || incompatible ? MENU_OPTIONS_NO_START : MENU_OPTIONS;
 
   function handleMenuSelect(value: MenuAction) {
     log(
@@ -60,7 +67,7 @@ export function WelcomeScreen() {
   return (
     <Box flexDirection="column" flexGrow={1} justifyContent="space-between">
       <Box flexDirection="column" alignItems={align} flexGrow={1} justifyContent={VAlign.Center}>
-        <Box marginBottom={1}>
+        <Box>
           <Text color={Colors.primary} bold>
             Confidence Quickstart
           </Text>
@@ -68,7 +75,7 @@ export function WelcomeScreen() {
 
         <Box marginBottom={1} flexDirection="column" alignItems={align}>
           <Text>{wizardTagline}</Text>
-          {!short && <Text>{wizardIntro}</Text>}
+          <Text color={incompatible ? Colors.warning : undefined}>{wizardIntro}</Text>
         </Box>
 
         {!short && (
