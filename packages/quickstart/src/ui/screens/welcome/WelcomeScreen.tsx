@@ -11,17 +11,13 @@ import { useSession } from '../../store.js';
 import { welcomeMenuSelect } from './log-messages.js';
 import { welcomeMenuSelected } from './telemetry-events.js';
 import { MENU_OPTIONS, MENU_OPTIONS_NO_FRAMEWORK, type MenuAction } from './actions.js';
-
-const STEPS = [
-  'It will check your system',
-  'Sign you in to Confidence workspace',
-  'Teach your AI agent about Confidence',
-  'Integrate the SDK into your project',
-  'Show a working feature flag example',
-] as const;
+import { tagline, intro, steps } from './content.js';
 
 export function WelcomeScreen() {
   const session = useSession();
+  const wizardTagline = tagline(session);
+  const wizardIntro = intro(session);
+  const wizardSteps = steps(session);
   const navigate = useNavigation(ScreenId.Welcome);
   const log = useLogger(ScreenId.Welcome);
   const detectionAttempted = useProjectDetection();
@@ -71,13 +67,13 @@ export function WelcomeScreen() {
         </Box>
 
         <Box marginBottom={1} flexDirection="column" alignItems={align}>
-          <Text>Feature flags and experiments, set up with AI in minutes.</Text>
-          {!short && <Text>This wizard will help you get started with Confidence.</Text>}
+          <Text>{wizardTagline}</Text>
+          {!short && <Text>{wizardIntro}</Text>}
         </Box>
 
         {!short && (
           <Box marginBottom={2} flexDirection="column">
-            {STEPS.map((step, i) => (
+            {wizardSteps.map((step, i) => (
               <Text key={step}>{`${i + 1}. ${step}`}</Text>
             ))}
           </Box>

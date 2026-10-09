@@ -1,0 +1,97 @@
+// Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
+
+exports[`welcome screen with preset features > shows tailored intro for preset features > welcome-preset-events 1`] = `
+" Confidence by Spotify                                              https://confidence.spotify.com/
+
+
+                                        Confidence Quickstart
+
+                             Event tracking, set up with AI in minutes.
+                       This wizard will set up event tracking in your project.
+
+                              1. It will check your system
+                              2. Sign you in to Confidence workspace
+                              3. Teach your AI agent about Confidence
+                              4. Integrate the SDK into your project
+                              5. Set up event tracking in your project
+
+
+                                Directory  ✔ <project-dir>
+                                Framework  ✔ React (detected)
+                                Telemetry  ✘ off
+
+
+ ──────────────────────────────────────────────────────────────────────────────────────────────────
+ Ready to get started?
+
+ ❯ Start setup
+   Change framework
+   About Confidence
+   Quit
+
+ ↑↓ navigate   enter confirm                                                                 vX.Y.Z"
+`;
+
+exports[`welcome screen with preset features > shows tailored tagline for multiple preset features > welcome-preset-flags-events 1`] = `
+" Confidence by Spotify                                              https://confidence.spotify.com/
+
+
+                                        Confidence Quickstart
+
+                    Feature flags and event tracking, set up with AI in minutes.
+              This wizard will set up feature flags and event tracking in your project.
+
+                     1. It will check your system
+                     2. Sign you in to Confidence workspace
+                     3. Teach your AI agent about Confidence
+                     4. Integrate the SDK into your project
+                     5. Set up feature flags and event tracking in your project
+
+
+                                Directory  ✔ <project-dir>
+                                Framework  ✔ React (detected)
+                                Telemetry  ✘ off
+
+
+ ──────────────────────────────────────────────────────────────────────────────────────────────────
+ Ready to get started?
+
+ ❯ Start setup
+   Change framework
+   About Confidence
+   Quit
+
+ ↑↓ navigate   enter confirm                                                                 vX.Y.Z"
+`;
+
+exports[`welcome screen with preset features > shows tailored tagline for single preset feature > welcome-preset-flags 1`] = `
+" Confidence by Spotify                                              https://confidence.spotify.com/
+
+
+                                        Confidence Quickstart
+
+                             Feature flags, set up with AI in minutes.
+                       This wizard will set up feature flags in your project.
+
+                               1. It will check your system
+                               2. Sign you in to Confidence workspace
+                               3. Teach your AI agent about Confidence
+                               4. Integrate the SDK into your project
+                               5. Show a working feature flag example
+
+
+                                Directory  ✔ <project-dir>
+                                Framework  ✔ React (detected)
+                                Telemetry  ✘ off
+
+
+ ──────────────────────────────────────────────────────────────────────────────────────────────────
+ Ready to get started?
+
+ ❯ Start setup
+   Change framework
+   About Confidence
+   Quit
+
+ ↑↓ navigate   enter confirm                                                                 vX.Y.Z"
+`;

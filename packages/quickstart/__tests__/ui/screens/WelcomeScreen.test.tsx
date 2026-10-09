@@ -92,6 +92,84 @@ describe('WelcomeScreen', () => {
     });
   });
 
+  describe('when goals are preset', () => {
+    it('shows tailored tagline for single goal (flags)', async () => {
+      using project = createProjectDir();
+      using sut = renderScreen(<WelcomeScreen />, {
+        dir: project.path,
+        goals: ['feature-flags'],
+      });
+
+      await waitFor(() => {
+        expect(sut.lastFrame()).toContain('Feature flags, set up with AI in minutes.');
+      });
+    });
+
+    it('shows tailored tagline for single goal (events)', async () => {
+      using project = createProjectDir();
+      using sut = renderScreen(<WelcomeScreen />, {
+        dir: project.path,
+        goals: ['event-tracking'],
+      });
+
+      await waitFor(() => {
+        expect(sut.lastFrame()).toContain('Event tracking, set up with AI in minutes.');
+      });
+    });
+
+    it('shows tailored tagline for multiple goals', async () => {
+      using project = createProjectDir();
+      using sut = renderScreen(<WelcomeScreen />, {
+        dir: project.path,
+        goals: ['feature-flags', 'event-tracking'],
+      });
+
+      await waitFor(() => {
+        expect(sut.lastFrame()).toContain(
+          'Feature flags and event tracking, set up with AI in minutes.',
+        );
+      });
+    });
+
+    it('preserves default step 5 for flags-only preset', async () => {
+      using project = createProjectDir();
+      using sut = renderScreen(<WelcomeScreen />, {
+        dir: project.path,
+        goals: ['feature-flags'],
+      });
+
+      await waitFor(() => {
+        expect(sut.lastFrame()).toContain('Show a working feature flag example');
+      });
+    });
+
+    it('shows tailored step 5 for non-flag preset', async () => {
+      using project = createProjectDir();
+      using sut = renderScreen(<WelcomeScreen />, {
+        dir: project.path,
+        goals: ['event-tracking'],
+      });
+
+      await waitFor(() => {
+        expect(sut.lastFrame()).toContain('Set up event tracking in your project');
+      });
+    });
+
+    it('shows tailored intro for preset features', async () => {
+      using project = createProjectDir();
+      using sut = renderScreen(<WelcomeScreen />, {
+        dir: project.path,
+        goals: ['event-tracking'],
+      });
+
+      await waitFor(() => {
+        expect(sut.lastFrame()).toContain(
+          'This wizard will set up event tracking in your project.',
+        );
+      });
+    });
+  });
+
   describe('when no known framework is detected', () => {
     it('hides "Start setup" and shows "Select framework"', async () => {
       using project = createProjectDir('empty');
