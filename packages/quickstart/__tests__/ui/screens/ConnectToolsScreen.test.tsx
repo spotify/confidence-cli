@@ -4,6 +4,7 @@ import {
   renderScreen,
   renderApp,
   createProjectDir,
+  isolateHome,
   prepareAuthTokens,
   ENTER,
   ARROW_DOWN,
@@ -20,8 +21,9 @@ vi.mock('../../../../core/src/exec/exec.js', () => ({
 
 describe('ConnectToolsScreen', () => {
   it('renders title', async () => {
-    using _auth = prepareAuthTokens('none');
     using project = createProjectDir();
+    using _home = isolateHome(project.path);
+    using _auth = prepareAuthTokens('none');
     using sut = renderScreen(<ConnectToolsScreen />, {
       screen: ScreenId.ConnectTools,
       dir: project.path,
@@ -32,8 +34,9 @@ describe('ConnectToolsScreen', () => {
   });
 
   it('shows tool list after detection', async () => {
-    using _auth = prepareAuthTokens('none');
     using project = createProjectDir();
+    using _home = isolateHome(project.path);
+    using _auth = prepareAuthTokens('none');
     using sut = renderScreen(<ConnectToolsScreen />, {
       screen: ScreenId.ConnectTools,
       dir: project.path,
@@ -45,8 +48,9 @@ describe('ConnectToolsScreen', () => {
   });
 
   it('shows connect options', async () => {
-    using _auth = prepareAuthTokens('none');
     using project = createProjectDir();
+    using _home = isolateHome(project.path);
+    using _auth = prepareAuthTokens('none');
     using sut = renderScreen(<ConnectToolsScreen />, {
       screen: ScreenId.ConnectTools,
       dir: project.path,
@@ -58,8 +62,9 @@ describe('ConnectToolsScreen', () => {
 
   describe('when connection succeeds', () => {
     it('connects and shows success message', async () => {
-      using _auth = prepareAuthTokens('none');
       using project = createProjectDir();
+      using _home = isolateHome(project.path);
+      using _auth = prepareAuthTokens('none');
       using sut = renderScreen(<ConnectToolsScreen />, {
         screen: ScreenId.ConnectTools,
         dir: project.path,
@@ -84,8 +89,9 @@ describe('ConnectToolsScreen', () => {
         http.post('https://mcp.confidence.dev/mcp/docs', () => HttpResponse.error()),
       );
 
-      using _auth = prepareAuthTokens('none');
       using project = createProjectDir();
+      using _home = isolateHome(project.path);
+      using _auth = prepareAuthTokens('none');
       using sut = renderScreen(<ConnectToolsScreen />, {
         screen: ScreenId.ConnectTools,
         dir: project.path,
@@ -105,8 +111,9 @@ describe('ConnectToolsScreen', () => {
     it('shows partial failure status', async () => {
       server.use(http.post('https://mcp.confidence.dev/mcp/docs', () => HttpResponse.error()));
 
-      using _auth = prepareAuthTokens('none');
       using project = createProjectDir();
+      using _home = isolateHome(project.path);
+      using _auth = prepareAuthTokens('none');
       using sut = renderScreen(<ConnectToolsScreen />, {
         screen: ScreenId.ConnectTools,
         dir: project.path,
@@ -127,8 +134,9 @@ describe('ConnectToolsScreen', () => {
 
   describe('when user skips', () => {
     it('shows skip confirmation and auto-advances', async () => {
-      using _auth = prepareAuthTokens('none');
       using project = createProjectDir();
+      using _home = isolateHome(project.path);
+      using _auth = prepareAuthTokens('none');
       using sut = renderApp({ screen: ScreenId.ConnectTools, dir: project.path });
 
       await waitFor(() => {

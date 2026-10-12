@@ -2,6 +2,7 @@ import { readFileSync } from 'node:fs';
 import { join } from 'node:path';
 import {
   createProjectDir,
+  isolateHome,
   writeClaudeSettings,
   writeCodexConfig,
   writeCursorMcpConfig,
@@ -90,7 +91,7 @@ describe('cursor disconnectMcpServer', () => {
   it('removes the server from global config and CLI permissions', async () => {
     using project = createProjectDir('empty');
     using home = createProjectDir('empty');
-    vi.stubEnv('HOME', home.path);
+    using _home = isolateHome(home.path);
     writeCursorMcpConfig(home.path, {
       mcpServers: {
         'confidence-flags': { type: 'http', url: 'https://example.com' },
@@ -131,7 +132,7 @@ describe('codex disconnectMcpServer', () => {
 
   it('removes the server section from project and global configs', async () => {
     using project = createProjectDir('empty');
-    vi.stubEnv('HOME', project.path);
+    using _home = isolateHome(project.path);
     const toml = [
       '[mcp_servers.confidence-flags]',
       'url = "https://example.com"',
@@ -152,7 +153,7 @@ describe('codex disconnectMcpServer', () => {
 
   it('does not fail when config files do not exist', async () => {
     using project = createProjectDir('empty');
-    vi.stubEnv('HOME', project.path);
+    using _home = isolateHome(project.path);
     const sut = await loadDisconnect();
 
     await expect(

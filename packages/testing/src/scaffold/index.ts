@@ -1,4 +1,5 @@
 export { createConfigDir } from './config-scaffold.js';
+export { isolateHome } from './home-scaffold.js';
 export { createProjectDir } from './project-scaffold.js';
 export {
   writeClaudeSettings,

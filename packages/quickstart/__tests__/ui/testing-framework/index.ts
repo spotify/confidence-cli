@@ -8,7 +8,11 @@ export {
   buildAuthState,
   prepareAuthTokens,
 } from '@spotify-confidence/testing/auth';
-export { createProjectDir, type ProjectType } from '@spotify-confidence/testing/scaffold';
+export {
+  createProjectDir,
+  isolateHome,
+  type ProjectType,
+} from '@spotify-confidence/testing/scaffold';
 export {
   KEY_MAP,
   resolveKey,
