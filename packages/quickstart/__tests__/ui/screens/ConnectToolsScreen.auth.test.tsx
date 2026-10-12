@@ -37,9 +37,10 @@ describe('ConnectToolsScreen', () => {
         http.post('https://mcp.confidence.dev/mcp/docs', () => HttpResponse.error()),
       );
 
+      using project = createProjectDir();
+      vi.stubEnv('HOME', project.path);
       using _auth = prepareAuthTokens('none');
       using _pref = createMcpPreference('connected');
-      using project = createProjectDir();
 
       // Act
       using sut = renderScreen(<ConnectToolsScreen />, {
