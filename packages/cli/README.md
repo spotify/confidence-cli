@@ -131,6 +131,15 @@ confidence quickstart      # Launch the interactive setup wizard
 | `--help`    | Show help                                  |
 | `--version` | Show version number                        |
 
+## Shared Command Options
+
+These options are available on `migrate`, `mcp`, `plugin`, `sdk`, and `warehouse` commands:
+
+| Option  | Description                                  |
+| ------- | -------------------------------------------- |
+| `--dir` | Target project directory                     |
+| `--ide` | AI coding agent: `claude`, `cursor`, `codex` |
+
 ## Output Formats
 
 The CLI auto-detects the best output format: tables in interactive terminals, JSON when piped. Override with `--json` or `--output`:
