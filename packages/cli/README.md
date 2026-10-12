@@ -83,6 +83,16 @@ confidence quickstart      # Launch the interactive setup wizard
 | `confidence warehouse assignment-table create`       | Create an assignment table for experiment analysis |
 | `confidence warehouse crypto-key create`             | Create a crypto key (Snowflake)                    |
 
+### Migration
+
+| Command                         | Description                                         |
+| ------------------------------- | --------------------------------------------------- |
+| `confidence migrate detect`     | Scan project for third-party feature flag providers |
+| `confidence migrate statsig`    | Migrate from Statsig to Confidence                  |
+| `confidence migrate eppo`       | Migrate from Eppo to Confidence                     |
+| `confidence migrate posthog`    | Migrate from PostHog to Confidence                  |
+| `confidence migrate optimizely` | Migrate from Optimizely to Confidence               |
+
 ### MCP Servers
 
 | Command                    | Description                                  |
