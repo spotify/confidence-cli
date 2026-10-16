@@ -43,9 +43,17 @@ confidence quickstart      # Launch the interactive setup wizard
 
 ### Feature Flags
 
-| Command                  | Description                                            |
-| ------------------------ | ------------------------------------------------------ |
-| `confidence flags setup` | Set up feature flags in your project via guided wizard |
+| Command                               | Description                                            |
+| ------------------------------------- | ------------------------------------------------------ |
+| `confidence flags setup`              | Set up feature flags in your project via guided wizard |
+| `confidence flags list`               | List all flags in project                              |
+| `confidence flags get <flag-key>`     | Get flag details (variants, targeting, status)         |
+| `confidence flags create <flag-key>`  | Create a new flag                                      |
+| `confidence flags update <flag-key>`  | Update flag description or variants                    |
+| `confidence flags toggle <flag-key>`  | Enable or disable a flag for a client                  |
+| `confidence flags resolve <flag-key>` | Resolve flag value for given context                   |
+| `confidence flags target <flag-key>`  | View or update targeting rules                         |
+| `confidence flags archive <flag-key>` | Archive a flag                                         |
 
 ### Events
 
