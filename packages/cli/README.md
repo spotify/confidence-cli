@@ -59,12 +59,12 @@ confidence quickstart      # Launch the interactive setup wizard
 
 | Command                                | Description                             |
 | -------------------------------------- | --------------------------------------- |
+| `confidence events setup`              | Set up event tracking via guided wizard |
 | `confidence events list`               | List all event definitions              |
 | `confidence events create --name <id>` | Create a new event definition           |
 | `confidence events update <name>`      | Update an event definition's schema     |
 | `confidence events delete <name>`      | Delete an event definition              |
 | `confidence events usage <name>`       | Show recent event usage statistics      |
-| `confidence events setup`              | Set up event tracking via guided wizard |
 
 ### Session Recordings
 
