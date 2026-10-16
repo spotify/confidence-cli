@@ -91,6 +91,29 @@ confidence quickstart      # Launch the interactive setup wizard
 | `confidence warehouse assignment-table create`       | Create an assignment table for experiment analysis |
 | `confidence warehouse crypto-key create`             | Create a crypto key (Snowflake)                    |
 
+### SDK
+
+| Command                  | Description                                     |
+| ------------------------ | ----------------------------------------------- |
+| `confidence sdk install` | Detect framework and install the Confidence SDK |
+| `confidence sdk setup`   | Set up the Confidence SDK in your project       |
+
+### Documentation
+
+| Command                          | Description                      |
+| -------------------------------- | -------------------------------- |
+| `confidence docs search <query>` | Search Confidence documentation  |
+| `confidence docs grep <pattern>` | Grep through documentation       |
+| `confidence docs read <page>`    | Read a docs page in the terminal |
+
+### AI Plugin
+
+| Command                       | Description                                            |
+| ----------------------------- | ------------------------------------------------------ |
+| `confidence plugin install`   | Install the Confidence AI plugin for your coding agent |
+| `confidence plugin update`    | Update the Confidence AI plugin to the latest version  |
+| `confidence plugin uninstall` | Remove the Confidence AI plugin from your coding agent |
+
 ### Migration
 
 | Command                         | Description                                         |
