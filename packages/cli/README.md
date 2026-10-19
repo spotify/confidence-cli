@@ -91,6 +91,27 @@ confidence quickstart      # Launch the interactive setup wizard
 | `confidence warehouse assignment-table create`       | Create an assignment table for experiment analysis |
 | `confidence warehouse crypto-key create`             | Create a crypto key (Snowflake)                    |
 
+### Data Entities
+
+Read entities directly from the regional Metrics API using your current credentials or `--profile`.
+These commands do not install MCP servers or launch onboarding.
+
+```bash
+confidence data entities list --page-size 100 --json
+confidence data entities list --page-token '<nextPageToken>' --json
+confidence data entities list --all --json
+confidence data entities get --name entities/user_id --json
+confidence data entities get --name entities/user_id --dry-run --json
+```
+
+- `list` fetches one page by default and returns `{ entities, nextPageToken, ... }` inside the JSON `data` envelope. Entity resources and unknown list-response fields retain all API fields. An empty or omitted server token becomes `""`.
+- `--page-size` must be a positive integer no greater than 1000. `--page-token` is opaque and resumes a previous list response.
+- `--all` collects all remaining pages, starting at `--page-token` if supplied. It returns an empty `nextPageToken` only when complete. Repeated cursors or more than 1000 pages fail without printing partial results. Unknown list-response fields are combined across pages; the latest value wins for repeated fields.
+- `get` requires a qualified `--name entities/<id>` (not a bare ID or URL) and rejects responses naming a different entity.
+- `--dry-run` validates inputs and previews the GET request without authentication or network requests. For `--all`, the preview describes the initial request; later cursors are only known during execution.
+
+Only entity list/get are supported; these commands do not create, update, or delete entities.
+
 ### SDK
 
 | Command                  | Description                                     |
