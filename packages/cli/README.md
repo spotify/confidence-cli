@@ -181,6 +181,26 @@ confidence whoami --output plain           # Force plain text
 confidence events list | jq '.data[].name' # Pipe-friendly JSON
 ```
 
+## SQL Preview and Job Status
+
+These commands call the regional Metrics HTTP API directly. No MCP installation is required.
+
+```bash
+confidence data sql preview --from-file query.json --json
+confidence data sql preview --from-file query.json --wait --timeout 60 --json
+confidence data sql status --name sqlJobs/example --json
+```
+
+`query.json` contains the request body:
+
+```json
+{ "query": "SELECT 1" }
+```
+
+Preview starts a warehouse query and can incur costs. It is not an offline SQL check or warehouse-table discovery. By default it returns the job reference immediately. `--wait` polls pending, running, retry-pending and throttled states; `--timeout` is a positive number of seconds (maximum 3600, default 60) starting after preview creation. Waiting failures return a nonzero exit status and retain the job reference. A successful `status` inspection exits successfully even when the job itself failed.
+
+The CLI never automatically retries preview or cancels the remote job when local waiting ends. Inspect the returned job reference before deciding what to do next. A lost preview response has an unknown outcome and may have started a job. `--profile` selects authentication; `--dry-run` validates and previews local input without authentication, HTTP calls, writes or telemetry. Input accepts only `query`; unsupported fields are rejected.
+
 ## License
 
 [Apache License 2.0](../../LICENSE)
