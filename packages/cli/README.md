@@ -91,6 +91,104 @@ confidence quickstart      # Launch the interactive setup wizard
 | `confidence warehouse assignment-table create`       | Create an assignment table for experiment analysis |
 | `confidence warehouse crypto-key create`             | Create a crypto key (Snowflake)                    |
 
+### Fact Tables
+
+| Command                                                           | Description                                     |
+| ----------------------------------------------------------------- | ----------------------------------------------- |
+| `confidence data fact-tables list`                                | List one page of fact tables                    |
+| `confidence data fact-tables get [name]`                          | Get the complete resource and lifecycle state   |
+| `confidence data fact-tables create --from-file fact.json [--id]` | Create one fact table from a resource JSON file |
+
+Get requires a qualified resource name, supplied either positionally (for example,
+`get factTables/purchases`) or with `--name factTables/purchases`.
+
+List supports `--page-size`, `--page-token`, `--filter` (Lucene query string),
+`--show-deleted`, and `--order-by` (for example `displayName:desc,createTime:asc`).
+Pagination is opt-in: `--all --max-pages 10 --max-items 1000` traverses only within
+those explicit bounds (maximum 1000 pages / 100000 resources). If a bound is reached,
+`nextPageToken` is retained; use it to continue. Repeated tokens fail instead of looping.
+
+Create reads the **resource itself**, with camelCase proto-JSON keys, not a
+`factTable` wrapper or CLI-option keys:
+
+```json
+{
+  "displayName": "Purchases",
+  "sql": "SELECT purchased_at, user_id, amount, country FROM purchases",
+  "timestampColumn": { "name": "purchased_at" },
+  "entities": [{ "column": { "name": "user_id" }, "entity": "entities/user" }],
+  "measures": [{ "column": { "name": "amount" }, "unit": { "currencyCode": "USD" } }],
+  "dimensions": [{ "name": "country" }]
+}
+```
+
+`sql`, `displayName`, `timestampColumn.name`, and at least one entity mapping are
+required. Optional fields include `description`, `measures` (`column`, `displayName`,
+`unit`, `declaredType`), `dimensions`, `labels` (string values), `owner`
+(`identities/<id>`), `factDataDeliveredUntilTime` (RFC 3339 timestamp), and
+`dataDeliveredUntilUpdateStrategyConfig` (`strategy: MANUAL|AUTOMATIC`, optional
+`disableEmptyPartitions`, and at most one `automaticUpdateConfig`, `dailyUpdateConfig`,
+or `hourlyUpdateConfig`). Automatic config requires `commitDelay`; it also supports
+`incrementDuration` and `changeThreshold: { "value": "0.01" }`. Daily/hourly config
+supports `maxZeroDuration`. Durations use protobuf strings such as `3600s`. Enums use
+their symbolic proto names. Columns accept only `name` and optional boolean `repeated`.
+Unknown fields, output-only lifecycle fields, and column annotations are rejected,
+not silently dropped. `skipSqlPreview` and `column.type` are **not supported** by
+this command: omit both and let the service validate SQL and infer column types.
+Use `--id purchases` to select an ID; omit it for a server-generated ID. IDs must
+start with an ASCII letter or digit and contain only letters, digits, `_`, or `-`.
+Do not set `name` in create input.
+
+These commands support `--profile`, `--json` / `--output`, and `--dry-run`.
+Dry-run validates input and previews the request without authentication or HTTP.
+The selected profile's token determines the Metrics API region. JSON output keeps
+the complete remote resource, including state, errors, and job references. A
+successful GET of a resource in `TABLE_STATE_FAILED` still exits successfully;
+inspect its `state` and `error` to diagnose warehouse validation.
+
+Create is an explicit, single write, not an approval workflow. It does not retry or
+poll for activation. On a transport/5xx/unreadable-response failure (including a
+malformed successful response), the write outcome may be unknown: inspect list/get
+before deciding whether to retry. When `--id` is set, the error includes the qualified
+resource name to look up. Responses must contain resource objects with qualified
+`factTables/<id>` names; malformed get/list responses are errors, not successful output.
+
+### Fact Table Column Suggestions
+
+```bash
+confidence data fact-tables suggest-columns --from-file approved-schema.json --json
+confidence data fact-tables suggest-columns --from-file approved-schema.json --dry-run --json
+```
+
+Explicitly invoking `suggest-columns` approves sending **only the schema in the supplied file** to
+`POST /v1/factTables:suggestFactTableColumns`. Review the file before invoking it. The JSON must be
+an object with a non-empty `schema` array:
+
+```json
+{
+  "schema": [
+    { "name": "event_time", "type": "COLUMN_TYPE_TIMESTAMP", "repeated": false },
+    { "name": "user_id", "type": "COLUMN_TYPE_STRING" },
+    { "name": "amount", "type": "COLUMN_TYPE_DECIMAL" }
+  ]
+}
+```
+
+Each column requires a non-empty `name`. Optional `type` accepts a Metrics `ColumnType` enum name
+(`COLUMN_TYPE_UNSPECIFIED`, `COLUMN_TYPE_STRING`, `COLUMN_TYPE_INT32`, `COLUMN_TYPE_INT64`,
+`COLUMN_TYPE_DOUBLE`, `COLUMN_TYPE_BOOLEAN`, `COLUMN_TYPE_DATE`, `COLUMN_TYPE_TIMESTAMP`,
+`COLUMN_TYPE_BYTES`, `COLUMN_TYPE_TIMESTAMP_WITHOUT_TIMEZONE`, `COLUMN_TYPE_DECIMAL`, or
+`COLUMN_TYPE_HLL_SKETCH`) or its numeric value (0–11 in that order). Optional `repeated` must be a
+boolean. Other fields, including annotations, rows, sample results, and warehouse configuration,
+are rejected. The command does not discover schemas or read warehouse rows/configuration.
+
+The response contains either `suggestion` (timestamp column, entity mappings, measures, and
+dimensions) or `error`. An `error`, even with HTTP 200, exits nonzero; malformed oneof responses also
+fail. Suggestions are advisory: they do **not** create/update a table, certify column semantics,
+or start a workflow or MCP call. Review classifications before using them. `--dry-run` validates
+the same input and prints the request without authentication or network access. `--json` preserves
+the full response in the standard `{ "data": ... }` envelope; `--output table` renders it as a table.
+
 ### SDK
 
 | Command                  | Description                                     |
