@@ -1,4 +1,6 @@
 export { fetchLatestVersion } from './registry.js';
+export { metricsRequest } from './metrics.js';
+export { isRecord, requireRecord, requireString, resourcePath } from './metrics-types.js';
 
 export { searchDocumentation, grepDocumentation, getFullSource } from './docs.js';
 
