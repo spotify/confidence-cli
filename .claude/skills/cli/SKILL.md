@@ -37,7 +37,7 @@ For parent commands with subcommands, use `noop` from `@spotify-confidence/share
 
 ### Path Aliases
 
-`@commands/*`, `@features/*`, `@input/*`, `@output/*`, `@network/*`, `@utils/*`, `@meta` — use these for cross-domain imports within the CLI package.
+`@commands/*`, `@features/*`, `@input/*`, `@output/*`, `@network/*`, `@utils/*`, `@meta`, `@composition` — use these for cross-domain imports within the CLI package.
 
 ## Output Formatting
 
