@@ -25,32 +25,68 @@ export async function apiRequest<T>(opts: ApiRequestOptions): Promise<ApiRespons
     'Content-Type': 'application/json',
   };
 
-  let response: Response;
   try {
-    response = await fetch(url, {
+    const timeout = AbortSignal.timeout(opts.timeoutMs ?? 30_000);
+    const signal = opts.signal ? AbortSignal.any([opts.signal, timeout]) : timeout;
+    const response = await fetch(url, {
       method,
       headers,
       body: body ? JSON.stringify(body) : undefined,
-      signal: AbortSignal.timeout(30_000),
+      signal,
+      redirect: opts.redirect,
     });
+
+    // Read the body under the same deadline as fetch. Transport/body failures
+    // belong to the outer catch; only JSON decoding failures are handled here.
+    const text = await response.text();
+    let data: unknown;
+    try {
+      data = JSON.parse(text);
+    } catch {
+      return {
+        ok: false,
+        status: response.status,
+        error: {
+          code: response.status,
+          message: response.ok
+            ? 'Invalid JSON response from API.'
+            : response.statusText || `HTTP ${response.status}`,
+        },
+      };
+    }
+
+    if (!response.ok) {
+      return {
+        ok: false,
+        status: response.status,
+        error: parseApiError(data) ?? {
+          code: response.status,
+          message: response.statusText || `HTTP ${response.status}`,
+        },
+      };
+    }
+
+    return { ok: true, data: data as T };
   } catch (err) {
     return {
       ok: false,
       status: 0,
-      error: { code: 0, message: `Network error: ${(err as Error).message}` },
+      error: {
+        code: 0,
+        message: `Network error: ${err instanceof Error ? err.message : 'Request failed'}`,
+      },
     };
   }
+}
 
-  if (!response.ok) {
-    let apiError: ApiError;
-    try {
-      apiError = (await response.json()) as ApiError;
-    } catch {
-      apiError = { code: response.status, message: response.statusText };
-    }
-    return { ok: false, status: response.status, error: apiError };
-  }
+function parseApiError(data: unknown): ApiError | undefined {
+  if (typeof data !== 'object' || data === null || Array.isArray(data)) return;
+  if (!('code' in data) || typeof data.code !== 'number' || !Number.isFinite(data.code)) return;
+  if (!('message' in data) || typeof data.message !== 'string') return;
 
-  const data = (await response.json()) as T;
-  return { ok: true, data };
+  return {
+    code: data.code,
+    message: data.message,
+    ...('details' in data && Array.isArray(data.details) ? { details: data.details } : {}),
+  };
 }

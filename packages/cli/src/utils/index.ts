@@ -1,4 +1,5 @@
 export * from './auth.js';
+export * from './api-error.js';
 export * from './mcp-error.js';
 export * from './safely.js';
 export * from './telemetry.js';
