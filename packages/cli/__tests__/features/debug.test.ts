@@ -1,4 +1,4 @@
-import { debug, debugMiddleware } from '@utils/index.js';
+import { debug, debugMiddleware, withDebug } from '@utils/index.js';
 import { captureOutput } from '../helpers/capture.js';
 import { saveEnv } from '../helpers/env.js';
 
@@ -21,6 +21,38 @@ describe('debugLog', () => {
     debug('test', 'hello');
 
     expect(output.stderr).toBe('');
+  });
+});
+
+describe('withDebug', () => {
+  it('logs fn.name when no formatter is provided', async () => {
+    using _env = saveEnv('DEBUG');
+    using output = captureOutput();
+    process.env.DEBUG = 'true';
+    async function myOperation() {
+      return 42;
+    }
+    const sut = withDebug(myOperation);
+
+    await sut();
+
+    expect(output.stderr).toContain('[debug] call: myOperation');
+    expect(output.stderr).toContain('[debug] timing: myOperation completed in');
+  });
+
+  it('includes fn.name and formatted args when a formatter is provided', async () => {
+    using _env = saveEnv('DEBUG');
+    using output = captureOutput();
+    process.env.DEBUG = 'true';
+    async function callApi(method: string, path: string) {
+      return { method, path };
+    }
+    const sut = withDebug(callApi, (method, path) => `${method} ${path}`);
+
+    await sut('GET', '/v1/flags');
+
+    expect(output.stderr).toContain('[debug] call: callApi GET /v1/flags');
+    expect(output.stderr).toContain('[debug] timing: callApi GET /v1/flags completed in');
   });
 });
 

@@ -7,15 +7,20 @@ export function debug(label: string, detail: string): void {
 
 type Handler<A extends unknown[], R> = (...args: A) => Promise<R>;
 
-export function withDebug<A extends unknown[], R>(fn: Handler<A, R>): Handler<A, R> {
+export function withDebug<A extends unknown[], R>(
+  fn: Handler<A, R>,
+  formatArgs?: (...args: NoInfer<A>) => string,
+): Handler<A, R> {
   return async (...args) => {
-    debug('command', fn.name || 'anonymous');
+    const name = fn.name || 'anonymous';
+    const label = formatArgs ? `${name} ${formatArgs(...args)}` : name;
     const start = performance.now();
+    debug('call', label);
 
     const result = await fn(...args);
 
-    const end = performance.now() - start;
-    debug('timing', `${fn.name || 'command'} completed in ${end.toFixed(0)}ms`);
+    const elapsed = performance.now() - start;
+    debug('timing', `${label} completed in ${elapsed.toFixed(0)}ms`);
     return result;
   };
 }
