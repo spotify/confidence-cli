@@ -40,6 +40,21 @@ describe('withDebug', () => {
     expect(output.stderr).toContain('[debug] timing: myOperation completed in');
   });
 
+  it('logs timing even when the wrapped function rejects', async () => {
+    using _env = saveEnv('DEBUG');
+    using output = captureOutput();
+    process.env.DEBUG = 'true';
+    async function failingOp() {
+      throw new Error('boom');
+    }
+    const sut = withDebug(failingOp);
+
+    await expect(sut()).rejects.toThrow('boom');
+
+    expect(output.stderr).toContain('[debug] call: failingOp');
+    expect(output.stderr).toContain('[debug] timing: failingOp completed in');
+  });
+
   it('includes fn.name and formatted args when a formatter is provided', async () => {
     using _env = saveEnv('DEBUG');
     using output = captureOutput();

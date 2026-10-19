@@ -17,11 +17,12 @@ export function withDebug<A extends unknown[], R>(
     const start = performance.now();
     debug('call', label);
 
-    const result = await fn(...args);
-
-    const elapsed = performance.now() - start;
-    debug('timing', `${label} completed in ${elapsed.toFixed(0)}ms`);
-    return result;
+    try {
+      return await fn(...args);
+    } finally {
+      const elapsed = performance.now() - start;
+      debug('timing', `${label} completed in ${elapsed.toFixed(0)}ms`);
+    }
   };
 }
 
