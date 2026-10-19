@@ -1,14 +1,11 @@
 #!/usr/bin/env node
 
+import '@spotify-confidence/core/prelude';
+
 import yargs from 'yargs';
 import { hideBin } from 'yargs/helpers';
 import { APP_NAME, CLI_VERSION } from '@meta';
-import {
-  debugMiddleware,
-  flushTelemetry,
-  noColorMiddleware,
-  telemetryMiddleware,
-} from '@utils/index.js';
+import { debugMiddleware, flushTelemetry, telemetryMiddleware } from '@utils/index.js';
 import {
   loginCommand,
   logoutCommand,
@@ -75,7 +72,6 @@ const cli = yargs(hideBin(process.argv))
     describe: 'Collect anonymous usage telemetry (disable with --no-telemetry)',
   })
   .middleware(debugMiddleware)
-  .middleware(noColorMiddleware)
   .middleware(telemetryMiddleware)
   .command(loginCommand)
   .command(logoutCommand)

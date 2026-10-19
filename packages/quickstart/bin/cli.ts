@@ -1,5 +1,7 @@
 #!/usr/bin/env node
 
+import '@spotify-confidence/core/prelude';
+
 import yargs from 'yargs';
 import { hideBin } from 'yargs/helpers';
 import { defaultCommand, helpCommand } from '../src/commands/index.js';
