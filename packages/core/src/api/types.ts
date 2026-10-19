@@ -32,4 +32,10 @@ export type ApiRequestOptions = {
   method?: 'GET' | 'POST' | 'PUT' | 'PATCH' | 'DELETE';
   body?: unknown;
   params?: Record<string, string>;
+  /** Cancels both the request and response body consumption. */
+  signal?: AbortSignal;
+  /** Redirect policy. Defaults to fetch's existing follow behavior. */
+  redirect?: 'follow' | 'error';
+  /** Overall deadline in milliseconds, including response body consumption. Defaults to 30 seconds. */
+  timeoutMs?: number;
 };
