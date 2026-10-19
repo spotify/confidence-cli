@@ -30,10 +30,17 @@ export function debugMiddleware(argv: Record<string, unknown>): void {
 
   const args = Object.entries(argv)
     .filter(([k]) => !k.startsWith('$') && k !== '_' && k !== 'debug')
-    .map(([k, v]) => `${k}=${JSON.stringify(v)}`)
+    .map(([k, v]) => `${k}=${redactSensitive(k, v)}`)
     .join(' ');
 
   if (args) {
     debug('args', args);
   }
+}
+
+function redactSensitive(key: string, value: unknown): string {
+  const pattern =
+    /config-json|configJson|from-file|fromFile|sql|token|password|secret|credential|key-id|keyId/i;
+
+  return pattern.test(key) ? '[REDACTED]' : JSON.stringify(value);
 }

@@ -45,6 +45,29 @@ describe('debugMiddleware', () => {
     expect(output.stderr).toContain('dark-mode');
   });
 
+  it('redacts sensitive arg values', () => {
+    using _env = saveEnv('DEBUG');
+    using output = captureOutput();
+
+    debugMiddleware({
+      debug: true,
+      _: ['warehouse', 'create'],
+      'config-json': '{"password":"s3cret"}',
+      'from-file': '/etc/shadow',
+      'crypto-key-id': 'projects/my-key',
+      sql: 'SELECT * FROM users',
+      'flag-key': 'dark-mode',
+    });
+
+    expect(output.stderr).toContain('config-json=[REDACTED]');
+    expect(output.stderr).toContain('from-file=[REDACTED]');
+    expect(output.stderr).toContain('crypto-key-id=[REDACTED]');
+    expect(output.stderr).toContain('sql=[REDACTED]');
+    expect(output.stderr).toContain('flag-key="dark-mode"');
+    expect(output.stderr).not.toContain('s3cret');
+    expect(output.stderr).not.toContain('/etc/shadow');
+  });
+
   it('does nothing when --debug is false', () => {
     using _env = saveEnv('DEBUG');
     using output = captureOutput();
