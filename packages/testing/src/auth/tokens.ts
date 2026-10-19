@@ -20,6 +20,11 @@ const SCAFFOLDS: Record<TokenType, (dir: string) => void> = {
     writeCredentials(dir, {
       accessToken: buildTestJwt({ exp: Math.floor(Date.now() / 1000) - 3600 }),
     }),
+  stale: (dir) =>
+    writeCredentials(dir, {
+      accessToken: buildTestJwt({ exp: Math.floor(Date.now() / 1000) - 3600 }),
+      refreshToken: 'test-refresh-token',
+    }),
 };
 
 type Credentials = {

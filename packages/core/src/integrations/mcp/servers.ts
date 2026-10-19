@@ -1,4 +1,4 @@
-import { validateToken } from '../../auth/jwt.js';
+import { isValidToken } from '../../auth/jwt.js';
 import { env } from '../../system/env.js';
 
 const MCP_BASE_URL = env('CONFIDENCE_MCP_URL', 'https://mcp.confidence.dev');
@@ -64,8 +64,7 @@ export async function verifyMcpServer(
   opts?: McpVerifyOpts,
 ): Promise<McpServerStatus> {
   if (opts?.authToken) {
-    const { valid } = validateToken(opts.authToken);
-    if (!valid) return 'auth-expired';
+    if (!isValidToken(opts.authToken)) return 'auth-expired';
   }
 
   const server = MCP_SERVERS[serverName];

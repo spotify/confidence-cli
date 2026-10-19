@@ -1,4 +1,4 @@
-export { authHandlers } from './auth.js';
+export { authHandlers, tokenResponse, tokenError } from './auth.js';
 export { mcpHandlers } from './mcp.js';
 export { telemetryHandlers } from './telemetry.js';
 export { skillsHandlers } from './skills.js';

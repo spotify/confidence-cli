@@ -1,4 +1,4 @@
-import { extractText, type CallToolResult } from '@spotify-confidence/core';
+import { extractText, isInteractive, type CallToolResult } from '@spotify-confidence/core';
 import type { OutputFormat } from './detect.js';
 import { resolveFormat } from './detect.js';
 import { formatJson } from './json.js';
@@ -44,6 +44,11 @@ export function error(text: string): void {
 
 export function warn(text: string): void {
   process.stderr.write(`Warning: ${text}\n`);
+}
+
+export function hint(text: string): void {
+  if (!isInteractive()) return;
+  process.stdout.write(text + '\n');
 }
 
 export function fail(text?: string): void {

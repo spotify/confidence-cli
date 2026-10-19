@@ -1,5 +1,5 @@
 import { buildTestJwt, buildExpiredJwt } from '@spotify-confidence/testing/auth';
-import { decodeJwtPayload, validateToken } from '@auth/jwt.js';
+import { decodeJwtPayload, isValidToken, extractWorkspace } from '@auth/jwt.js';
 
 describe('decodeJwtPayload', () => {
   it('decodes a valid JWT payload', () => {
@@ -18,30 +18,31 @@ describe('decodeJwtPayload', () => {
   });
 });
 
-describe('validateToken', () => {
-  it('returns valid for a non-expired token', () => {
-    const sut = validateToken;
+describe('isValidToken', () => {
+  it('returns true for a non-expired token', () => {
     const token = buildTestJwt({ 'https://confidence.dev/region': 'EU' });
 
-    const result = sut(token);
-
-    expect(result.valid).toBe(true);
-    expect(result.region).toBe('EU');
+    expect(isValidToken(token)).toBe(true);
   });
 
-  it('returns invalid for an expired token', () => {
-    const sut = validateToken;
-
-    expect(sut(buildExpiredJwt()).valid).toBe(false);
+  it('returns false for an expired token', () => {
+    expect(isValidToken(buildExpiredJwt())).toBe(false);
   });
+});
 
-  it('extracts the workspace from account_name or email', () => {
-    const sut = validateToken;
+describe('extractWorkspace', () => {
+  it('extracts workspace from account_name', () => {
     const token = buildTestJwt({
       'https://confidence.dev/account_name': 'Acme Corp',
       email: 'user@acme.com',
     });
 
-    expect(sut(token).workspace).toBe('Acme Corp');
+    expect(extractWorkspace(token)).toBe('Acme Corp');
+  });
+
+  it('falls back to email when account_name is absent', () => {
+    const token = buildTestJwt({ email: 'user@acme.com' });
+
+    expect(extractWorkspace(token)).toBe('user@acme.com');
   });
 });

@@ -11,7 +11,7 @@ import {
   persistMcpPreference,
   MCP_SERVERS,
   getIntegration,
-  validateToken,
+  isValidToken,
   ScreenId,
 } from '@spotify-confidence/core';
 import { useLogger } from '../../hooks/useLog.js';
@@ -144,7 +144,7 @@ export function useMcpConnect(): McpConnectState {
         }
 
         const token = $session.get().authState.token;
-        if (!token || !validateToken(token).valid) {
+        if (!token || !isValidToken(token)) {
           setPhase(resolvePhaseFromStatuses(statuses));
           return;
         }

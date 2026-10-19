@@ -1,39 +1,39 @@
-import { loadPersistedToken, validateToken, decodeJwtPayload } from '@spotify-confidence/core';
-import { print, fail, extractFlags } from '@output/print.js';
+import {
+  decodeJwtPayload,
+  extractRegion,
+  extractOrganization,
+  extractWorkspace,
+} from '@spotify-confidence/core';
+import { print, extractFlags, fail } from '@output/print.js';
+import { tryLoadAuthToken } from '@utils/auth.js';
 
 export const whoamiCommand = {
   command: 'whoami',
   describe: 'Show current user, org, region, and token expiry',
-  handler(argv: Record<string, unknown>) {
+  async handler(argv: Record<string, unknown>) {
     const profile = argv.profile as string | undefined;
 
-    const token = loadPersistedToken(profile);
+    const { token, expired } = await tryLoadAuthToken(profile);
     if (!token) {
-      fail('Not logged in. Run "confidence login" first.');
-      return;
-    }
-
-    const validation = validateToken(token);
-    if (!validation.valid) {
-      fail('Token is expired. Run "confidence login" to re-authenticate.');
+      fail(
+        expired
+          ? 'Auth expired. Run "confidence login" to re-authenticate.'
+          : 'Not logged in. Run "confidence login" first.',
+      );
       return;
     }
 
     const payload = decodeJwtPayload(token);
     const email = (payload.email as string) ?? undefined;
-    const org =
-      (payload.org_id as string) ??
-      (payload['https://confidence.dev/org_login_id'] as string) ??
-      undefined;
     const exp = payload.exp as number | undefined;
     const expiresAt = exp ? new Date(exp * 1000).toISOString() : 'unknown';
 
     print({
       data: {
         email: email ?? 'unknown',
-        organization: org ?? 'unknown',
-        region: validation.region ?? 'unknown',
-        workspace: validation.workspace ?? 'unknown',
+        organization: extractOrganization(token) ?? 'unknown',
+        region: extractRegion(token),
+        workspace: extractWorkspace(token) ?? 'unknown',
         expires: expiresAt,
         profile: profile ?? 'default',
       },

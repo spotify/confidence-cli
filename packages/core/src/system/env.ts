@@ -30,5 +30,5 @@ export function isDebug(): boolean {
 }
 
 export function isInteractive(): boolean {
-  return Boolean(process.stdin.isTTY) && !isCI();
+  return Boolean(process.stdin.isTTY) && Boolean(process.stdout.isTTY) && !isCI();
 }

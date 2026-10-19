@@ -1,5 +1,10 @@
 import { useEffect, useState } from 'react';
-import { loadPersistedToken, validateToken } from '@spotify-confidence/core';
+import {
+  loadPersistedToken,
+  isValidToken,
+  extractRegion,
+  extractWorkspace,
+} from '@spotify-confidence/core';
 import { useSession, store } from '../../store.js';
 import type { AuthPhase } from './useAuthFlow.js';
 
@@ -24,16 +29,17 @@ function resolveAuth(dryRun: boolean): ResolvedAuth {
 
   const existing = loadPersistedToken();
   if (existing) {
-    const result = validateToken(existing);
-    if (result.valid) {
+    if (isValidToken(existing)) {
+      const region = extractRegion(existing);
+      const workspace = extractWorkspace(existing);
       return {
         phase: 'has-existing',
-        workspace: result.workspace ?? null,
+        workspace: workspace ?? null,
         authState: {
           status: 'authenticated',
           token: existing,
-          region: result.region,
-          workspace: result.workspace,
+          region,
+          workspace,
         },
       };
     }

@@ -1,38 +1,47 @@
-import { buildTestJwt, buildExpiredJwt, prepareAuthTokens } from '@spotify-confidence/testing/auth';
-import { loadPersistedToken, validateToken, decodeJwtPayload } from '@spotify-confidence/core';
+import { prepareAuthTokens } from '@spotify-confidence/testing/auth';
+import { whoamiCommand } from '@commands/whoami.js';
+import { captureOutput } from '../helpers/capture.js';
+import { createRunner } from '../helpers/run-command.js';
 
-describe('whoami prerequisites', () => {
-  it('loads and validates a persisted token', () => {
+const run = createRunner(whoamiCommand);
+
+describe('whoami', () => {
+  it('prints user info when logged in', async () => {
     using _auth = prepareAuthTokens('valid');
+    using output = captureOutput();
 
-    const token = loadPersistedToken();
+    await run(['whoami']);
 
-    expect(token).not.toBeNull();
-    expect(validateToken(token!).valid).toBe(true);
+    expect(output.stdout).toContain('existing@example.com');
+    expect(process.exitCode).not.toBe(1);
   });
 
-  it('decodes email from the token payload', () => {
-    using _auth = prepareAuthTokens('valid');
-    const token = loadPersistedToken()!;
+  it('fails with expired message when token is expired', async () => {
+    using _auth = prepareAuthTokens('expired');
+    using output = captureOutput();
 
-    const payload = decodeJwtPayload(token);
+    await run(['whoami']);
 
-    expect(payload.email).toBe('existing@example.com');
+    expect(output.stderr).toContain('Run "confidence login"');
+    expect(process.exitCode).toBe(1);
   });
 
-  it('detects an expired token', () => {
-    const sut = validateToken;
+  it('fails with not-logged-in message when no credentials exist', async () => {
+    using _auth = prepareAuthTokens('none');
+    using output = captureOutput();
 
-    expect(sut(buildExpiredJwt()).valid).toBe(false);
+    await run(['whoami']);
+
+    expect(output.stderr).toContain('Not logged in');
+    expect(process.exitCode).toBe(1);
   });
 
-  it('reads CONFIDENCE_TOKEN env var over persisted tokens', () => {
-    using _auth = prepareAuthTokens('valid');
-    const envToken = buildTestJwt({ email: 'ci@example.com' });
-    vi.stubEnv('CONFIDENCE_TOKEN', envToken);
+  it('never triggers a browser login', async () => {
+    using _auth = prepareAuthTokens('expired');
+    using _output = captureOutput();
 
-    const sut = loadPersistedToken();
+    await run(['whoami']);
 
-    expect(sut).toBe(envToken);
+    expect(_output.stdout).not.toContain('Opening browser');
   });
 });

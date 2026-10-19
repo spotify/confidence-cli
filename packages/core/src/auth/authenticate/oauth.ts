@@ -1,13 +1,15 @@
 import { createServer, type IncomingMessage, type ServerResponse } from 'node:http';
 import { env } from '../../system/env.js';
 import { readCredentials, writeCredentials } from '../credentials/index.js';
-import { extractRegion, extractOrganization, validateToken } from '../jwt.js';
+import { extractRegion, extractOrganization, extractWorkspace } from '../jwt.js';
 import { successPage, errorPage, exchangeErrorPage } from '../callback-pages.js';
 import {
   AUTH_BASE_URL,
   AUTH_CLIENT_ID_SIGNUP,
   AUTH_CLIENT_ID_LOGIN,
   AUTH_CALLBACK_PORT,
+  AUTH_TIMEOUT_MS,
+  SESSION_EXPIRED_ERR,
 } from './constants.js';
 import { generatePKCE } from './pkce.js';
 import { openBrowser } from '../../system/browser.js';
@@ -35,7 +37,7 @@ function resolveOrganization(profile?: string): string | undefined {
 export async function refreshAccessToken(profile?: string): Promise<AuthResult> {
   const creds = readCredentials(profile);
   if (!creds?.refreshToken) {
-    throw new Error('No refresh token available');
+    throw new Error('No refresh token available', { cause: SESSION_EXPIRED_ERR });
   }
 
   const body = new URLSearchParams({
@@ -52,14 +54,14 @@ export async function refreshAccessToken(profile?: string): Promise<AuthResult> 
   });
 
   if (!response.ok) {
-    throw new Error('Session expired');
+    throw new Error('Session expired', { cause: SESSION_EXPIRED_ERR });
   }
 
   const data = (await response.json()) as TokenResponse;
   persistTokens(data.access_token, data.refresh_token, profile);
 
   const region = extractRegion(data.access_token);
-  const { workspace } = validateToken(data.access_token);
+  const workspace = extractWorkspace(data.access_token);
   return {
     accessToken: data.access_token,
     refreshToken: data.refresh_token,
@@ -78,9 +80,10 @@ export function authenticate(opts: {
   const organization = opts.mode === 'login' ? resolveOrganization(opts.profile) : undefined;
   const { verifier, challenge } = generatePKCE();
   const redirectUri = `http://localhost:${AUTH_CALLBACK_PORT}/callback`;
+  const signal = opts.signal ?? AbortSignal.timeout(AUTH_TIMEOUT_MS);
 
   return new Promise((resolve, reject) => {
-    if (opts.signal?.aborted) {
+    if (signal.aborted) {
       reject(new Error('Authentication cancelled'));
       return;
     }
@@ -120,7 +123,7 @@ export function authenticate(opts: {
         persistTokens(access_token, refresh_token, opts.profile);
 
         const region = extractRegion(access_token);
-        const { workspace } = validateToken(access_token);
+        const workspace = extractWorkspace(access_token);
 
         res.writeHead(200, { 'Content-Type': 'text/html' });
         res.end(successPage);
@@ -140,16 +143,14 @@ export function authenticate(opts: {
       openBrowser(authUrl);
     });
 
-    if (opts.signal) {
-      opts.signal.addEventListener(
-        'abort',
-        () => {
-          server.close();
-          reject(new Error('Authentication cancelled'));
-        },
-        { once: true },
-      );
-    }
+    signal.addEventListener(
+      'abort',
+      () => {
+        server.close();
+        reject(new Error('Authentication cancelled'));
+      },
+      { once: true },
+    );
 
     server.on('error', (err) => {
       reject(

@@ -8,5 +8,6 @@
  * - `'valid'` — valid JWT for `existing@example.com`, no refresh token
  * - `'with-refresh'` — valid JWT + refresh token (enables token refresh flow)
  * - `'expired'` — expired JWT (triggers auth-expired detection)
+ * - `'stale'` — expired JWT + refresh token (triggers refresh-before-login)
  */
-export type TokenType = 'none' | 'valid' | 'with-refresh' | 'expired';
+export type TokenType = 'none' | 'valid' | 'with-refresh' | 'expired' | 'stale';
