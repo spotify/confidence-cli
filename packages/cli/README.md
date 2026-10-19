@@ -91,6 +91,78 @@ confidence quickstart      # Launch the interactive setup wizard
 | `confidence warehouse assignment-table create`       | Create an assignment table for experiment analysis |
 | `confidence warehouse crypto-key create`             | Create a crypto key (Snowflake)                    |
 
+### Dimension Tables
+
+| Command                                                                           | Description                               |
+| --------------------------------------------------------------------------------- | ----------------------------------------- |
+| `confidence data dimension-tables list`                                           | List one page of dimension tables         |
+| `confidence data dimension-tables get <name>`                                     | Get a table by ID or `dimensionTables/id` |
+| `confidence data dimension-tables create --from-file <resource.json> [--id <id>]` | Create one dimension table                |
+
+List options: `--page-size`, `--page-token`, `--filter` (Lucene query string),
+`--order-by` (for example `displayName:asc`), `--show-deleted`, and `--all` to
+follow every page, up to a hard limit of 1,000 pages. Without `--all`, JSON output
+includes the page's `nextPageToken`. Repeated tokens, malformed responses, and
+exceeding the page limit fail without returning an incomplete successful result;
+narrow the filter or use single-page requests for larger result sets.
+
+Create reads **canonical camelCase DimensionTable resource JSON**, not a request
+wrapper or CLI option names:
+
+```json
+{
+  "sql": "SELECT user_id, country FROM analytics.users",
+  "displayName": "User dimensions",
+  "entityColumnMapping": {
+    "column": { "name": "user_id" },
+    "entity": "entities/user"
+  },
+  "dimensions": [{ "name": "country" }],
+  "valueMappings": [
+    {
+      "column": "country",
+      "mappings": [
+        { "inputDimensionValue": "SE", "outputDimensionValue": "Sweden" },
+        { "inputDimensionValue": null, "outputDimensionValue": "Unknown" }
+      ]
+    }
+  ]
+}
+```
+
+Required fields are `sql`, `displayName`, `entityColumnMapping`, and a non-empty
+`dimensions` array. Optional `description`, `labels`, `owner`, `timeConfig`,
+`valueMappings`, `dimensionDataDeliveredUntilTime`, and
+`dataDeliveredUntilUpdateStrategyConfig` are validated and preserved. A column
+accepts `name` and optional boolean `repeated`, not output-only `type` or
+annotations. `timeConfig` requires `timestampColumn` and a protobuf duration
+`window` (for example `"86400s"`). Value-mapping inputs/outputs are strings or
+null, not `{ "value": ... }` wrapper objects. Output-only fields such as `name`,
+`state`, `error`, `schemaValidationJob`, and audit fields, as well as unknown
+fields at any level, are rejected before authentication or HTTP.
+
+```bash
+confidence data dimension-tables list --all --json
+confidence data dimension-tables get dimensionTables/users --json
+confidence data dimension-tables create --from-file dimensions.json --id users --dry-run --json
+confidence data dimension-tables create --from-file dimensions.json --id users --json
+```
+
+`--dry-run` validates and previews requests without authentication or HTTP.
+Create sends exactly one POST with the resource as its body and the optional ID
+as the `dimensionTableId` query parameter. It does not request approval, retry,
+or wait for schema validation. JSON output preserves the full returned resource,
+including state, errors, and schema-validation job references. Get verifies that
+the returned resource name matches the request. A successful get returns exit
+status 0 even if the table is not ready; an HTTP, network, or input failure
+returns nonzero.
+
+A create transport error, HTTP 5xx, or malformed successful response means the
+**creation outcome is unknown**: the table may already exist. The diagnostic
+preserves the original error, includes the requested `--id` when supplied, and
+warns against automatic retries. Check `confidence data dimension-tables get <id>`
+(or list existing tables if no ID was supplied) before deciding whether to retry.
+
 ### SDK
 
 | Command                  | Description                                     |
