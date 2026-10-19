@@ -12,7 +12,7 @@ import {
   uninstallPluginForIde,
   updatePluginForIde,
 } from '@features/plugin/index.js';
-import { safely } from '@utils/index.js';
+import { safely, dryRunGuard } from '@utils/index.js';
 
 export const pluginCommand = {
   command: 'plugin <action>',
@@ -58,22 +58,25 @@ export const pluginCommand = {
 };
 
 async function installCmd(argv: Record<string, unknown>): Promise<void> {
-  const ideId = await resolveIde(resolveFlag('ide', argv));
+  const ide = await resolveIde(resolveFlag('ide', argv));
   const scope = resolveScope(argv);
-  requireClaudeForScope(ideId, scope);
-  await installPluginForIde(ideId, resolveProjectDir(argv), scope);
+  requireClaudeForScope(ide, scope);
+  if (dryRunGuard(argv, { action: 'install', ide, scope })) return;
+  await installPluginForIde(ide, resolveProjectDir(argv), scope);
 }
 
 async function updateCmd(argv: Record<string, unknown>): Promise<void> {
-  const ideId = await resolveIde(resolveFlag('ide', argv));
+  const ide = await resolveIde(resolveFlag('ide', argv));
   const scope = resolveScope(argv);
-  requireClaudeForScope(ideId, scope);
-  await updatePluginForIde(ideId, resolveProjectDir(argv), scope);
+  requireClaudeForScope(ide, scope);
+  if (dryRunGuard(argv, { action: 'update', ide, scope })) return;
+  await updatePluginForIde(ide, resolveProjectDir(argv), scope);
 }
 
 async function uninstallCmd(argv: Record<string, unknown>): Promise<void> {
-  const ideId = await resolveIde(resolveFlag('ide', argv));
+  const ide = await resolveIde(resolveFlag('ide', argv));
   const scope = resolveScope(argv);
-  requireClaudeForScope(ideId, scope);
-  await uninstallPluginForIde(ideId, resolveProjectDir(argv), scope);
+  requireClaudeForScope(ide, scope);
+  if (dryRunGuard(argv, { action: 'uninstall', ide, scope })) return;
+  await uninstallPluginForIde(ide, resolveProjectDir(argv), scope);
 }

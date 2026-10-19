@@ -47,6 +47,18 @@ beforeEach(() => {
   mockDetectFramework.mockResolvedValue(REACT_FRAMEWORK);
 });
 
+describe('--dry-run', () => {
+  it('prints payload and skips the install', async () => {
+    using project = createProjectDir('empty');
+
+    await runSdkInstall({ dir: project.path, 'dry-run': true });
+
+    expect(mockExecFile).not.toHaveBeenCalled();
+    expect(mockMessage).toHaveBeenCalledWith(expect.stringContaining('"action": "install"'));
+    expect(mockMessage).toHaveBeenCalledWith(expect.stringContaining('"framework": "react"'));
+  });
+});
+
 describe('runSdkInstall workspace root handling', () => {
   it('passes -w when pnpm-workspace.yaml is present', async () => {
     using project = createProjectDir('empty');

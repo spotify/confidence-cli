@@ -6,6 +6,7 @@ import {
   type FrameworkConfig,
 } from '@spotify-confidence/core';
 import { message, fail } from '@output/print.js';
+import { dryRunGuard } from '@utils/index.js';
 import { resolveProjectDir } from '@features/ide/index.js';
 import type { InstallCommand } from './install-types.js';
 import { buildNodeInstall } from './install-node.js';
@@ -58,6 +59,18 @@ export async function runSdkInstall(argv: Record<string, unknown>): Promise<void
 
   if (install.type === 'manual') {
     message(`\n${install.snippet}\n\nDocs: ${fw.docsUrl}`);
+    return;
+  }
+
+  if (
+    dryRunGuard(argv, {
+      action: 'install',
+      framework: fw.id,
+      package: fw.sdkPackage,
+      command: `${install.cmd} ${install.args.join(' ')}`,
+      directory: dir,
+    })
+  ) {
     return;
   }
 

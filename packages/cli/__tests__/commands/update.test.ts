@@ -50,6 +50,22 @@ function registryFails() {
   server.use(registryFailsHandler());
 }
 
+describe('--dry-run', () => {
+  it('prints payload and skips the update when a newer version is available', async () => {
+    using output = captureOutput();
+    registryReturns('2.0.0');
+    mockDetectPM.mockReturnValue('npm');
+
+    await run(['update', '--dry-run']);
+
+    const parsed = JSON.parse(output.stdout);
+    expect(parsed.action).toBe('update');
+    expect(parsed.from).toBe('1.0.0');
+    expect(parsed.to).toBe('2.0.0');
+    expect(mockExecFile).not.toHaveBeenCalled();
+  });
+});
+
 describe('update', () => {
   it('reports up to date when versions match', async () => {
     using output = captureOutput();

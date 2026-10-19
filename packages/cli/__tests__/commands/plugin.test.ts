@@ -29,6 +29,42 @@ beforeEach(() => {
 
 const run = createRunner(pluginCommand);
 
+describe('--dry-run', () => {
+  it('prints payload and skips install', async () => {
+    using _auth = prepareAuthTokens('none');
+    using output = captureOutput();
+
+    await run(['plugin', 'install', '--ide', 'claude', '--dry-run']);
+
+    const parsed = JSON.parse(output.stdout);
+    expect(parsed.action).toBe('install');
+    expect(parsed.ide).toBe('claude');
+    expect(mockInstallPlugin).not.toHaveBeenCalled();
+  });
+
+  it('prints payload and skips update', async () => {
+    using _auth = prepareAuthTokens('none');
+    using output = captureOutput();
+
+    await run(['plugin', 'update', '--ide', 'claude', '--dry-run']);
+
+    const parsed = JSON.parse(output.stdout);
+    expect(parsed.action).toBe('update');
+    expect(mockUpdatePlugin).not.toHaveBeenCalled();
+  });
+
+  it('prints payload and skips uninstall', async () => {
+    using _auth = prepareAuthTokens('none');
+    using output = captureOutput();
+
+    await run(['plugin', 'uninstall', '--ide', 'claude', '--dry-run']);
+
+    const parsed = JSON.parse(output.stdout);
+    expect(parsed.action).toBe('uninstall');
+    expect(mockUninstallPlugin).not.toHaveBeenCalled();
+  });
+});
+
 describe('plugin install', () => {
   it('installs the plugin for the specified IDE with default project scope', async () => {
     using _auth = prepareAuthTokens('none');
