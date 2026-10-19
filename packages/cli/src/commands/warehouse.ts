@@ -8,6 +8,8 @@ import {
   createAssignmentTableCmd,
   createCryptoKeyCmd,
   runWarehouseSetup,
+  listWarehousesCmd,
+  getWarehouseCmd,
 } from '@features/warehouse/index.js';
 import { safely } from '@utils/index.js';
 
@@ -41,6 +43,37 @@ export const warehouseCommand = {
   describe: 'Manage data warehouse connections',
   builder(yargs: Argv) {
     return yargs
+      .command(
+        'list',
+        'List data warehouses',
+        (y: Argv) =>
+          y
+            .option('page-size', {
+              type: 'number',
+              describe: 'Maximum warehouses per page (1–1000)',
+            })
+            .option('page-token', {
+              type: 'string',
+              describe: 'Start at this pagination token',
+            })
+            .option('all', {
+              type: 'boolean',
+              default: false,
+              describe: 'Fetch all pages, starting at --page-token if provided',
+            }),
+        safely(listWarehousesCmd),
+      )
+      .command(
+        'get',
+        'Get a data warehouse',
+        (y: Argv) =>
+          y.option('name', {
+            type: 'string',
+            demandOption: true,
+            describe: 'Qualified resource name (dataWarehouses/<id>)',
+          }),
+        safely(getWarehouseCmd),
+      )
       .command(
         'setup',
         'Launch guided warehouse setup in your AI coding agent',
@@ -176,7 +209,7 @@ export const warehouseCommand = {
       )
       .demandCommand(
         1,
-        'Available actions: setup, validate, create, connector, assignment-table, crypto-key. Run "confidence warehouse --help" for details.',
+        'Available actions: list, get, setup, validate, create, connector, assignment-table, crypto-key. Run "confidence warehouse --help" for details.',
       )
       .strict();
   },

@@ -20,6 +20,7 @@ import {
   pluginCommand,
   migrateCommand,
   warehouseCommand,
+  dataCommand,
 } from '../src/commands/index.js';
 
 const cli = yargs(hideBin(process.argv))
@@ -88,6 +89,7 @@ const cli = yargs(hideBin(process.argv))
   .command(pluginCommand)
   .command(migrateCommand)
   .command(warehouseCommand)
+  .command(dataCommand)
   .example('$0 login', 'Sign in to Confidence')
   .example('$0 flags setup', 'Set up feature flags in your project')
   .example('$0 docs search "feature flags"', 'Search the documentation')

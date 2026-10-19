@@ -82,14 +82,50 @@ confidence quickstart      # Launch the interactive setup wizard
 
 ### Data Warehouses
 
-| Command                                              | Description                                        |
-| ---------------------------------------------------- | -------------------------------------------------- |
-| `confidence warehouse validate`                      | Validate warehouse configuration                   |
-| `confidence warehouse create`                        | Create a data warehouse connection                 |
-| `confidence warehouse connector create-flag-applied` | Create flag assignment data connector              |
-| `confidence warehouse connector create-event`        | Create event data connector                        |
-| `confidence warehouse assignment-table create`       | Create an assignment table for experiment analysis |
-| `confidence warehouse crypto-key create`             | Create a crypto key (Snowflake)                    |
+| Command                                               | Description                                        |
+| ----------------------------------------------------- | -------------------------------------------------- |
+| `confidence warehouse list`                           | List data warehouse connections                    |
+| `confidence warehouse get --name dataWarehouses/<id>` | Get a data warehouse connection                    |
+| `confidence warehouse validate`                       | Validate warehouse configuration                   |
+| `confidence warehouse create`                         | Create a data warehouse connection                 |
+| `confidence warehouse connector create-flag-applied`  | Create flag assignment data connector              |
+| `confidence warehouse connector create-event`         | Create event data connector                        |
+| `confidence warehouse assignment-table create`        | Create an assignment table for experiment analysis |
+| `confidence warehouse crypto-key create`              | Create a crypto key (Snowflake)                    |
+
+#### Read warehouse connections
+
+Warehouse reads call the regional Metrics HTTP API directly (no MCP server required):
+
+```bash
+confidence warehouse list --page-size 100 --json
+confidence warehouse list --page-token '<nextPageToken>' --json
+confidence warehouse list --all --profile production --output table
+confidence warehouse get --name dataWarehouses/my-warehouse --json
+confidence warehouse get --name dataWarehouses/my-warehouse --dry-run
+```
+
+`list` fetches one page by default and preserves `dataWarehouses`, `nextPageToken`, and
+other response metadata inside the JSON `data` envelope. An omitted `dataWarehouses`
+field in an empty protobuf JSON response is normalized to `[]`. `--page-size` must be a
+positive integer at most 1000. `--all` follows pagination until exhausted, combines
+warehouses in response order, and fails on repeated page tokens rather than looping.
+A 1000-page safety limit also prevents endless aggregation if the server keeps
+returning unique tokens; use single-page requests for larger listings. It can start
+at `--page-token`; response metadata is merged with later pages taking precedence. `get`
+requires a qualified `dataWarehouses/<id>` name, not a bare ID or URL, and rejects a
+response for a different warehouse.
+
+Both reads honor `--profile`, select EU/US from the authentication token, and support
+`--json` / `--output`. `--dry-run` validates inputs and previews the request without
+authentication or network access. Invalid inputs, malformed API responses, and API
+errors fail with a nonzero exit code; no partial list is printed if pagination fails.
+Public warehouse metadata is retained. Configuration output is restricted to known
+public proto fields: input-only client secrets, AWS secret access keys, and unknown
+configuration fields are omitted in every output format. Crypto key and service
+account references remain visible; they are not raw credentials.
+
+Existing warehouse setup, creation, validation, and connector commands are unchanged.
 
 ### SDK
 
