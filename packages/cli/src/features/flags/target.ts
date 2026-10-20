@@ -9,7 +9,8 @@ import {
   print,
   printMcpResult,
 } from '@output/index.js';
-import { withAuth } from '@utils/index.js';
+import { withCrossCutting } from '@composition';
+import { dryRunGuard } from '@utils/index.js';
 import { resolveInput } from '@input/index.js';
 
 function parseAllocations(spec: string): Record<string, number> {
@@ -30,7 +31,7 @@ function parseAllocations(spec: string): Record<string, number> {
   return allocations;
 }
 
-export const targetFlagCmd = withAuth(async function targetFlagCmd(argv, token) {
+export const targetFlagCmd = withCrossCutting(async function targetFlagCmd(argv, token) {
   const flagKey = argv['flag-key'] as string;
 
   let allocations: Record<string, number> | undefined;
@@ -52,10 +53,7 @@ export const targetFlagCmd = withAuth(async function targetFlagCmd(argv, token) 
   if (allocations) {
     validateAllocations(allocations);
 
-    if (argv['dry-run']) {
-      message(JSON.stringify({ flagKey, variantAllocations: allocations, targetingKey }, null, 2));
-      return;
-    }
+    if (dryRunGuard(argv, { flagKey, variantAllocations: allocations, targetingKey })) return;
 
     const result = await addTargetingRule(token, flagKey, {
       variantAllocations: allocations,

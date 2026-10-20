@@ -16,7 +16,9 @@ export const defaultCommand: Command = {
     const dryRun = Boolean(args['dry-run'] ?? args.dryRun);
     const debug = Boolean(args.debug);
     const dir = args.dir as string | undefined;
+
     const noTelemetry = args.telemetry === false;
+
     const features = args.features as string[] | undefined;
     const goals = features
       ? [...new Set(features.map((f) => FEATURE_TO_GOAL[f]).filter(Boolean))]

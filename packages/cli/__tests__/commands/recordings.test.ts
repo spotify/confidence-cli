@@ -361,3 +361,80 @@ describe('recordings targeting-key add', () => {
     );
   });
 });
+
+describe('dry-run', () => {
+  it('prints payload for policy create', async () => {
+    using _auth = prepareAuthTokens('valid');
+    using output = captureOutput();
+
+    await run([
+      'recordings',
+      'policy',
+      'create',
+      '--display-name',
+      'my-app',
+      '--client-name',
+      'web',
+      '--dry-run',
+    ]);
+
+    const parsed = JSON.parse(output.stdout);
+    expect(parsed.displayName).toBe('my-app');
+    expect(parsed.clientName).toBe('web');
+    expect(mockMcpCallTool).not.toHaveBeenCalled();
+  });
+
+  it('prints payload for rule add', async () => {
+    using _auth = prepareAuthTokens('valid');
+    using output = captureOutput();
+
+    await run([
+      'recordings',
+      'rule',
+      'add',
+      '--policy',
+      'recordingPolicies/abc',
+      '--targeting-key',
+      'visitor_id',
+      '--dry-run',
+    ]);
+
+    const parsed = JSON.parse(output.stdout);
+    expect(parsed.recordingPolicy).toBe('recordingPolicies/abc');
+    expect(parsed.targetingKeySelector).toBe('visitor_id');
+    expect(mockMcpCallTool).not.toHaveBeenCalled();
+  });
+
+  it('prints payload for rule enable', async () => {
+    using _auth = prepareAuthTokens('valid');
+    using output = captureOutput();
+
+    await run(['recordings', 'rule', 'enable', 'rules/123', '--dry-run']);
+
+    const parsed = JSON.parse(output.stdout);
+    expect(parsed.rule).toBe('rules/123');
+    expect(parsed.enabled).toBe(true);
+    expect(mockMcpCallTool).not.toHaveBeenCalled();
+  });
+
+  it('prints payload for targeting-key add', async () => {
+    using _auth = prepareAuthTokens('valid');
+    using output = captureOutput();
+
+    await run([
+      'recordings',
+      'targeting-key',
+      'add',
+      '--field-name',
+      'user_id',
+      '--field-type',
+      'string',
+      '--dry-run',
+    ]);
+
+    const parsed = JSON.parse(output.stdout);
+    expect(parsed.fieldName).toBe('user_id');
+    expect(parsed.fieldType).toBe('string');
+    expect(mockMcpCallTool).not.toHaveBeenCalled();
+  });
+});

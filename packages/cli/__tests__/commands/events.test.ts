@@ -182,6 +182,18 @@ describe('events update', () => {
 
     expect(output.stdout).toContain('page-viewed');
   });
+
+  it('prints payload in dry-run mode', async () => {
+    using _auth = prepareAuthTokens('valid');
+    using output = captureOutput();
+
+    await run(['events', 'update', 'page-viewed', '--field', 'referrer:STRING', '--dry-run']);
+
+    const parsed = JSON.parse(output.stdout);
+    expect(parsed.name).toBe('page-viewed');
+    expect(parsed.schema).toHaveProperty('referrer');
+    expect(mockMcpCallTool).not.toHaveBeenCalled();
+  });
 });
 
 describe('events delete', () => {

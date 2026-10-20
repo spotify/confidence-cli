@@ -1,7 +1,7 @@
 import { extractText, parseToolJson } from '@spotify-confidence/core';
 import { getRecordingPolicy } from '@network/index.js';
 import { resolveFormat, formatJson, message, print, extractFlags } from '@output/index.js';
-import { withAuth } from '@utils/index.js';
+import { withCrossCutting } from '@composition';
 import { tryHandleMcpError } from './format-mcp-error.js';
 
 type PolicyDetail = {
@@ -11,7 +11,7 @@ type PolicyDetail = {
   rules: Array<{ name: string; displayName: string; enabled: boolean }>;
 };
 
-export const getPolicy = withAuth(async function getPolicy(argv, token) {
+export const getPolicy = withCrossCutting(async function getPolicy(argv, token) {
   const policy = argv.policy as string;
   const result = await getRecordingPolicy(token, policy);
   if (tryHandleMcpError(result)) return;

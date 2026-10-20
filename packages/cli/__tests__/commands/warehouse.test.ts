@@ -422,3 +422,106 @@ describe('warehouse MCP error handling', () => {
     expect(output.stderr).toContain('Warehouse type not supported');
   });
 });
+
+describe('dry-run', () => {
+  it('prints payload for warehouse create', async () => {
+    using _auth = prepareAuthTokens('valid');
+    using output = captureOutput();
+
+    await run([
+      'warehouse',
+      'create',
+      '--warehouse-type',
+      'bigquery',
+      '--config-json',
+      '{"gcpProjectId":"my-project"}',
+      '--dry-run',
+    ]);
+
+    const parsed = JSON.parse(output.stdout);
+    expect(parsed.warehouseType).toBe('bigquery');
+    expect(parsed.configJson).toContain('gcpProjectId');
+    expect(mockMcpCallTool).not.toHaveBeenCalled();
+  });
+
+  it('prints payload for connector create-event', async () => {
+    using _auth = prepareAuthTokens('valid');
+    using output = captureOutput();
+
+    await run([
+      'warehouse',
+      'connector',
+      'create-event',
+      '--warehouse-type',
+      'bigquery',
+      '--config-json',
+      '{}',
+      '--dry-run',
+    ]);
+
+    const parsed = JSON.parse(output.stdout);
+    expect(parsed.warehouseType).toBe('bigquery');
+    expect(mockMcpCallTool).not.toHaveBeenCalled();
+  });
+
+  it('prints payload for connector create-flag-applied', async () => {
+    using _auth = prepareAuthTokens('valid');
+    using output = captureOutput();
+
+    await run([
+      'warehouse',
+      'connector',
+      'create-flag-applied',
+      '--warehouse-type',
+      'bigquery',
+      '--config-json',
+      '{}',
+      '--dry-run',
+    ]);
+
+    const parsed = JSON.parse(output.stdout);
+    expect(parsed.warehouseType).toBe('bigquery');
+    expect(mockMcpCallTool).not.toHaveBeenCalled();
+  });
+
+  it('prints payload for assignment-table create', async () => {
+    using _auth = prepareAuthTokens('valid');
+    using output = captureOutput();
+
+    await run([
+      'warehouse',
+      'assignment-table',
+      'create',
+      '--display-name',
+      'test-table',
+      '--sql',
+      'SELECT *',
+      '--entity-column',
+      'user_id',
+      '--timestamp-column',
+      'ts',
+      '--exposure-key-column',
+      'exp',
+      '--variant-key-column',
+      'var',
+      '--dry-run',
+    ]);
+
+    const parsed = JSON.parse(output.stdout);
+    expect(parsed.displayName).toBe('test-table');
+    expect(parsed.sql).toBe('SELECT *');
+    expect(parsed.entityColumn).toBe('user_id');
+    expect(mockMcpCallTool).not.toHaveBeenCalled();
+  });
+
+  it('prints payload for crypto-key create', async () => {
+    using _auth = prepareAuthTokens('valid');
+    using output = captureOutput();
+
+    await run(['warehouse', 'crypto-key', 'create', '--crypto-key-id', 'key-123', '--dry-run']);
+
+    const parsed = JSON.parse(output.stdout);
+    expect(parsed.cryptoKeyId).toBe('key-123');
+    expect(mockMcpCallTool).not.toHaveBeenCalled();
+  });
+});

@@ -1,9 +1,9 @@
 import ora from 'ora';
 import { grepDocumentation } from '@network/index.js';
 import { printMcpResult } from '@output/print.js';
-import { withAuth } from '@utils/index.js';
+import { withCrossCutting } from '@composition';
 
-export const grepDocs = withAuth(async function grepDocs(argv, token) {
+export const grepDocs = withCrossCutting(async function grepDocs(argv, token) {
   const pattern = argv.pattern as string;
   const spinner = ora('Searching docs...').start();
   try {

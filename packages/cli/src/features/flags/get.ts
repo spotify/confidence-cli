@@ -1,9 +1,9 @@
 import { getFlag } from '@network/index.js';
 import { resolveFormat, formatJson, extractFlags, fail, message, print } from '@output/index.js';
-import { withAuth } from '@utils/index.js';
+import { withCrossCutting } from '@composition';
 import { flagStatus } from './status.js';
 
-export const getFlagCmd = withAuth(async function getFlagCmd(argv, token) {
+export const getFlagCmd = withCrossCutting(async function getFlagCmd(argv, token) {
   const flagKey = argv['flag-key'] as string;
 
   const result = await getFlag(token, flagKey);

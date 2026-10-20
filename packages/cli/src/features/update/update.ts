@@ -3,6 +3,7 @@ import { execFile, isNewerVersion } from '@spotify-confidence/core';
 import { CLI_VERSION } from '@meta';
 import { fetchLatestVersion } from '@network/index.js';
 import { message, fail } from '@output/print.js';
+import { dryRunGuard } from '@utils/index.js';
 import { detectPackageManager, type PackageManager } from './detect-pm.js';
 
 const PACKAGE_NAME = '@spotify-confidence/cli';
@@ -24,7 +25,7 @@ async function isYarnBerry(): Promise<boolean> {
   }
 }
 
-export async function runUpdate(): Promise<void> {
+export async function runUpdate(argv: Record<string, unknown> = {}): Promise<void> {
   const spinner = ora('Checking for updates...').start();
 
   let latest: string;
@@ -62,9 +63,22 @@ export async function runUpdate(): Promise<void> {
     return;
   }
 
+  const [cmd, args] = UPDATE_COMMANDS[pm];
+
+  if (
+    dryRunGuard(argv, {
+      action: 'update',
+      package: PACKAGE_NAME,
+      from: CLI_VERSION,
+      to: latest,
+      command: `${cmd} ${args.join(' ')}`,
+    })
+  ) {
+    return;
+  }
+
   const updateSpinner = ora(`Updating ${PACKAGE_NAME} v${CLI_VERSION} → v${latest}...`).start();
 
-  const [cmd, args] = UPDATE_COMMANDS[pm];
   try {
     await execFile(cmd, args);
     updateSpinner.succeed(`Updated ${PACKAGE_NAME} v${CLI_VERSION} → v${latest}.`);

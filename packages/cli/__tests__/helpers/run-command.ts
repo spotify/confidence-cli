@@ -7,6 +7,8 @@ export function createRunner(command: CommandModule) {
       .option('output', { type: 'string' })
       .option('profile', { type: 'string' })
       .option('dry-run', { type: 'boolean', default: false })
+      .option('debug', { type: 'boolean', default: false })
+      .option('color', { type: 'boolean', default: true })
       .command(command)
       .parse();
 }

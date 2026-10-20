@@ -2,15 +2,13 @@ import confirm from '@inquirer/confirm';
 import { extractText } from '@spotify-confidence/core';
 import { deleteEventDefinition } from '@network/index.js';
 import { message, fail } from '@output/print.js';
-import { withAuth } from '@utils/index.js';
+import { withCrossCutting } from '@composition';
+import { dryRunGuard } from '@utils/index.js';
 
-export const deleteEvent = withAuth(async function deleteEvent(argv, token) {
+export const deleteEvent = withCrossCutting(async function deleteEvent(argv, token) {
   const name = argv.name as string;
 
-  if (argv['dry-run']) {
-    message(JSON.stringify({ action: 'delete', name }, null, 2));
-    return;
-  }
+  if (dryRunGuard(argv, { action: 'delete', name })) return;
 
   if (!argv.force) {
     if (!process.stdin.isTTY) {

@@ -1,11 +1,12 @@
 import type { JsonObject } from '@spotify-confidence/shared-kernel';
 import { createEventDefinition } from '@network/index.js';
-import { message, printMcpResult } from '@output/index.js';
-import { withAuth } from '@utils/index.js';
+import { printMcpResult } from '@output/index.js';
+import { withCrossCutting } from '@composition';
+import { dryRunGuard } from '@utils/index.js';
 import { resolveInput } from '@input/index.js';
 import { parseFieldArg } from './field-spec.js';
 
-export const createEvent = withAuth(async function createEvent(argv, token) {
+export const createEvent = withCrossCutting(async function createEvent(argv, token) {
   const eventDefinitionId = argv.name as string;
 
   const schema = resolveInput<JsonObject>(argv, () => {
@@ -17,10 +18,7 @@ export const createEvent = withAuth(async function createEvent(argv, token) {
     throw new Error('Provide at least one --field or --from-file.');
   }
 
-  if (argv['dry-run']) {
-    message(JSON.stringify({ eventDefinitionId, schema }, null, 2));
-    return;
-  }
+  if (dryRunGuard(argv, { eventDefinitionId, schema })) return;
 
   const result = await createEventDefinition(token, eventDefinitionId, schema);
   printMcpResult(result, argv);

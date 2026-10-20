@@ -8,5 +8,5 @@ export type GlobalFlags = {
   profile?: string;
   debug: boolean;
   'dry-run': boolean;
-  'no-color': boolean;
+  color: boolean;
 };

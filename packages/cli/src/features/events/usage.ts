@@ -1,9 +1,9 @@
 import { isDefined } from '@spotify-confidence/shared-kernel';
 import { queryEventsUsage } from '@network/index.js';
 import { printMcpResult } from '@output/print.js';
-import { withAuth } from '@utils/index.js';
+import { withCrossCutting } from '@composition';
 
-export const eventUsage = withAuth(async function eventUsage(argv, token) {
+export const eventUsage = withCrossCutting(async function eventUsage(argv, token) {
   const name = argv.name as string;
   const daysBack = argv.days as number | undefined;
 

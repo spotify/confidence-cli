@@ -1,6 +1,7 @@
 import { addRecordingRule } from '@network/index.js';
 import { printMcpResult } from '@output/index.js';
-import { withAuth } from '@utils/index.js';
+import { withCrossCutting } from '@composition';
+import { dryRunGuard } from '@utils/index.js';
 import { resolveInput } from '@input/index.js';
 import { requireKeys, validateRange } from '@utils/validation.js';
 import { tryHandleMcpError } from './format-mcp-error.js';
@@ -14,7 +15,7 @@ type RuleParams = {
   enabled: boolean;
 };
 
-export const addRule = withAuth(async function addRule(argv, token) {
+export const addRule = withCrossCutting(async function addRule(argv, token) {
   const params = resolveInput<RuleParams>(argv, [
     'policy',
     'display-name',
@@ -28,14 +29,17 @@ export const addRule = withAuth(async function addRule(argv, token) {
   validateRange(params['audience-percentage'], 'audience-percentage', 0, 100);
   validateRange(params['sample-rate'], 'sample-rate', 0, 1);
 
-  const result = await addRecordingRule(token, {
+  const payload = {
     recordingPolicy: params.policy,
     displayName: params['display-name'],
     targetingKeySelector: params['targeting-key'],
     stableAudiencePercentage: params['audience-percentage'],
     sessionSampleRate: params['sample-rate'],
     enabled: params.enabled,
-  });
+  };
+  if (dryRunGuard(argv, payload)) return;
+
+  const result = await addRecordingRule(token, payload);
   if (tryHandleMcpError(result)) return;
   printMcpResult(result, argv);
 });

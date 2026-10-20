@@ -1,7 +1,7 @@
 import { extractText, parseToolJson } from '@spotify-confidence/core';
 import { getContextSchema } from '@network/index.js';
 import { message, print, extractFlags } from '@output/print.js';
-import { withAuth } from '@utils/index.js';
+import { withCrossCutting } from '@composition';
 import { tryHandleMcpError } from './format-mcp-error.js';
 
 type ContextField = {
@@ -14,7 +14,7 @@ type SchemaResponse = {
   fields: ContextField[];
 };
 
-export const showTargetingKeys = withAuth(async function showTargetingKeys(argv, token) {
+export const showTargetingKeys = withCrossCutting(async function showTargetingKeys(argv, token) {
   const client = argv.client as string;
   const result = await getContextSchema(token, client);
   if (tryHandleMcpError(result)) return;

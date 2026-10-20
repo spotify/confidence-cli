@@ -1,5 +1,7 @@
 #!/usr/bin/env node
 
+import '@spotify-confidence/core/prelude';
+
 import yargs from 'yargs';
 import { hideBin } from 'yargs/helpers';
 import { defaultCommand, helpCommand } from '../src/commands/index.js';
@@ -17,6 +19,11 @@ const cli = yargs(hideBin(process.argv))
     type: 'boolean',
     default: false,
     describe: 'Enable debug output and preserve terminal history',
+  })
+  .option('color', {
+    type: 'boolean',
+    default: true,
+    describe: 'Enable colors (use --no-color to disable)',
   })
   .option('dir', {
     type: 'string',

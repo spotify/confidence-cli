@@ -1,6 +1,6 @@
 import { resolveFlag } from '@network/index.js';
 import { printMcpResult } from '@output/index.js';
-import { withAuth } from '@utils/index.js';
+import { withCrossCutting } from '@composition';
 
 function parseContextPair(spec: string): [string, string] {
   const eqIndex = spec.indexOf('=');
@@ -18,7 +18,7 @@ function parseContextPair(spec: string): [string, string] {
   return [key, value];
 }
 
-export const resolveFlagCmd = withAuth(async function resolveFlagCmd(argv, token) {
+export const resolveFlagCmd = withCrossCutting(async function resolveFlagCmd(argv, token) {
   const flagKey = argv['flag-key'] as string;
   const entity = argv.entity as string;
   const entityValue = argv['entity-value'] as string;

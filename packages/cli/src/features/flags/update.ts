@@ -1,11 +1,12 @@
 import type { JsonObject } from '@spotify-confidence/shared-kernel';
 import { getFlag, updateFlag } from '@network/index.js';
 import { resolveFormat, formatJson, extractFlags, fail, message, print } from '@output/index.js';
-import { withAuth } from '@utils/index.js';
+import { withCrossCutting } from '@composition';
+import { dryRunGuard } from '@utils/index.js';
 import { flagStatus } from './status.js';
 import { resolveInput } from '@input/index.js';
 
-export const updateFlagCmd = withAuth(async function updateFlagCmd(argv, token) {
+export const updateFlagCmd = withCrossCutting(async function updateFlagCmd(argv, token) {
   const flagKey = argv['flag-key'] as string;
 
   const opts = resolveInput(argv, ['description', 'add-variant']);
@@ -34,10 +35,7 @@ export const updateFlagCmd = withAuth(async function updateFlagCmd(argv, token) 
     return;
   }
 
-  if (argv['dry-run']) {
-    message(JSON.stringify({ flagKey, ...body }, null, 2));
-    return;
-  }
+  if (dryRunGuard(argv, { flagKey, ...body })) return;
 
   const result = await updateFlag(token, flagKey, body);
 

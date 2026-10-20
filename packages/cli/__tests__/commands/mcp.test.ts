@@ -141,6 +141,43 @@ describe('mcp auth', () => {
   });
 });
 
+describe('--dry-run', () => {
+  it('prints payload and skips install', async () => {
+    using _auth = prepareAuthTokens('valid');
+    using output = captureOutput();
+
+    await run(['mcp', 'install', '--ide', 'claude', '--dry-run']);
+
+    const parsed = JSON.parse(output.stdout);
+    expect(parsed.action).toBe('install');
+    expect(parsed.servers).toContain('confidence-flags');
+    expect(mockIntegration.connectMcpServer).not.toHaveBeenCalled();
+  });
+
+  it('prints payload and skips uninstall', async () => {
+    using _auth = prepareAuthTokens('valid');
+    using output = captureOutput();
+
+    await run(['mcp', 'uninstall', '--ide', 'claude', '--dry-run']);
+
+    const parsed = JSON.parse(output.stdout);
+    expect(parsed.action).toBe('uninstall');
+    expect(mockIntegration.disconnectMcpServer).not.toHaveBeenCalled();
+  });
+
+  it('prints payload and skips auth refresh', async () => {
+    using _auth = prepareAuthTokens('valid');
+    using output = captureOutput();
+
+    await run(['mcp', 'auth', '--ide', 'claude', '--dry-run']);
+
+    const parsed = JSON.parse(output.stdout);
+    expect(parsed.action).toBe('auth');
+    expect(mockAuthenticate).not.toHaveBeenCalled();
+    expect(mockIntegration.connectMcpServer).not.toHaveBeenCalled();
+  });
+});
+
 describe('--profile', () => {
   it('forwards profile to authenticate during install', async () => {
     using _output = captureOutput();

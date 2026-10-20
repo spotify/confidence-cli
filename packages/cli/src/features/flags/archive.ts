@@ -1,15 +1,13 @@
 import confirm from '@inquirer/confirm';
 import { archiveFlag } from '@network/index.js';
 import { message, fail } from '@output/index.js';
-import { withAuth } from '@utils/index.js';
+import { withCrossCutting } from '@composition';
+import { dryRunGuard } from '@utils/index.js';
 
-export const archiveFlagCmd = withAuth(async function archiveFlagCmd(argv, token) {
+export const archiveFlagCmd = withCrossCutting(async function archiveFlagCmd(argv, token) {
   const flagKey = argv['flag-key'] as string;
 
-  if (argv['dry-run']) {
-    message(JSON.stringify({ action: 'archive', flagKey }, null, 2));
-    return;
-  }
+  if (dryRunGuard(argv, { action: 'archive', flagKey })) return;
 
   if (!argv.force) {
     if (!process.stdin.isTTY) {

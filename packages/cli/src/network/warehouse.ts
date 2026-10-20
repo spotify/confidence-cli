@@ -1,4 +1,5 @@
-import { mcpCallTool, type CallToolResult } from '@spotify-confidence/core';
+import type { CallToolResult } from '@spotify-confidence/core';
+import { mcpCallTool } from './client.js';
 import { serverOpts } from './config.js';
 
 export async function validateWarehouseConfig(

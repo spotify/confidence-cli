@@ -1,9 +1,9 @@
 import { listFlags } from '@network/index.js';
 import { resolveFormat, formatJson, extractFlags, fail, message, print } from '@output/index.js';
-import { withAuth } from '@utils/index.js';
+import { withCrossCutting } from '@composition';
 import { flagStatus } from './status.js';
 
-export const listFlagsCmd = withAuth(async function listFlagsCmd(argv, token) {
+export const listFlagsCmd = withCrossCutting(async function listFlagsCmd(argv, token) {
   const result = await listFlags(token, {
     pageToken: argv['page-token'] as string | undefined,
   });

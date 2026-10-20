@@ -2,7 +2,8 @@ import { extractText, parseToolJson } from '@spotify-confidence/core';
 import { ensureJsonString, validateJsonString } from '@spotify-confidence/core';
 import { validateWarehouseConfig } from '@network/index.js';
 import { resolveFormat, formatJson, message, print, extractFlags, fail } from '@output/index.js';
-import { withAuth, tryHandleMcpError } from '@utils/index.js';
+import { withCrossCutting } from '@composition';
+import { tryHandleMcpError } from '@utils/index.js';
 import { resolveInput } from '@input/index.js';
 import { requireKeys } from '@utils/validation.js';
 import type { WarehouseTypeParams } from './types.js';
@@ -28,7 +29,7 @@ type ValidationRow = {
   error: string;
 };
 
-export const validateConfig = withAuth(async function validateConfig(argv, token) {
+export const validateConfig = withCrossCutting(async function validateConfig(argv, token) {
   const params = resolveInput<WarehouseTypeParams>(argv, ['warehouse-type', 'config-json']);
   requireKeys(params, ['warehouse-type', 'config-json']);
 

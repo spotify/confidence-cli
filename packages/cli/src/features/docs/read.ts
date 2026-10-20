@@ -2,7 +2,7 @@ import ora from 'ora';
 import { CONFIDENCE_DOCS_URL } from '@spotify-confidence/core';
 import { getFullSource } from '@network/index.js';
 import { printMcpResult } from '@output/print.js';
-import { withAuth } from '@utils/index.js';
+import { withCrossCutting } from '@composition';
 
 function normalizeSource(input: string): string {
   if (input.includes('://')) return input;
@@ -12,7 +12,7 @@ function normalizeSource(input: string): string {
   return `${CONFIDENCE_DOCS_URL}/${path}`;
 }
 
-export const readDocs = withAuth(async function readDocs(argv, token) {
+export const readDocs = withCrossCutting(async function readDocs(argv, token) {
   const page = normalizeSource(argv.page as string);
   const spinner = ora('Fetching page...').start();
   try {
