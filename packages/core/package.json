@@ -8,7 +8,7 @@
     "./prelude": "./src/system/prelude.ts"
   },
   "dependencies": {
-    "@modelcontextprotocol/sdk": "^1.31.0",
+    "@modelcontextprotocol/sdk": "^1.32.1",
     "@spotify-confidence/shared-kernel": "workspace:*",
     "cross-spawn": "^7.0.6"
   },
@@ -21,10 +21,10 @@
     "@spotify-confidence/eslint-config": "workspace:*",
     "@spotify-confidence/testing": "workspace:*",
     "@types/cross-spawn": "^6.0.6",
-    "@types/node": "^26.6.3",
-    "eslint": "^10.11.0",
+    "@types/node": "^26.6.5",
+    "eslint": "^10.12.0",
     "msw": "^2.15.0",
-    "prettier": "^3.9.9",
+    "prettier": "^3.9.10",
     "typescript": "^6.0.3",
     "vitest": "^4.1.11"
   }
