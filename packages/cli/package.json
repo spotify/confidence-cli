@@ -22,8 +22,8 @@
     "qa": "pnpm typecheck && pnpm lint && pnpm test"
   },
   "dependencies": {
-    "@inquirer/confirm": "^6.3.2",
-    "@inquirer/select": "^5.2.5",
+    "@inquirer/confirm": "^6.3.3",
+    "@inquirer/select": "^5.2.6",
     "@spotify-confidence/quickstart": "workspace:*",
     "ora": "^9.4.1",
     "yargs": "^18.2.0"
@@ -33,14 +33,14 @@
     "@spotify-confidence/eslint-config": "workspace:*",
     "@spotify-confidence/shared-kernel": "workspace:*",
     "@spotify-confidence/testing": "workspace:*",
-    "@types/node": "^26.6.3",
+    "@types/node": "^26.6.5",
     "@types/yargs": "^17.0.35",
-    "eslint": "^10.11.0",
-    "prettier": "^3.9.9",
+    "eslint": "^10.12.0",
+    "prettier": "^3.9.10",
     "tsdown": "^0.22.14",
     "tsx": "^4.23.15",
     "typescript": "^6.0.3",
-    "typescript-eslint": "^8.71.0",
+    "typescript-eslint": "^8.71.2",
     "vitest": "^4.1.11"
   },
   "engines": {
