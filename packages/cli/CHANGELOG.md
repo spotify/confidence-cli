@@ -1,5 +1,20 @@
 # Changelog
 
+## [1.2.0](https://github.com/spotify/confidence-cli/compare/cli-v1.1.0...cli-v1.2.0) (2026-10-22)
+
+
+### Features
+
+* **cli:** autorun login for authed commands ([#118](https://github.com/spotify/confidence-cli/issues/118)) ([7af60eb](https://github.com/spotify/confidence-cli/commit/7af60eb48af3722a28f96d3fba4896f925ceb675))
+* implement `--no-color`, `--dry-run`, and `--debug` flags ([#119](https://github.com/spotify/confidence-cli/issues/119)) ([4596f66](https://github.com/spotify/confidence-cli/commit/4596f6655278683277d27b865804842c9e1cb624))
+
+
+### Dependencies
+
+* The following workspace dependencies were updated
+  * dependencies
+    * @spotify-confidence/quickstart bumped to 1.8.0
+
 ## [1.1.0](https://github.com/spotify/confidence-cli/compare/cli-v1.0.0...cli-v1.1.0) (2026-10-09)
 
 
