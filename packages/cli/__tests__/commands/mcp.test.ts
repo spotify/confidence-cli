@@ -229,7 +229,7 @@ describe('--dir', () => {
 
     await run(['mcp', 'status', '--ide', 'claude', '--dir', '/tmp/my-project', '--json']);
 
-    expect(mockIntegration.detectMcpStatuses).toHaveBeenCalledWith('/tmp/my-project');
+    expect(mockIntegration.detectMcpStatuses).toHaveBeenCalledWith(resolve('/tmp/my-project'));
   });
 
   it('passes --dir through to auth refresh', async () => {
@@ -239,7 +239,7 @@ describe('--dir', () => {
     await run(['mcp', 'auth', '--ide', 'claude', '--dir', '/tmp/my-project']);
 
     expect(mockIntegration.connectMcpServer).toHaveBeenCalledWith(
-      expect.objectContaining({ projectDir: '/tmp/my-project' }),
+      expect.objectContaining({ projectDir: resolve('/tmp/my-project') }),
     );
   });
 });

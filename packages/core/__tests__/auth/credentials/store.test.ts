@@ -1,5 +1,6 @@
 import { existsSync, statSync, writeFileSync } from 'node:fs';
 import { join } from 'node:path';
+import { isWindows } from '@spotify-confidence/shared-kernel';
 import { prepareAuthTokens } from '@spotify-confidence/testing/auth';
 import { getConfigDir } from '@config/index.js';
 import {
@@ -20,7 +21,7 @@ describe('writeCredentials / readCredentials', () => {
     expect(sut).toEqual(creds);
   });
 
-  it('creates the config directory with 0700 permissions', () => {
+  it.skipIf(isWindows)('creates the config directory with 0700 permissions', () => {
     using _auth = prepareAuthTokens('none');
 
     writeCredentials({ accessToken: 'tok' });
@@ -30,7 +31,7 @@ describe('writeCredentials / readCredentials', () => {
     expect(mode).toBe(0o700);
   });
 
-  it('writes the credentials file with 0600 permissions', () => {
+  it.skipIf(isWindows)('writes the credentials file with 0600 permissions', () => {
     using _auth = prepareAuthTokens('none');
 
     writeCredentials({ accessToken: 'tok' });
