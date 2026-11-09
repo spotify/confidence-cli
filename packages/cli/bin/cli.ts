@@ -37,16 +37,6 @@ const cli = yargs(hideBin(process.argv))
     choices: ['json', 'table', 'plain'] as const,
     describe: 'Output format',
   })
-  .option('project', {
-    type: 'string',
-    describe: 'Override project (from config)',
-    hidden: true,
-  })
-  .option('environment', {
-    type: 'string',
-    describe: 'Override environment (from config)',
-    hidden: true,
-  })
   .option('profile', {
     type: 'string',
     describe: 'Use named auth profile',
