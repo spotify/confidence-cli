@@ -1,3 +1,4 @@
+import { describe, it, expect } from 'vitest';
 import { overlayEnv } from '../src/env/overlay-env.js';
 
 describe('overlayEnv', () => {

@@ -1,8 +1,8 @@
 import { vi } from 'vitest';
 
 /**
- * Stubs the `HOME` environment variable to `dir`, isolating the test
- * from real user config files (`~/.cursor/`, `~/.claude.json`, etc.).
+ * Stubs `HOME` and `USERPROFILE` environment variables to `dir`, isolating the test
+ * from real user config files (`~/.cursor/`, `~/.claude.json`, etc.) across platforms.
  * Supports `Symbol.dispose` for automatic cleanup via `vi.unstubAllEnvs`.
  *
  * @example
@@ -13,6 +13,7 @@ import { vi } from 'vitest';
  */
 export function isolateHome(dir: string) {
   vi.stubEnv('HOME', dir);
+  vi.stubEnv('USERPROFILE', dir);
 
   return {
     [Symbol.dispose]() {

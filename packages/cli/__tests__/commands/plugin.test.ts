@@ -124,7 +124,7 @@ describe('plugin update', () => {
 
     await run(['plugin', 'update', '--ide', 'claude', '--dir', '/tmp/my-project']);
 
-    expect(mockUpdatePlugin).toHaveBeenCalledWith('claude', '/tmp/my-project', 'project');
+    expect(mockUpdatePlugin).toHaveBeenCalledWith('claude', resolve('/tmp/my-project'), 'project');
   });
 
   it('passes --scope to the updater', async () => {
@@ -163,7 +163,11 @@ describe('plugin uninstall', () => {
 
     await run(['plugin', 'uninstall', '--ide', 'claude', '--dir', '/tmp/my-project']);
 
-    expect(mockUninstallPlugin).toHaveBeenCalledWith('claude', '/tmp/my-project', 'project');
+    expect(mockUninstallPlugin).toHaveBeenCalledWith(
+      'claude',
+      resolve('/tmp/my-project'),
+      'project',
+    );
   });
 
   it('passes --scope to the uninstaller', async () => {
