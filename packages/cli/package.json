@@ -35,7 +35,7 @@
     "@spotify-confidence/testing": "workspace:*",
     "@types/node": "^26.6.6",
     "@types/yargs": "^17.0.35",
-    "eslint": "^10.13.0",
+    "eslint": "^10.14.0",
     "prettier": "^3.9.10",
     "tsdown": "^0.22.14",
     "tsx": "^4.23.15",

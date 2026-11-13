@@ -22,7 +22,7 @@
     "@spotify-confidence/testing": "workspace:*",
     "@types/cross-spawn": "^6.0.6",
     "@types/node": "^26.6.6",
-    "eslint": "^10.13.0",
+    "eslint": "^10.14.0",
     "msw": "^2.15.0",
     "prettier": "^3.9.10",
     "typescript": "^6.0.3",
