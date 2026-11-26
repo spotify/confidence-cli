@@ -17,10 +17,10 @@
 
 This monorepo contains two published packages:
 
-| Package | Description | |
-| ------- | ----------- | --- |
-| [`@spotify-confidence/cli`](./packages/cli/) | CLI for managing Confidence — flags, events, recordings, config, MCP | [![npm](https://img.shields.io/npm/v/@spotify-confidence/cli?color=informational)](https://www.npmjs.com/package/@spotify-confidence/cli) |
-| [`@spotify-confidence/quickstart`](./packages/quickstart/) | Interactive TUI wizard for first-time project setup | [![npm](https://img.shields.io/npm/v/@spotify-confidence/quickstart?color=informational)](https://www.npmjs.com/package/@spotify-confidence/quickstart) |
+| Package                                                    | Description                                                          |                                                                                                                                                         |
+| ---------------------------------------------------------- | -------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| [`@spotify-confidence/cli`](./packages/cli/)               | CLI for managing Confidence — flags, events, recordings, config, MCP | [![npm](https://img.shields.io/npm/v/@spotify-confidence/cli?color=informational)](https://www.npmjs.com/package/@spotify-confidence/cli)               |
+| [`@spotify-confidence/quickstart`](./packages/quickstart/) | Interactive TUI wizard for first-time project setup                  | [![npm](https://img.shields.io/npm/v/@spotify-confidence/quickstart?color=informational)](https://www.npmjs.com/package/@spotify-confidence/quickstart) |
 
 ## Get Started
 

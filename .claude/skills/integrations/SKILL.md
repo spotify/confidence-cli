@@ -18,20 +18,20 @@ Thin orchestrators (`chat.ts`) resolve the strategy via `getIntegration(ide)` an
 
 ## Module Structure
 
-| Path              | Purpose                                                              |
-| ----------------- | -------------------------------------------------------------------- |
-| `claude/`         | Claude Code integration (paths, plugins, mcp, chat, onboarding, prepare) |
-| `cursor/`         | Cursor integration (same file structure)                             |
-| `codex/`          | Codex integration (same file structure)                              |
-| `mcp/`            | Shared MCP server definitions, config, preference                    |
-| `skills/`         | Skill file management (local installation, plugin-based delivery)    |
-| `chat.ts`         | Orchestrator — resolves IDE strategy and delegates chat launch       |
-| `registry.ts`     | `INTEGRATIONS` array and `getIntegration()` lookup                   |
-| `types.ts`        | `IdeIntegration` interface and related types                         |
-| `constants.ts`    | Shared integration constants                                        |
-| `stream-json.ts`  | JSON streaming utilities for IDE exec output                         |
-| `version.ts`      | IDE version detection                                                |
-| `utils.ts`        | Shared integration helpers                                           |
+| Path             | Purpose                                                                  |
+| ---------------- | ------------------------------------------------------------------------ |
+| `claude/`        | Claude Code integration (paths, plugins, mcp, chat, onboarding, prepare) |
+| `cursor/`        | Cursor integration (same file structure)                                 |
+| `codex/`         | Codex integration (same file structure)                                  |
+| `mcp/`           | Shared MCP server definitions, config, preference                        |
+| `skills/`        | Skill file management (local installation, plugin-based delivery)        |
+| `chat.ts`        | Orchestrator — resolves IDE strategy and delegates chat launch           |
+| `registry.ts`    | `INTEGRATIONS` array and `getIntegration()` lookup                       |
+| `types.ts`       | `IdeIntegration` interface and related types                             |
+| `constants.ts`   | Shared integration constants                                             |
+| `stream-json.ts` | JSON streaming utilities for IDE exec output                             |
+| `version.ts`     | IDE version detection                                                    |
+| `utils.ts`       | Shared integration helpers                                               |
 
 ## Hard Constraints
 
